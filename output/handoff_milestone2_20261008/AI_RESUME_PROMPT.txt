@@ -12,9 +12,11 @@ Read, in order:
 
 Do not redesign the project. The 2026-10-07 handoff was verified. The 27 MHz
 clock was restored by reseating the core board. LED2 on N16 blinks in the
-normal bitstream. The GAO core is integrated, but the standalone GAO analyzer
-does not open in this environment; use the Gowin IDE built-in GAO and
-source/rtl/gao_top.rao.
+normal bitstream. The GAO core is integrated. Run
+source/build/launch_gao.ps1 to open the standalone analyzer with the required
+arguments; the Gowin IDE built-in GAO remains a fallback.
 
-Use SRAM Program operation 2, not Program and Verify. Preserve the pure-FPGA
-audio path and do not use recorded PCM.
+Build the normal bitstream with source/build/build.ps1. Use -Gao for the
+separate GAO build. The wave_sine include path and direct IDE synthesis are
+fixed. Use SRAM Program operation 2, not Program and Verify. Preserve the
+pure-FPGA audio path and do not use recorded PCM.

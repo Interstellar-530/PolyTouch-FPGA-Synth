@@ -33,8 +33,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 ```
 
 如果脚本没有自动找到 Gowin，可以传入 `-GwSh`，或者设置环境变量
-`GOWIN_GW_SH`。当前推荐使用 Tcl 构建，因为 Gowin IDE 直接综合仍可能找不到
-`wave_sine.hex`。
+`GOWIN_GW_SH`。默认生成普通码流 `source/impl/pnr/instrument.fs`；加上
+`-Gao` 会使用独立工程生成 GAO 码流 `source/impl/pnr/ao_0.fs`。
+普通和 GAO 工程已分离，直接 IDE 综合的波表 include path 也已修复。
 
 ## 烧录
 
@@ -49,7 +50,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scan_jtag.ps1
 ```powershell
 & 'E:\Gowin\Gowin_V1.9.11.03_Education_x64\Programmer\bin\programmer_cli.exe' `
   --device GW2A-18C --operation_index 2 `
-  --fsFile '..\..\artifacts\instrument.fs'
+  --fsFile '..\impl\pnr\instrument.fs'
 ```
 
 `SRAM Program and Verify` 在这块板子上会报 `Verify Failed`，状态码
@@ -63,9 +64,19 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scan_jtag.ps1
 
 ## GAO 观察
 
-独立 `gao_analyzer.exe` 在当前环境里无法稳定打开，请使用 Gowin IDE 内置
-GAO。打开 `source/build/gowin_single_voice/instrument/instrument/instrument.gprj`
-后，在 Design 窗口双击 `source/rtl/gao_top.rao`，连接 Local jtagserver，
-Cable 选 `Gowin USB Cable(FT2CH)`，Device chain 选 Gowin Device、Series
-`GW2A`、Device `GW2A-18C`。`ao_0.fs` 已写入 SRAM 时，取消 `Enable
-Programmer`，或者把操作选成 `SRAM Program`。
+`gao_analyzer.exe` 需要 `-gao`、`-family`、`-device` 参数。直接在
+`source/build` 下运行下面命令，脚本会补齐参数并打开 GAO 捕获界面：
+
+```powershell
+.\launch_gao.ps1
+```
+
+如果板卡还未加载 GAO 码流，用操作 2 烧录 `source/impl/pnr/ao_0.fs`：
+
+```powershell
+.\program_sram.ps1 -FsFile '..\impl\pnr\ao_0.fs'
+```
+
+然后连接 Local jtagserver，Cable 选 `Gowin USB Cable(FT2CH)`，Device chain
+选 Gowin Device、Series `GW2A`、Device `GW2A-18C`。Gowin IDE 内置 GAO
+仍然可以作为备用方案。

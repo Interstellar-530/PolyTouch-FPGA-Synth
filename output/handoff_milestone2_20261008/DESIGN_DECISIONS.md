@@ -32,8 +32,11 @@
 10. Use `SRAM Program` operation 2 for this board. Do not use `Program and
     Verify`; the readback verification fails with status code `0x00006020`.
 
-11. Use the Gowin IDE built-in GAO. The standalone `gao_analyzer.exe` exits
-    immediately in this environment.
+11. Use `source/build/launch_gao.ps1` for the standalone GAO analyzer. It
+    supplies the required `-gao`, `-family`, and `-device` arguments. The
+    Gowin IDE built-in GAO remains the fallback.
 
-12. The Tcl build is the canonical build path until the `wave_sine.hex`
-    relative-path problem is fixed for Gowin IDE direct synthesis.
+12. The generated Gowin project sets `-include_path` to `source/rtl/audio`,
+    so `dds_osc.v` loads `wave_sine.hex` in both Tcl and IDE-driven
+    synthesis. Normal and GAO builds use separate project directories to
+    preserve the normal `instrument.fs` build.

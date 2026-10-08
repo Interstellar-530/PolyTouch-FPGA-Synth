@@ -1,7 +1,7 @@
 param(
     [string]$FsFile = '',
     [string]$Device = 'GW2A-18C',
-    [int]$Operation = 4,
+    [int]$Operation = 2,
     [string]$Programmer = '',
     [string]$Cable = ''
 )

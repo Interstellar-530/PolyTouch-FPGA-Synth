@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "current_blocker": "GAO capture window setup and Gowin IDE wavetable path.",
+  "current_blocker": "GAO hardware capture; wavetable path and launcher fixes are verified.",
   "tasks": [
     {
       "id": "M2-01",
       "priority": 1,
       "title": "Capture GAO waveform",
-      "command": "Open the project in Gowin IDE, program artifacts/ao_0.fs with operation 2, double-click source/rtl/gao_top.rao, and use the built-in GAO capture window.",
+      "command": "Program source/impl/pnr/ao_0.fs with operation 2, then run source/build/launch_gao.ps1. The Gowin IDE built-in GAO remains a fallback.",
       "acceptance": [
         "Local jtagserver connects successfully",
         "Cable is Gowin USB Cable(FT2CH)",
@@ -29,9 +29,11 @@
       "id": "M2-03",
       "priority": 2,
       "title": "Fix Gowin IDE wavetable path",
-      "acceptance": [
-        "Gowin IDE direct synthesis no longer reports Cannot open rtl/audio/wave_sine.hex",
-        "The sine ROM is still mapped to BSRAM"
+      "status": "done",
+      "evidence": [
+        "Direct IDE synthesis no longer reports Cannot open rtl/audio/wave_sine.hex",
+        "dds_osc, adsr, and voice remain in the synthesized design",
+        "The sine ROM maps to BSRAM (4/46 blocks)"
       ]
     },
     {

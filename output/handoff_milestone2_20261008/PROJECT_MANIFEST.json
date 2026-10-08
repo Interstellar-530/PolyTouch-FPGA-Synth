@@ -17,7 +17,9 @@
   "entry_points": {
     "top_rtl": "source/rtl/top.v",
     "build_script": "source/build/build.ps1",
+    "build_gao": "source/build/build.ps1 -Gao",
     "build_tcl": "source/build/build_instrument.tcl",
+    "gao_launcher": "source/build/launch_gao.ps1",
     "scan_jtag": "source/build/scan_jtag.ps1",
     "program_sram": "source/build/program_sram.ps1",
     "evidence_collector": "source/tools/collect_build_evidence.py",
@@ -32,11 +34,11 @@
     "board": "Sipeed Tang Primer 20K + Dock 3714"
   },
   "current_status": {
-    "build": "passed",
+    "build": "passed; normal and GAO projects separated",
     "programming": "passed with SRAM Program operation 2",
     "program_and_verify": "failed on this board, status 0x00006020",
     "audio": "not verified by listening",
-    "gao": "core integrated, capture pending",
+    "gao": "core integrated; launcher fixed, capture pending",
     "touch": "not implemented",
     "polyphony": 1
   },
@@ -49,8 +51,7 @@
     "Use SRAM Program operation 2; do not use Program and Verify."
   ],
   "known_issues": [
-    "Gowin IDE direct synthesis may not find rtl/audio/wave_sine.hex.",
-    "The standalone gao_analyzer.exe exits immediately in this environment.",
+    "Standalone GAO requires -gao, -family, and -device; use source/build/launch_gao.ps1.",
     "Dock 3714 free 3.3 V GCLK pin is not yet confirmed.",
     "MPR121 and MCP3208 modules have not been integrated.",
     "Audio has not been verified with a headphone or powered speaker."

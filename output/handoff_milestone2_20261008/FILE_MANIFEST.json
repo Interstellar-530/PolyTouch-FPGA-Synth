@@ -1,14 +1,59 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-08T20:55:38",
+  "generated_at": "2026-10-08T21:43:10+08:00",
   "root": ".",
-  "file_count": 66,
-  "total_bytes": 31646499.0,
+  "file_count": 67,
+  "total_bytes": 31655293.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
-      "size_bytes": 714,
-      "sha256": "a15565f9ecc5c05f46a2b4b2bc69faa97b6b7b4c0b1e355196818694178f2eab"
+      "size_bytes": 906,
+      "sha256": "1d9a1eed5e82cc38710ca9975af48eb567eb10d6481af090aa81745be56c3a71"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "size_bytes": 1933,
+      "sha256": "2559e155b6f2a82470d3809f68049bd5b0854494863abe59fc3c03202773d3e2"
+    },
+    {
+      "path": "COMPETITION_REQUIREMENTS.md",
+      "size_bytes": 1489,
+      "sha256": "82b838a32f1aeb1aa61656282cf069a475a00ccaccfa92c896103625f04bbbf1"
+    },
+    {
+      "path": "CURRENT_STATUS.md",
+      "size_bytes": 2690,
+      "sha256": "f7cacb3a70e35ed6602dcec67f9a1bbb2c6099aaedcbffcd211167c52c9c642a"
+    },
+    {
+      "path": "DESIGN_DECISIONS.md",
+      "size_bytes": 1953,
+      "sha256": "58c3a2e7640ba511cfa49542882f8d2c92bf43ccb5dd3ec57230c1858ae38d57"
+    },
+    {
+      "path": "HARDWARE_NOTES.md",
+      "size_bytes": 2103,
+      "sha256": "89fede031b9a06c3bb0f5662b49b08bd0fbc4a23f3e06f5faa8aa5f08980b6ee"
+    },
+    {
+      "path": "NEXT_TASKS.json",
+      "size_bytes": 2290,
+      "sha256": "ac702083b1f54aa029948fddd3df678dec581ad22ca38718457f7d9a7ae0c191"
+    },
+    {
+      "path": "PROJECT_MANIFEST.json",
+      "size_bytes": 2331,
+      "sha256": "48d9ad1ea88b98636ff5defbff610687145302697db0f2b901e0511ba0bf7989"
+    },
+    {
+      "path": "README_FOR_HUMAN.md",
+      "size_bytes": 2706,
+      "sha256": "e29213600e4eed7401cd9e3736952dc5594f70bf4b15787a59fe3a05d32d284d"
+    },
+    {
+      "path": "START_HERE_FOR_AI.md",
+      "size_bytes": 5070,
+      "sha256": "d6803f67dfa425c3b2509a626c2cea831b46fb6b63d67dba2395c2388b6a47c3"
     },
     {
       "path": "artifacts/ao_0.fs",
@@ -19,16 +64,6 @@
       "path": "artifacts/first_voice_build.json",
       "size_bytes": 983,
       "sha256": "8d502f3e582aa3f7fce9230b1b247da923ef954f93681d69e698d19b2a24ef69"
-    },
-    {
-      "path": "artifacts/instrument_syn.rpt.html",
-      "size_bytes": 25650,
-      "sha256": "e61d2246690922b8ae1fe6b74adb5c7471f744d92e059a7453481327b501296c"
-    },
-    {
-      "path": "artifacts/instrument_tr_content.html",
-      "size_bytes": 249433,
-      "sha256": "8098a57d2f81c3ac953e3579e6ea232b46bc36f4e567d746075f0b2a3296a9d1"
     },
     {
       "path": "artifacts/instrument.fs",
@@ -61,49 +96,19 @@
       "sha256": "b5617a697f0ed58953337d9ba0da67ec8d39684eaf266e3baed124542cb82e8b"
     },
     {
+      "path": "artifacts/instrument_syn.rpt.html",
+      "size_bytes": 25650,
+      "sha256": "e61d2246690922b8ae1fe6b74adb5c7471f744d92e059a7453481327b501296c"
+    },
+    {
+      "path": "artifacts/instrument_tr_content.html",
+      "size_bytes": 249433,
+      "sha256": "8098a57d2f81c3ac953e3579e6ea232b46bc36f4e567d746075f0b2a3296a9d1"
+    },
+    {
       "path": "artifacts/milestone2_build.json",
-      "size_bytes": 966,
-      "sha256": "ec1f335001425a77bd08766c26a8e1981a1e97d233d37bf89d83225e4779a7df"
-    },
-    {
-      "path": "CHANGELOG.md",
-      "size_bytes": 1071,
-      "sha256": "33209ecc4c65e6ffbcdee33ec84d15610c2066253879fe974a63021087e6dc92"
-    },
-    {
-      "path": "COMPETITION_REQUIREMENTS.md",
-      "size_bytes": 1489,
-      "sha256": "82b838a32f1aeb1aa61656282cf069a475a00ccaccfa92c896103625f04bbbf1"
-    },
-    {
-      "path": "CURRENT_STATUS.md",
-      "size_bytes": 2262,
-      "sha256": "13b306b9206abffe5d11d5f7bbee1b04f499c4b4c3c6b520932c862c42e723a0"
-    },
-    {
-      "path": "DESIGN_DECISIONS.md",
-      "size_bytes": 1702,
-      "sha256": "eaf83eb34f0a025045462f4249d3fd5482e54930407a3bfa38fcb3fa5658bd19"
-    },
-    {
-      "path": "HARDWARE_NOTES.md",
-      "size_bytes": 1723,
-      "sha256": "b1bff470c95f1e6e3d32e7036c2169dc8434648b7ed4e2f1079703f38dbf58c1"
-    },
-    {
-      "path": "NEXT_TASKS.json",
-      "size_bytes": 2135,
-      "sha256": "a045bec59cc067eb502f567e78cdf236f7dc5f4373db68ad9485f00af4c61a32"
-    },
-    {
-      "path": "PROJECT_MANIFEST.json",
-      "size_bytes": 2180,
-      "sha256": "3b314b1aa559c42ce986da5b1789b490ad6cf5be558eca2e91bd1156b2730393"
-    },
-    {
-      "path": "README_FOR_HUMAN.md",
-      "size_bytes": 2414,
-      "sha256": "39a0a593ba5516c7c29be44017191de2516a776a2c573ddd9ba79530a5e065bd"
+      "size_bytes": 998,
+      "sha256": "1f258d167ad7aa94a598d749f0452961b77a1d005613afa4f44c2110f377348e"
     },
     {
       "path": "reference/board_docs/GAO用户指南.md",
@@ -117,8 +122,8 @@
     },
     {
       "path": "reference/board_docs/README.md",
-      "size_bytes": 1561,
-      "sha256": "7b07d56f28eb0a8974b6bfd360360791348f43fa01974a0864514d875c47028a"
+      "size_bytes": 1598,
+      "sha256": "a8ffb441650d37b830c8f3e7edaa50e41616e69d44585b29537e826cdd6e0df7"
     },
     {
       "path": "reference/board_docs/Sipeed_Tang_Primer_20K_Datasheet_V1.0.pdf",
@@ -126,9 +131,9 @@
       "sha256": "7ec2ada4c37cce6ec9601e96812ccd1c86ebd0ecef73b676e0e6bc61db0a8da7"
     },
     {
-      "path": "reference/board_docs/Tang_Primer_20K_规格书_V1.0.pdf",
-      "size_bytes": 936754,
-      "sha256": "99d344d7cd85f8a27d52c693d53e4c4284ae69538df17fc2f623a7363af19df5"
+      "path": "reference/board_docs/Tang_Primer_20K_Dock-3713_Schematics.pdf",
+      "size_bytes": 2474939,
+      "sha256": "17c2d75551e59294937f362d6c7a04a7a752ead754465a4be8ddabbd1f7cf2ae"
     },
     {
       "path": "reference/board_docs/Tang_Primer_20K_Dock_3714_Schematics.pdf",
@@ -136,19 +141,14 @@
       "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
     },
     {
-      "path": "reference/board_docs/Tang_Primer_20K_Dock-3713_Schematics.pdf",
-      "size_bytes": 2474939,
-      "sha256": "17c2d75551e59294937f362d6c7a04a7a752ead754465a4be8ddabbd1f7cf2ae"
-    },
-    {
       "path": "reference/board_docs/Tang_Primer_20K_SOM-3961_Schematic.pdf",
       "size_bytes": 972793,
       "sha256": "b5110caa0508d1d80513ca28978b0836e9b2aec92fc889f850a5a43ec03e6ce8"
     },
     {
-      "path": "reference/competition/高云半导体.pdf",
-      "size_bytes": 1447261,
-      "sha256": "09415c6e2b4922d564317dcd7c28720ce1e1363e6ddbe17d4c5eb9710cc0165d"
+      "path": "reference/board_docs/Tang_Primer_20K_规格书_V1.0.pdf",
+      "size_bytes": 936754,
+      "sha256": "99d344d7cd85f8a27d52c693d53e4c4284ae69538df17fc2f623a7363af19df5"
     },
     {
       "path": "reference/competition/FPGA创新设计赛道通知.pdf",
@@ -161,9 +161,14 @@
       "sha256": "0278bc576d62d1eace7e3d4eff9c9037bff304dbf80d64d77ebbf71d6e8c3b92"
     },
     {
+      "path": "reference/competition/高云半导体.pdf",
+      "size_bytes": 1447261,
+      "sha256": "09415c6e2b4922d564317dcd7c28720ce1e1363e6ddbe17d4c5eb9710cc0165d"
+    },
+    {
       "path": "reference/logs/FPGA_DEBUG_LOG_20261008.md",
-      "size_bytes": 6184,
-      "sha256": "d06145d9e37ed378e16876e2eca9511cfbe146681a05c634eda181752fc44442"
+      "size_bytes": 6255,
+      "sha256": "a543eb8e6b97a61e081b45e2180ecbe2804bf77c3a05c810bfc83cfccd636a82"
     },
     {
       "path": "reference/logs/FPGA_DEBUG_LOG_20261008.pdf",
@@ -172,68 +177,63 @@
     },
     {
       "path": "reference/minimum_design/00_总览与最小实现边界.md",
-      "size_bytes": 5844,
-      "sha256": "1cf0c3dcb3f04252c2a4d1fbbce079954d1390e08ba1d24efec8b7e20c77842d"
+      "size_bytes": 5922,
+      "sha256": "5dea9bcafb9fc3c16a5833a5834b6f1b88f7d8a509fcdccb0af3c2db172bd4d4"
     },
     {
       "path": "reference/minimum_design/01_时钟配置.md",
-      "size_bytes": 4977,
-      "sha256": "6e4f02c7605df0ab1b925069acc184f45a0fb8116ab29c0c52bb5d70ac5e9841"
+      "size_bytes": 5037,
+      "sha256": "425a284fc94ed0eee497ecca9b39d570177010a0ed90c249b02741992b93e79a"
     },
     {
       "path": "reference/minimum_design/02_信号生成与处理.md",
-      "size_bytes": 4986,
-      "sha256": "507945f07d43f7099b4a8e709199d531f7ff6a09138c00a92076965bb1460c3b"
+      "size_bytes": 5023,
+      "sha256": "8e492782f4346492e371d7bac2fdfda01129de3ca12dae567bb99eb31f272b87"
     },
     {
       "path": "reference/minimum_design/03_模块间信息传递.md",
-      "size_bytes": 4464,
-      "sha256": "7fe06019ec8fa7755c089c039ecf9347d96332c5786537f0ceca36d96a499db5"
+      "size_bytes": 4497,
+      "sha256": "020f559e5011c8bd2f629a6141f1d409946bb9d451442d8318fdf2b475928711"
     },
     {
       "path": "reference/minimum_design/04_硬件控制信号.md",
-      "size_bytes": 6513,
-      "sha256": "3afbdff01e599580e7d458d835fb1334c8c50ea9fba32772e5147f05a29b299d"
+      "size_bytes": 6579,
+      "sha256": "104524a2c4aa2e507b2c633f34f7be18a4494ddd35b7856eba7f9445e4de37a8"
     },
     {
       "path": "reference/minimum_design/05_第二轮复查与补充.md",
-      "size_bytes": 4883,
-      "sha256": "dc5d76055418424bf3473c72cf03362db25e7fd7fdd56bd531fb58dd665ade0a"
+      "size_bytes": 4926,
+      "sha256": "3ee268c427f9c224e506216af78a2e88255ff0e5136ba77f837a3b278701fef5"
     },
     {
       "path": "reference/minimum_design/06_硬件调试说明书.md",
-      "size_bytes": 8963,
-      "sha256": "ccd4d5e06cdbbc85f7656c85e7477959a48208ebd80f9cbc07f262ea77d9a785"
+      "size_bytes": 9061,
+      "sha256": "f0d5c2d352edc47f49927b87e0ef95eb2a339714066ade35e0e9f25d367a01db"
     },
     {
       "path": "reference/minimum_design/07_PDF_MD_工具链与技能更新.md",
-      "size_bytes": 5506,
-      "sha256": "ae14a27dab650817be7eb599f3bbaeaaa091aea7fe9597161f631cb2c032e590"
+      "size_bytes": 5591,
+      "sha256": "b3835ae0ffac22b80635acee5716e83aba2e32a50614e9fdfde93fbba5d4372f"
     },
     {
       "path": "reference/minimum_design/AGENT_HANDOFF_PROMPT.md",
-      "size_bytes": 9574,
-      "sha256": "d066b8fb345bc3facb2700c199c280ca180beea1c0e00543a5b7a84626d5eb44"
-    },
-    {
-      "path": "reference/minimum_design/milestone_01_first_voice.md",
-      "size_bytes": 1624,
-      "sha256": "11151f657a0edfed8ffe7120d38001bc9449b39dfdfa4ca055e5813481726a90"
+      "size_bytes": 9635,
+      "sha256": "71fba34650b0f4d0222d3a3c334677ee2c76f850f0132d7f84f638a13998f07d"
     },
     {
       "path": "reference/minimum_design/README.md",
-      "size_bytes": 1485,
-      "sha256": "fc617ed776d4485f3c88f370aef7af0fbdc6ee6a5f1ceb88838ad398fd75871f"
+      "size_bytes": 1502,
+      "sha256": "3854dfa7acd20ba32a64d40b4162d75872a43eca576d4bd5b4dd2465615e1dc7"
+    },
+    {
+      "path": "reference/minimum_design/milestone_01_first_voice.md",
+      "size_bytes": 1675,
+      "sha256": "c9e5e0d95d1cc98b84f414a01093bde4f4f7cc76f145112f5084492a1b7378de"
     },
     {
       "path": "reference/planning/电子乐器项目规划.md",
-      "size_bytes": 27655,
-      "sha256": "732c72fa7a326245901a00e8e390a59c3d4d78012c7dde1f1a2f39b611270ad0"
-    },
-    {
-      "path": "reference/schematics/Tang_Primer_20K_Dock_3714_Schematics.pdf",
-      "size_bytes": 2480479,
-      "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
+      "size_bytes": 27989,
+      "sha256": "d6523c92aaa0d80dbe0a71402a00d53ff9475edcbbed950ef7fc112bf574f63d"
     },
     {
       "path": "reference/schematics/Tang_Primer_20K_Dock-3713_Schematics.pdf",
@@ -241,29 +241,39 @@
       "sha256": "17c2d75551e59294937f362d6c7a04a7a752ead754465a4be8ddabbd1f7cf2ae"
     },
     {
+      "path": "reference/schematics/Tang_Primer_20K_Dock_3714_Schematics.pdf",
+      "size_bytes": 2480479,
+      "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
+    },
+    {
       "path": "reference/schematics/Tang_Primer_20K_SOM-3961_Schematic.pdf",
       "size_bytes": 972793,
       "sha256": "b5110caa0508d1d80513ca28978b0836e9b2aec92fc889f850a5a43ec03e6ce8"
     },
     {
-      "path": "source/build/build_instrument.tcl",
-      "size_bytes": 1102,
-      "sha256": "e7702e6c86982d4866aee6cb1bcd5215528e0a8dba1da538f078e51dbf3bf239"
+      "path": "source/build/README.md",
+      "size_bytes": 1975,
+      "sha256": "b31e44428c645e93fc05003f4c9c0b291516cd758bafb7ebb49dad0e1edec8b0"
     },
     {
       "path": "source/build/build.ps1",
-      "size_bytes": 1217,
-      "sha256": "c05e939a93431214f9736ecbdb25b2db8f3a1eb013c2b2a6564c9b6abb9bbb8f"
+      "size_bytes": 1426,
+      "sha256": "a42bca5e16c66f71d186a07f9e07cdc16bf804a6d7e790d88d79193c6092a64b"
+    },
+    {
+      "path": "source/build/build_instrument.tcl",
+      "size_bytes": 2227,
+      "sha256": "ef0b82082947b8d0f50af1a678543a44f85336d230588a261da35432e0cf384a"
+    },
+    {
+      "path": "source/build/launch_gao.ps1",
+      "size_bytes": 2086,
+      "sha256": "e70434da3c24b17e700821be8c035a6b2e4e2cb69a80d5e37ba6f807eb51f8c3"
     },
     {
       "path": "source/build/program_sram.ps1",
-      "size_bytes": 2042,
-      "sha256": "01d8b0e0df5103e4243103fa7abebea0ca355cd4d30ae7917a28b9277d9fb4c3"
-    },
-    {
-      "path": "source/build/README.md",
-      "size_bytes": 877,
-      "sha256": "a361621b19eb02d39b8ea6befe7419e4136eae4ca14c831d741c15d559b6d50f"
+      "size_bytes": 2044,
+      "sha256": "08b00da162e2bc12a29c6ea7a1fd3430f9912c3631d9d72769eb47e266e8c579"
     },
     {
       "path": "source/build/scan_jtag.ps1",
@@ -271,14 +281,19 @@
       "sha256": "2b0dda9f9471776f3cb023e984c496d514d56563b134422fbb7ad1cf0e63bb1a"
     },
     {
-      "path": "source/constraints/primer20k_dock3714.cst",
-      "size_bytes": 385,
-      "sha256": "4fdcb8d8ba9947cbbe5661392bcf4d5e628a87c08187ee4cd51686f6fe0d169d"
-    },
-    {
       "path": "source/constraints/primer20k.sdc",
       "size_bytes": 65,
       "sha256": "41957da2af4aff0bc0ab6b832af376d64eb0c5966d713ca003fb959bd624ee8b"
+    },
+    {
+      "path": "source/constraints/primer20k_dock3714.cst",
+      "size_bytes": 403,
+      "sha256": "4d9bbe3942869123807041d53a8e401abb81ae221ba321c858bff32e0a3032d5"
+    },
+    {
+      "path": "source/rtl/README.md",
+      "size_bytes": 569,
+      "sha256": "8eae1c9f8ffa82437159d174a923f13b697eff96e31da7c5157d70c52a0367fd"
     },
     {
       "path": "source/rtl/audio/adsr.v",
@@ -287,13 +302,13 @@
     },
     {
       "path": "source/rtl/audio/dds_osc.v",
-      "size_bytes": 788,
-      "sha256": "dcf0f53f6df4e61df0cf46f52fab93508fa0366eb8eee55d172a19ac79366eb6"
+      "size_bytes": 778,
+      "sha256": "2c74baace7df9d7be3f3d26d8ebab27e5eb790108cf0fe578ab0927b979258c5"
     },
     {
       "path": "source/rtl/audio/pt8211_tx.v",
-      "size_bytes": 2315,
-      "sha256": "f2a950947437f3234afcd62dfdcb29df20e9340b76a8bb017e48d187bc7f7c9e"
+      "size_bytes": 2379,
+      "sha256": "2a174aaa5da04e56c44d9277bdd52be1cc3c1db70d929989ad3e154f6f3d7601"
     },
     {
       "path": "source/rtl/audio/voice.v",
@@ -307,13 +322,8 @@
     },
     {
       "path": "source/rtl/gao_top.rao",
-      "size_bytes": 4934,
-      "sha256": "4df379dd8227dba50cb50ead251d3e64773edcf866a110c590ed96c4a54ea1e6"
-    },
-    {
-      "path": "source/rtl/README.md",
-      "size_bytes": 389,
-      "sha256": "bd313e6f65b5014827de33d6793b365b01251222ca0f10ede53b03f22fe35ed7"
+      "size_bytes": 5013,
+      "sha256": "781c8943a29772e8de6c5f7fc1e76db15d9bd2654528f4073cef7c5f5638fb65"
     },
     {
       "path": "source/rtl/top.v",
@@ -327,13 +337,8 @@
     },
     {
       "path": "source/tools/collect_build_evidence.py",
-      "size_bytes": 2997,
-      "sha256": "ec8ab9a5433864042bbfc97e53ee0e56df2bd82794c6a6b413c5669d4c4d108a"
-    },
-    {
-      "path": "START_HERE_FOR_AI.md",
-      "size_bytes": 5033,
-      "sha256": "6464e909de1af121c6fc1dbc1db8c4d72f920d3169abe73145f7c4a6ff383a4a"
+      "size_bytes": 3089,
+      "sha256": "39e45c3cc60770114faca886640b794c9a5ff4914897b80b50a3ad76adfc51c1"
     }
   ]
 }

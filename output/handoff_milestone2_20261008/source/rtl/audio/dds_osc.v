@@ -13,7 +13,7 @@ module dds_osc (
     wire [8:0] wave_addr = phase[31:23];
 
     initial begin
-        $readmemh("rtl/audio/wave_sine.hex", wave_rom);
+        $readmemh("wave_sine.hex", wave_rom);
     end
 
     always @(posedge clk) begin
