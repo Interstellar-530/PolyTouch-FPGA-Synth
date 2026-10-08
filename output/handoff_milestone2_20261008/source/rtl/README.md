@@ -9,3 +9,6 @@ Current milestone: `top.v`
 
 The first build is intentionally limited to one DDS voice with a repeating ADSR
 gate. It does not yet contain touch, ADC, PCM5102A, or multi-voice mixing logic.
+The build adds `rtl/audio` as the synthesizer include path. `dds_osc.v` therefore
+loads `wave_sine.hex` with `$readmemh("wave_sine.hex", ...)` in both
+Gowin IDE and Tcl builds.

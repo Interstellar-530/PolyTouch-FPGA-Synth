@@ -1,5 +1,6 @@
 param(
-    [string]$GwSh = ''
+    [string]$GwSh = '',
+    [switch]$Gao
 )
 
 $ErrorActionPreference = 'Stop'
@@ -32,5 +33,7 @@ if (-not (Test-Path -LiteralPath $tcl -PathType Leaf)) {
 
 Write-Output "Project root: $ProjectRoot"
 Write-Output "Gowin shell : $GwSh"
+Write-Output "Build mode  : $(if ($Gao) { 'GAO debug' } else { 'normal' })"
+if ($Gao) { $env:FPGA_BUILD_GAO = '1' } else { Remove-Item Env:FPGA_BUILD_GAO -ErrorAction SilentlyContinue }
 & $GwSh $tcl
 exit $LASTEXITCODE

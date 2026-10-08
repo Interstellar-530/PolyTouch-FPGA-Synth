@@ -16,6 +16,12 @@ Date: 2026-10-08
 - `SRAM Program and Verify` operation 4 fails with `Verify Failed` and status
   code `0x00006020`; use operation 2 instead.
 - GAO core is integrated and `artifacts/ao_0.fs` is generated.
+- Follow-up build fix: the Gowin include path points at `source/rtl/audio`,
+  so direct IDE synthesis finds `wave_sine.hex` and does not sweep the voice
+  modules.
+- Normal and GAO builds are separated: `build.ps1` produces
+  `source/impl/pnr/instrument.fs`; `build.ps1 -Gao` produces
+  `source/impl/pnr/ao_0.fs`.
 
 ## Implemented
 
@@ -35,9 +41,8 @@ Date: 2026-10-08
 - Audio has not been listened to on hardware because no headphone or powered
   speaker was available.
 - GAO waveform capture has not been completed yet.
-- The standalone `gao_analyzer.exe` does not open in this environment; use the
-  Gowin IDE built-in GAO.
-- Gowin IDE direct synthesis can still miss `rtl/audio/wave_sine.hex`.
+- GAO waveform capture still requires the board and JTAG cable; build-time
+  integration is verified.
 - No MPR121, MCP3208, FSR, UART, PCM5102A, or polyphonic mixer exists yet.
 
 ## Current Technical Boundary
@@ -49,6 +54,8 @@ Date: 2026-10-08
 
 ## Immediate Next Action
 
-Open the project in Gowin IDE, program `artifacts/ao_0.fs` with operation 2 if
-needed, open `source/rtl/gao_top.rao`, and use the built-in GAO capture window
-to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
+Run `source/build/launch_gao.ps1` and program `source/impl/pnr/ao_0.fs` with
+operation 2 if needed. The wrapper supplies the required `-gao`, `-family`,
+and `-device` arguments instead of starting `gao_analyzer.exe` with no
+arguments. Then capture `sample_tick`, `gate`, `voice_sample[15:0]`, and
+the PT8211 signals. The Gowin IDE built-in GAO remains a fallback.

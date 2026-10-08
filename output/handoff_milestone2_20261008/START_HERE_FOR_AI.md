@@ -52,20 +52,19 @@ Do not power-cycle the board after SRAM programming.
 
 The immediate task is to observe the internal audio engine without headphones:
 
-1. Open the project in Gowin IDE.
-2. Program `artifacts/ao_0.fs` with operation 2 if the SRAM is not already
-   running the GAO bitstream.
-3. In the Design window, double-click `source/rtl/gao_top.rao`.
-4. Open the Gowin IDE built-in GAO capture window.
-5. Connect to Local jtagserver, select `Gowin USB Cable(FT2CH)`, set the
+1. Program `source/impl/pnr/ao_0.fs` with operation 2 if the SRAM is not
+   already running the GAO bitstream.
+2. Run `source/build/launch_gao.ps1`; it supplies the required `-gao`,
+   `-family`, and `-device` arguments to `gao_analyzer.exe`.
+3. Connect to Local jtagserver, select `Gowin USB Cable(FT2CH)`, set the
    device chain to Gowin Device, Series `GW2A`, Device `GW2A-18C`, and check
    Enable. Disable the integrated programmer because the bitstream is already
    in SRAM, or select `SRAM Program` if reprogramming.
-6. Trigger on `sample_tick` rising edge and inspect `gate`,
+4. Trigger on `sample_tick` rising edge and inspect `gate`,
    `voice_sample[15:0]`, `hp_bck`, `hp_ws`, `hp_din`, and `pa_en`.
 
-The standalone `gao_analyzer.exe` exits immediately in this environment. Use
-the GAO tool inside Gowin IDE; do not keep retrying the standalone executable.
+The standalone analyzer works when launched with those required arguments.
+The Gowin IDE built-in GAO remains the fallback.
 
 ## Hard Rules
 
@@ -90,20 +89,20 @@ the GAO tool inside Gowin IDE; do not keep retrying the standalone executable.
 - Debug sample rate: 27 MHz / 18 / 32 = 46.875 kHz.
 - PT8211 BCK: about 1.5 MHz.
 - Formal 48 kHz path requires an external 12.288 MHz clock and PCM5102A.
-- The `wave_sine.hex` relative path works in the Tcl build because the Tcl
-  changes to the source root before `run all`. Gowin IDE direct synthesis may
-  still report `Cannot open file 'rtl\audio\wave_sine.hex'`; fix this with a
-  Gowin ROM IP or a project-local memory file before relying on IDE builds.
+- The generated Gowin project sets `-include_path` to `source/rtl/audio`.
+  `dds_osc.v` loads `wave_sine.hex` from that path, so both the Tcl build and
+  direct IDE synthesis keep the DDS/ADSR/voice logic instead of sweeping it.
+- `build.ps1` builds the normal `instrument.fs`; `build.ps1 -Gao` uses a
+  separate project and builds the GAO `ao_0.fs`.
 
 ## Expansion Order
 
 1. Capture and verify the audio engine with GAO.
-2. Fix the wavetable path so Gowin IDE direct synthesis is warning-free.
-3. Add UART status output and an audio-activity LED.
-4. Add MPR121 I2C and 12-key touch events.
-5. Parameterize the voice module and expand to 4 voices.
-6. Add MCP3208/FSR pressure and a second waveform.
-7. Replace the PT8211 debug output with PCM5102A standard I2S after confirming
+2. Add UART status output and an audio-activity LED.
+3. Add MPR121 I2C and 12-key touch events.
+4. Parameterize the voice module and expand to 4 voices.
+5. Add MCP3208/FSR pressure and a second waveform.
+6. Replace the PT8211 debug output with PCM5102A standard I2S after confirming
    a free 3.3 V GCLK pin on Dock 3714.
 
 Do not start with 32 voices, reverb, Bluetooth, or a display.

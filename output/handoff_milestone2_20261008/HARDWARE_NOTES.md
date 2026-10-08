@@ -39,6 +39,14 @@ the 27 MHz four-LED diagnostic blinked normally.
 - On-board LPA4809MSF headphone amplifier.
 - 3.5 mm headphone jack.
 
+## Resolved Build Issues
+
+- The Gowin project now carries an include path for `source/rtl/audio`, so
+  direct IDE synthesis can open the one-cycle `wave_sine.hex` table.
+- Normal builds and GAO builds use separate Gowin projects. Use `build.ps1` for
+  the normal bitstream and `build.ps1 -Gao` for the GAO bitstream.
+- `launch_gao.ps1` supplies the analyzer's required arguments.
+
 ## Still Unresolved
 
 - Whether Dock 3714 PMOD exposes a free 3.3 V GCLK pin for 12.288 MHz.
@@ -46,7 +54,6 @@ the 27 MHz four-LED diagnostic blinked normally.
 - PCM5102A module FMT/FLT/DEMP/XSMT jumper configuration.
 - Dock switch/power-mode behavior and exact Key/SW mapping.
 - Whether the team has confirmed Primer 20K eligibility with the organizer.
-- Gowin IDE direct synthesis path for `rtl/audio/wave_sine.hex`.
 
 ## Do Not Do
 
