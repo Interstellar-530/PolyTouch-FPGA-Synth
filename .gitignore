@@ -1,0 +1,17 @@
+tmp/
+work/
+archive/
+tools/.venv-gowin-mcp/
+tools/.venv-docconvert/
+tools/vendor/
+tools/tessdata/*.traineddata
+__pycache__/
+*.pyc
+# Machine-specific Codex config; portable template lives in tools/.
+.codex/config.toml
+# Large generated bitstreams inside the unpacked handoff package.
+output/handoff_milestone2_20261008/artifacts/*.fs
+# The matching handoff zip is delivered separately on the Desktop.
+output/handoff_milestone2_20261008.zip
+# Duplicate schematics already included in board_docs and the handoff zip.
+docs/references/*.pdf

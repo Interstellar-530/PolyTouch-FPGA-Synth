@@ -1,0 +1,12 @@
+[mcp_servers.gowin]
+command = 'E:\Working Space\FPGA\tools\.venv-gowin-mcp\Scripts\python.exe'
+args = ['E:\Working Space\FPGA\tools\vendor\gowin_mcp_server\gowin_mcp_server.py']
+cwd = 'E:\Working Space\FPGA'
+enabled = true
+startup_timeout_sec = 30
+tool_timeout_sec = 660
+
+[mcp_servers.gowin.env]
+GOWIN_PATH = 'E:\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\bin\gw_sh.exe'
+PYTHONUTF8 = '1'
+FASTMCP_CHECK_FOR_UPDATES = 'off'

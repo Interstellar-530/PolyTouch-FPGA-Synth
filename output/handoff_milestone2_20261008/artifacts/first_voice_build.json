@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-10-07T23:43:06.344808+08:00",
+  "milestone": "single_voice_dds_adsr_pt8211",
+  "target": {
+    "part": "GW2A-LV18PG256C8/I7",
+    "device_version": "C"
+  },
+  "clock": {
+    "input": "27 MHz",
+    "pt8211_bck": "1.5 MHz",
+    "pt8211_ws": "46.875 kHz"
+  },
+  "tone": {
+    "phase_increment": 40315426,
+    "nominal_hz": 440.0,
+    "sample_rate_hz": 46875.0
+  },
+  "resources": {
+    "lut_total": 275,
+    "registers_total": 111,
+    "bsram": 1,
+    "dsp_mult18x18": 1
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "actual_fmax_mhz": 115.505
+  },
+  "pins": {
+    "clk_27m": "H11",
+    "hp_bck": "N15",
+    "hp_ws": "P16",
+    "hp_din": "P15",
+    "pa_en": "R16",
+    "led": "N16"
+  },
+  "artifact": {
+    "path": "impl/pnr/instrument.fs",
+    "size_bytes": 7264154,
+    "sha256": "dacbbf602cc7c4a00ff3e4381d7fb40228d742746a4b55aa2512c94f360de591"
+  },
+  "passed": true
+}

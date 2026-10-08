@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "current_blocker": "GAO capture window setup and Gowin IDE wavetable path.",
+  "tasks": [
+    {
+      "id": "M2-01",
+      "priority": 1,
+      "title": "Capture GAO waveform",
+      "command": "Open the project in Gowin IDE, program artifacts/ao_0.fs with operation 2, double-click source/rtl/gao_top.rao, and use the built-in GAO capture window.",
+      "acceptance": [
+        "Local jtagserver connects successfully",
+        "Cable is Gowin USB Cable(FT2CH)",
+        "Device chain is Gowin Device GW2A-18C and Enabled",
+        "sample_tick and voice_sample[15:0] show changing waveforms"
+      ]
+    },
+    {
+      "id": "M2-02",
+      "priority": 1,
+      "title": "Verify normal LED2 and audio path",
+      "command": "Program artifacts/instrument.fs with operation 2.",
+      "acceptance": [
+        "Orange_LED2 on N16 blinks about once per second",
+        "PT8211 BCK is about 1.5 MHz and WS is about 46.875 kHz",
+        "A powered speaker or line-in records the 440 Hz on/off tone"
+      ]
+    },
+    {
+      "id": "M2-03",
+      "priority": 2,
+      "title": "Fix Gowin IDE wavetable path",
+      "acceptance": [
+        "Gowin IDE direct synthesis no longer reports Cannot open rtl/audio/wave_sine.hex",
+        "The sine ROM is still mapped to BSRAM"
+      ]
+    },
+    {
+      "id": "M2-04",
+      "priority": 3,
+      "title": "Add UART status and audio activity LED",
+      "acceptance": [
+        "115200 baud status line",
+        "gate, envelope, voice_sample, and sample_tick counters visible",
+        "Orange_LED3 indicates audio activity"
+      ]
+    },
+    {
+      "id": "M3-01",
+      "priority": 4,
+      "title": "Add MPR121 touch input",
+      "acceptance": [
+        "I2C initialization succeeds",
+        "12 touch bits can be read",
+        "touch notes trigger the DDS voice"
+      ]
+    },
+    {
+      "id": "M3-02",
+      "priority": 5,
+      "title": "Expand to four independent voices",
+      "acceptance": [
+        "four simultaneous notes",
+        "four independent phase accumulators and envelopes",
+        "four independent spectral peaks"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-10-07T14:54:19.865612+00:00",
+  "gowin_path": "E:/Gowin/Gowin_V1.9.11.03_Education_x64/IDE/bin/gw_sh.exe",
+  "checks": {
+    "start_gowin": {
+      "is_error": false,
+      "output": "Gowin process started successfully.\n1\n% "
+    },
+    "get_process_status": {
+      "is_error": false,
+      "output": "Gowin process is running."
+    },
+    "send_tcl_command": {
+      "is_error": false,
+      "output": "CODEX_GOWIN_SMOKE_42\n% "
+    },
+    "stop_gowin": {
+      "is_error": false,
+      "output": "Gowin process stopped."
+    }
+  },
+  "server": {
+    "name": "Gowin TCL Controller",
+    "title": null,
+    "version": "2.14.7",
+    "websiteUrl": null,
+    "icons": null
+  },
+  "tools": [
+    "start_gowin",
+    "stop_gowin",
+    "create_project",
+    "add_file",
+    "set_top_module",
+    "set_output_base_name",
+    "set_option",
+    "run_synthesis",
+    "run_place_and_route",
+    "run_all",
+    "send_tcl_command",
+    "get_process_status"
+  ],
+  "passed": true
+}

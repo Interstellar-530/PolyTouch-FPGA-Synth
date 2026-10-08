@@ -1,0 +1,20 @@
+You are taking over the FPGA electronic instrument project in this folder.
+
+Read, in order:
+1. START_HERE_FOR_AI.md
+2. PROJECT_MANIFEST.json
+3. CURRENT_STATUS.md
+4. NEXT_TASKS.json
+5. DESIGN_DECISIONS.md
+6. HARDWARE_NOTES.md
+7. COMPETITION_REQUIREMENTS.md
+8. CHANGELOG.md
+
+Do not redesign the project. The 2026-10-07 handoff was verified. The 27 MHz
+clock was restored by reseating the core board. LED2 on N16 blinks in the
+normal bitstream. The GAO core is integrated, but the standalone GAO analyzer
+does not open in this environment; use the Gowin IDE built-in GAO and
+source/rtl/gao_top.rao.
+
+Use SRAM Program operation 2, not Program and Verify. Preserve the pure-FPGA
+audio path and do not use recorded PCM.

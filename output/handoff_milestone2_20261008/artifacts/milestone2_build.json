@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-10-08T11:15:00+08:00",
+  "milestone": "m2_27mhz_restored_led2_gao",
+  "target": {
+    "part": "GW2A-LV18PG256C8/I7",
+    "device_version": "C"
+  },
+  "normal_bitstream": {
+    "path": "artifacts/instrument.fs",
+    "size_bytes": 7264154,
+    "sha256": "e79c1c58b66bc4cff6f4eafb03f51a6c9b5fc9a73f348420a1cbed23c7d19985",
+    "user_code": "0x00009A0A"
+  },
+  "gao_bitstream": {
+    "path": "artifacts/ao_0.fs",
+    "size_bytes": 7264182,
+    "sha256": "f637549f363fc23e5fceb29422b2291a3cb229e56e86145fced257fee6c85ebb",
+    "user_code": "0x0000B32D"
+  },
+  "programming": {
+    "successful_operation": "SRAM Program (operation_index 2)",
+    "failed_operation": "SRAM Program and Verify (operation_index 4)",
+    "failed_status_code": "0x00006020",
+    "note": "Do not power-cycle after SRAM programming while testing."
+  },
+  "leds": {
+    "Orange_LED2": "N16",
+    "active_low": true,
+    "normal_blink_period_s": 1.0
+  },
+  "passed": true
+}

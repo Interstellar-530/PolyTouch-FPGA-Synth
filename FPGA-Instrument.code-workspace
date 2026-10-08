@@ -1,0 +1,9 @@
+{
+  "folders": [{ "path": "." }],
+  "settings": {
+    "files.associations": { "*.v": "verilog", "*.sv": "systemverilog", "*.cst": "tcl", "*.sdc": "tcl" },
+    "files.exclude": { "**/__pycache__": true, "tools/.venv-gowin-mcp": true },
+    "search.exclude": { "tools/.venv-gowin-mcp": true, "tools/vendor": true, "tmp": true },
+    "files.encoding": "utf8"
+  }
+}
