@@ -70,3 +70,13 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 - 默认输出 A4 440 Hz，T3 切 C4 261.63 Hz，T2 切 C5 523.25 Hz，音量数字右移 2 位约 -12 dB。
 - 硬件听感复核仍需要用户戴上耳机确认背景噪声是否下降到可接受水平。
 
+
+
+## 2026-10-10 修订三更新
+
+- DDS 加入线性插值，音频链路加入 (1,2,1)/4 两级平滑和四舍五入的音量控制。
+- 频谱模型显示带内误差由 -46.0 dBFS 降到 -94.8 dBFS，改善 48.8 dB。
+- 资源：968 LUT/ALU、237 寄存器、1 BSRAM、2 个 18×18 乘法器（含 1 个 PADD18）；0 建立违规、0 保持违规，Fmax 115.474 MHz。
+- 修订三码流 SHA256 `4095ed01d1b8c2d89aec808e06ebe846047089063cf7a67ff24a518d60aabed6`，User Code `0x000071A6`，已用 SRAM Program 写入。
+- 确认 Dock 按键丝印 S0..S4 与引脚映射：S4 = B10 = RECONFIG_N，按下会导致 SRAM 码流丢失；真正的软复位应使用 S0/T10 或 S3/D7 在 RTL 内实现。
+- 已打开 Gowin IDE 与独立 Gowin Programmer 图形界面，供直接点击烧录；建议改用 exFlash 操作把码流写入板载 SPI Flash。

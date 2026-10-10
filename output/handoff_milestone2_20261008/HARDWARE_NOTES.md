@@ -62,3 +62,22 @@ the 27 MHz four-LED diagnostic blinked normally.
 - key_s2 is T2, 1.5 V active-low, selects C5 523.25 Hz.
 - Default tone remains A4 440 Hz.
 - PT8211 sample level is shifted right by 2 for about -12 dB attenuation.
+
+
+## 2026-10-10 按键丝印与引脚映射（Dock 3714）
+
+| 丝印 | 原理图网络 | FPGA 引脚 | 作用 |
+| --- | --- | --- | --- |
+| S0 | `T10_IOR35B_FPGA_~RST` | T10 | 普通 IO，官方固件把它当复位输入 |
+| S1 | `T3_IOB52B_1V5` | T3 | 普通 IO，当前用作 C4 261.63 Hz |
+| S2 | `T2_IOB48B_1V5` | T2 | 普通 IO，当前用作 C5 523.25 Hz |
+| S3 | `D7_IOL53B_1V5` | D7 | 普通 IO，空闲 |
+| S4 | `B10_IOR31B_~{RECFG}` | B10 | RECONFIG_N，按下触发 FPGA 重新配置 |
+
+依据：Dock 3714 原理图 `P007_Things` 页五个 Silicone Key 的走线；核心板 SOM 原理图里 `B10 = IOR31B/RECONIG_N`、`T10 = IOR35B/D2`；以及 Sipeed 开箱指南中"S0 复位屏幕/摄像头/HDMI"的描述和底板照片上的 S0..S4 丝印。
+
+注意：S4 触发的是硬件重配置，JTAG 写进 SRAM 的码流会立即丢失；只有把码流写进板载外部 SPI Flash，重配置或断电后设计才会自动恢复。
+
+
+丝印证据：\eference/board_docs/dock3714_key_silkscreen.png\ 是从 Sipeed 官方底板照片裁出的左侧按键区域，可以清楚读到 S0、S1、S2、S3、S4 五个标号。
+

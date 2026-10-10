@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-10T10:05:00+08:00",
-  "milestone": "m2_rev2_continuous_tone_and_pt8211_alignment",
+  "checked_at": "2026-10-10T11:20:00+08:00",
+  "milestone": "m2_rev3_interpolated_dds_smoothing_and_key_map",
   "target": {
     "part": "GW2A-LV18PG256C8/I7",
     "device_version": "C"
@@ -8,59 +8,57 @@
   "normal_bitstream": {
     "path": "artifacts/instrument.fs",
     "size_bytes": 7264154,
-    "sha256": "0612d3383736688423204cd2a04ad2350a110d9c7c7e3f483008a6ddb2faa399",
-    "user_code": "0x00009F8A"
-  },
-  "gao_bitstream": {
-    "path": "artifacts/ao_0.fs",
-    "size_bytes": 7264182,
-    "sha256": "f637549f363fc23e5fceb29422b2291a3cb229e56e86145fced257fee6c85ebb",
-    "user_code": "0x0000B32D",
-    "note": "Not part of the normal build; kept only for optional GAO work."
+    "sha256": "4095ed01d1b8c2d89aec808e06ebe846047089063cf7a67ff24a518d60aabed6",
+    "user_code": "0x000071A6"
   },
   "resources": {
-    "lut_alu_rom16": 331,
-    "registers_total": 188,
+    "lut_alu_rom16": 968,
+    "registers_total": 237,
     "bsram": 1,
-    "dsp_mult18x18": 1
+    "mult18x18": 2,
+    "padd18": 1,
+    "dsp_fraction": 1
   },
   "timing": {
     "constraint_mhz": 27.0,
-    "actual_fmax_mhz": 113.169,
+    "actual_fmax_mhz": 115.474,
     "setup_violated_endpoints": 0,
     "hold_violated_endpoints": 0
   },
-  "tone_keys": {
-    "default": "A4 440.00 Hz",
-    "key_s1_T3": "C4 261.63 Hz",
-    "key_s2_T2": "C5 523.25 Hz",
-    "note": "S0/T10 is FPGA reset and is not used for tone switching."
+  "noise": {
+    "method": "spectral model of the DDS at 46.875 kHz, 440 Hz, 65536 samples",
+    "old_in_band_error_dbfs": -46.0,
+    "old_in_band_error_dbc": -42.99,
+    "new_in_band_error_dbfs": -94.8,
+    "new_in_band_error_dbc": -91.9,
+    "improvement_db": 48.8,
+    "old_worst_spur": "9.5 kHz at -57 dBc",
+    "new_worst_spur": "16.5 kHz at -111 dBc",
+    "measures": [
+      "linear interpolation between wavetable entries",
+      "(1,2,1)/4 two-stage smoothing filter",
+      "rounded volume shift"
+    ]
   },
-  "envelope": {
-    "gate": "held high after reset",
-    "behaviour": "attack, decay to sustain, then hold the sustain level continuously",
-    "note": "The previous 0.25 s on/off gate was removed because it caused the alarm-like buzz."
+  "keys": {
+    "S0": "T10, plain IO, net T10_IOR35B_FPGA_~RST",
+    "S1": "T3, plain IO, C4 261.63 Hz",
+    "S2": "T2, plain IO, C5 523.25 Hz",
+    "S3": "D7, plain IO, free",
+    "S4": "B10, RECONFIG_N, triggers FPGA reconfiguration and loses the SRAM bitstream",
+    "note": "A real design reset must be built in RTL from a plain IO key; the program survives reset only when stored in the external SPI flash."
   },
-  "pt8211": {
-    "bck_hz": 1500000,
-    "sample_rate_hz": 46875,
-    "ws_placement": "frame counter 0..31, request at 0 and 16, WS low at 3, WS high at 19",
-    "update_edge": "BCK falling edge, DAC samples on the rising edge",
-    "reference": "Sipeed TangPrimer-20K-example/PT8211/src/pt8211_drive.v",
-    "evidence": "tmp Python model: the DAC-visible (WS, DIN) sequence matches the vendor driver point for point"
-  },
-  "volume": {
-    "digital_shift": 2,
-    "attenuation_db": -12
-  },
-  "gao_released": true,
   "programming": {
     "successful_operation": "SRAM Program (operation_index 2)",
-    "failed_operation": "SRAM Program and Verify (operation_index 4)",
-    "failed_status_code": "0x00006020",
-    "note": "Do not power-cycle after SRAM programming while testing."
+    "persistent_operation": "exFlash Erase,Program,Verify (operation_index 9), via the Gowin Programmer GUI External Flash Mode",
+    "failed_status_code": "0x00006020"
   },
   "history": [
+    {
+      "revision": "m2 rev2",
+      "sha256": "0612d3383736688423204cd2a04ad2350a110d9c7c7e3f483008a6ddb2faa399",
+      "user_code": "0x00009F8A"
+    },
     {
       "revision": "m2",
       "sha256": "f2cb3a6d84eeab1cee3a43c4ecb44e0566b93e09c1b4476c774154ceb03ecafb",
@@ -68,6 +66,6 @@
       "issue": "0.25 s gate buzz and PT8211 WS one bit out of phase"
     }
   ],
-  "open_question": "Listener confirmation that the background noise is acceptable on headphones.",
+  "open_question": "Listener confirmation that the shimmer is gone and that the S4 behaviour is understood.",
   "passed": true
 }

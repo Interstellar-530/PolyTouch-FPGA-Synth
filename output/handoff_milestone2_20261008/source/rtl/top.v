@@ -142,10 +142,40 @@ module top (
         .sample      (voice_sample)
     );
 
-    // Reduce the digital level before the fixed-gain PT8211/LPA4809 headphone
-    // amplifier. The first frame is silent while the serial transmitter
-    // initialises.
-    assign pt_sample = rst ? 16'sd0 : (voice_sample >>> VOLUME_SHIFT);
+    // Two-stage smoothing and rounded level control, applied before the
+    // fixed-gain PT8211 / LPA4809 headphone amplifier.
+    //
+    // Each stage is a two-tap average; cascading two of them gives the
+    // (1,2,1)/4 FIR. At 46.875 kHz that is flat at 440 Hz, about -3 dB near
+    // 8.5 kHz, about -11 dB at 15 kHz and a null at Nyquist, and it needs
+    // nothing but adds and shifts. Together with the interpolating oscillator
+    // this removes the residual high-frequency shimmer that the bare
+    // 512-entry lookup left behind.
+    reg signed [15:0] x_d1;
+    reg signed [16:0] avg1;
+    reg signed [16:0] avg1_d;
+
+    always @(posedge clk_27m) begin
+        if (rst) begin
+            x_d1   <= 16'sd0;
+            avg1   <= 17'sd0;
+            avg1_d <= 17'sd0;
+        end else if (sample_tick) begin
+            x_d1   <= voice_sample;
+            avg1   <= (voice_sample + x_d1) >>> 1;
+            avg1_d <= avg1;
+        end
+    end
+
+    wire signed [16:0] smooth = (avg1 + avg1_d) >>> 1;
+
+    // Round before shifting down instead of truncating, so the level control
+    // does not add a signal-dependent DC step. The first frame stays silent
+    // while the serial transmitter initialises.
+    wire signed [17:0] scaled =
+        (smooth + (17'sd1 <<< (VOLUME_SHIFT - 1))) >>> VOLUME_SHIFT;
+
+    assign pt_sample = rst ? 16'sd0 : scaled[15:0];
 
     pt8211_tx u_pt8211 (
         .clk         (clk_27m),
