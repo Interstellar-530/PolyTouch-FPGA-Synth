@@ -55,3 +55,10 @@ the 27 MHz four-LED diagnostic blinked normally.
 - Do not use BL702 as an audio controller.
 - Do not use `SRAM Program and Verify`; use `SRAM Program`.
 - Do not power-cycle after SRAM programming while testing.
+
+## 2026-10-10 Key and Volume Update
+- S0/T10 is the FPGA reset key and is not used for tone switching.
+- key_s1 is T3, 1.5 V active-low, selects C4 261.63 Hz.
+- key_s2 is T2, 1.5 V active-low, selects C5 523.25 Hz.
+- Default tone remains A4 440 Hz.
+- PT8211 sample level is shifted right by 2 for about -12 dB attenuation.

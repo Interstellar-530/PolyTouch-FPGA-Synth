@@ -52,3 +52,10 @@ Date: 2026-10-08
 Open the project in Gowin IDE, program `artifacts/ao_0.fs` with operation 2 if
 needed, open `source/rtl/gao_top.rao`, and use the built-in GAO capture window
 to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
+
+## 2026-10-10 Update
+- Normal bitstream rebuilt from the latest source: SHA256 f2cb3a6d84eeab1cee3a43c4ecb44e0566b93e09c1b4476c774154ceb03ecafb.
+- Key tone switching implemented with T3/T2 user keys and a 38.8 ms debounce.
+- Volume reduced by digital right shift 2, about -12 dB.
+- Normal build contains no GAO core and uses 361 LUT, 189 registers, 1 BSRAM, 0.5 DSP.
+- Gowin SRAM Program operation 2 succeeds; Read Device Codes succeeds; installation key files are present.

@@ -3,6 +3,8 @@
 // No touch, ADC, or external PCM5102A logic is included in this build yet.
 module top (
     input  wire clk_27m,
+    input  wire key_s1,
+    input  wire key_s2,
     output wire hp_bck,
     output wire hp_ws,
     output wire hp_din,
@@ -20,7 +22,13 @@ module top (
     wire signed [15:0] voice_sample;
     wire signed [15:0] pt_sample;
 
-    localparam [31:0] PHASE_INC_440 = 32'd40315426; // 440 Hz at 46.875 kHz
+    localparam [31:0] PHASE_INC_A4 = 32'd40315426; // 440.00 Hz at 46.875 kHz
+    localparam [31:0] PHASE_INC_C4 = 32'd23971696; // 261.63 Hz, middle C
+    localparam [31:0] PHASE_INC_C5 = 32'd47943392; // 523.25 Hz, high C
+    localparam [1:0]  TONE_A4 = 2'd0;
+    localparam [1:0]  TONE_C4 = 2'd1;
+    localparam [1:0]  TONE_C5 = 2'd2;
+    localparam [3:0]  VOLUME_SHIFT = 4'd2;         // divide by 4, about -12 dB
 
     always @(posedge clk_27m) begin
         if (reset_cnt != 16'hFFFF)
@@ -29,6 +37,79 @@ module top (
 
     assign rst = (reset_cnt != 16'hFFFF);
     assign pa_en = ~rst;
+
+    // T3/T2 user keys are active-low and pulled to the 1.5 V bank rail.
+    reg [1:0] key_s1_sync;
+    reg [1:0] key_s2_sync;
+    always @(posedge clk_27m) begin
+        key_s1_sync <= {key_s1_sync[0], key_s1};
+        key_s2_sync <= {key_s2_sync[0], key_s2};
+    end
+
+    wire key_s1_pressed = ~key_s1_sync[1];
+    wire key_s2_pressed = ~key_s2_sync[1];
+
+    localparam [19:0] DEBOUNCE_MAX = 20'hFFFFF; // about 38.8 ms at 27 MHz
+    reg [19:0] db_s1_cnt;
+    reg [19:0] db_s2_cnt;
+    reg        s1_stable;
+    reg        s2_stable;
+
+    always @(posedge clk_27m) begin
+        if (rst) begin
+            db_s1_cnt <= 20'd0;
+            db_s2_cnt <= 20'd0;
+            s1_stable <= 1'b0;
+            s2_stable <= 1'b0;
+        end else begin
+            if (!key_s1_pressed) begin
+                db_s1_cnt <= 20'd0;
+                s1_stable <= 1'b0;
+            end else if (db_s1_cnt == DEBOUNCE_MAX) begin
+                s1_stable <= 1'b1;
+            end else begin
+                db_s1_cnt <= db_s1_cnt + 1'b1;
+            end
+
+            if (!key_s2_pressed) begin
+                db_s2_cnt <= 20'd0;
+                s2_stable <= 1'b0;
+            end else if (db_s2_cnt == DEBOUNCE_MAX) begin
+                s2_stable <= 1'b1;
+            end else begin
+                db_s2_cnt <= db_s2_cnt + 1'b1;
+            end
+        end
+    end
+
+    reg s1_stable_d;
+    reg s2_stable_d;
+    always @(posedge clk_27m) begin
+        s1_stable_d <= s1_stable;
+        s2_stable_d <= s2_stable;
+    end
+
+    wire s1_press = s1_stable & ~s1_stable_d;
+    wire s2_press = s2_stable & ~s2_stable_d;
+
+    reg [1:0] tone_sel;
+    always @(posedge clk_27m) begin
+        if (rst)
+            tone_sel <= TONE_A4;
+        else if (s1_press)
+            tone_sel <= TONE_C4;
+        else if (s2_press)
+            tone_sel <= TONE_C5;
+    end
+
+    reg [31:0] phase_inc;
+    always @(*) begin
+        case (tone_sel)
+            TONE_C4: phase_inc = PHASE_INC_C4;
+            TONE_C5: phase_inc = PHASE_INC_C5;
+            default: phase_inc = PHASE_INC_A4;
+        endcase
+    end
 
     // Visible programming/run indicator: toggle about every 0.5 s at 27 MHz.
     always @(posedge clk_27m) begin
@@ -61,12 +142,13 @@ module top (
         .rst         (rst),
         .sample_tick (sample_tick),
         .gate        (gate),
-        .phase_inc   (PHASE_INC_440),
+        .phase_inc   (phase_inc),
         .sample      (voice_sample)
     );
 
     // The first frame is silent while the serial transmitter initializes.
-    assign pt_sample = rst ? 16'sd0 : voice_sample;
+    // Reduce the digital level before the fixed-gain PT8211 headphone amp.
+    assign pt_sample = rst ? 16'sd0 : (voice_sample >>> VOLUME_SHIFT);
 
     pt8211_tx u_pt8211 (
         .clk         (clk_27m),

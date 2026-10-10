@@ -69,3 +69,10 @@ GAO。打开 `source/build/gowin_single_voice/instrument/instrument/instrument.g
 Cable 选 `Gowin USB Cable(FT2CH)`，Device chain 选 Gowin Device、Series
 `GW2A`、Device `GW2A-18C`。`ao_0.fs` 已写入 SRAM 时，取消 `Enable
 Programmer`，或者把操作选成 `SRAM Program`。
+
+## 2026-10-10 Key and Volume Test
+- Default output is A4 440 Hz.
+- Press the first non-reset user key T3 to switch to C4 261.63 Hz.
+- Press the second non-reset user key T2 to switch to C5 523.25 Hz.
+- S0/T10 is reset and must not be used as a tone key.
+- Volume is reduced by about 12 dB; adjust VOLUME_SHIFT in top.v if needed.

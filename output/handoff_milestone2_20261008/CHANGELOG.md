@@ -20,3 +20,10 @@
   and Programmer manual.
 - Updated global and project AGENTS.md, created the 2026-10-07 archive, and
   cleaned project temporary files.
+
+## 2026-10-10
+- Rebuilt the normal design without GAO; verified no GAO/OSC resources in the report.
+- Added T3/T2 user-key tone switching: T3 -> C4 261.63 Hz, T2 -> C5 523.25 Hz, default A4 440 Hz.
+- Reduced PT8211 output by >>>2, about -12 dB.
+- Programmed SRAM with operation 2; User Code 0x00006AE4. Read Device Codes succeeds.
+- Verified Gowin key executables and GAO IP core files are present.

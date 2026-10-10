@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-08T20:55:38",
+  "generated_at": "2026-10-10T09:45:20",
   "root": ".",
-  "file_count": 66,
-  "total_bytes": 31646499.0,
+  "file_count": 68,
+  "total_bytes": 31653859.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -33,7 +33,7 @@
     {
       "path": "artifacts/instrument.fs",
       "size_bytes": 7264154,
-      "sha256": "e79c1c58b66bc4cff6f4eafb03f51a6c9b5fc9a73f348420a1cbed23c7d19985"
+      "sha256": "f2cb3a6d84eeab1cee3a43c4ecb44e0566b93e09c1b4476c774154ceb03ecafb"
     },
     {
       "path": "artifacts/instrument.pin.html",
@@ -62,13 +62,13 @@
     },
     {
       "path": "artifacts/milestone2_build.json",
-      "size_bytes": 966,
-      "sha256": "ec1f335001425a77bd08766c26a8e1981a1e97d233d37bf89d83225e4779a7df"
+      "size_bytes": 1322,
+      "sha256": "5183128031870d20f3b63cb2564c36decc7adb951ef3576f5bb5b042bb7ff251"
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 1071,
-      "sha256": "33209ecc4c65e6ffbcdee33ec84d15610c2066253879fe974a63021087e6dc92"
+      "size_bytes": 1472,
+      "sha256": "86f201ec0a6104292f570c7defd283b20a3cadcb3cb2bcaca257623f7b0fb269"
     },
     {
       "path": "COMPETITION_REQUIREMENTS.md",
@@ -77,8 +77,8 @@
     },
     {
       "path": "CURRENT_STATUS.md",
-      "size_bytes": 2262,
-      "sha256": "13b306b9206abffe5d11d5f7bbee1b04f499c4b4c3c6b520932c862c42e723a0"
+      "size_bytes": 2738,
+      "sha256": "17fa9da67e3017ccf7ed3b1a4fe4f86aded76bc8fbd2ab53ab987f79e1da3998"
     },
     {
       "path": "DESIGN_DECISIONS.md",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 1723,
-      "sha256": "b1bff470c95f1e6e3d32e7036c2169dc8434648b7ed4e2f1079703f38dbf58c1"
+      "size_bytes": 2048,
+      "sha256": "9eee0f24d2739c77751bf382855b9dc89abca18cb184d4165e19dbb47399c37c"
     },
     {
       "path": "NEXT_TASKS.json",
@@ -102,8 +102,8 @@
     },
     {
       "path": "README_FOR_HUMAN.md",
-      "size_bytes": 2414,
-      "sha256": "39a0a593ba5516c7c29be44017191de2516a776a2c573ddd9ba79530a5e065bd"
+      "size_bytes": 2746,
+      "sha256": "88ce94512d60b414b9daef8afb4f4389ce93e070b9c17b2fa96e5d38cd630977"
     },
     {
       "path": "reference/board_docs/GAO用户指南.md",
@@ -272,6 +272,11 @@
     },
     {
       "path": "source/constraints/primer20k_dock3714.cst",
+      "size_bytes": 580,
+      "sha256": "7142e0d8b8ae7f1d48a2f378603e3483b5808b6bda5d66d08454a9784c5cc4a6"
+    },
+    {
+      "path": "source/constraints/primer20k_dock3714.cst.bak-20261010",
       "size_bytes": 385,
       "sha256": "4fdcb8d8ba9947cbbe5661392bcf4d5e628a87c08187ee4cd51686f6fe0d169d"
     },
@@ -317,6 +322,11 @@
     },
     {
       "path": "source/rtl/top.v",
+      "size_bytes": 4890,
+      "sha256": "5ffede1971658b6525b8eb544cc8ea2fa95c623ab0d4ac824e92c86087fc48b7"
+    },
+    {
+      "path": "source/rtl/top.v.bak-20261010",
       "size_bytes": 2414,
       "sha256": "16dc2b1c5e482622daee9026a16d4e73fd4e4d69461644c5d1a967813a7d0905"
     },
