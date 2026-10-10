@@ -23,3 +23,6 @@ output/handoff_milestone2_20261008/source/build/gowin_poly/
 
 # Runtime log written by tools/serial_console/serial_console.ps1.
 tools/serial_console/serial_log.txt
+
+# Icarus Verilog simulation output.
+*.vvp

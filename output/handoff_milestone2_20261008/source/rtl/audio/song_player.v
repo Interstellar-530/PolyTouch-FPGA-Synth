@@ -47,7 +47,12 @@ module song_player #(
     wire [31:0] tick_period = UNIT_SAMPLES * (tempo_sel + 1);
     wire [15:0] tick_top    = tick_period[15:0] - 16'd1;
 
-    wire tick_pulse = (tick_cnt == tick_top);
+    // tick_cnt only advances on sample_tick, so it HOLDS tick_top for a whole
+    // sample tick interval (576 clocks).  Without the sample_tick qualifier
+    // tick_pulse would be a level, not a pulse, and the sequencer would
+    // decrement its counters hundreds of times per tick and race through the
+    // tune.  Qualifying with sample_tick makes it exactly one clock wide.
+    wire tick_pulse = sample_tick && (tick_cnt == tick_top);
 
     always @(posedge clk) begin
         if (rst)
