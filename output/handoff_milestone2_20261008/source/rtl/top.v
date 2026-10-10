@@ -1,31 +1,21 @@
-// First instrument bring-up milestone:
-// 27 MHz clock -> DDS sine -> ADSR -> on-board PT8211 debug DAC.
-// No touch, ADC, or external PCM5102A logic is included in this build yet.
+// Milestone 2 instrument bring-up:
+// 27 MHz -> interpolating DDS -> ADSR -> smoothing -> on-board PT8211 DAC,
+// with a synchronous design reset on S0 and a UART pitch interface.
 //
-// The ADSR gate is held high after reset so the voice attacks, decays to the
-// sustain level, and then holds that level indefinitely. The previous build
-// chopped the gate on and off every 0.25 s to prove the envelope was running;
-// that produced the alarm-like buzz the listener reported. Tone switching is
-// now the only thing that changes while running.
+// Still no touch, no ADC and no external PCM5102A logic in this build.
 module top (
     input  wire clk_27m,
-    input  wire key_s1,
-    input  wire key_s2,
+    input  wire key_rst,       // S3 / D7, active-low design reset
+    input  wire key_s1,        // S1 / T3, tone preset C4
+    input  wire key_s2,        // S2 / T2, tone preset C5
+    input  wire uart_rx,       // N6, from the BL702 USB-UART bridge
     output wire hp_bck,
     output wire hp_ws,
     output wire hp_din,
     output wire pa_en,
-    output wire led
+    output wire led,
+    output wire uart_tx        // N7, to the BL702 USB-UART bridge
 );
-
-    reg [15:0] reset_cnt;
-    wire       rst;
-    wire       sample_tick;
-    wire       gate;
-    reg  [25:0] blink_cnt;
-    reg         led_blink;
-    wire signed [15:0] voice_sample;
-    wire signed [15:0] pt_sample;
 
     localparam [31:0] PHASE_INC_A4 = 32'd40315426; // 440.00 Hz at 46.875 kHz
     localparam [31:0] PHASE_INC_C4 = 32'd23971696; // 261.63 Hz, middle C
@@ -35,15 +25,34 @@ module top (
     localparam [1:0]  TONE_C5 = 2'd2;
     localparam [3:0]  VOLUME_SHIFT = 4'd2;         // divide by 4, about -12 dB
 
+    // ------------------------------------------------------- reset tree ---
+    // The power-on reset releases about 2.4 ms after configuration. The
+    // headphone amplifier enable follows the power-on reset only, so pressing
+    // the reset key never mutes the amplifier and never produces a pop.
+    reg [15:0] reset_cnt;
     always @(posedge clk_27m) begin
         if (reset_cnt != 16'hFFFF)
             reset_cnt <= reset_cnt + 1'b1;
     end
 
-    assign rst = (reset_cnt != 16'hFFFF);
-    assign pa_en = ~rst;
+    wire por = (reset_cnt != 16'hFFFF);
+    assign pa_en = ~por;
 
-    // T3/T2 user keys are active-low and pulled to the 1.5 V bank rail.
+    // The board has no dedicated reset key that the fabric can read: S0 sits
+    // on T10, which the GW2A-18PG256 package reserves for the configuration
+    // SSPI function, and S4 is wired to B10 RECONFIG_N. S3 on D7 is a plain
+    // 1.5 V user IO in the same bank group as the S1 and S2 keys, so the
+    // design reset is built from it here.
+    reg [1:0] rst_key_sync;
+    always @(posedge clk_27m)
+        rst_key_sync <= {rst_key_sync[0], key_rst};
+
+    wire soft_rst = ~rst_key_sync[1];
+
+    // Everything in the audio chain uses this reset, which includes S0.
+    wire rst = por | soft_rst;
+
+    // -------------------------------------------------------- tone keys ---
     reg [1:0] key_s1_sync;
     reg [1:0] key_s2_sync;
     always @(posedge clk_27m) begin
@@ -97,28 +106,43 @@ module top (
     wire s1_press = s1_stable & ~s1_stable_d;
     wire s2_press = s2_stable & ~s2_stable_d;
 
-    reg [1:0] tone_sel;
-    always @(posedge clk_27m) begin
-        if (rst)
-            tone_sel <= TONE_A4;
-        else if (s1_press)
-            tone_sel <= TONE_C4;
-        else if (s2_press)
-            tone_sel <= TONE_C5;
-    end
+    // -------------------------------------------------- pitch sources -----
+    // A single frequency control word, written by three independent sources:
+    // the S1 / S2 presets and the UART. Last writer wins, so the host can
+    // type any frequency and the keys remain usable as quick presets.
+    wire [31:0] uart_inc;
+    wire [15:0] uart_freq;
+    wire        uart_muted;
+    wire        uart_accepted;
+
+    uart_pitch u_uart_pitch (
+        .clk        (clk_27m),
+        .rst        (por),          // survive the S0 design reset
+        .uart_rx    (uart_rx),
+        .uart_tx    (uart_tx),
+        .phase_inc  (uart_inc),
+        .freq_hz    (uart_freq),
+        .muted      (uart_muted),
+        .accepted   (uart_accepted)
+    );
 
     reg [31:0] phase_inc;
-    always @(*) begin
-        case (tone_sel)
-            TONE_C4: phase_inc = PHASE_INC_C4;
-            TONE_C5: phase_inc = PHASE_INC_C5;
-            default: phase_inc = PHASE_INC_A4;
-        endcase
+    always @(posedge clk_27m) begin
+        if (rst)
+            phase_inc <= PHASE_INC_A4;
+        else if (uart_accepted)
+            phase_inc <= uart_inc;
+        else if (s1_press)
+            phase_inc <= PHASE_INC_C4;
+        else if (s2_press)
+            phase_inc <= PHASE_INC_C5;
     end
 
-    // Visible programming/run indicator: toggle about every 0.5 s at 27 MHz.
+    // ------------------------------------------------ run indicator -------
+    reg [25:0] blink_cnt;
+    reg        led_blink;
     always @(posedge clk_27m) begin
-        if (rst) begin
+        if (por) begin
             blink_cnt <= 26'd0;
             led_blink <= 1'b0;
         end else if (blink_cnt == 26'd13_499_999) begin
@@ -130,8 +154,11 @@ module top (
     end
 
     // Continuous gate: attack, then decay to sustain and hold there.
-    // Tone selection only changes the DDS frequency control word.
-    assign gate = ~rst;
+    wire gate = ~rst;
+
+    wire signed [15:0] voice_sample;
+    wire signed [15:0] pt_sample;
+    wire               sample_tick;
 
     voice u_voice (
         .clk         (clk_27m),
@@ -142,44 +169,45 @@ module top (
         .sample      (voice_sample)
     );
 
-    // Two-stage smoothing and rounded level control, applied before the
-    // fixed-gain PT8211 / LPA4809 headphone amplifier.
-    //
-    // Each stage is a two-tap average; cascading two of them gives the
-    // (1,2,1)/4 FIR. At 46.875 kHz that is flat at 440 Hz, about -3 dB near
-    // 8.5 kHz, about -11 dB at 15 kHz and a null at Nyquist, and it needs
-    // nothing but adds and shifts. Together with the interpolating oscillator
-    // this removes the residual high-frequency shimmer that the bare
-    // 512-entry lookup left behind.
-    reg signed [15:0] x_d1;
-    reg signed [16:0] avg1;
-    reg signed [16:0] avg1_d;
+    // ------------------------------------------- smoothing and level ------
+    // (1,4,6,4,1)/16 FIR, which is four cascaded two-tap averages. At
+    // 46.875 kHz it is flat at 440 Hz, roughly -5 dB at 8 kHz, -22 dB at
+    // 15 kHz and -26 dB at 20 kHz, with a null at Nyquist. It costs four
+    // registers and a handful of adds, and it removes whatever high-frequency
+    // residue the interpolating oscillator still leaves behind.
+    reg signed [15:0] v1, v2, v3, v4;
 
     always @(posedge clk_27m) begin
         if (rst) begin
-            x_d1   <= 16'sd0;
-            avg1   <= 17'sd0;
-            avg1_d <= 17'sd0;
+            v1 <= 16'sd0;
+            v2 <= 16'sd0;
+            v3 <= 16'sd0;
+            v4 <= 16'sd0;
         end else if (sample_tick) begin
-            x_d1   <= voice_sample;
-            avg1   <= (voice_sample + x_d1) >>> 1;
-            avg1_d <= avg1;
+            v1 <= voice_sample;
+            v2 <= v1;
+            v3 <= v2;
+            v4 <= v3;
         end
     end
 
-    wire signed [16:0] smooth = (avg1 + avg1_d) >>> 1;
+    wire signed [19:0] fir_sum =
+        voice_sample + v4 + ((v1 + v3) <<< 1) + ((v2 <<< 2) + (v2 <<< 1));
+
+    wire signed [19:0] smooth = fir_sum >>> 4;
 
     // Round before shifting down instead of truncating, so the level control
-    // does not add a signal-dependent DC step. The first frame stays silent
-    // while the serial transmitter initialises.
-    wire signed [17:0] scaled =
-        (smooth + (17'sd1 <<< (VOLUME_SHIFT - 1))) >>> VOLUME_SHIFT;
+    // does not add a signal-dependent DC step.
+    wire signed [21:0] scaled =
+        (smooth + (20'sd1 <<< (VOLUME_SHIFT - 1))) >>> VOLUME_SHIFT;
 
-    assign pt_sample = rst ? 16'sd0 : scaled[15:0];
+    // M0 from the host forces a digital zero so the listener can tell digital
+    // content apart from board-level noise.
+    assign pt_sample = (rst | uart_muted) ? 16'sd0 : scaled[15:0];
 
     pt8211_tx u_pt8211 (
         .clk         (clk_27m),
-        .rst         (rst),
+        .rst         (por),
         .sample_in   (pt_sample),
         .bck         (hp_bck),
         .ws          (hp_ws),
@@ -187,8 +215,7 @@ module top (
         .sample_tick (sample_tick)
     );
 
-    // Orange_LED2 on N16: visible programming/run indicator.
-    assign led = led_blink;
+    // Orange_LED2 on N16: blinking means running, solid means muted.
+    assign led = uart_muted ? 1'b0 : led_blink;
 
 endmodule
-

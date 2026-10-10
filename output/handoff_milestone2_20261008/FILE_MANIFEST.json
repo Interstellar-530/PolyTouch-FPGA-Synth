@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T10:25:45",
+  "generated_at": "2026-10-10T10:41:55",
   "root": ".",
-  "file_count": 74,
-  "total_bytes": 32013310.0,
+  "file_count": 77,
+  "total_bytes": 32065227.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -22,38 +22,38 @@
     },
     {
       "path": "artifacts/instrument_syn.rpt.html",
-      "size_bytes": 45948,
-      "sha256": "6a629e8045b5ea868088f2b59341796f54afa8f17c87ad095de216b3f36d3738"
+      "size_bytes": 50125,
+      "sha256": "008153008f3078416c757ce8d5219896bf3364a4b6c4edc2107daa277cbc1ed8"
     },
     {
       "path": "artifacts/instrument_tr_content.html",
-      "size_bytes": 290837,
-      "sha256": "cb357e662c4716f696aa8e175d96741ef4d9065a09463db248081b2c5c09066d"
+      "size_bytes": 301642,
+      "sha256": "d2e493c572dc00101e8fdf13b50002a10e67c10dd02b364b7d3aef106914475e"
     },
     {
       "path": "artifacts/instrument.fs",
       "size_bytes": 7264154,
-      "sha256": "4095ed01d1b8c2d89aec808e06ebe846047089063cf7a67ff24a518d60aabed6"
+      "sha256": "7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc"
     },
     {
       "path": "artifacts/instrument.pin.html",
-      "size_bytes": 56098,
-      "sha256": "bf920152d82b27ff296c7221235907f0b71ddd7d7a43c06b968220f4b1d859dc"
+      "size_bytes": 56930,
+      "sha256": "adf9d6812979dd6a6c77e9166d72c037c0538b30309c6c045901b28e5896a6d3"
     },
     {
       "path": "artifacts/instrument.power.html",
-      "size_bytes": 7735,
-      "sha256": "fb5dc851eb8756ac62f5ecad4f00597d7e078f3fca5f1c789b2b4cf9295f1290"
+      "size_bytes": 7808,
+      "sha256": "4023a62e71eef68ac8f5b7e05dcd217d56b750167a950641e20d02c767ca4203"
     },
     {
       "path": "artifacts/instrument.rpt.html",
-      "size_bytes": 61146,
-      "sha256": "d70c38128e4fe407bb8137b9824d62be457196468f938d2da8c5d7fe74d2111a"
+      "size_bytes": 62057,
+      "sha256": "1058fb35cd0035a34129a82dedd734865bcc34cdee53fc2618b652c354a12095"
     },
     {
       "path": "artifacts/instrument.rpt.txt",
-      "size_bytes": 46358,
-      "sha256": "91f08a53dd0a6985e19e57929e01471778f6060df1c04e0300bbd23042de4a95"
+      "size_bytes": 47069,
+      "sha256": "c42bc92550ce3875b7de6cc93de2fe96a1c3034a24343f644d070f6201e7041b"
     },
     {
       "path": "artifacts/instrument.tr.html",
@@ -62,13 +62,13 @@
     },
     {
       "path": "artifacts/milestone2_build.json",
-      "size_bytes": 2490,
-      "sha256": "1386cb242c0a86101f94fa50938b5705ca15704c533f8a2b5995496869100a4d"
+      "size_bytes": 2269,
+      "sha256": "a5ecec244b97ab97c0c4f48845284eaebb781dfe15e2c49463d0fb2c1c9445ba"
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 5475,
-      "sha256": "034f93879941032c5676a79f9a2253552f4fb1ff78628bc6ee40cb3ae79f853a"
+      "size_bytes": 7094,
+      "sha256": "d69eb5f05cf860a3c9756a78a417537985c811aef12cf89bfb7b76ceb55af8f9"
     },
     {
       "path": "COMPETITION_REQUIREMENTS.md",
@@ -77,8 +77,8 @@
     },
     {
       "path": "CURRENT_STATUS.md",
-      "size_bytes": 4326,
-      "sha256": "5d37b09a790b8885907886ac9d1b16f475ccb181ba3a895f4e2a16fcb8050780"
+      "size_bytes": 5123,
+      "sha256": "84bc6de1545bd1e8ec45ac13e3a8a97d926ca2a727eb87f610d178689d30b7fd"
     },
     {
       "path": "DESIGN_DECISIONS.md",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 3181,
-      "sha256": "c67faae6a2873592e0c2d4726f8bfd7a66257791defdae56c23ec28a1c2bdcfe"
+      "size_bytes": 3731,
+      "sha256": "4f5963c4a0e93739c9dca664c966283ac2f7aefcfa305583c64e3278821d0576"
     },
     {
       "path": "NEXT_TASKS.json",
@@ -181,6 +181,11 @@
       "sha256": "ff7d924652ade80f21ffb561e023b1f35873f7e3adfa345f2f5b2bc95356231f"
     },
     {
+      "path": "reference/logs/FPGA_DEBUG_LOG_20261010_r4_uart_and_reset.md",
+      "size_bytes": 3823,
+      "sha256": "2410c3295941ec34a536844f22b455176b701cde28ae8c6b0f65606af609c694"
+    },
+    {
       "path": "reference/logs/FPGA_DEBUG_LOG_20261010.md",
       "size_bytes": 3647,
       "sha256": "f93fa797abbc236e9a6effb8d6217924b3afc8733c8962b061e2e3b25c845c67"
@@ -246,6 +251,11 @@
       "sha256": "732c72fa7a326245901a00e8e390a59c3d4d78012c7dde1f1a2f39b611270ad0"
     },
     {
+      "path": "reference/planning/外部硬件清单与版本规划.md",
+      "size_bytes": 14554,
+      "sha256": "445a24a8a181de8446628679393633d01d1c52d3d2dd68d45184d3139a290c25"
+    },
+    {
       "path": "reference/schematics/Tang_Primer_20K_Dock_3714_Schematics.pdf",
       "size_bytes": 2480479,
       "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
@@ -287,8 +297,8 @@
     },
     {
       "path": "source/build/build_instrument.tcl",
-      "size_bytes": 1102,
-      "sha256": "e7702e6c86982d4866aee6cb1bcd5215528e0a8dba1da538f078e51dbf3bf239"
+      "size_bytes": 1156,
+      "sha256": "21df5794640ce244230cbb99b0e2c7ff6030cec99001db9f18f772d8d1c33010"
     },
     {
       "path": "source/build/build.ps1",
@@ -312,8 +322,8 @@
     },
     {
       "path": "source/constraints/primer20k_dock3714.cst",
-      "size_bytes": 580,
-      "sha256": "7142e0d8b8ae7f1d48a2f378603e3483b5808b6bda5d66d08454a9784c5cc4a6"
+      "size_bytes": 1532,
+      "sha256": "d8bc0977525ef9ca8b38fc347f0d53e71e12cac521c3308ffe0a1b5252300bf8"
     },
     {
       "path": "source/constraints/primer20k.sdc",
@@ -334,6 +344,11 @@
       "path": "source/rtl/audio/pt8211_tx.v",
       "size_bytes": 3411,
       "sha256": "d436059509d8275484123dfde2d901a54ecedf8c9b5b0158490afd1bccef0291"
+    },
+    {
+      "path": "source/rtl/audio/uart_pitch.v",
+      "size_bytes": 10865,
+      "sha256": "72b8a5866b72e99521a06a7c41593eeb7d296fd4679f026726d818417f9655cd"
     },
     {
       "path": "source/rtl/audio/voice.v",
@@ -357,8 +372,8 @@
     },
     {
       "path": "source/rtl/top.v",
-      "size_bytes": 6188,
-      "sha256": "24adf28cced90634999194d2e5d0a68105a2c5e7e5128ec9bc0a55b0cc6b12e2"
+      "size_bytes": 7603,
+      "sha256": "68baa510029ad4ec7fb21336755b87207f003ba37a76fec991a54adca1cc20aa"
     },
     {
       "path": "source/sim/tb_pt8211_tx.v",

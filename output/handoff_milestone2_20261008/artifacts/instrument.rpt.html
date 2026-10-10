@@ -83,7 +83,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Sat Oct 10 10:22:19 2026
+<td>Sat Oct 10 10:39:29 2026
 </td>
 </tr>
 <tr>
@@ -97,24 +97,24 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td class="label">Place & Route Process</td>
 <td>Running placement:
-   Placement Phase 0: CPU time = 0h 0m 0.031s, Elapsed time = 0h 0m 0.032s
-   Placement Phase 1: CPU time = 0h 0m 0.149s, Elapsed time = 0h 0m 0.15s
-   Placement Phase 2: CPU time = 0h 0m 0.083s, Elapsed time = 0h 0m 0.083s
-   Placement Phase 3: CPU time = 0h 0m 0.512s, Elapsed time = 0h 0m 0.511s
-   Total Placement: CPU time = 0h 0m 0.775s, Elapsed time = 0h 0m 0.776s
+   Placement Phase 0: CPU time = 0h 0m 0.051s, Elapsed time = 0h 0m 0.051s
+   Placement Phase 1: CPU time = 0h 0m 0.156s, Elapsed time = 0h 0m 0.156s
+   Placement Phase 2: CPU time = 0h 0m 0.128s, Elapsed time = 0h 0m 0.128s
+   Placement Phase 3: CPU time = 0h 0m 0.58s, Elapsed time = 0h 0m 0.58s
+   Total Placement: CPU time = 0h 0m 0.915s, Elapsed time = 0h 0m 0.915s
 Running routing:
-   Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Routing Phase 1: CPU time = 0h 0m 0.114s, Elapsed time = 0h 0m 0.114s
-   Routing Phase 2: CPU time = 0h 0m 0.516s, Elapsed time = 0h 0m 0.516s
+   Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0.001s
+   Routing Phase 1: CPU time = 0h 0m 0.106s, Elapsed time = 0h 0m 0.106s
+   Routing Phase 2: CPU time = 0h 0m 0.653s, Elapsed time = 0h 0m 0.654s
    Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Total Routing: CPU time = 0h 0m 0.63s, Elapsed time = 0h 0m 0.63s
+   Total Routing: CPU time = 0h 0m 0.76s, Elapsed time = 0h 0m 0.761s
 Generate output files:
    CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
 </td>
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s, Peak memory usage = 371MB</td>
+<td>CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s, Peak memory usage = 376MB</td>
 </tr>
 </table>
 <br/>
@@ -129,12 +129,12 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>968/20736</td>
-<td>5%</td>
+<td>1261/20736</td>
+<td>7%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --LUT,ALU,ROM16</td>
-<td>968(796 LUT, 172 ALU, 0 ROM16)</td>
+<td>1261(999 LUT, 262 ALU, 0 ROM16)</td>
 <td>-</td>
 </tr>
 <tr>
@@ -144,8 +144,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Register</td>
-<td>237/16173</td>
-<td>2%</td>
+<td>429/16173</td>
+<td>3%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as Latch</td>
@@ -154,8 +154,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as FF</td>
-<td>233/15552</td>
-<td>2%</td>
+<td>423/15552</td>
+<td>3%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --I/O Register as Latch</td>
@@ -164,32 +164,32 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --I/O Register as FF</td>
-<td>4/621</td>
+<td>6/621</td>
 <td><1%</td>
 </tr>
 <tr>
 <td class="label">CLS</td>
-<td>537/10368</td>
-<td>6%</td>
+<td>752/10368</td>
+<td>8%</td>
 </tr>
 <tr>
 <td class="label">I/O Port</td>
-<td>8/207</td>
-<td>4%</td>
+<td>11/207</td>
+<td>6%</td>
 </tr>
 <tr>
 <td class="label">I/O Buf</td>
-<td>8</td>
+<td>11</td>
 <td>-</td>
 </tr>
 <tr>
 <td class="label"> &nbsp &nbsp --Input Buf</td>
-<td>3</td>
+<td>5</td>
 <td>-</td>
 </tr>
 <tr>
 <td class="label"> &nbsp &nbsp --Output Buf</td>
-<td>5</td>
+<td>6</td>
 <td>-</td>
 </tr>
 <tr>
@@ -204,7 +204,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">DSP</td>
-<td>1 PADD18<br/>2 MULT18X18<br/></td><td>5%</td>
+<td>1 PADD18<br/>3 MULT18X18<br/></td><td>7%</td>
 </tr>
 </table>
 <h2><a name="I/O_Bank_Usage_Summary">I/O Bank Usage Summary:</a></h2>
@@ -227,7 +227,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">bank 3</td>
-<td>0/32</td><td>0%</td>
+<td>2/32</td><td>7%</td>
 </tr>
 <tr>
 <td class="label">bank 4</td>
@@ -239,7 +239,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">bank 6</td>
-<td>0/18</td><td>0%</td>
+<td>1/18</td><td>6%</td>
 </tr>
 <tr>
 <td class="label">bank 7</td>
@@ -261,8 +261,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">LW</td>
-<td>2/8</td>
-<td>25%</td>
+<td>3/8</td>
+<td>38%</td>
 </tr>
 <tr>
 <td class="label">GCLK_PIN</td>
@@ -285,6 +285,11 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">rst</td>
+<td>LW</td>
+<td> -</td>
+</tr>
+<tr>
+<td class="label">por</td>
 <td>LW</td>
 <td> -</td>
 </tr>
@@ -336,6 +341,25 @@ Generate output files:
 <td>3.3</td>
 </tr>
 <tr>
+<td class="label">key_rst</td>
+<td>-</td>
+<td>D7/6</td>
+<td>Y</td>
+<td>in</td>
+<td>IOL53[B]</td>
+<td>-</td>
+<td>LVCMOS15</td>
+<td>NA</td>
+<td>UP</td>
+<td>ON</td>
+<td>NONE</td>
+<td>NA</td>
+<td>NA</td>
+<td>OFF</td>
+<td>NA</td>
+<td>1.5</td>
+</tr>
+<tr>
 <td class="label">key_s1</td>
 <td>-</td>
 <td>T3/4</td>
@@ -374,6 +398,25 @@ Generate output files:
 <td>1.5</td>
 </tr>
 <tr>
+<td class="label">uart_rx</td>
+<td>-</td>
+<td>N6/3</td>
+<td>Y</td>
+<td>in</td>
+<td>IOR51[A]</td>
+<td>-</td>
+<td>LVCMOS33</td>
+<td>NA</td>
+<td>UP</td>
+<td>ON</td>
+<td>NONE</td>
+<td>NA</td>
+<td>NA</td>
+<td>OFF</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
 <td class="label">hp_bck</td>
 <td>-</td>
 <td>N15/1</td>
@@ -382,7 +425,7 @@ Generate output files:
 <td>IOT48[A]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -401,7 +444,7 @@ Generate output files:
 <td>IOT48[B]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -420,7 +463,7 @@ Generate output files:
 <td>IOT54[A]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -439,7 +482,7 @@ Generate output files:
 <td>IOT54[B]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -458,13 +501,32 @@ Generate output files:
 <td>IOT52[A]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
 <td>OFF</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
+<td class="label">uart_tx</td>
+<td>-</td>
+<td>N7/3</td>
+<td>Y</td>
+<td>out</td>
+<td>IOR47[B]</td>
+<td>RPLL2_C_fb</td>
+<td>LVCMOS33</td>
+<td>4</td>
+<td>UP</td>
+<td>NA</td>
+<td>NA</td>
+<td>OFF</td>
+<td>NA</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
@@ -1227,7 +1289,7 @@ Generate output files:
 <td>IOT48[A]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -1244,7 +1306,7 @@ Generate output files:
 <td>IOT48[B]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -1261,7 +1323,7 @@ Generate output files:
 <td>IOT52[A]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -1295,7 +1357,7 @@ Generate output files:
 <td>IOT54[A]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -1312,7 +1374,7 @@ Generate output files:
 <td>IOT54[B]</td>
 <td>-</td>
 <td>LVCMOS33</td>
-<td>8</td>
+<td>4</td>
 <td>UP</td>
 <td>NA</td>
 <td>NA</td>
@@ -2824,7 +2886,7 @@ Generate output files:
 <td>in</td>
 <td>IOL29[A]</td>
 <td>GCLKT_6</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2833,7 +2895,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">A8/6</td>
@@ -2841,7 +2903,7 @@ Generate output files:
 <td>in</td>
 <td>IOL29[B]</td>
 <td>GCLKC_6</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2850,7 +2912,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">F9/6</td>
@@ -2858,7 +2920,7 @@ Generate output files:
 <td>in</td>
 <td>IOL31[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2867,7 +2929,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">E11/6</td>
@@ -2875,7 +2937,7 @@ Generate output files:
 <td>in</td>
 <td>IOL31[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2884,7 +2946,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">B9/6</td>
@@ -2892,7 +2954,7 @@ Generate output files:
 <td>in</td>
 <td>IOL33[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2901,7 +2963,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">A10/6</td>
@@ -2909,7 +2971,7 @@ Generate output files:
 <td>in</td>
 <td>IOL33[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2918,7 +2980,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">F8/6</td>
@@ -2926,7 +2988,7 @@ Generate output files:
 <td>in</td>
 <td>IOL35[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2935,7 +2997,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">D9/6</td>
@@ -2943,7 +3005,7 @@ Generate output files:
 <td>in</td>
 <td>IOL35[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2952,7 +3014,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">D8/6</td>
@@ -2960,7 +3022,7 @@ Generate output files:
 <td>in</td>
 <td>IOL38[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2969,7 +3031,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">E9/6</td>
@@ -2977,7 +3039,7 @@ Generate output files:
 <td>in</td>
 <td>IOL38[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -2986,7 +3048,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">B7/6</td>
@@ -2994,7 +3056,7 @@ Generate output files:
 <td>in</td>
 <td>IOL40[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3003,7 +3065,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">C7/6</td>
@@ -3011,7 +3073,7 @@ Generate output files:
 <td>in</td>
 <td>IOL40[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3020,7 +3082,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">F7/6</td>
@@ -3028,7 +3090,7 @@ Generate output files:
 <td>in</td>
 <td>IOL45[A]</td>
 <td>LPLL2_T_in</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3037,7 +3099,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">E8/6</td>
@@ -3045,7 +3107,7 @@ Generate output files:
 <td>in</td>
 <td>IOL45[B]</td>
 <td>LPLL2_C_in</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3054,7 +3116,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">C4/6</td>
@@ -3062,7 +3124,7 @@ Generate output files:
 <td>in</td>
 <td>IOL47[A]</td>
 <td>LPLL2_T_fb</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3071,7 +3133,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">B5/6</td>
@@ -3079,7 +3141,7 @@ Generate output files:
 <td>in</td>
 <td>IOL47[B]</td>
 <td>LPLL2_C_fb</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3088,7 +3150,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">E6/6</td>
@@ -3096,7 +3158,7 @@ Generate output files:
 <td>in</td>
 <td>IOL53[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3105,24 +3167,24 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">D7/6</td>
-<td>-</td>
+<td>key_rst</td>
 <td>in</td>
 <td>IOL53[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS15</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
 <td>NONE</td>
 <td>NA</td>
 <td>NA</td>
+<td>OFF</td>
 <td>NA</td>
-<td>NA</td>
-<td>1.8</td>
+<td>1.5</td>
 </tr>
 <tr>
 <td class="label">T15/2</td>
@@ -3470,7 +3532,7 @@ Generate output files:
 <td>in</td>
 <td>IOR29[A]</td>
 <td>GCLKT_3</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3479,7 +3541,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">R8/3</td>
@@ -3487,7 +3549,7 @@ Generate output files:
 <td>in</td>
 <td>IOR29[B]</td>
 <td>GCLKC_3</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3496,7 +3558,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">M16/3</td>
@@ -3504,7 +3566,7 @@ Generate output files:
 <td>in</td>
 <td>IOR30[A]</td>
 <td>MODE0</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3513,7 +3575,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">B16/3</td>
@@ -3521,7 +3583,7 @@ Generate output files:
 <td>in</td>
 <td>IOR30[B]</td>
 <td>MODE1</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3530,7 +3592,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">C15/3</td>
@@ -3538,7 +3600,7 @@ Generate output files:
 <td>in</td>
 <td>IOR31[A]</td>
 <td>MODE2</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3547,7 +3609,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">B10/3</td>
@@ -3555,7 +3617,7 @@ Generate output files:
 <td>in</td>
 <td>IOR31[B]</td>
 <td>RECONFIG_N</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3564,7 +3626,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">A13/3</td>
@@ -3572,7 +3634,7 @@ Generate output files:
 <td>in</td>
 <td>IOR32[A]</td>
 <td>READY</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3581,7 +3643,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">C13/3</td>
@@ -3589,7 +3651,7 @@ Generate output files:
 <td>in</td>
 <td>IOR32[B]</td>
 <td>DONE</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3598,7 +3660,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">P10/3</td>
@@ -3606,7 +3668,7 @@ Generate output files:
 <td>in</td>
 <td>IOR33[A]</td>
 <td>MI/D7</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3615,7 +3677,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">R10/3</td>
@@ -3623,7 +3685,7 @@ Generate output files:
 <td>in</td>
 <td>IOR33[B]</td>
 <td>MO/D6</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3632,7 +3694,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">M9/3</td>
@@ -3640,7 +3702,7 @@ Generate output files:
 <td>in</td>
 <td>IOR34[A]</td>
 <td>MCS_N/D5</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3649,7 +3711,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">L10/3</td>
@@ -3657,7 +3719,7 @@ Generate output files:
 <td>in</td>
 <td>IOR34[B]</td>
 <td>MCLK/D4</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3666,7 +3728,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">R9/3</td>
@@ -3674,7 +3736,7 @@ Generate output files:
 <td>in</td>
 <td>IOR35[A]</td>
 <td>FASTRD_N/D3</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3683,7 +3745,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">T10/3</td>
@@ -3691,7 +3753,7 @@ Generate output files:
 <td>in</td>
 <td>IOR35[B]</td>
 <td>SI/D2</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3700,7 +3762,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">M8/3</td>
@@ -3708,7 +3770,7 @@ Generate output files:
 <td>in</td>
 <td>IOR36[A]</td>
 <td>SO/D1</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3717,7 +3779,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">N9/3</td>
@@ -3725,7 +3787,7 @@ Generate output files:
 <td>in</td>
 <td>IOR36[B]</td>
 <td>SSPI_CS_N/D0</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3734,7 +3796,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">T9/3</td>
@@ -3742,7 +3804,7 @@ Generate output files:
 <td>in</td>
 <td>IOR38[A]</td>
 <td>DIN/CLKHOLD_N</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3751,7 +3813,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">P9/3</td>
@@ -3759,7 +3821,7 @@ Generate output files:
 <td>in</td>
 <td>IOR38[B]</td>
 <td>DOUT/WE_N</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3768,7 +3830,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">C10/3</td>
@@ -3776,7 +3838,7 @@ Generate output files:
 <td>in</td>
 <td>IOR39[A]</td>
 <td>SCLK</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3785,7 +3847,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">N8/3</td>
@@ -3793,7 +3855,7 @@ Generate output files:
 <td>in</td>
 <td>IOR40[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3802,7 +3864,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">L9/3</td>
@@ -3810,7 +3872,7 @@ Generate output files:
 <td>in</td>
 <td>IOR40[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3819,7 +3881,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">P8/3</td>
@@ -3827,7 +3889,7 @@ Generate output files:
 <td>in</td>
 <td>IOR42[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3836,7 +3898,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">T8/3</td>
@@ -3844,7 +3906,7 @@ Generate output files:
 <td>in</td>
 <td>IOR42[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3853,7 +3915,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">M6/3</td>
@@ -3861,7 +3923,7 @@ Generate output files:
 <td>in</td>
 <td>IOR44[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3870,7 +3932,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">L8/3</td>
@@ -3878,7 +3940,7 @@ Generate output files:
 <td>in</td>
 <td>IOR44[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3887,7 +3949,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">M7/3</td>
@@ -3895,7 +3957,7 @@ Generate output files:
 <td>in</td>
 <td>IOR47[A]</td>
 <td>RPLL2_T_fb</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3904,24 +3966,24 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">N7/3</td>
-<td>-</td>
-<td>in</td>
+<td>uart_tx</td>
+<td>out</td>
 <td>IOR47[B]</td>
 <td>RPLL2_C_fb</td>
-<td>LVCMOS18</td>
-<td>NA</td>
+<td>LVCMOS33</td>
+<td>4</td>
 <td>UP</td>
-<td>ON</td>
-<td>NONE</td>
 <td>NA</td>
 <td>NA</td>
+<td>OFF</td>
 <td>NA</td>
+<td>OFF</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">R7/3</td>
@@ -3929,7 +3991,7 @@ Generate output files:
 <td>in</td>
 <td>IOR49[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3938,7 +4000,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">P7/3</td>
@@ -3946,7 +4008,7 @@ Generate output files:
 <td>in</td>
 <td>IOR49[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3955,24 +4017,24 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">N6/3</td>
-<td>-</td>
+<td>uart_rx</td>
 <td>in</td>
 <td>IOR51[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
 <td>NONE</td>
 <td>NA</td>
 <td>NA</td>
+<td>OFF</td>
 <td>NA</td>
-<td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">P6/3</td>
@@ -3980,7 +4042,7 @@ Generate output files:
 <td>in</td>
 <td>IOR53[A]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -3989,7 +4051,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 <tr>
 <td class="label">T6/3</td>
@@ -3997,7 +4059,7 @@ Generate output files:
 <td>in</td>
 <td>IOR53[B]</td>
 <td>-</td>
-<td>LVCMOS18</td>
+<td>LVCMOS33</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
@@ -4006,7 +4068,7 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
-<td>1.8</td>
+<td>3.3</td>
 </tr>
 </table>
 <br/>

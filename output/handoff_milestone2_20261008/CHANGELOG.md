@@ -65,3 +65,16 @@
 | S4 | Silicone Key_4 / `B10_IOR31B_~{RECFG}` | B10 | **RECONFIG_N，按下即触发 FPGA 重新配置** |
 
 所以 S4 不是软件复位键，它接的是 GW2A 的专用重配置引脚。按下后 FPGA 从配置源重新加载，JTAG 写进 SRAM 的码流被丢弃，于是程序失效。要真正复位自己的设计，应该用 S0 或 S3 这类普通 IO 在 RTL 里做一个同步复位；要让程序在重配置和断电后仍然存在，需要把码流写进板载外部 SPI Flash（编程器里的 exFlash 操作），而不是只写 SRAM。
+
+
+## 2026-10-10 修订四：UART 写频率、S3 同步复位、啸叫排查
+
+- 新增 `source/rtl/audio/uart_pitch.v`：115200 8N1 的 UART 控制接口，`F<数字>` 直接设定音高，`M0`/`M1` 数字静音/解除。频率到相位增量的换算封装为 `freq_to_phase_inc()` 函数，常数取 `f * 91626`，与精确值 91625.937 的相对误差 6.9e-7。收到合法命令回 `OK\r\n`，非法回 `ERR\r\n`。
+- `source/rtl/top.v` 改成单一 `phase_inc` 寄存器，S1、S2 预置音和 UART 三个来源后写覆盖，复用原有去抖逻辑。
+- 平滑滤波从 (1,2,1)/4 加强为 (1,4,6,4,1)/16，在 8 kHz 处约 -5 dB、15 kHz 约 -22 dB、20 kHz 约 -26 dB，Nyquist 处有零点。
+- 新增 S3/D7 上的同步复位：两拍同步器加复位树，耳机功放使能只跟随上电复位，按键复位不关功放也不产生爆音。
+- `source/constraints/primer20k_dock3714.cst` 新增 `key_rst`(D7)、`uart_rx`(N6)、`uart_tx`(N7)，并把音频与 UART 输出的 `DRIVE` 从默认 8 mA 降到 4，降低 BCK 向模拟通路的耦合。
+- 构建结果：1261 LUT/ALU、429 寄存器、1 BSRAM、3 个 18×18 乘法器和 1 个 PADD18；0 建立违规、0 保持违规，Fmax 63.276 MHz。
+- 修订四码流 SHA256 `7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc`，User Code `0x0000136B`，已用 SRAM Program 写入并读回确认。
+- 排除了 S0/T10 作为用户 IO 的可能：布局布线报 `the location is a dedicated pin (SSPI)`。
+- 新增 `docs/planning/外部硬件清单与版本规划.md`，整理外设清单、最终产物和 v0.5 到 v1.0 的版本规划。

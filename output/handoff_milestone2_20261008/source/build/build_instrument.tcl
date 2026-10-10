@@ -14,6 +14,7 @@ if {![file exists $gprj_file]} {
     add_file [file join $root rtl audio adsr.v]
     add_file [file join $root rtl audio voice.v]
     add_file [file join $root rtl audio pt8211_tx.v]
+    add_file [file join $root rtl audio uart_pitch.v]
     add_file [file join $root constraints primer20k_dock3714.cst]
     add_file [file join $root constraints primer20k.sdc]
 } else {

@@ -80,3 +80,14 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 - 修订三码流 SHA256 `4095ed01d1b8c2d89aec808e06ebe846047089063cf7a67ff24a518d60aabed6`，User Code `0x000071A6`，已用 SRAM Program 写入。
 - 确认 Dock 按键丝印 S0..S4 与引脚映射：S4 = B10 = RECONFIG_N，按下会导致 SRAM 码流丢失；真正的软复位应使用 S0/T10 或 S3/D7 在 RTL 内实现。
 - 已打开 Gowin IDE 与独立 Gowin Programmer 图形界面，供直接点击烧录；建议改用 exFlash 操作把码流写入板载 SPI Flash。
+
+
+## 2026-10-10 修订四更新
+
+- UART 115200 控制接口可用：写 `F440` 设音高，写 `M0` 数字静音用于分离数字噪声与板级底噪。
+- S3/D7 同步复位已实现；S0/T10 因是配置专用 SSPI 引脚无法使用，S4/B10 是 RECONFIG_N，不能当按键。
+- 平滑滤波加强为 (1,4,6,4,1)/16，音频与 UART 输出驱动强度降到 4 mA。
+- 资源：1261 LUT/ALU、429 寄存器、1 BSRAM、1.5 DSP；0 时序违规，Fmax 63.276 MHz。
+- 修订四码流 SHA256 `7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc`，User Code `0x0000136B`。
+- 外部硬件清单与版本规划见 `reference/planning/外部硬件清单与版本规划.md`。
+- 待确认：`M0` 静音后啸叫是否仍然存在，用来判断噪声来自数字侧还是模拟侧。

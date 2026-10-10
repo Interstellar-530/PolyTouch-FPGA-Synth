@@ -81,3 +81,15 @@ the 27 MHz four-LED diagnostic blinked normally.
 
 丝印证据：\eference/board_docs/dock3714_key_silkscreen.png\ 是从 Sipeed 官方底板照片裁出的左侧按键区域，可以清楚读到 S0、S1、S2、S3、S4 五个标号。
 
+
+
+## 2026-10-10 引脚与接口补充（修订四）
+
+| 信号 | 引脚 | 说明 |
+| --- | --- | --- |
+| key_rst | D7 | S3 按键，1.5 V Bank，同步复位输入 |
+| uart_rx | N6 | BL702_UART1_TX 进 FPGA，与 RGB LCD 的 R3 共用 |
+| uart_tx | N7 | FPGA 送 BL702_UART1_RX，与 RGB LCD 的 R4 共用 |
+| key_s0 | T10 | 不可用：GW2A-18PG256 保留给配置 SSPI |
+
+音频与 UART 输出统一设成 DRIVE=4（高云 CST 里 DRIVE 的单位是 mA，写成 `DRIVE=4`，不能写 `4MA`，多个属性之间用空格分隔不能用逗号）。
