@@ -37,14 +37,21 @@ IO_PORT "key_s1" IO_TYPE=LVCMOS15;
 IO_LOC "key_s2" T2;
 IO_PORT "key_s2" IO_TYPE=LVCMOS15;
 
-// BL702 USB-UART bridge. N6 carries the bridge TX into the FPGA and N7
-// carries the FPGA TX back to the bridge. Both nets are shared with the RGB
-// LCD connector, so they are only free while no panel is plugged in.
-IO_LOC "uart_rx" N6;
-IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
-
-IO_LOC "uart_tx" N7;
+// BL702 USB-UART bridge, taken straight from the Dock 3714 schematic page 1:
+//
+//   M11_IOR27B_FPGA_TXO  ->  BL702_UART1_RX
+//   T13_IOR8B_FPGA_RXO   <-  BL702_UART1_TX
+//
+// Both are Bank 2 pins. The Dock notes that bank 2 is locked to 3.3 V because
+// it also carries the JTAG signals, so LVCMOS33 is correct.
+//
+// Do not confuse these with N6 / N7: those two are RGB_LCD_R4 and RGB_LCD_R3
+// on the LCD connector, not the debug bridge.
+IO_LOC "uart_tx" M11;
 IO_PORT "uart_tx" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "uart_rx" T13;
+IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
 
 
 

@@ -8,8 +8,8 @@
   "normal_bitstream": {
     "path": "artifacts/instrument.fs",
     "size_bytes": 7264154,
-    "sha256": "a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34",
-    "user_code": "0x000064F6"
+    "sha256": "80089e293129be7f77c7ee32c630690f769eb4417e579392f83182b4b8e9357a",
+    "user_code": "0x000059D1"
   },
   "resources": {
     "lut_alu_rom16": 1259,
@@ -27,7 +27,7 @@
   },
   "uart_pitch": {
     "baud": 115200,
-    "pins": "uart_rx=N6 (BL702 UART1 TX), uart_tx=N7 (BL702 UART1 RX)",
+    "pins": "uart_tx=M11 (-> BL702_UART1_RX), uart_rx=T13 (<- BL702_UART1_TX), bank 2, 3.3 V",
     "commands": [
       "F<16..20000> sets pitch in Hz",
       "M0 digital mute",

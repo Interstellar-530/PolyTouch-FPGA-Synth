@@ -179,3 +179,13 @@ FPGA 的 UART 在 N6/N7 上接到板载 BL702，所以要让电脑能对 FPGA �
 实物照片证据见 `reference/board_docs/dock3714_702en_boot.png`，照片里能同时看到 702-BOOT 按键、702-EN 三针排针和 USB-JTAG 口三者的相对位置。
 
 复查当前状态：串口列表仍然只有 COM13（下载器 FT2232 的第二通道）和六个蓝牙虚拟口，没有出现 BL702 的 USB 设备，说明 USB-JTAG 口这一侧仍然没有成功枚举到电脑。
+
+
+## 2026-10-10 UART 引脚更正（修订十一）
+
+| 信号 | 正确引脚 | 网络 | 说明 |
+| --- | --- | --- | --- |
+| uart_tx | M11 | `M11_IOR27B_FPGA_TXO` → BL702_UART1_RX | Bank 2，LVCMOS33 |
+| uart_rx | T13 | `T13_IOR8B_FPGA_RXO` ← BL702_UART1_TX | Bank 2，LVCMOS33 |
+
+更正记录：本文件先前把 uart_rx/uart_tx 记成 N6/N7 是错的。N6 = `N6_IOR51A` = RGB_LCD_R4，N7 = `N7_IOR47B` = RGB_LCD_R3，属于液晶接口。Bank 2 同时承载 JTAG（A7/C6/A6/B8），所以底板把该 Bank 锁定在 3.3 V。

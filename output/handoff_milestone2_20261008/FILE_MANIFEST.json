@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T11:27:33",
+  "generated_at": "2026-10-10T11:34:42",
   "root": ".",
   "file_count": 82,
-  "total_bytes": 33632476.0,
+  "total_bytes": 33635494.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -23,37 +23,37 @@
     {
       "path": "artifacts/instrument_syn.rpt.html",
       "size_bytes": 50130,
-      "sha256": "c58c1064cdfe158ff6ff7949559d421dfedb7a5f088f131c1a5844ba35efeb15"
+      "sha256": "163921c58bb762340c555f56ad98cae7f949982c137b07415a9109d15d7e574d"
     },
     {
       "path": "artifacts/instrument_tr_content.html",
-      "size_bytes": 289704,
-      "sha256": "44fc8fcf0c8d07c68359e955d0ecccd17c93592df8a15a97c2c01f4cd4ea9039"
+      "size_bytes": 289486,
+      "sha256": "286dabd5c2961dfe4b70d2d8f22768dbc948835066287cbe9e2bc3eaf17d959b"
     },
     {
       "path": "artifacts/instrument.fs",
       "size_bytes": 7264154,
-      "sha256": "a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34"
+      "sha256": "80089e293129be7f77c7ee32c630690f769eb4417e579392f83182b4b8e9357a"
     },
     {
       "path": "artifacts/instrument.pin.html",
-      "size_bytes": 56930,
-      "sha256": "19efe1f7588c47e8978323a4b88674a72bec935fc7ce84d32225f9f9e4186d92"
+      "size_bytes": 56937,
+      "sha256": "5a47242181a6f098ed9609a4f6229d49f8a65e995ab33fd7d75cbaf45d73958a"
     },
     {
       "path": "artifacts/instrument.power.html",
       "size_bytes": 7808,
-      "sha256": "f7840adbb7af9438bc3f7da56620bbdafd0cabd61be2b8e332fd2aa7addeb984"
+      "sha256": "7aaa3ee7a2e1ee8fbac53cd6b5597c6e5b06fd3baddf87d5c84451c50760004d"
     },
     {
       "path": "artifacts/instrument.rpt.html",
-      "size_bytes": 62058,
-      "sha256": "c64ecda4c7b44002e8324ddff54b1d5f9c1ce65cb5c83c006fa0d3296561595e"
+      "size_bytes": 62062,
+      "sha256": "f71a35de0b10769362cf22b329eaad579ce16648d45e51dcd33c0ac6db7134a0"
     },
     {
       "path": "artifacts/instrument.rpt.txt",
-      "size_bytes": 47070,
-      "sha256": "760eea5123f137831474fcfb1b1754e164756a536989794750fadf4ee06c36bd"
+      "size_bytes": 47066,
+      "sha256": "ecfaabe6ae4cab198195d4067283f5d24264f67c6faafb88aab5ddd871f59c28"
     },
     {
       "path": "artifacts/instrument.tr.html",
@@ -62,13 +62,13 @@
     },
     {
       "path": "artifacts/milestone2_build.json",
-      "size_bytes": 2269,
-      "sha256": "28d788f10326c00d3a8668a4d6b08fe2b3b95aab3b0545067b824c36bfe0d76b"
+      "size_bytes": 2292,
+      "sha256": "fff2ccee62a402b7b5dc182c961d00a6f7c431bbcdc56eca99c9df15cc03154d"
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 11258,
-      "sha256": "c92dfe72f902a729142e64357b6b3bc35d4635aba4928790c9ad7e262a16ab2a"
+      "size_bytes": 13264,
+      "sha256": "72c401575ef6dec3fc874a55e2ce6dad003d729df876d8d81004978c81e2f1a3"
     },
     {
       "path": "COMPETITION_REQUIREMENTS.md",
@@ -77,8 +77,8 @@
     },
     {
       "path": "CURRENT_STATUS.md",
-      "size_bytes": 6303,
-      "sha256": "d32f4ba5bee1ff4ede6373ff4b950aee11a88c9439d1a5826ec75bfff7ea6ff5"
+      "size_bytes": 6745,
+      "sha256": "446ad9d6242ab4735df827aed48a33efc322f6c7d87cc8fbc4779d475a53b801"
     },
     {
       "path": "DESIGN_DECISIONS.md",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 10897,
-      "sha256": "97baf6bbfd018ca108f503643585f10e4a1520c0f444f81d07ba782d265a292a"
+      "size_bytes": 11430,
+      "sha256": "ef44834b1f99955cb5623203e718d7fc29c154c3c4217910a9c388f7b72b205e"
     },
     {
       "path": "NEXT_TASKS.json",
@@ -347,8 +347,8 @@
     },
     {
       "path": "source/constraints/primer20k_dock3714.cst",
-      "size_bytes": 1532,
-      "sha256": "d8bc0977525ef9ca8b38fc347f0d53e71e12cac521c3308ffe0a1b5252300bf8"
+      "size_bytes": 1757,
+      "sha256": "2c0b73c4143aa9a6551372c81f0669a5870d378a3db788696ce0bad1109032a9"
     },
     {
       "path": "source/constraints/primer20k.sdc",
