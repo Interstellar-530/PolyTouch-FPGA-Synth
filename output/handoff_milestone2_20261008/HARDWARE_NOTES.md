@@ -123,3 +123,14 @@ FPGA 的 UART 在 N6/N7 上接到板载 BL702，所以要让电脑能对 FPGA �
 | 板载外部 SPI Flash | exFlash Erase,Program,Verify（操作 9） | 保留，上电与按 S4 重配置都会从 Flash 加载 |
 
 判定 Flash 是否真的写进去的办法：先用操作 2 把另一个 User Code 的码流写进 SRAM，再用操作 1 Reprogram 触发重配置，然后读器件码。若读到的 User Code 变回 Flash 里那个，就说明重配置确实从 Flash 取码流。
+
+
+## 2026-10-10 当前串口与快捷方式状态（修订七）
+
+复查串口：本机可用端口仍然只有 COM13（Gowin FT2CH 下载器的 FT2232 第二通道），COM3/4/6/7/8/9 全部是蓝牙虚拟串口。设备列表里依然没有出现 BL702 的 USB 设备，说明底板的 USB-JTAG&UART Type-C 还没有接到电脑。结论：现在板子与电脑之间只有下载器的 JTAG 通道在工作，COM13 虽然是真实串口，但它不通到 FPGA 的 UART（实测发 `F440` 无应答）。要让电脑对 FPGA 讲话，必须插上底板的 USB-JTAG&UART Type-C。
+
+桌面新增快捷方式 `串口控制台.lnk`，指向 `tools/serial_console/open_console.cmd`，后者再调用 `serial_console.ps1`。原先桌面上临时的 `.cmd` 启动器已删除，只保留这一个快捷方式。快捷方式实测可以正常拉起控制台窗口。
+
+同时新增 `tools/serial_console/install_desktop_shortcut.ps1`，用于在任何一台机器上重建这个桌面快捷方式。
+
+再次提醒：启动串口控制台时不要使用 `-WindowStyle Hidden`，`SW_HIDE` 会被子进程继承，WinForms 窗口会被建成隐藏窗口，看起来就是"程序没打开"。

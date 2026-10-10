@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T11:10:54",
+  "generated_at": "2026-10-10T11:14:16",
   "root": ".",
   "file_count": 80,
-  "total_bytes": 32084969.0,
+  "total_bytes": 32086151.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 5754,
-      "sha256": "47eee6285bf4bd80868955e0360b3308e12315a59f94db4e26988529f62e1293"
+      "size_bytes": 6936,
+      "sha256": "247cd6413389e31e49191e9db8aa6685779a9aa475c53c7968e1ccbf598cc65b"
     },
     {
       "path": "NEXT_TASKS.json",
