@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T11:22:23",
+  "generated_at": "2026-10-10T11:27:33",
   "root": ".",
-  "file_count": 81,
-  "total_bytes": 32656055.0,
+  "file_count": 82,
+  "total_bytes": 33632476.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 9345,
-      "sha256": "b963b331805797a7b76f521616923c11253b5d9e299947a29b9950ab3f464300"
+      "size_bytes": 10897,
+      "sha256": "97baf6bbfd018ca108f503643585f10e4a1520c0f444f81d07ba782d265a292a"
     },
     {
       "path": "NEXT_TASKS.json",
@@ -104,6 +104,11 @@
       "path": "README_FOR_HUMAN.md",
       "size_bytes": 2875,
       "sha256": "e83e598b574a70586b1efe2a6a720eefc9a1409dd6d28a56229c1fee0470269a"
+    },
+    {
+      "path": "reference/board_docs/dock3714_702en_boot.png",
+      "size_bytes": 974869,
+      "sha256": "b0635437bc5bbb2d4b89b54e078f0828fd0bfe8cd174675e4902cb0aac36a13e"
     },
     {
       "path": "reference/board_docs/dock3714_key_silkscreen.png",
