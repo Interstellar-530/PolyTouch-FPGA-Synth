@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T11:01:30",
+  "generated_at": "2026-10-10T11:10:54",
   "root": ".",
   "file_count": 80,
-  "total_bytes": 32081235.0,
+  "total_bytes": 32084969.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -67,8 +67,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 9509,
-      "sha256": "c2be978341729bbf95eb6cde404d42d9bd20ca6e6f40a9dcf5bd9610431e9f6b"
+      "size_bytes": 11258,
+      "sha256": "c92dfe72f902a729142e64357b6b3bc35d4635aba4928790c9ad7e262a16ab2a"
     },
     {
       "path": "COMPETITION_REQUIREMENTS.md",
@@ -77,8 +77,8 @@
     },
     {
       "path": "CURRENT_STATUS.md",
-      "size_bytes": 5662,
-      "sha256": "53fafcb238ad9a20fa4d89d1d2fe17a3fcb289b830878ce601361846132e6bc7"
+      "size_bytes": 6303,
+      "sha256": "d32f4ba5bee1ff4ede6373ff4b950aee11a88c9439d1a5826ec75bfff7ea6ff5"
     },
     {
       "path": "DESIGN_DECISIONS.md",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 4492,
-      "sha256": "8b6ac132bb2d1221504483bbd81eae00354e54f1c6fe5d9284ee94d2ff9e4236"
+      "size_bytes": 5754,
+      "sha256": "47eee6285bf4bd80868955e0360b3308e12315a59f94db4e26988529f62e1293"
     },
     {
       "path": "NEXT_TASKS.json",
@@ -262,8 +262,8 @@
     },
     {
       "path": "reference/planning/外设采购清单-20261010.xlsx",
-      "size_bytes": 12320,
-      "sha256": "d625e7c6e4a036473d91adedf95fdf5cef59432988fe7bb2dc3eaec02b27ba1f"
+      "size_bytes": 12402,
+      "sha256": "d16a73e54d804998760eda859cbe408a5f644f642e7d48c2e8b75032c2285542"
     },
     {
       "path": "reference/planning/项目整体进展与规划-通俗版.md",
