@@ -34,7 +34,7 @@ S4 接 B10 的 RECONFIG_N，语义是重新配置，按下就丢 SRAM 码流。S
 
 ## 五、构建与烧录
 
-1261 LUT/ALU、429 寄存器、1 BSRAM、3 个 18×18 乘法器加 1 个 PADD18；0 建立违规、0 保持违规，Fmax 63.276 MHz。码流 SHA256 `7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc`，User Code `0x0000136B`，已用 SRAM Program 写入并读回确认。
+1259 LUT/ALU、429 寄存器、1 BSRAM、3 个 18×18 乘法器加 1 个 PADD18；0 建立违规、0 保持违规，Fmax 54.361 MHz。码流 SHA256 `a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34`，User Code `0x000064F6`，已用 SRAM Program 写入并读回确认。
 
 ## 六、待确认
 
@@ -42,3 +42,5 @@ S4 接 B10 的 RECONFIG_N，语义是重新配置，按下就丢 SRAM 码流。S
 - 串口写 `F440`、`F523` 等命令是否能改变音高，是否收到 `OK`。
 - 按 S3 是否只复位设计、不丢音、不产生爆音。
 - 是否改用图形界面做一次 exFlash 写入，让设计在重配置和断电后仍然存在。
+
+

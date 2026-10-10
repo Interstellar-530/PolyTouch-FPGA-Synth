@@ -192,7 +192,7 @@ module top (
     end
 
     wire signed [19:0] fir_sum =
-        voice_sample + v4 + ((v1 + v3) <<< 1) + ((v2 <<< 2) + (v2 <<< 1));
+        voice_sample + v4 + ((v1 + v3) <<< 2) + ((v2 <<< 2) + (v2 <<< 1));
 
     wire signed [19:0] smooth = fir_sum >>> 4;
 

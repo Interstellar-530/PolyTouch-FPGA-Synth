@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T10:41:55",
+  "generated_at": "2026-10-10T10:42:56",
   "root": ".",
   "file_count": 77,
-  "total_bytes": 32065227.0,
+  "total_bytes": 32053527.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -22,38 +22,38 @@
     },
     {
       "path": "artifacts/instrument_syn.rpt.html",
-      "size_bytes": 50125,
-      "sha256": "008153008f3078416c757ce8d5219896bf3364a4b6c4edc2107daa277cbc1ed8"
+      "size_bytes": 50130,
+      "sha256": "c58c1064cdfe158ff6ff7949559d421dfedb7a5f088f131c1a5844ba35efeb15"
     },
     {
       "path": "artifacts/instrument_tr_content.html",
-      "size_bytes": 301642,
-      "sha256": "d2e493c572dc00101e8fdf13b50002a10e67c10dd02b364b7d3aef106914475e"
+      "size_bytes": 289704,
+      "sha256": "44fc8fcf0c8d07c68359e955d0ecccd17c93592df8a15a97c2c01f4cd4ea9039"
     },
     {
       "path": "artifacts/instrument.fs",
       "size_bytes": 7264154,
-      "sha256": "7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc"
+      "sha256": "a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34"
     },
     {
       "path": "artifacts/instrument.pin.html",
       "size_bytes": 56930,
-      "sha256": "adf9d6812979dd6a6c77e9166d72c037c0538b30309c6c045901b28e5896a6d3"
+      "sha256": "19efe1f7588c47e8978323a4b88674a72bec935fc7ce84d32225f9f9e4186d92"
     },
     {
       "path": "artifacts/instrument.power.html",
       "size_bytes": 7808,
-      "sha256": "4023a62e71eef68ac8f5b7e05dcd217d56b750167a950641e20d02c767ca4203"
+      "sha256": "f7840adbb7af9438bc3f7da56620bbdafd0cabd61be2b8e332fd2aa7addeb984"
     },
     {
       "path": "artifacts/instrument.rpt.html",
-      "size_bytes": 62057,
-      "sha256": "1058fb35cd0035a34129a82dedd734865bcc34cdee53fc2618b652c354a12095"
+      "size_bytes": 62058,
+      "sha256": "c64ecda4c7b44002e8324ddff54b1d5f9c1ce65cb5c83c006fa0d3296561595e"
     },
     {
       "path": "artifacts/instrument.rpt.txt",
-      "size_bytes": 47069,
-      "sha256": "c42bc92550ce3875b7de6cc93de2fe96a1c3034a24343f644d070f6201e7041b"
+      "size_bytes": 47070,
+      "sha256": "760eea5123f137831474fcfb1b1754e164756a536989794750fadf4ee06c36bd"
     },
     {
       "path": "artifacts/instrument.tr.html",
@@ -63,12 +63,12 @@
     {
       "path": "artifacts/milestone2_build.json",
       "size_bytes": 2269,
-      "sha256": "a5ecec244b97ab97c0c4f48845284eaebb781dfe15e2c49463d0fb2c1c9445ba"
+      "sha256": "28d788f10326c00d3a8668a4d6b08fe2b3b95aab3b0545067b824c36bfe0d76b"
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 7094,
-      "sha256": "d69eb5f05cf860a3c9756a78a417537985c811aef12cf89bfb7b76ceb55af8f9"
+      "size_bytes": 7319,
+      "sha256": "91c1dfcb2046dd83bc2ecaeee527802296cefaf8e6fa6dc26b2e645f284ed556"
     },
     {
       "path": "COMPETITION_REQUIREMENTS.md",
@@ -77,8 +77,8 @@
     },
     {
       "path": "CURRENT_STATUS.md",
-      "size_bytes": 5123,
-      "sha256": "84bc6de1545bd1e8ec45ac13e3a8a97d926ca2a727eb87f610d178689d30b7fd"
+      "size_bytes": 5126,
+      "sha256": "57fa76c419349e94aca5c8e591499c83f1cd1b855d7bf5684cf8d12fcff282d9"
     },
     {
       "path": "DESIGN_DECISIONS.md",
@@ -182,8 +182,8 @@
     },
     {
       "path": "reference/logs/FPGA_DEBUG_LOG_20261010_r4_uart_and_reset.md",
-      "size_bytes": 3823,
-      "sha256": "2410c3295941ec34a536844f22b455176b701cde28ae8c6b0f65606af609c694"
+      "size_bytes": 3826,
+      "sha256": "b21dd802f861d820b295d8f9832931d7d3b3cc38fdb39f89065986c3f92e8664"
     },
     {
       "path": "reference/logs/FPGA_DEBUG_LOG_20261010.md",
@@ -373,7 +373,7 @@
     {
       "path": "source/rtl/top.v",
       "size_bytes": 7603,
-      "sha256": "68baa510029ad4ec7fb21336755b87207f003ba37a76fec991a54adca1cc20aa"
+      "sha256": "0c54df1fd494dd0b9be5f1b1f737534182125331dbc936a7472b22f07cdd8b76"
     },
     {
       "path": "source/sim/tb_pt8211_tx.v",

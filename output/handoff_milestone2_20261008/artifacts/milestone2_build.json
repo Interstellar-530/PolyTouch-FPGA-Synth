@@ -8,11 +8,11 @@
   "normal_bitstream": {
     "path": "artifacts/instrument.fs",
     "size_bytes": 7264154,
-    "sha256": "7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc",
-    "user_code": "0x0000136B"
+    "sha256": "a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34",
+    "user_code": "0x000064F6"
   },
   "resources": {
-    "lut_alu_rom16": 1261,
+    "lut_alu_rom16": 1259,
     "registers_total": 429,
     "bsram": 1,
     "mult18x18": 3,
@@ -21,7 +21,7 @@
   },
   "timing": {
     "constraint_mhz": 27.0,
-    "actual_fmax_mhz": 63.276,
+    "actual_fmax_mhz": 54.361,
     "setup_violated_endpoints": 0,
     "hold_violated_endpoints": 0
   },

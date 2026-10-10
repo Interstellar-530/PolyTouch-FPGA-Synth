@@ -87,7 +87,9 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 - UART 115200 控制接口可用：写 `F440` 设音高，写 `M0` 数字静音用于分离数字噪声与板级底噪。
 - S3/D7 同步复位已实现；S0/T10 因是配置专用 SSPI 引脚无法使用，S4/B10 是 RECONFIG_N，不能当按键。
 - 平滑滤波加强为 (1,4,6,4,1)/16，音频与 UART 输出驱动强度降到 4 mA。
-- 资源：1261 LUT/ALU、429 寄存器、1 BSRAM、1.5 DSP；0 时序违规，Fmax 63.276 MHz。
-- 修订四码流 SHA256 `7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc`，User Code `0x0000136B`。
+- 资源：1259 LUT/ALU、429 寄存器、1 BSRAM、1.5 DSP；0 时序违规，Fmax 54.361 MHz。
+- 修订四码流 SHA256 `a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34`，User Code `0x000064F6`。
 - 外部硬件清单与版本规划见 `reference/planning/外部硬件清单与版本规划.md`。
 - 待确认：`M0` 静音后啸叫是否仍然存在，用来判断噪声来自数字侧还是模拟侧。
+
+

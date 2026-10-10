@@ -74,7 +74,12 @@
 - 平滑滤波从 (1,2,1)/4 加强为 (1,4,6,4,1)/16，在 8 kHz 处约 -5 dB、15 kHz 约 -22 dB、20 kHz 约 -26 dB，Nyquist 处有零点。
 - 新增 S3/D7 上的同步复位：两拍同步器加复位树，耳机功放使能只跟随上电复位，按键复位不关功放也不产生爆音。
 - `source/constraints/primer20k_dock3714.cst` 新增 `key_rst`(D7)、`uart_rx`(N6)、`uart_tx`(N7)，并把音频与 UART 输出的 `DRIVE` 从默认 8 mA 降到 4，降低 BCK 向模拟通路的耦合。
-- 构建结果：1261 LUT/ALU、429 寄存器、1 BSRAM、3 个 18×18 乘法器和 1 个 PADD18；0 建立违规、0 保持违规，Fmax 63.276 MHz。
-- 修订四码流 SHA256 `7a409f4e3b38b0718d5a84c2c1f4a4b815ccab2b4d8982edeaf3298b23c2b3cc`，User Code `0x0000136B`，已用 SRAM Program 写入并读回确认。
+- 构建结果：1259 LUT/ALU、429 寄存器、1 BSRAM、3 个 18×18 乘法器和 1 个 PADD18；0 建立违规、0 保持违规，Fmax 54.361 MHz。
+- 修订四码流 SHA256 `a4188e1b90c84e904532644aca573608fb8eca1cb5e4d84e2f8ffb75dd463a34`，User Code `0x000064F6`，已用 SRAM Program 写入并读回确认。
 - 排除了 S0/T10 作为用户 IO 的可能：布局布线报 `the location is a dedicated pin (SSPI)`。
 - 新增 `docs/planning/外部硬件清单与版本规划.md`，整理外设清单、最终产物和 v0.5 到 v1.0 的版本规划。
+
+
+
+首轮构建后发现 FIR 系数写成 (1,2,6,2,1)，与设计的 (1,4,6,4,1) 不符，把 (v1 + v3) <<< 1 改成 <<< 2 后重新构建、烧录。以上资源、Fmax、哈希、User Code 均为修正后的最终值。
+
