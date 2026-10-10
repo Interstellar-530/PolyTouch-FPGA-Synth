@@ -15,3 +15,7 @@ output/handoff_milestone2_20261008/artifacts/*.fs
 output/handoff_milestone2_20261008.zip
 # Duplicate schematics already included in board_docs and the handoff zip.
 docs/references/*.pdf
+
+# Generated Gowin project and implementation outputs inside the handoff package.
+output/handoff_milestone2_20261008/source/impl/
+output/handoff_milestone2_20261008/source/build/gowin_single_voice/
