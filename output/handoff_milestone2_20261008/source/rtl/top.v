@@ -26,6 +26,8 @@ module top (
     output wire pa_en,
     output wire led,         // N16, run indicator
     output wire led_chord,   // N14, lit while chord set B is selected
+    output wire led_t0,      // L14, tempo preset bit 0
+    output wire led_t1,      // L16, tempo preset bit 1
     output wire uart_tx      // M11, to BL702 UART1_RX
 );
 
@@ -103,16 +105,25 @@ module top (
     wire s1_press = s1_stable & ~s1_stable_d;
     wire s2_press = s2_stable & ~s2_stable_d;
 
-    // S1 selects between the two harmonisations; S2 restarts the tune.
+    // S1 selects between the two harmonisations.  S2 steps through the four
+    // tempo presets, stretching every note slot by 1x .. 4x, and restarts the
+    // tune so the change is heard immediately.  The two spare LEDs show the
+    // preset in binary, which makes it possible to report back "preset 2 is
+    // right" instead of guessing.
     reg chord_set;
     reg restart;
+    reg [1:0] tempo_sel;
+
     always @(posedge clk_27m) begin
         if (por) begin
             chord_set <= 1'b0;
             restart   <= 1'b0;
+            tempo_sel <= 2'd1;      // default: 2x slower than written
         end else begin
             if (s1_press)
                 chord_set <= ~chord_set;
+            if (s2_press)
+                tempo_sel <= tempo_sel + 2'd1;   // wraps 3 -> 0
             restart <= s2_press;
         end
     end
@@ -130,6 +141,7 @@ module top (
         .sample_tick  (sample_tick),
         .restart      (restart),
         .chord_set    (chord_set),
+        .tempo_sel    (tempo_sel),
         .ev_wr        (sp_ev_wr),
         .ev_data      (sp_ev_data),
         .mel_idx_dbg  (),
@@ -262,5 +274,7 @@ module top (
     // muted; N14 is lit while chord set B is selected.
     assign led       = uart_muted ? 1'b0 : led_blink;
     assign led_chord = ~chord_set;
+    assign led_t0    = ~tempo_sel[0];
+    assign led_t1    = ~tempo_sel[1];
 
 endmodule

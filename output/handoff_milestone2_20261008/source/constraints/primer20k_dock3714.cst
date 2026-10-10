@@ -28,6 +28,14 @@ IO_PORT "led" IO_TYPE=LVCMOS33 DRIVE=4;
 IO_LOC "led_chord" N14;
 IO_PORT "led_chord" IO_TYPE=LVCMOS33 DRIVE=4;
 
+// Orange_LED4 on L14 and Orange_LED5 on L16 show the tempo preset in binary,
+// so pressing S2 gives visible feedback without listening to the audio.
+IO_LOC "led_t0" L14;
+IO_PORT "led_t0" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led_t1" L16;
+IO_PORT "led_t1" IO_TYPE=LVCMOS33 DRIVE=4;
+
 // S3 / D7 is used as the synchronous design reset. T10 (S0) looks like the
 // natural choice because the board names its net FPGA_~RST, but the
 // GW2A-18PG256 package reserves T10 for the configuration SSPI function and

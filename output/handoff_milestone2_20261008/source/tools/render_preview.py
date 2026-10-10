@@ -139,11 +139,13 @@ def build_script(chord_set):
     script = {}
 
     tick = 0
-    for note, slot, code in song_data.melody_events():
+    for note, on_units, code in song_data.melody_events():
+        slot = song_data.slot_units(on_units)
+        gap = song_data.gap_units(on_units)
         script.setdefault(tick, []).append(
             ("on", note, song_data.VELOCITY_CODES[code]))
-        # the voice is released GAP_TICKS before the next note starts
-        script.setdefault(tick + slot - song_data.GAP_TICKS, []).append(("off", note))
+        # the voice is released one gap before the next note starts
+        script.setdefault(tick + slot - gap, []).append(("off", note))
         tick += slot
 
     tick, prev_triad = 0, []
@@ -164,13 +166,14 @@ def build_script(chord_set):
     return script
 
 
-def render(chord_set="A"):
+def render(chord_set="A", tempo_mult=1):
     table = load_wave()
     alloc = Allocator()
     script = build_script(chord_set)
 
-    total_ticks = sum(t for _n, t, _c in song_data.melody_events())
-    total_samples = total_ticks * song_data.TICK_SAMPLES
+    unit_samples = song_data.UNIT_SAMPLES * tempo_mult
+    total_ticks = song_data.total_slot_units()
+    total_samples = total_ticks * unit_samples
 
     samples = []
     hist = [0, 0, 0, 0]
@@ -186,7 +189,7 @@ def render(chord_set="A"):
                 else:
                     alloc.note_on(item[1], item[2])
             tick = (tick + 1) % total_ticks
-            next_boundary = tick * song_data.TICK_SAMPLES
+            next_boundary = tick * unit_samples
 
         total = sum(v.step(table) for v in alloc.voices)
         scaled = (total + (1 << (VOLUME_SHIFT - 1))) >> VOLUME_SHIFT
@@ -207,6 +210,7 @@ def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
         SRC, "..", "artifacts", "lanhuacao_preview.wav")
     chord_set = (sys.argv[2] if len(sys.argv) > 2 else "A").upper()
+    tempo_mult = int(sys.argv[3]) if len(sys.argv) > 3 else 1
 
     issues = song_data.check()
     if issues:
@@ -216,7 +220,7 @@ def main():
     if chord_set not in song_data.CHORD_SETS:
         raise SystemExit(f"unknown chord set {chord_set}")
 
-    samples, peak = render(chord_set)
+    samples, peak = render(chord_set, tempo_mult)
     if peak == 0:
         raise SystemExit("FAIL: the render is silent")
 
@@ -229,7 +233,7 @@ def main():
         handle.writeframes(b"".join(struct.pack("<h", s) for s in samples))
 
     print(f"wrote {out}")
-    print(f"chord set {chord_set}: {len(samples)} samples, "
+    print(f"chord set {chord_set}, tempo x{tempo_mult}: {len(samples)} samples, "
           f"{len(samples) / song_data.SAMPLE_RATE:.2f} s, peak {peak} "
           f"({20 * math.log10(peak / 32768.0):.1f} dBFS)")
 

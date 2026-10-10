@@ -48,16 +48,20 @@ def main():
     samples = read_wav(path)
     rate = song_data.SAMPLE_RATE
 
+    tempo_mult = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    unit_samples = song_data.UNIT_SAMPLES * tempo_mult
     window = 4000
     warmup = 2000
     failures = 0
     rows = []
     tick = 0
 
-    for note, slot, _code in song_data.melody_events():
+    for note, on_units, _code in song_data.melody_events():
+        slot = song_data.slot_units(on_units)
+        gap = song_data.gap_units(on_units)
         # measure inside the sounding part of the slot, after the attack
-        start = tick * song_data.TICK_SAMPLES + warmup
-        stop = (tick + slot - song_data.GAP_TICKS) * song_data.TICK_SAMPLES
+        start = tick * unit_samples + warmup
+        stop = (tick + slot - gap) * unit_samples
         tick += slot
         if stop - start < window:
             continue

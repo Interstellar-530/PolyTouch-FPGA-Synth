@@ -6,16 +6,18 @@
 // the same bus; nothing in this file changes.
 //
 // ROM contents come from tools/gen_song_rom.py:
-//   melody : {velocity_code[2:0], note[6:0], slot_ticks[5:0]}, note 0 = rest
-//   chords : {root[7:0], ticks[5:0], quality[1:0]}, quality 0 = major, 1 = minor
-// One tick is an eighth of a beat; a phrase is TICKS_PER_PHRASE ticks.
+//   melody : {velocity_code[2:0], note[6:0], sounding_units[5:0]}, note 0 = rest
+//   chords : {root[7:0], slot_units[5:0], quality[1:0]}, quality 0 = major
 //
-// Every melody note is released GAP_TICKS before its slot ends.  Without that
-// gap the notes run into each other and the tune turns into one continuous
-// line, which makes it hard to check note by note.
+// One unit is a sixteenth note, four units to the beat.  The melody ROM stores
+// how long each note SOUNDS; the player adds the articulation gap (a quarter of
+// the note, at least one unit) itself, so a short note still gets heard.
+//
+// tempo_sel stretches every unit by 1x .. 4x.  That lets the same bitstream be
+// played at the written tempo or several times slower without a rebuild, which
+// is how the listening tempo gets settled.
 module song_player #(
-    parameter integer TICK_SAMPLES = 5327,
-    parameter integer GAP_TICKS    = 2,
+    parameter integer UNIT_SAMPLES = 9766,
     parameter [7:0]   CHORD_VEL    = 8'd32,
     parameter [5:0]   MELODY_LAST  = 6'd40,
     parameter [3:0]   CHORD_LAST   = 4'd8
@@ -25,6 +27,7 @@ module song_player #(
     input  wire       sample_tick,
     input  wire       restart,
     input  wire       chord_set,        // 0 = set A, 1 = set B
+    input  wire [1:0] tempo_sel,        // 0..3 -> every unit stretched 1x..4x
     output reg        ev_wr,
     output reg [15:0] ev_data,
     output wire [5:0] mel_idx_dbg,
@@ -44,7 +47,12 @@ module song_player #(
 
     // ----------------------------------------------------------- tick base --
     reg [15:0] tick_cnt;
-    wire       tick_pulse = (tick_cnt == TICK_SAMPLES - 1);
+    // UNIT_SAMPLES * 4 is 39064, still inside 16 bits, so the slice below is
+    // exact; slicing keeps the 32 bit parameter arithmetic explicit.
+    wire [31:0] tick_period = UNIT_SAMPLES * (tempo_sel + 1);
+    wire [15:0] tick_top    = tick_period[15:0] - 16'd1;
+
+    wire tick_pulse = (tick_cnt == tick_top);
 
     always @(posedge clk) begin
         if (rst)
@@ -58,6 +66,7 @@ module song_player #(
     reg [3:0]  chord_idx;
     reg [7:0]  mel_left;
     reg [7:0]  chord_left;
+    reg [7:0]  mel_gap_len;      // gap of the note that is currently sounding
 
     // Notes of the chord that is currently sounding, so the "off" events match
     // what was switched on even if the chord set changes in between.
@@ -67,7 +76,11 @@ module song_player #(
     wire [6:0] mel_cur_note  = mel_rom[mel_idx][12:6];
     wire [6:0] mel_nxt_note  = mel_rom[mel_nxt][12:6];
     wire [2:0] mel_nxt_code  = mel_rom[mel_nxt][15:13];
-    wire [5:0] mel_nxt_ticks = mel_rom[mel_nxt][5:0];
+    wire [5:0] mel_nxt_on    = mel_rom[mel_nxt][5:0];
+
+    // gap = max(1, sounding / 4), exactly what song_data.gap_units() computes.
+    wire [5:0] mel_nxt_gap   = (mel_nxt_on < 6'd4) ? 6'd1 : (mel_nxt_on >> 2);
+    wire [6:0] mel_nxt_slot  = {1'b0, mel_nxt_on} + {1'b0, mel_nxt_gap};
 
     // Velocity code to actual velocity.  The accent lands on the first note of
     // every phrase so the metre is audible even when only one note is heard.
@@ -98,7 +111,8 @@ module song_player #(
 
     wire mel_expire   = tick_pulse && (mel_left   <= 8'd1);
     wire chord_expire = tick_pulse && (chord_left <= 8'd1);
-    wire mel_gap      = tick_pulse && (mel_left == (GAP_TICKS + 1));
+    wire mel_gap      = tick_pulse && (mel_gap_len != 8'd0) &&
+                        (mel_left == (mel_gap_len + 8'd1));
 
     // -------------------------------------------------------- event bursts --
     // One burst carries at most eight events.  All the note-offs are emitted
@@ -115,6 +129,7 @@ module song_player #(
             chord_idx  <= CHORD_LAST;
             mel_left   <= 8'd0;
             chord_left <= 8'd0;
+            mel_gap_len <= 8'd1;
             cnote0     <= 7'd0;
             cnote1     <= 7'd0;
             cnote2     <= 7'd0;
@@ -131,6 +146,7 @@ module song_player #(
                 chord_idx  <= CHORD_LAST;
                 mel_left   <= 8'd0;
                 chord_left <= 8'd0;
+                mel_gap_len <= 8'd1;
                 cnote0     <= 7'd0;
                 cnote1     <= 7'd0;
                 cnote2     <= 7'd0;
@@ -164,8 +180,9 @@ module song_player #(
                     bactive <= 1'b1;
 
                     if (mel_expire) begin
-                        mel_idx  <= mel_nxt;
-                        mel_left <= mel_nxt_ticks;
+                        mel_idx     <= mel_nxt;
+                        mel_left    <= {1'b0, mel_nxt_slot};
+                        mel_gap_len <= {1'b0, mel_nxt_gap};
                     end else begin
                         mel_left <= mel_left - 8'd1;
                     end
