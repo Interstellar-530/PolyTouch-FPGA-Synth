@@ -137,11 +137,23 @@ function Refresh-Ports {
     }
     # Do not probe by opening every port here: the Bluetooth virtual ports on
     # this machine take seconds to time out and would freeze the window.
-    # The highest numbered port is normally the one that was just plugged in.
-    if ($cmbPort.Items.Count -gt 0) {
-        $cmbPort.Text = $cmbPort.Items[$cmbPort.Items.Count - 1]
+    # Prefer a USB serial device and skip the Bluetooth virtual ports, which
+    # are never the board.
+    $usb = @()
+    $bt  = @()
+    foreach ($p in $cmbPort.Items) {
+        $name = ''
+        try {
+            $dev = Get-CimInstance Win32_PnPEntity -ErrorAction SilentlyContinue |
+                   Where-Object { $_.Name -match "\($p\)" } | Select-Object -First 1
+            if ($dev) { $name = $dev.Name }
+        } catch { }
+        if ($name -match '蓝牙|Bluetooth') { $bt += $p } else { $usb += $p }
     }
+    if ($usb.Count -gt 0) { $cmbPort.Text = $usb[$usb.Count - 1] }
+    elseif ($bt.Count -gt 0) { $cmbPort.Text = $bt[0] }
     Append-Recv ("检测到端口: " + (($cmbPort.Items | ForEach-Object { $_.ToString() }) -join ', ') + "`r`n")
+    Append-Recv ("其中 USB 串口: " + ($usb -join ', ') + " ；蓝牙虚拟串口: " + ($bt -join ', ') + "`r`n")
 }
 
 $btnRefresh.Add_Click({ Refresh-Ports })
