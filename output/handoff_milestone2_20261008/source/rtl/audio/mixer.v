@@ -4,7 +4,7 @@
 // 16 bits, then smoothed by the same (1,4,6,4,1)/16 FIR the single voice used
 // and finally scaled by a power-of-two master volume with rounding.
 module mixer #(
-    parameter [3:0] VOLUME_SHIFT = 4'd2      // divide by 4, about -12 dB
+    parameter [3:0] VOLUME_SHIFT = 4'd1      // divide by 2, about -6 dB
 )(
     input  wire               clk,
     input  wire               rst,

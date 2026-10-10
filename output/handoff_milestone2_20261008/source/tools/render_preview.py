@@ -28,7 +28,8 @@ ATTACK_STEP = 140
 DECAY_STEP = 16
 RELEASE_STEP = 48
 SUSTAIN_LEVEL = 45875
-VOLUME_SHIFT = 2
+# Must match mixer.v VOLUME_SHIFT: 1 means the master level is -6 dB.
+VOLUME_SHIFT = 1
 
 
 def load_wave():
@@ -149,12 +150,13 @@ def build_script(chord_set):
         tick += slot
 
     tick, prev_triad = 0, []
+    chord_vel = song_data.CHORD_VELOCITY[0 if chord_set == "A" else 1]
     for root, quality, length in song_data.chord_events(chord_set):
         for note in prev_triad:
             script.setdefault(tick, []).append(("off", note))
         triad = song_data.triad(root, quality)
         for note in triad:
-            script[tick].append(("on", note, song_data.CHORD_VELOCITY))
+            script[tick].append(("on", note, chord_vel))
         prev_triad = triad
         tick += length
 

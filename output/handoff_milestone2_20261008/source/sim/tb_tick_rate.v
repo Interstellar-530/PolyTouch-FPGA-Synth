@@ -1,9 +1,14 @@
 `timescale 1ns/1ps
 
-// Measures the real sample tick period of the PT8211 transmitter, in 27 MHz
-// clock cycles.  Nominal is BCK = 27/18 = 1.5 MHz and 32 BCK per frame, i.e.
-// 576 clocks, or 46875 Hz.
+// Check the PT8211 frame rate.
+//
+// Nominal: BCK = 27 MHz / 18 = 1.5 MHz and one frame is 32 BCK, so a new
+// sample_tick must arrive every 576 clocks.  If this test fails the pitch and
+// every timing derived from it are wrong, so it is the first gate.
 module tb_tick_rate;
+    parameter EXPECTED_CLOCKS = 576;
+    parameter TOLERANCE       = 1;
+
     reg clk = 1'b0;
     reg rst = 1'b1;
     reg signed [15:0] sample_in = 16'sd0;
@@ -25,14 +30,22 @@ module tb_tick_rate;
     integer clocks = 0;
     integer ticks = 0;
     integer last_tick_clock = 0;
+    integer checked = 0;
+    integer bad = 0;
 
     always @(posedge clk) begin
         clocks = clocks + 1;
         if (sample_tick) begin
             ticks = ticks + 1;
-            if (ticks <= 4)
-                $display("sample_tick %0d at clock %0d, period %0d clocks",
-                         ticks, clocks, clocks - last_tick_clock);
+            if (ticks > 1) begin
+                checked = checked + 1;
+                if ((clocks - last_tick_clock) < EXPECTED_CLOCKS - TOLERANCE ||
+                    (clocks - last_tick_clock) > EXPECTED_CLOCKS + TOLERANCE) begin
+                    bad = bad + 1;
+                    $display("FAIL: sample_tick period %0d clocks, expected %0d",
+                             clocks - last_tick_clock, EXPECTED_CLOCKS);
+                end
+            end
             last_tick_clock = clocks;
         end
     end
@@ -42,8 +55,13 @@ module tb_tick_rate;
         rst = 1'b0;
         sample_in = 16'sh2000;
         #4000000;
-        $display("total ticks %0d, sample rate %0.1f Hz",
-                 ticks, ticks * 1.0e9 / 4000000.0 * 1.0 / 1.0);
+        if (checked == 0)
+            $fatal(1, "FAIL tb_tick_rate: no sample_tick seen");
+        if (bad != 0)
+            $fatal(1, "FAIL tb_tick_rate: %0d of %0d periods wrong", bad, checked);
+        $display("PASS tb_tick_rate: %0d periods, all %0d clocks (%0.1f Hz)",
+                 checked, EXPECTED_CLOCKS,
+                 checked * 1.0e9 / (checked * EXPECTED_CLOCKS * 18.5185));
         $finish;
     end
 endmodule

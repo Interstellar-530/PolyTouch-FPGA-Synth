@@ -18,9 +18,10 @@
 // is how the listening tempo gets settled.
 module song_player #(
     parameter integer UNIT_SAMPLES = 9766,
-    parameter [7:0]   CHORD_VEL    = 8'd32,
+    parameter [7:0]   CHORD_VEL_A  = 8'd30,
+    parameter [7:0]   CHORD_VEL_B  = 8'd46,
     parameter [5:0]   MELODY_LAST  = 6'd40,
-    parameter [3:0]   CHORD_LAST   = 4'd8
+    parameter [4:0]   CHORD_LAST   = 5'd17
 )(
     input  wire       clk,
     input  wire       rst,
@@ -31,7 +32,7 @@ module song_player #(
     output reg        ev_wr,
     output reg [15:0] ev_data,
     output wire [5:0] mel_idx_dbg,
-    output wire [3:0] chord_idx_dbg
+    output wire [4:0] chord_idx_dbg
 );
 
     // ----------------------------------------------------------- tables ---
@@ -63,7 +64,7 @@ module song_player #(
 
     // ------------------------------------------------------------ pointers --
     reg [5:0]  mel_idx;
-    reg [3:0]  chord_idx;
+    reg [4:0]  chord_idx;
     reg [7:0]  mel_left;
     reg [7:0]  chord_left;
     reg [7:0]  mel_gap_len;      // gap of the note that is currently sounding
@@ -102,9 +103,12 @@ module song_player #(
         end
     endfunction
 
-    wire [3:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 4'd0 : chord_idx + 4'd1;
+    wire [4:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 5'd0 : chord_idx + 5'd1;
     wire [15:0] ch_nxt_entry = chord_set ? chord_b_word(chord_nxt)
                                          : chord_a_word(chord_nxt);
+    // The two harmonisations also differ in level, which makes the S1 switch
+    // unmistakable next to the different progressions.
+    wire [7:0]  chord_vel    = chord_set ? CHORD_VEL_B : CHORD_VEL_A;
     wire [7:0]  ch_nxt_root  = ch_nxt_entry[15:8];
     wire [7:0]  ch_nxt_ticks = ch_nxt_entry[7:2];
     wire [7:0]  ch_nxt_third = (ch_nxt_entry[1:0] == 2'd0) ? 8'd4 : 8'd3;
@@ -175,9 +179,9 @@ module song_player #(
                     bdata[3] <= {1'b0, cnote2,       8'd0};
                     // note fields are seven bits, exactly like the event word
                     bdata[4] <= {1'b1, mel_nxt_note,   vel_of(mel_nxt_code)};
-                    bdata[5] <= {1'b1, ch_nxt_n0[6:0], CHORD_VEL};
-                    bdata[6] <= {1'b1, ch_nxt_n1[6:0], CHORD_VEL};
-                    bdata[7] <= {1'b1, ch_nxt_n2[6:0], CHORD_VEL};
+                    bdata[5] <= {1'b1, ch_nxt_n0[6:0], chord_vel};
+                    bdata[6] <= {1'b1, ch_nxt_n1[6:0], chord_vel};
+                    bdata[7] <= {1'b1, ch_nxt_n2[6:0], chord_vel};
 
                     bidx    <= 3'd0;
                     bactive <= 1'b1;

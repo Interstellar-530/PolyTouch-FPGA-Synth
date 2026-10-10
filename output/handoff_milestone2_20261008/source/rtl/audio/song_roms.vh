@@ -12,16 +12,16 @@ function [15:0] mel_word;
             6'd2: mel_word = 16'hb282;
             6'd3: mel_word = 16'hb282;
             6'd4: mel_word = 16'hb286;
-            6'd5: mel_word = 16'hf202;
-            6'd6: mel_word = 16'hb183;
-            6'd7: mel_word = 16'hb201;
+            6'd5: mel_word = 16'hf203;
+            6'd6: mel_word = 16'hb181;
+            6'd7: mel_word = 16'hb202;
             6'd8: mel_word = 16'hb182;
-            6'd9: mel_word = 16'hb142;
+            6'd9: mel_word = 16'hb146;
             6'd10: mel_word = 16'hf0c4;
             6'd11: mel_word = 16'hb0c2;
             6'd12: mel_word = 16'hb0c2;
             6'd13: mel_word = 16'hb0c2;
-            6'd14: mel_word = 16'hb0c2;
+            6'd14: mel_word = 16'hb0c4;
             6'd15: mel_word = 16'hf342;
             6'd16: mel_word = 16'hb282;
             6'd17: mel_word = 16'hb342;
@@ -32,58 +32,76 @@ function [15:0] mel_word;
             6'd22: mel_word = 16'hb0c2;
             6'd23: mel_word = 16'hb342;
             6'd24: mel_word = 16'hb286;
-            6'd25: mel_word = 16'hf202;
-            6'd26: mel_word = 16'hb183;
-            6'd27: mel_word = 16'hb201;
+            6'd25: mel_word = 16'hf203;
+            6'd26: mel_word = 16'hb181;
+            6'd27: mel_word = 16'hb202;
             6'd28: mel_word = 16'hb182;
-            6'd29: mel_word = 16'hb142;
-            6'd30: mel_word = 16'hf0c2;
-            6'd31: mel_word = 16'hb283;
-            6'd32: mel_word = 16'hb281;
+            6'd29: mel_word = 16'hb146;
+            6'd30: mel_word = 16'hf0c3;
+            6'd31: mel_word = 16'hb281;
+            6'd32: mel_word = 16'hb282;
             6'd33: mel_word = 16'hb182;
-            6'd34: mel_word = 16'hb182;
+            6'd34: mel_word = 16'hb186;
             6'd35: mel_word = 16'hf144;
             6'd36: mel_word = 16'hb0c2;
             6'd37: mel_word = 16'hb282;
             6'd38: mel_word = 16'hb202;
-            6'd39: mel_word = 16'hb182;
-            6'd40: mel_word = 16'hf0d0;
+            6'd39: mel_word = 16'hb184;
+            6'd40: mel_word = 16'hf0ce;
             default: mel_word = 16'h0000;
         endcase
     end
 endfunction
 
 function [15:0] chord_a_word;
-    input [3:0] idx;
+    input [4:0] idx;
     begin
         case (idx)
-            4'd0: chord_a_word = 16'h374d;
-            4'd1: chord_a_word = 16'h3c3d;
-            4'd2: chord_a_word = 16'h3745;
-            4'd3: chord_a_word = 16'h354c;
-            4'd4: chord_a_word = 16'h374d;
-            4'd5: chord_a_word = 16'h3c3d;
-            4'd6: chord_a_word = 16'h3a3c;
-            4'd7: chord_a_word = 16'h3745;
-            4'd8: chord_a_word = 16'h3751;
+            5'd0: chord_a_word = 16'h3729;
+            5'd1: chord_a_word = 16'h3725;
+            5'd2: chord_a_word = 16'h3c29;
+            5'd3: chord_a_word = 16'h3c25;
+            5'd4: chord_a_word = 16'h3729;
+            5'd5: chord_a_word = 16'h3524;
+            5'd6: chord_a_word = 16'h3c29;
+            5'd7: chord_a_word = 16'h3c25;
+            5'd8: chord_a_word = 16'h3729;
+            5'd9: chord_a_word = 16'h3725;
+            5'd10: chord_a_word = 16'h3c29;
+            5'd11: chord_a_word = 16'h3c25;
+            5'd12: chord_a_word = 16'h3a28;
+            5'd13: chord_a_word = 16'h3524;
+            5'd14: chord_a_word = 16'h3c29;
+            5'd15: chord_a_word = 16'h3725;
+            5'd16: chord_a_word = 16'h3725;
+            5'd17: chord_a_word = 16'h3721;
             default: chord_a_word = 16'h0000;
         endcase
     end
 endfunction
 
 function [15:0] chord_b_word;
-    input [3:0] idx;
+    input [4:0] idx;
     begin
         case (idx)
-            4'd0: chord_b_word = 16'h3a4c;
-            4'd1: chord_b_word = 16'h353c;
-            4'd2: chord_b_word = 16'h3c45;
-            4'd3: chord_b_word = 16'h3e4d;
-            4'd4: chord_b_word = 16'h3a4c;
-            4'd5: chord_b_word = 16'h353c;
-            4'd6: chord_b_word = 16'h373d;
-            4'd7: chord_b_word = 16'h3c45;
-            4'd8: chord_b_word = 16'h3751;
+            5'd0: chord_b_word = 16'h3a28;
+            5'd1: chord_b_word = 16'h3524;
+            5'd2: chord_b_word = 16'h3729;
+            5'd3: chord_b_word = 16'h3e25;
+            5'd4: chord_b_word = 16'h3c29;
+            5'd5: chord_b_word = 16'h3a24;
+            5'd6: chord_b_word = 16'h3528;
+            5'd7: chord_b_word = 16'h3725;
+            5'd8: chord_b_word = 16'h3a28;
+            5'd9: chord_b_word = 16'h3524;
+            5'd10: chord_b_word = 16'h3729;
+            5'd11: chord_b_word = 16'h3e25;
+            5'd12: chord_b_word = 16'h3c29;
+            5'd13: chord_b_word = 16'h3a24;
+            5'd14: chord_b_word = 16'h3528;
+            5'd15: chord_b_word = 16'h3725;
+            5'd16: chord_b_word = 16'h3725;
+            5'd17: chord_b_word = 16'h3721;
             default: chord_b_word = 16'h0000;
         endcase
     end

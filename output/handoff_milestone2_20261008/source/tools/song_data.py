@@ -28,17 +28,16 @@ DEGREE_MIDI = {
 # The score is marked quarter = 72 in 2/4 and its shortest note value is a
 # sixteenth, so one tick is a sixteenth note and one beat is four ticks.  The
 # debug sample rate is 27e6 / 18 / 32 = 46875 Hz.
-#
-# Every note is written as its sounding length in sixteenths; the player adds
-# the articulation gap itself, see gap_units().
 BPM = 72
 SAMPLE_RATE = 46875
 UNIT_SAMPLES = round(60 / BPM / 4 * SAMPLE_RATE)     # 9766 samples per sixteenth
 
-# The board can stretch every tick by 1x .. 4x at run time with key S2, so one
-# bitstream covers both a rehearsal tempo and the written tempo.
+# The board stretches every tick by 1x .. 4x at run time with key S2.  Preset
+# index 1 (2x) is the one that was reported as the right playback speed, so it
+# is the power-on default.  The indicator LEDs are active low and driven as
+# ~tempo_sel[bit], so index 1 shows L14 lit and L16 dark.
 TEMPO_PRESETS = (1, 2, 3, 4)
-TEMPO_DEFAULT = 1                                     # index 1, i.e. 2x slower
+TEMPO_DEFAULT = 1                                     # index 1, i.e. 2x
 
 # Velocity codes stored in the melody ROM.  Three bits per note, so the phrase
 # head can be accented without a second ROM.
@@ -46,30 +45,28 @@ VELOCITY_CODES = (0, 32, 56, 72, 88, 104, 120, 127)
 MELODY_ACCENT_CODE = 7       # first note of every phrase
 MELODY_NORMAL_CODE = 5
 
-# The accompaniment sits below the melody so the tune is the part the ear
-# follows.  A sustained triad at 32 against a melody at 104..127 is roughly
-# 8 to 10 dB of separation.
-CHORD_VELOCITY = 32
+# Chord loudness per set, indexed by the chord_set signal.  Apart from the
+# different progressions, the two sets also differ in level, which makes the
+# switch obvious at a glance.
+CHORD_VELOCITY = (30, 46)
 
 # (lyric, [(degree, sounding length in sixteenths), ...]).
 #
-# The rhythm follows the score rather than a uniform pulse: the phrases the
-# score writes as "6 3 3 3 | 3. 2" are four eighth notes plus a dotted quarter,
-# the phrases it writes as "1. 2 1 7" open with a dotted eighth plus sixteenth,
-# and "种在小院中" starts on a quarter where the score has "6 -".
-#
-# A sixteenth at quarter = 72 is about 208 ms, so the player's default 2x
-# tempo preset makes one sixteenth about 417 ms and an eighth about 833 ms.
+# Every sung phrase is 14 sixteenths, so the phrases stay the same length and
+# the harmony changes on a steady grid.  The rhythm follows the score's own
+# figures: phrases the score writes as "6 3 3 3" are four eighth notes, phrases
+# written "1. 2 1 7" open with a dotted eighth plus sixteenth, and the phrases
+# the score starts with "6 -" begin on a quarter.
 PHRASES = [
     ("我从山中来", [(6, 2), (3, 2), (3, 2), (3, 2), (3, 6)]),
-    ("带着兰花草", [(2, 2), (1, 3), (2, 1), (1, 2), (7, 2)]),
-    ("种在小院中", [(6, 4), (6, 2), (6, 2), (6, 2), (6, 2)]),
+    ("带着兰花草", [(2, 3), (1, 1), (2, 2), (1, 2), (7, 6)]),
+    ("种在小院中", [(6, 4), (6, 2), (6, 2), (6, 2), (6, 4)]),
     ("希望花开早", [(5, 2), (3, 2), (5, 2), (5, 2), ("4#", 6)]),
     ("一日看三回", [(3, 2), (6, 2), (6, 2), (5, 2), (3, 6)]),
-    ("看得花时过", [(2, 2), (1, 3), (2, 1), (1, 2), (7, 2)]),
-    ("兰花却依然", [(6, 2), (3, 3), (3, 1), (1, 2), (1, 2)]),
-    ("苞也无一个", [(7, 4), (6, 2), (3, 2), (2, 2), (1, 2)]),
-    ("尾声",       [(6, 16)]),
+    ("看得花时过", [(2, 3), (1, 1), (2, 2), (1, 2), (7, 6)]),
+    ("兰花却依然", [(6, 3), (3, 1), (3, 2), (1, 2), (1, 6)]),
+    ("苞也无一个", [(7, 4), (6, 2), (3, 2), (2, 2), (1, 4)]),
+    ("尾声",       [(6, 14)]),
 ]
 
 # Chord voicings sit below the melody so the two layers stay separated.
@@ -82,24 +79,24 @@ CHORD_VOICING = {
     "Dm": (62, 1),   # D4  F4  A4
 }
 
-# Two harmonisations of the same melody.  One chord per phrase, so the
-# key switch is clearly audible while the tune keeps running.
+# Two harmonisations, two chords per phrase.  Set A stays in the natural minor
+# orbit (i - iv - VII), set B leans on the brighter dorian colour (III - VII -
+# iv - v).  Both are 18 entries, two per phrase.
 CHORD_SETS = {
-    "A": ["Gm", "Cm", "Gm", "F", "Gm", "Cm", "Bb", "Gm", "Gm"],
-    "B": ["Bb", "F", "Cm", "Dm", "Bb", "F", "Gm", "Cm", "Gm"],
+    "A": ["Gm", "Gm", "Cm", "Cm", "Gm", "F",  "Cm", "Cm", "Gm", "Gm",
+          "Cm", "Cm", "Bb", "F",  "Cm", "Gm", "Gm", "Gm"],
+    "B": ["Bb", "F",  "Gm", "Dm", "Cm", "Bb", "F",  "Gm", "Bb", "F",
+          "Gm", "Dm", "Cm", "Bb", "F",  "Gm", "Gm", "Gm"],
 }
 
 ROM_WIDTH = 16
 MELODY_ROM_DEPTH = 64
-CHORD_ROM_DEPTH = 16
+CHORD_ROM_DEPTH = 32
+CHORDS_PER_PHRASE = 2
 
 
 def gap_units(on_units):
-    """Silence appended to a note: a quarter of its length, at least one tick.
-
-    Shortening every note is what makes the line sound separated instead of
-    running together, and the one-tick floor keeps even a sixteenth audible.
-    """
+    """Silence appended to a note: a quarter of its length, at least one tick."""
     return max(1, on_units // 4)
 
 
@@ -128,12 +125,22 @@ def total_slot_units():
 
 
 def chord_events(set_name):
-    """(root, quality, slot_units) for one chord set, one entry per phrase."""
+    """(root, quality, slot_units) for one chord set, in playing order."""
     events = []
     slots = phrase_slots()
-    for index, name in enumerate(CHORD_SETS[set_name]):
+    names = CHORD_SETS[set_name]
+    if len(names) != len(slots) * CHORDS_PER_PHRASE:
+        raise ValueError(f"chord set {set_name} must have "
+                         f"{len(slots) * CHORDS_PER_PHRASE} entries")
+
+    for index, name in enumerate(names):
+        total = slots[index // CHORDS_PER_PHRASE]
+        if index % CHORDS_PER_PHRASE == 0:
+            duration = total - total // 2
+        else:
+            duration = total // 2
         root, quality = CHORD_VOICING[name]
-        events.append((root, quality, slots[index]))
+        events.append((root, quality, duration))
     return events
 
 
@@ -160,7 +167,7 @@ def chord_rom_image(set_name):
 
 
 def check():
-    """Consistency checks that must hold before the ROMs are written."""
+    """Consistency checks that must hold before the tables are written."""
     problems = []
 
     for index, (lyric, notes) in enumerate(PHRASES):
@@ -174,9 +181,15 @@ def check():
             if slot_units(on_units) > 63:
                 problems.append(f"phrase {lyric} slot {slot_units(on_units)} does not fit the chord ROM field")
 
+    # Every sung phrase is the same length, which keeps the chord grid steady.
+    for index, (lyric, notes) in enumerate(PHRASES):
+        total = sum(on for _d, on in notes)
+        if index < len(PHRASES) - 1 and total != 14:
+            problems.append(f"phrase {lyric} sounds for {total} sixteenths, not 14")
+
     melody = melody_events()
     if len(melody) > MELODY_ROM_DEPTH:
-        problems.append(f"melody has {len(melody)} entries, ROM depth is {MELODY_ROM_DEPTH}")
+        problems.append(f"melody has {len(melody)} entries, table depth is {MELODY_ROM_DEPTH}")
     for note, on_units, code in melody:
         if not (0 < note < 128):
             problems.append(f"melody note {note} is out of MIDI range")
@@ -186,11 +199,14 @@ def check():
     for name in ("A", "B"):
         events = chord_events(name)
         if len(events) > CHORD_ROM_DEPTH:
-            problems.append(f"chord set {name} has {len(events)} entries, ROM depth is {CHORD_ROM_DEPTH}")
+            problems.append(f"chord set {name} has {len(events)} entries, table depth is {CHORD_ROM_DEPTH}")
         chord_ticks = sum(t for _r, _q, t in events)
         if chord_ticks != total_slot_units():
             problems.append(f"chord set {name} spans {chord_ticks} ticks "
                             f"but the melody spans {total_slot_units()}")
+        for _root, _quality, slot in events:
+            if slot < 1 or slot > 63:
+                problems.append(f"chord set {name} has a slot of {slot} ticks")
 
     if CHORD_SETS["A"] == CHORD_SETS["B"]:
         problems.append("chord sets A and B are identical, the key switch would be inaudible")
@@ -202,6 +218,9 @@ def check():
         for n in triad(root, quality):
             if not (0 < n < 128):
                 problems.append(f"chord {name} produces an out-of-range MIDI note {n}")
+
+    if not (0 <= TEMPO_DEFAULT < len(TEMPO_PRESETS)):
+        problems.append("TEMPO_DEFAULT is out of range")
 
     return problems
 
@@ -219,6 +238,9 @@ if __name__ == "__main__":
     print("song_data: all checks passed")
     print(f"melody entries {len(events)}, slot total {total} sixteenths "
           f"({total / 4:.1f} beats)")
+    print(f"phrase slots: {phrase_slots()}")
+    print(f"chords: {len(chord_events('A'))} per set, "
+          f"slots {[t for _r, _q, t in chord_events('A')]}")
     print(f"one sixteenth is {UNIT_SAMPLES} samples "
           f"({UNIT_SAMPLES / SAMPLE_RATE * 1000:.1f} ms) at quarter = {BPM} BPM")
     for index, mult in enumerate(TEMPO_PRESETS):

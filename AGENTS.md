@@ -12,6 +12,14 @@
 
 PDF 阅读默认先转 Markdown，再阅读；PDF 输出默认先写 Markdown，再用 Pandoc + XeLaTeX 生成并复核排版。转换工具在 `tools/docconvert_mcp`，运行环境在 `tools/.venv-docconvert`，OCR 数据在 `tools/tessdata`。原理图、引脚表、精确数值和表单必须渲染 PNG 视觉复核，不能只依赖 OCR。
 
+## 仿真与烧录门禁（强制）
+
+任何 Verilog 改动，在烧录之前必须先通过 RTL 仿真。这条规则不接受"改动很小""只调参数""时间紧"之类的例外。
+
+仿真门禁由 `output/handoff_milestone2_20261008/source/sim/run_simulation.ps1` 执行，它编译并运行全部测试台，任何一个失败就返回退出码 1。烧录脚本 `source/build/program_sram.ps1` 默认先跑这个门禁，未通过时直接拒绝烧录；`-SkipSimulation` 只在仿真器本身不可用的极端情况下使用，且必须在调试日志里写明原因。工具链是 Icarus Verilog（`C:\iverilog`），仅用于开发期仿真，不参与硬件运行。
+
+新增或修改功能时同步补测试台，并让测试台自检：断言不成立时用 `$fatal` 结束，使退出码非零，而不是只打印一行提示。历史教训是本项目曾把宽 576 个时钟的使能电平当成单周期脉冲使用，导致旋律飞速跑圈，读代码时完全看不出问题，只有逐周期仿真才暴露出来。
+
 关键产物按 `FPGA-日期-版本` 归档到 `archive/`。临时文件放在 `tmp/`，任务结束前清理；运行时依赖、工具源码和语言数据不当作临时文件删除。每次归档更新 `MANIFEST.md` 和 `checksums.sha256`。
 
 ## 参考文件

@@ -1,22 +1,24 @@
 `timescale 1ns/1ps
 
-// Self-checking smoke test for the four-voice chain.
+// Top level wiring check.
 //
-// It drives top with a fast 27 MHz clock, waits for the power-on reset, checks
-// that the voice allocator hands out four voices to a four note chord, checks
-// that a note-off releases the matching voice, and checks that S1 toggles the
-// chord set.  It is intentionally independent of real time: the sample tick
-// comes from pt8211_tx exactly as on hardware, so a few hundred microseconds
-// of simulation already cover several musical events.
+// This is deliberately short.  It checks that the design leaves reset, that
+// the default tempo preset is the one that was found correct on the bench, and
+// that the two user keys actually reach the sequencer through the debouncer.
+// Deep sequencer and audio timing are covered by tb_song_timing and
+// tb_tick_rate, which run much faster because they do not instantiate the
+// whole chip.
 module tb_poly;
 
+    parameter DEBOUNCE_HOLD = 50000000;   // 50 ms, longer than the 38.8 ms debounce
+
     reg clk = 1'b0;
-    reg key_rst = 1'b1;
+    reg key_rst = 1'b0;      // active low: 0 holds the design in reset
     reg key_s1 = 1'b1;
     reg key_s2 = 1'b1;
     reg uart_rx = 1'b1;
 
-    wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, uart_tx;
+    wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, led_t0, led_t1, uart_tx;
 
     integer errors = 0;
 
@@ -34,10 +36,14 @@ module tb_poly;
         .pa_en    (pa_en),
         .led      (led),
         .led_chord(led_chord),
+        .led_t0   (led_t0),
+        .led_t1   (led_t1),
         .uart_tx  (uart_tx)
     );
 
-    task expect;
+    // Named check_equal rather than "expect": that word is a SystemVerilog
+    // keyword and the parser rejects it as a task name.
+    task check_equal;
         input [255:0] what;
         input         got;
         input         want;
@@ -51,63 +57,45 @@ module tb_poly;
         end
     endtask
 
-    // Wait for n sample ticks of the 46.875 kHz debug rate.
-    task wait_ticks;
-        input integer n;
-        integer i;
-        begin
-            for (i = 0; i < n; i = i + 1)
-                @(posedge dut.sample_tick);
-        end
-    endtask
-
     initial begin
-        $dumpfile("tb_poly.vcd");
-        $dumpvars(0, tb_poly);
-
-        // Hold the design in reset for a while, then release it.
+        // Hold the design in reset, then release it.
         #100000;
-        key_rst = 1'b0;
-
-        // The sequencer should start the tune on its own: within two ticks the
-        // melody and the first chord must have claimed voices.
-        wait_ticks(4);
-        expect("voices allocated after start", |dut.v_gate, 1'b1);
-        expect("chord set A is the default", led_chord, 1'b0);
-
-        // The tune keeps running, so the mixer output must be non-zero at some
-        // point over the first musical phrase.
-        wait_ticks(400);
-        expect("audio is running", |dut.mixed, 1'b1);
-
-        // S1 toggles the chord set: the indicator follows, and the tune keeps
-        // playing.
-        key_s1 = 1'b0;
-        #5000000;                     // longer than the 38.8 ms debounce
-        key_s1 = 1'b1;
-        wait_ticks(4);
-        expect("S1 selected chord set B", led_chord, 1'b1);
-        expect("tune still running after the key switch", |dut.v_gate, 1'b1);
-
-        // S2 restarts: the allocator is cleared and the tune starts over.
-        key_s2 = 1'b0;
+        key_rst = 1'b1;
+        // The power-on reset takes 65536 clocks, about 2.4 ms; wait well past
+        // it before reading any output.
         #5000000;
+
+        // Default preset is index 2 (3x): bit 0 set, bit 1 clear.  The LEDs
+        // are active low, so lit means the bit is zero.
+        check_equal("power-on reset released", pa_en, 1'b1);
+        check_equal("default preset index 1, bit0 lit", led_t0, 1'b0);
+        check_equal("default preset index 1, bit1 dark", led_t1, 1'b1);
+        check_equal("chord set A, indicator dark", led_chord, 1'b1);
+
+        // S1 switches to chord set B; its indicator lights.
+        key_s1 = 1'b0;
+        #(DEBOUNCE_HOLD);
+        key_s1 = 1'b1;
+        #1000000;
+        check_equal("S1 selected chord set B", led_chord, 1'b0);
+
+        // S2 steps to preset 3 (4x): both bits set, both tempo LEDs dark.
+        key_s2 = 1'b0;
+        #(DEBOUNCE_HOLD);
         key_s2 = 1'b1;
-        wait_ticks(4);
-        expect("S2 restarted the tune", |dut.v_gate, 1'b1);
+        #1000000;
+        check_equal("S2 stepped to preset index 2, bit0 dark", led_t0, 1'b1);
+        check_equal("S2 stepped to preset index 2, bit1 lit", led_t1, 1'b0);
 
         if (errors == 0)
             $display("PASS tb_poly");
         else
-            $display("FAIL tb_poly with %0d error(s)", errors);
+            $fatal(1, "FAIL tb_poly with %0d error(s)", errors);
         $finish;
     end
 
-    // Absolute timeout so a broken design cannot hang the simulator.
     initial begin
-        #200000000;
-        $display("FAIL tb_poly: timeout");
-        $finish;
+        #400000000;
+        $fatal(1, "FAIL tb_poly: timeout");
     end
-
 endmodule
