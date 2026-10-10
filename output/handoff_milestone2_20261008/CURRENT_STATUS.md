@@ -23,7 +23,7 @@ Date: 2026-10-08
 - 512-entry, 16-bit signed sine wavetable.
 - One 32-bit DDS phase accumulator.
 - 440 Hz target tone at the 46.875 kHz debug sample rate.
-- ADSR state machine and repeating 0.25 s on / 0.25 s off gate.
+- ADSR state machine. The gate is held high after reset, so the voice attacks, decays to sustain and then holds that level continuously.
 - PT8211 serial transmitter and PA_EN power-on delay.
 - LED2 (N16) 1 Hz blink indicator.
 - GAO RTL configuration `source/rtl/gao_top.rao`.
@@ -59,3 +59,14 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 - Volume reduced by digital right shift 2, about -12 dB.
 - Normal build contains no GAO core and uses 361 LUT, 189 registers, 1 BSRAM, 0.5 DSP.
 - Gowin SRAM Program operation 2 succeeds; Read Device Codes succeeds; installation key files are present.
+
+
+## 2026-10-10 修订二更新
+
+- 已消除 0.25 秒通断门控，复位释放后持续发声，ADSR 保持在延音电平。
+- 已按官方例程重写 PT8211 帧结构和 WS 相位，修掉一个位的字对齐错误。
+- 修订二码流 SHA256 `0612d3383736688423204cd2a04ad2350a110d9c7c7e3f483008a6ddb2faa399`，User Code `0x00009F8A`。
+- 修订二资源：331 逻辑单元、188 寄存器、1 BSRAM、0.5 DSP；0 建立违规、0 保持违规。
+- 默认输出 A4 440 Hz，T3 切 C4 261.63 Hz，T2 切 C5 523.25 Hz，音量数字右移 2 位约 -12 dB。
+- 硬件听感复核仍需要用户戴上耳机确认背景噪声是否下降到可接受水平。
+

@@ -7,5 +7,8 @@ Current milestone: `top.v`
 - `pa_en`: R16, headphone amplifier enable.
 - `led`: N16.
 
-The first build is intentionally limited to one DDS voice with a repeating ADSR
-gate. It does not yet contain touch, ADC, PCM5102A, or multi-voice mixing logic.
+The current build is limited to one DDS voice. The ADSR gate is held high after
+reset, so the voice attacks, decays to sustain and then holds that level; two
+user keys switch the DDS frequency word. It does not yet contain touch, ADC,
+PCM5102A, or multi-voice mixing logic.
+

@@ -58,8 +58,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scan_jtag.ps1
 ## LED 和音频预期
 
 正常码流 `artifacts/instrument.fs` 会让 Orange_LED2、N16 约每 1 秒闪烁一次，
-同时耳机口输出 440 Hz、0.25 秒通断的调试音。没有耳机时，可以使用有源音箱、
-电脑 line-in、逻辑分析仪或 Gowin GAO 观察。
+同时耳机口持续输出 A4 440 Hz 的调试音。按 T3 切换到 C4 261.63 Hz，按 T2 切
+换到 C5 523.25 Hz；不按键时保持当前音调，不再有 0.25 秒通断的嗡鸣。没有耳机
+时，可以使用有源音箱、电脑 line-in、逻辑分析仪或 Gowin GAO 观察。
 
 ## GAO 观察
 
@@ -76,3 +77,4 @@ Programmer`，或者把操作选成 `SRAM Program`。
 - Press the second non-reset user key T2 to switch to C5 523.25 Hz.
 - S0/T10 is reset and must not be used as a tone key.
 - Volume is reduced by about 12 dB; adjust VOLUME_SHIFT in top.v if needed.
+

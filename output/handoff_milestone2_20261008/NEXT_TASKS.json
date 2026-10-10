@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "current_blocker": "GAO capture window setup and Gowin IDE wavetable path.",
+  "current_blocker": "Listener confirmation of background noise after the PT8211 alignment fix; Gowin IDE wavetable path still open.",
   "tasks": [
     {
       "id": "M2-01",
-      "priority": 1,
+      "priority": 3,
       "title": "Capture GAO waveform",
       "command": "Open the project in Gowin IDE, program artifacts/ao_0.fs with operation 2, double-click source/rtl/gao_top.rao, and use the built-in GAO capture window.",
       "acceptance": [
@@ -17,12 +17,14 @@
     {
       "id": "M2-02",
       "priority": 1,
-      "title": "Verify normal LED2 and audio path",
-      "command": "Program artifacts/instrument.fs with operation 2.",
+      "title": "Verify continuous tone, key switching and LED2",
+      "command": "Program artifacts/instrument.fs with operation 2 and listen on the on-board headphone jack.",
       "acceptance": [
         "Orange_LED2 on N16 blinks about once per second",
         "PT8211 BCK is about 1.5 MHz and WS is about 46.875 kHz",
-        "A powered speaker or line-in records the 440 Hz on/off tone"
+        "The default A4 440 Hz tone is continuous with no 0.25 s on/off buzz",
+        "T3 switches to C4 261.63 Hz and T2 switches to C5 523.25 Hz",
+        "Background noise is low enough to be acceptable on headphones"
       ]
     },
     {
@@ -64,5 +66,6 @@
         "four independent spectral peaks"
       ]
     }
-  ]
+  ],
+  "updated_at": "2026-10-10"
 }

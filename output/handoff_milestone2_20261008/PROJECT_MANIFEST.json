@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "project": "PolyTouch FPGA Synth",
-  "handoff_milestone": "M2 27MHz clock restored, LED2 blink, GAO core integrated",
-  "generated_date": "2026-10-08",
+  "handoff_milestone": "M2 rev2 continuous tone and PT8211 bit alignment, GAO released",
+  "generated_date": "2026-10-10",
   "canonical_root": ".",
   "read_order": [
     "START_HERE_FOR_AI.md",

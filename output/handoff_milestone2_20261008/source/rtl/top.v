@@ -1,6 +1,12 @@
 // First instrument bring-up milestone:
 // 27 MHz clock -> DDS sine -> ADSR -> on-board PT8211 debug DAC.
 // No touch, ADC, or external PCM5102A logic is included in this build yet.
+//
+// The ADSR gate is held high after reset so the voice attacks, decays to the
+// sustain level, and then holds that level indefinitely. The previous build
+// chopped the gate on and off every 0.25 s to prove the envelope was running;
+// that produced the alarm-like buzz the listener reported. Tone switching is
+// now the only thing that changes while running.
 module top (
     input  wire clk_27m,
     input  wire key_s1,
@@ -16,7 +22,6 @@ module top (
     wire       rst;
     wire       sample_tick;
     wire       gate;
-    reg  [15:0] gate_cnt;
     reg  [25:0] blink_cnt;
     reg         led_blink;
     wire signed [15:0] voice_sample;
@@ -124,18 +129,9 @@ module top (
         end
     end
 
-    always @(posedge clk_27m) begin
-        if (rst) begin
-            gate_cnt <= 16'd0;
-        end else if (sample_tick) begin
-            if (gate_cnt == 16'd23437)
-                gate_cnt <= 16'd0;
-            else
-                gate_cnt <= gate_cnt + 1'b1;
-        end
-    end
-
-    assign gate = (gate_cnt < 16'd11718); // 0.25 s on, 0.25 s off
+    // Continuous gate: attack, then decay to sustain and hold there.
+    // Tone selection only changes the DDS frequency control word.
+    assign gate = ~rst;
 
     voice u_voice (
         .clk         (clk_27m),
@@ -146,8 +142,9 @@ module top (
         .sample      (voice_sample)
     );
 
-    // The first frame is silent while the serial transmitter initializes.
-    // Reduce the digital level before the fixed-gain PT8211 headphone amp.
+    // Reduce the digital level before the fixed-gain PT8211/LPA4809 headphone
+    // amplifier. The first frame is silent while the serial transmitter
+    // initialises.
     assign pt_sample = rst ? 16'sd0 : (voice_sample >>> VOLUME_SHIFT);
 
     pt8211_tx u_pt8211 (
@@ -164,3 +161,4 @@ module top (
     assign led = led_blink;
 
 endmodule
+
