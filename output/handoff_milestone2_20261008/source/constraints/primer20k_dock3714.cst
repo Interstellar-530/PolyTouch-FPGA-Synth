@@ -36,6 +36,7 @@ IO_PORT "led_t0" IO_TYPE=LVCMOS33 DRIVE=4;
 IO_LOC "led_t1" L16;
 IO_PORT "led_t1" IO_TYPE=LVCMOS33 DRIVE=4;
 
+
 // S3 / D7 is used as the synchronous design reset. T10 (S0) looks like the
 // natural choice because the board names its net FPGA_~RST, but the
 // GW2A-18PG256 package reserves T10 for the configuration SSPI function and

@@ -131,6 +131,7 @@ module top (
     // ------------------------------------------------------- note events ---
     wire        sp_ev_wr;
     wire [15:0] sp_ev_data;
+    wire [5:0]  mel_idx_dbg;
     wire        fifo_empty;
     wire [15:0] fifo_data;
     wire        fifo_rd;
@@ -144,9 +145,36 @@ module top (
         .tempo_sel    (tempo_sel),
         .ev_wr        (sp_ev_wr),
         .ev_data      (sp_ev_data),
-        .mel_idx_dbg  (),
+        .mel_idx_dbg  (mel_idx_dbg),
         .chord_idx_dbg()
     );
+
+    // ------------------------------------------------------- loop marker ---
+    // The melody index wraps from the last note back to the first once per
+    // pass.  Flashing an LED at that moment turns "the tune repeats too soon"
+    // into something that can be measured with a stopwatch instead of argued
+    // about: the loop is 32.5 s at preset 1 and doubles with each step.
+    reg [5:0]  mel_idx_d;
+    reg [21:0] loop_blink_cnt;
+    reg        loop_blink;
+
+    always @(posedge clk_27m) begin
+        if (por) begin
+            mel_idx_d      <= 6'd0;
+            loop_blink_cnt <= 22'd0;
+            loop_blink     <= 1'b0;
+        end else begin
+            mel_idx_d <= mel_idx_dbg;
+            if ((mel_idx_dbg == 6'd0) && (mel_idx_d != 6'd0)) begin
+                loop_blink_cnt <= 22'd3_000_000;   // about 111 ms
+                loop_blink     <= 1'b1;
+            end else if (loop_blink_cnt != 22'd0) begin
+                loop_blink_cnt <= loop_blink_cnt - 22'd1;
+                if (loop_blink_cnt == 22'd1)
+                    loop_blink <= 1'b0;
+            end
+        end
+    end
 
     event_fifo u_fifo (
         .clk     (clk_27m),
@@ -256,23 +284,11 @@ module top (
     );
 
     // ---------------------------------------------------------- display ---
-    reg [25:0] blink_cnt;
-    reg        led_blink;
-    always @(posedge clk_27m) begin
-        if (por) begin
-            blink_cnt <= 26'd0;
-            led_blink <= 1'b0;
-        end else if (blink_cnt == 26'd13_499_999) begin
-            blink_cnt <= 26'd0;
-            led_blink <= ~led_blink;
-        end else begin
-            blink_cnt <= blink_cnt + 1'b1;
-        end
-    end
-
-    // Both LEDs are active low.  N16 blinks while running and goes solid when
-    // muted; N14 is lit while chord set B is selected.
-    assign led       = uart_muted ? 1'b0 : led_blink;
+    // The user LEDs are active low.  N16 is the loop marker: it lights for
+    // about 110 ms at the start of every pass through the tune, and stays lit
+    // while the output is muted.  Timing the gap between flashes measures the
+    // loop directly.  N14 shows the chord set, L14/L16 the tempo preset.
+    assign led       = uart_muted ? 1'b0 : ~loop_blink;
     assign led_chord = ~chord_set;
     assign led_t0    = ~tempo_sel[0];
     assign led_t1    = ~tempo_sel[1];

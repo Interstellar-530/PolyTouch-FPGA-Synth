@@ -5,7 +5,7 @@
 // uniform stream.  When the future MPR121 keyboard arrives it feeds exactly
 // the same bus; nothing in this file changes.
 //
-// ROM contents come from tools/gen_song_rom.py:
+// Table contents come from tools/gen_song_rom.py:
 //   melody : {velocity_code[2:0], note[6:0], sounding_units[5:0]}, note 0 = rest
 //   chords : {root[7:0], slot_units[5:0], quality[1:0]}, quality 0 = major
 //
@@ -34,16 +34,11 @@ module song_player #(
     output wire [3:0] chord_idx_dbg
 );
 
-    // -------------------------------------------------------------- ROMs ---
-    reg [15:0] mel_rom     [0:63];
-    reg [15:0] chord_a_rom [0:15];
-    reg [15:0] chord_b_rom [0:15];
-
-    initial begin
-        $readmemh("rtl/audio/song_melody.hex",   mel_rom);
-        $readmemh("rtl/audio/song_chords_a.hex", chord_a_rom);
-        $readmemh("rtl/audio/song_chords_b.hex", chord_b_rom);
-    end
+    // ----------------------------------------------------------- tables ---
+    // Generated constant case functions, not $readmemh arrays.  The tables are
+    // tiny, and plain combinational logic cannot end up partially initialised
+    // the way an inferred internal RAM can.
+    `include "rtl/audio/song_roms.vh"
 
     // ----------------------------------------------------------- tick base --
     reg [15:0] tick_cnt;
@@ -73,10 +68,12 @@ module song_player #(
     reg [6:0]  cnote0, cnote1, cnote2;
 
     wire [5:0] mel_nxt       = (mel_idx == MELODY_LAST) ? 6'd0 : mel_idx + 6'd1;
-    wire [6:0] mel_cur_note  = mel_rom[mel_idx][12:6];
-    wire [6:0] mel_nxt_note  = mel_rom[mel_nxt][12:6];
-    wire [2:0] mel_nxt_code  = mel_rom[mel_nxt][15:13];
-    wire [5:0] mel_nxt_on    = mel_rom[mel_nxt][5:0];
+    wire [15:0] mel_cur_word = mel_word(mel_idx);
+    wire [15:0] mel_nxt_word = mel_word(mel_nxt);
+    wire [6:0] mel_cur_note  = mel_cur_word[12:6];
+    wire [6:0] mel_nxt_note  = mel_nxt_word[12:6];
+    wire [2:0] mel_nxt_code  = mel_nxt_word[15:13];
+    wire [5:0] mel_nxt_on    = mel_nxt_word[5:0];
 
     // gap = max(1, sounding / 4), exactly what song_data.gap_units() computes.
     wire [5:0] mel_nxt_gap   = (mel_nxt_on < 6'd4) ? 6'd1 : (mel_nxt_on >> 2);
@@ -101,7 +98,8 @@ module song_player #(
     endfunction
 
     wire [3:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 4'd0 : chord_idx + 4'd1;
-    wire [15:0] ch_nxt_entry = chord_set ? chord_b_rom[chord_nxt] : chord_a_rom[chord_nxt];
+    wire [15:0] ch_nxt_entry = chord_set ? chord_b_word(chord_nxt)
+                                         : chord_a_word(chord_nxt);
     wire [7:0]  ch_nxt_root  = ch_nxt_entry[15:8];
     wire [7:0]  ch_nxt_ticks = ch_nxt_entry[7:2];
     wire [7:0]  ch_nxt_third = (ch_nxt_entry[1:0] == 2'd0) ? 8'd4 : 8'd3;
