@@ -138,12 +138,13 @@ def build_script(chord_set):
     """Expand the ROMs into a note on/off script on the tick grid."""
     script = {}
 
-    tick, prev = 0, None
-    for note, length in song_data.melody_events():
-        script.setdefault(tick, []).append(("off", prev))
-        script[tick].append(("on", note, song_data.MELODY_VELOCITY))
-        prev = note
-        tick += length
+    tick = 0
+    for note, slot, code in song_data.melody_events():
+        script.setdefault(tick, []).append(
+            ("on", note, song_data.VELOCITY_CODES[code]))
+        # the voice is released GAP_TICKS before the next note starts
+        script.setdefault(tick + slot - song_data.GAP_TICKS, []).append(("off", note))
+        tick += slot
 
     tick, prev_triad = 0, []
     for root, quality, length in song_data.chord_events(chord_set):
@@ -168,7 +169,7 @@ def render(chord_set="A"):
     alloc = Allocator()
     script = build_script(chord_set)
 
-    total_ticks = sum(t for _n, t in song_data.melody_events())
+    total_ticks = sum(t for _n, t, _c in song_data.melody_events())
     total_samples = total_ticks * song_data.TICK_SAMPLES
 
     samples = []

@@ -6,13 +6,17 @@
 // the same bus; nothing in this file changes.
 //
 // ROM contents come from tools/gen_song_rom.py:
-//   melody : {note[7:0], ticks[7:0]}, note 0 means a rest
+//   melody : {velocity_code[2:0], note[6:0], slot_ticks[5:0]}, note 0 = rest
 //   chords : {root[7:0], ticks[5:0], quality[1:0]}, quality 0 = major, 1 = minor
-// One tick is an eighth of a beat; a phrase is 32 ticks.
+// One tick is an eighth of a beat; a phrase is TICKS_PER_PHRASE ticks.
+//
+// Every melody note is released GAP_TICKS before its slot ends.  Without that
+// gap the notes run into each other and the tune turns into one continuous
+// line, which makes it hard to check note by note.
 module song_player #(
-    parameter integer TICK_SAMPLES = 3821,
-    parameter [7:0]   MELODY_VEL   = 8'd96,
-    parameter [7:0]   CHORD_VEL    = 8'd56,
+    parameter integer TICK_SAMPLES = 5327,
+    parameter integer GAP_TICKS    = 2,
+    parameter [7:0]   CHORD_VEL    = 8'd32,
     parameter [5:0]   MELODY_LAST  = 6'd40,
     parameter [3:0]   CHORD_LAST   = 4'd8
 )(
@@ -60,9 +64,28 @@ module song_player #(
     reg [6:0]  cnote0, cnote1, cnote2;
 
     wire [5:0] mel_nxt       = (mel_idx == MELODY_LAST) ? 6'd0 : mel_idx + 6'd1;
-    wire [7:0] mel_cur_note  = mel_rom[mel_idx][15:8];
-    wire [7:0] mel_nxt_note  = mel_rom[mel_nxt][15:8];
-    wire [7:0] mel_nxt_ticks = mel_rom[mel_nxt][7:0];
+    wire [6:0] mel_cur_note  = mel_rom[mel_idx][12:6];
+    wire [6:0] mel_nxt_note  = mel_rom[mel_nxt][12:6];
+    wire [2:0] mel_nxt_code  = mel_rom[mel_nxt][15:13];
+    wire [5:0] mel_nxt_ticks = mel_rom[mel_nxt][5:0];
+
+    // Velocity code to actual velocity.  The accent lands on the first note of
+    // every phrase so the metre is audible even when only one note is heard.
+    function [7:0] vel_of;
+        input [2:0] code;
+        begin
+            case (code)
+                3'd0:    vel_of = 8'd0;
+                3'd1:    vel_of = 8'd32;
+                3'd2:    vel_of = 8'd56;
+                3'd3:    vel_of = 8'd72;
+                3'd4:    vel_of = 8'd88;
+                3'd5:    vel_of = 8'd104;
+                3'd6:    vel_of = 8'd120;
+                default: vel_of = 8'd127;
+            endcase
+        end
+    endfunction
 
     wire [3:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 4'd0 : chord_idx + 4'd1;
     wire [15:0] ch_nxt_entry = chord_set ? chord_b_rom[chord_nxt] : chord_a_rom[chord_nxt];
@@ -75,6 +98,7 @@ module song_player #(
 
     wire mel_expire   = tick_pulse && (mel_left   <= 8'd1);
     wire chord_expire = tick_pulse && (chord_left <= 8'd1);
+    wire mel_gap      = tick_pulse && (mel_left == (GAP_TICKS + 1));
 
     // -------------------------------------------------------- event bursts --
     // One burst carries at most eight events.  All the note-offs are emitted
@@ -114,13 +138,13 @@ module song_player #(
                 bmask      <= 8'h00;
             end else if (!bactive) begin
                 // ---- start a burst when either counter runs out ----------
-                if (mel_expire || chord_expire) begin
+                if (mel_expire || chord_expire || mel_gap) begin
                     bmask <= {
-                        mel_expire,              // slot 0 : melody note off
+                        (mel_expire | mel_gap),  // slot 0 : melody note off
                         chord_expire,            // slot 1 : chord note 0 off
                         chord_expire,            // slot 2 : chord note 1 off
                         chord_expire,            // slot 3 : chord note 2 off
-                        mel_expire & (mel_nxt_note != 8'd0),  // slot 4 : melody on
+                        mel_expire & (mel_nxt_note != 7'd0),  // slot 4 : melody on
                         chord_expire,            // slot 5 : chord note 0 on
                         chord_expire,            // slot 6 : chord note 1 on
                         chord_expire             // slot 7 : chord note 2 on
@@ -131,10 +155,10 @@ module song_player #(
                     bdata[2] <= {1'b0, cnote1,       8'd0};
                     bdata[3] <= {1'b0, cnote2,       8'd0};
                     // note fields are seven bits, exactly like the event word
-                    bdata[4] <= {1'b1, mel_nxt_note[6:0], MELODY_VEL};
-                    bdata[5] <= {1'b1, ch_nxt_n0[6:0],    CHORD_VEL};
-                    bdata[6] <= {1'b1, ch_nxt_n1[6:0],    CHORD_VEL};
-                    bdata[7] <= {1'b1, ch_nxt_n2[6:0],    CHORD_VEL};
+                    bdata[4] <= {1'b1, mel_nxt_note,   vel_of(mel_nxt_code)};
+                    bdata[5] <= {1'b1, ch_nxt_n0[6:0], CHORD_VEL};
+                    bdata[6] <= {1'b1, ch_nxt_n1[6:0], CHORD_VEL};
+                    bdata[7] <= {1'b1, ch_nxt_n2[6:0], CHORD_VEL};
 
                     bidx    <= 3'd0;
                     bactive <= 1'b1;

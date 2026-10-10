@@ -24,24 +24,35 @@ DEGREE_MIDI = {
     7: 69,      # A4
 }
 
-# Quarter note = 92 BPM, debug sample rate = 27e6 / 18 / 32 = 46875 Hz.
-# One tick is an eighth of a beat; one phrase is four beats, i.e. 32 ticks.
-BPM = 92
+# Quarter note = 66 BPM, which is a walking pace rather than the previous
+# 92 BPM.  The debug sample rate is 27e6 / 18 / 32 = 46875 Hz and one tick is
+# an eighth of a beat, so a tick is about 114 ms and a note about 0.46 s.
+BPM = 66
 SAMPLE_RATE = 46875
-TICK_SAMPLES = 3821          # round(60 / 92 / 8 * 46875)
-TICKS_PER_PHRASE = 32
+TICK_SAMPLES = 5327          # round(60 / 66 / 8 * 46875)
+TICKS_PER_PHRASE = 36
+
+# The melody is played staccato: GAP_TICKS of every note's slot is silence, so
+# the listener hears where one note stops and the next starts.
+GAP_TICKS = 2
+
+# Velocity codes stored in the melody ROM.  Three bits per note, so the phrase
+# head can be accented without a second ROM.
+VELOCITY_CODES = (0, 32, 56, 72, 88, 104, 120, 127)
+MELODY_ACCENT_CODE = 7       # first note of every phrase
+MELODY_NORMAL_CODE = 5
 
 # (lyric, [(degree, length in ticks), ...]); five syllables per phrase.
 PHRASES = [
-    ("我从山中来", [(6, 4), (3, 4), (3, 4), (3, 4), (3, 16)]),
-    ("带着兰花草", [(2, 4), (1, 4), (2, 4), (1, 4), (7, 16)]),
-    ("种在小院中", [(6, 4), (6, 4), (6, 4), (6, 4), (6, 16)]),
-    ("希望花开早", [(5, 4), (3, 4), (5, 4), (5, 4), ("4#", 16)]),
-    ("一日看三回", [(3, 4), (6, 4), (6, 4), (5, 4), (3, 16)]),
-    ("看得花时过", [(2, 4), (1, 4), (2, 4), (1, 4), (7, 16)]),
-    ("兰花却依然", [(6, 4), (3, 4), (3, 4), (1, 4), (1, 16)]),
-    ("苞也无一个", [(7, 4), (6, 4), (3, 4), (2, 4), (1, 16)]),
-    ("尾声",       [(6, 32)]),
+    ("我从山中来", [(6, 6), (3, 6), (3, 6), (3, 6), (3, 12)]),
+    ("带着兰花草", [(2, 6), (1, 6), (2, 6), (1, 6), (7, 12)]),
+    ("种在小院中", [(6, 6), (6, 6), (6, 6), (6, 6), (6, 12)]),
+    ("希望花开早", [(5, 6), (3, 6), (5, 6), (5, 6), ("4#", 12)]),
+    ("一日看三回", [(3, 6), (6, 6), (6, 6), (5, 6), (3, 12)]),
+    ("看得花时过", [(2, 6), (1, 6), (2, 6), (1, 6), (7, 12)]),
+    ("兰花却依然", [(6, 6), (3, 6), (3, 6), (1, 6), (1, 12)]),
+    ("苞也无一个", [(7, 6), (6, 6), (3, 6), (2, 6), (1, 12)]),
+    ("尾声",       [(6, 36)]),
 ]
 
 # Chord voicings sit below the melody so the two layers stay separated.
@@ -61,10 +72,10 @@ CHORD_SETS = {
     "B": ["Bb", "F", "Cm", "Dm", "Bb", "F", "Gm", "Cm", "Gm"],
 }
 
-# Velocities leave the mixer room: the melody leads and the three chord voices
-# together stay below it, so the sum never hits the saturator.
-MELODY_VELOCITY = 96
-CHORD_VELOCITY = 56
+# The accompaniment sits well below the melody so the tune is the part the ear
+# follows.  A sustained triad at 32 against a staccato melody at 104..127 is
+# roughly 8 to 10 dB of separation.
+CHORD_VELOCITY = 32
 
 ROM_WIDTH = 16
 MELODY_ROM_DEPTH = 64
@@ -72,11 +83,16 @@ CHORD_ROM_DEPTH = 16
 
 
 def melody_events():
-    """Flatten PHRASES into the list of (midi_note, ticks) written to the ROM."""
+    """Flatten PHRASES into (midi_note, slot_ticks, velocity_code) tuples.
+
+    slot_ticks is the spacing between note starts, not the sounding length:
+    the player silences each note GAP_TICKS before the next one starts.
+    """
     events = []
     for _lyric, notes in PHRASES:
-        for degree, ticks in notes:
-            events.append((DEGREE_MIDI[degree], ticks))
+        for index, (degree, ticks) in enumerate(notes):
+            code = MELODY_ACCENT_CODE if index == 0 else MELODY_NORMAL_CODE
+            events.append((DEGREE_MIDI[degree], ticks, code))
     return events
 
 
@@ -96,10 +112,10 @@ def triad(root, quality):
 
 
 def melody_rom_image():
-    """16-bit entries: {note[7:0], ticks[7:0]}; note 0 means a rest."""
+    """16-bit entries: {velocity_code[2:0], note[6:0], slot_ticks[5:0]}."""
     entries = []
-    for note, ticks in melody_events():
-        entries.append(((note & 0xFF) << 8) | (ticks & 0xFF))
+    for note, ticks, code in melody_events():
+        entries.append(((code & 0x7) << 13) | ((note & 0x7F) << 6) | (ticks & 0x3F))
     return entries
 
 
@@ -127,16 +143,24 @@ def check():
             if degree not in DEGREE_MIDI:
                 problems.append(f"phrase {lyric} uses unknown degree {degree}")
 
-    melody_len = len(melody_events())
+    melody = melody_events()
+    melody_len = len(melody)
     if melody_len > MELODY_ROM_DEPTH:
         problems.append(f"melody has {melody_len} entries, ROM depth is {MELODY_ROM_DEPTH}")
+    for note, ticks, code in melody:
+        if not (0 < note < 128):
+            problems.append(f"melody note {note} is out of MIDI range")
+        if ticks < GAP_TICKS + 1 or ticks > 63:
+            problems.append(f"melody slot {ticks} does not fit the ROM field or is shorter than the gap")
+        if not (0 <= code < len(VELOCITY_CODES)):
+            problems.append(f"melody velocity code {code} is out of range")
 
     for name in ("A", "B"):
         events = chord_events(name)
         if len(events) > CHORD_ROM_DEPTH:
             problems.append(f"chord set {name} has {len(events)} entries, ROM depth is {CHORD_ROM_DEPTH}")
         chord_ticks = sum(t for _r, _q, t in events)
-        melody_ticks = sum(t for _n, t in melody_events())
+        melody_ticks = sum(t for _n, t, _c in melody)
         if chord_ticks != melody_ticks:
             problems.append(f"chord set {name} spans {chord_ticks} ticks "
                             f"but the melody spans {melody_ticks}")
@@ -162,8 +186,13 @@ if __name__ == "__main__":
             print("FAIL:", issue)
         raise SystemExit(1)
     print("song_data: all checks passed")
-    print("melody entries:", len(melody_events()),
-          " total ticks:", sum(t for _n, t in melody_events()),
-          " duration:", round(sum(t for _n, t in melody_events()) * TICK_SAMPLES / SAMPLE_RATE, 2), "s")
+    events = melody_events()
+    total = sum(t for _n, t, _c in events)
+    sounding = sum(t - GAP_TICKS for _n, t, _c in events)
+    print("melody entries:", len(events), " total ticks:", total,
+          " duration:", round(total * TICK_SAMPLES / SAMPLE_RATE, 2), "s")
+    print(f"tick {TICK_SAMPLES} samples ({TICK_SAMPLES / SAMPLE_RATE * 1000:.1f} ms), "
+          f"gap {GAP_TICKS} ticks ({GAP_TICKS * TICK_SAMPLES / SAMPLE_RATE * 1000:.1f} ms), "
+          f"sounding {sounding / total * 100:.0f}% of the slot")
     print("chord set A:", CHORD_SETS["A"])
     print("chord set B:", CHORD_SETS["B"])

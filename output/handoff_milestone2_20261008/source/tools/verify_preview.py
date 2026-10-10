@@ -48,15 +48,17 @@ def main():
     samples = read_wav(path)
     rate = song_data.SAMPLE_RATE
 
-    window = 3000
+    window = 4000
+    warmup = 2000
     failures = 0
     rows = []
     tick = 0
 
-    for note, length in song_data.melody_events():
-        start = tick * song_data.TICK_SAMPLES + window
-        stop = min((tick + length) * song_data.TICK_SAMPLES, len(samples))
-        tick += length
+    for note, slot, _code in song_data.melody_events():
+        # measure inside the sounding part of the slot, after the attack
+        start = tick * song_data.TICK_SAMPLES + warmup
+        stop = (tick + slot - song_data.GAP_TICKS) * song_data.TICK_SAMPLES
+        tick += slot
         if stop - start < window:
             continue
         chunk = samples[start:start + window]
@@ -68,11 +70,21 @@ def main():
         expected_mag = goertzel(chunk, expected, rate)
         best_rival = max(goertzel(chunk, midi_hz(n), rate) for n in rivals)
 
+        # The same tone measured in the gap between notes must be much weaker,
+        # which is what "the notes are separated" means.
+        gap_start = stop + 200
+        gap_mag = goertzel(samples[gap_start:gap_start + window], expected, rate)
+
         ok = expected_mag > best_rival
         if not ok:
             failures += 1
             rows.append(f"FAIL note {note} ({expected:.1f} Hz): "
                         f"{expected_mag:.0f} vs best rival {best_rival:.0f}")
+
+        if gap_mag > 0.35 * expected_mag:
+            failures += 1
+            rows.append(f"FAIL gap after note {note} ({expected:.1f} Hz): "
+                        f"still {gap_mag / expected_mag * 100:.0f} percent of the note")
 
     print(f"melody notes checked: {len(song_data.melody_events())}, failures: {failures}")
     for row in rows[:12]:
