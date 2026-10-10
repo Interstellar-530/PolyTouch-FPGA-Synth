@@ -1,10 +1,20 @@
 // Four-stage ADSR envelope generator.
-module adsr (
+//
+// The step sizes are parameters so a polyphonic build can use snappier
+// envelopes than the original single-voice bring-up: with four voices the
+// release has to finish quickly enough for the allocator to reuse the voice.
+module adsr #(
+    parameter [15:0] ATTACK_STEP   = 16'd140,
+    parameter [15:0] DECAY_STEP    = 16'd16,
+    parameter [15:0] RELEASE_STEP  = 16'd48,
+    parameter [15:0] SUSTAIN_LEVEL = 16'd45875   // 70 percent of full scale
+)(
     input  wire        clk,
     input  wire        rst,
     input  wire        sample_tick,
     input  wire        gate,
-    output reg  [15:0] env
+    output reg  [15:0] env,
+    output wire        idle
 );
 
     localparam [2:0] ST_IDLE    = 3'd0;
@@ -13,12 +23,11 @@ module adsr (
     localparam [2:0] ST_SUSTAIN = 3'd3;
     localparam [2:0] ST_RELEASE = 3'd4;
 
-    localparam [15:0] ATTACK_STEP  = 16'd140;
-    localparam [15:0] DECAY_STEP   = 16'd4;
-    localparam [15:0] RELEASE_STEP = 16'd6;
-    localparam [15:0] SUSTAIN_LEVEL = 16'd45875; // 70 percent of full scale
-
     reg [2:0] state;
+
+    // idle is what the voice allocator watches to tell a finished voice from
+    // one that is still ringing.
+    assign idle = (state == ST_IDLE);
 
     always @(posedge clk) begin
         if (rst) begin

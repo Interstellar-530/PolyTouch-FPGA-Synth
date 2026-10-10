@@ -1,8 +1,8 @@
-# Build-only script for the first playable instrument milestone.
+# Build-only script for the four-voice polyphonic instrument.
 # Run with Gowin gw_sh.exe; this script never programs hardware.
 set script_dir [file dirname [file normalize [info script]]]
 set root [file normalize [file join $script_dir ..]]
-set build_dir [file join $root build gowin_single_voice]
+set build_dir [file join $root build gowin_poly]
 set project_dir [file join $build_dir instrument]
 file mkdir $project_dir
 set gprj_file [file join $project_dir instrument instrument.gprj]
@@ -12,9 +12,14 @@ if {![file exists $gprj_file]} {
     add_file [file join $root rtl top.v]
     add_file [file join $root rtl audio dds_osc.v]
     add_file [file join $root rtl audio adsr.v]
-    add_file [file join $root rtl audio voice.v]
+    add_file [file join $root rtl audio poly_voice.v]
+    add_file [file join $root rtl audio note_phase_inc.v]
+    add_file [file join $root rtl audio event_fifo.v]
+    add_file [file join $root rtl audio voice_alloc.v]
+    add_file [file join $root rtl audio song_player.v]
+    add_file [file join $root rtl audio mixer.v]
     add_file [file join $root rtl audio pt8211_tx.v]
-    add_file [file join $root rtl audio uart_pitch.v]
+    add_file [file join $root rtl audio uart_ctrl.v]
     add_file [file join $root constraints primer20k_dock3714.cst]
     add_file [file join $root constraints primer20k.sdc]
 } else {
