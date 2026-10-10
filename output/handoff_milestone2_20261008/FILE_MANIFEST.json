@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-10T10:42:56",
+  "generated_at": "2026-10-10T11:01:30",
   "root": ".",
-  "file_count": 77,
-  "total_bytes": 32053527.0,
+  "file_count": 80,
+  "total_bytes": 32081235.0,
   "files": [
     {
       "path": "AI_RESUME_PROMPT.txt",
@@ -67,8 +67,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 7319,
-      "sha256": "91c1dfcb2046dd83bc2ecaeee527802296cefaf8e6fa6dc26b2e645f284ed556"
+      "size_bytes": 9509,
+      "sha256": "c2be978341729bbf95eb6cde404d42d9bd20ca6e6f40a9dcf5bd9610431e9f6b"
     },
     {
       "path": "COMPETITION_REQUIREMENTS.md",
@@ -77,8 +77,8 @@
     },
     {
       "path": "CURRENT_STATUS.md",
-      "size_bytes": 5126,
-      "sha256": "57fa76c419349e94aca5c8e591499c83f1cd1b855d7bf5684cf8d12fcff282d9"
+      "size_bytes": 5662,
+      "sha256": "53fafcb238ad9a20fa4d89d1d2fe17a3fcb289b830878ce601361846132e6bc7"
     },
     {
       "path": "DESIGN_DECISIONS.md",
@@ -87,8 +87,8 @@
     },
     {
       "path": "HARDWARE_NOTES.md",
-      "size_bytes": 3731,
-      "sha256": "4f5963c4a0e93739c9dca664c966283ac2f7aefcfa305583c64e3278821d0576"
+      "size_bytes": 4492,
+      "sha256": "8b6ac132bb2d1221504483bbd81eae00354e54f1c6fe5d9284ee94d2ff9e4236"
     },
     {
       "path": "NEXT_TASKS.json",
@@ -251,9 +251,24 @@
       "sha256": "732c72fa7a326245901a00e8e390a59c3d4d78012c7dde1f1a2f39b611270ad0"
     },
     {
+      "path": "reference/planning/时分复用方案外部复核意见.md",
+      "size_bytes": 6328,
+      "sha256": "78888e65f8a4d2deb10cdcc27755ab33028267b2fb3ee9f9bcd84423a6ed9141"
+    },
+    {
       "path": "reference/planning/外部硬件清单与版本规划.md",
       "size_bytes": 14554,
       "sha256": "445a24a8a181de8446628679393633d01d1c52d3d2dd68d45184d3139a290c25"
+    },
+    {
+      "path": "reference/planning/外设采购清单-20261010.xlsx",
+      "size_bytes": 12320,
+      "sha256": "d625e7c6e4a036473d91adedf95fdf5cef59432988fe7bb2dc3eaec02b27ba1f"
+    },
+    {
+      "path": "reference/planning/项目整体进展与规划-通俗版.md",
+      "size_bytes": 5573,
+      "sha256": "fee6cbd03775b60226d2107fd837a39d1e62ed18f0bfed95b3ddb3ac3c9dd2a6"
     },
     {
       "path": "reference/schematics/Tang_Primer_20K_Dock_3714_Schematics.pdf",

@@ -93,3 +93,11 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 - 待确认：`M0` 静音后啸叫是否仍然存在，用来判断噪声来自数字侧还是模拟侧。
 
 
+
+
+## 2026-10-10 修订五更新
+
+- 串口控制台 `tools/serial_console/serial_console.ps1` 可用，已在 COM13 上打开。若要连到 FPGA 的 UART，需要把底板 USB-JTAG&UART Type-C 接到电脑。
+- 已确认 RTL 中不存在 0.25 秒周期成分，旧门控彻底移除；板内码流 User Code `0x000064F6`。
+- 外设清单 Excel 与通俗版规划、TDM 外部复核意见均已加入 `reference/planning/`。
+- 待确认：耳机里的虫鸣样底噪是否在按下 S3 保持复位（数字静音）后仍然存在。
