@@ -224,6 +224,7 @@ module top (
     wire [27:0] v_note;      // 4 x 7 bit
     wire [31:0] v_vel;       // 4 x 8 bit
     wire [3:0]  v_idle;
+    wire [3:0]  v_start;
 
     voice_alloc u_alloc (
         .clk        (clk_27m),
@@ -237,6 +238,7 @@ module top (
         .v_gate     (v_gate),
         .v_note     (v_note),
         .v_vel      (v_vel),
+        .v_start    (v_start),
         .v_busy     ()
     );
 
@@ -251,22 +253,22 @@ module top (
 
     poly_voice u_v0 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[0]), .phase_inc (inc0), .velocity (v_vel[7:0]),
+        .gate (v_gate[0]), .start (v_start[0]), .phase_inc (inc0), .velocity (v_vel[7:0]),
         .sample (vs0), .idle (v_idle[0])
     );
     poly_voice u_v1 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[1]), .phase_inc (inc1), .velocity (v_vel[15:8]),
+        .gate (v_gate[1]), .start (v_start[1]), .phase_inc (inc1), .velocity (v_vel[15:8]),
         .sample (vs1), .idle (v_idle[1])
     );
     poly_voice u_v2 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[2]), .phase_inc (inc2), .velocity (v_vel[23:16]),
+        .gate (v_gate[2]), .start (v_start[2]), .phase_inc (inc2), .velocity (v_vel[23:16]),
         .sample (vs2), .idle (v_idle[2])
     );
     poly_voice u_v3 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[3]), .phase_inc (inc3), .velocity (v_vel[31:24]),
+        .gate (v_gate[3]), .start (v_start[3]), .phase_inc (inc3), .velocity (v_vel[31:24]),
         .sample (vs3), .idle (v_idle[3])
     );
 

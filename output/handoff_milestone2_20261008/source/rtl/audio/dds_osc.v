@@ -16,6 +16,7 @@ module dds_osc (
     input  wire               clk,
     input  wire               rst,
     input  wire               sample_tick,
+    input  wire               retrigger,    // restart the phase on a new note
     input  wire        [31:0] phase_inc,
     output reg  signed [15:0] sample
 );
@@ -46,8 +47,12 @@ module dds_osc (
             phase <= 32'd0;
             sample <= 16'sd0;
         end else begin
-            if (sample_tick)
-                phase <= phase + phase_inc;
+            if (sample_tick) begin
+                if (retrigger)
+                    phase <= 32'd0;
+                else
+                    phase <= phase + phase_inc;
+            end
 
             // Registered so the ROM read, the interpolating multiply and the
             // envelope multiply in voice.v are not chained into one 37 ns path.

@@ -13,6 +13,7 @@ module adsr #(
     input  wire        rst,
     input  wire        sample_tick,
     input  wire        gate,
+    input  wire        retrigger,    // sampled with sample_tick; restart a reused voice
     output reg  [15:0] env,
     output wire        idle
 );
@@ -34,8 +35,14 @@ module adsr #(
             state <= ST_IDLE;
             env   <= 16'd0;
         end else if (sample_tick) begin
-            if (!gate && (state != ST_IDLE)) begin
+            if (retrigger && gate) begin
+                env   <= 16'd0;
+                state <= ST_ATTACK;
+            end else if (!gate && (state != ST_IDLE) && (state != ST_RELEASE)) begin
                 state <= ST_RELEASE;
+            end else if (gate && (state == ST_RELEASE)) begin
+                env   <= 16'd0;
+                state <= ST_ATTACK;
             end else begin
                 case (state)
                     ST_IDLE: begin

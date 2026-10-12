@@ -4,10 +4,13 @@
     编译并运行全部测试台，任何一个失败都以退出码 1 结束。烧录脚本在调用
     programmer_cli 之前必须先跑这个脚本，仿真不过就拒绝烧录。
 
-    三个测试台各管一段：
+    测试台各管一段：
       tb_tick_rate    量 PT8211 的采样节拍周期，只有 576 个 27 MHz 时钟才算对
       tb_song_timing  量一遍曲子实际占多少采样节拍、发了多少个音符事件
       tb_poly         量顶层连线：复位、默认速度档位、两个按键
+      tb_adsr         覆盖各阶段松键、释放归零与快速重按
+      tb_voice_retrigger  覆盖同音重按、满声部窃取与释放声部复用
+      tb_voice_order  覆盖长时间演奏后的最老声部判断
 #>
 param(
     [string]$Iverilog = '',
@@ -54,6 +57,11 @@ try {
     $suite = @(
         @{ Name = 'tb_tick_rate';   Top = 'sim\tb_tick_rate.v';   Src = @('rtl\audio\pt8211_tx.v') },
         @{ Name = 'tb_song_timing'; Top = 'sim\tb_song_timing.v'; Src = @('rtl\audio\song_player.v') },
+        @{ Name = 'tb_adsr';        Top = 'sim\tb_adsr.v';        Src = @('rtl\audio\adsr.v') },
+        @{ Name = 'tb_voice_retrigger'; Top = 'sim\tb_voice_retrigger.v'; Src = @(
+                'rtl\audio\voice_alloc.v', 'rtl\audio\poly_voice.v',
+                'rtl\audio\adsr.v', 'rtl\audio\dds_osc.v', 'rtl\audio\note_phase_inc.v') },
+        @{ Name = 'tb_voice_order'; Top = 'sim\tb_voice_order.v'; Src = @('rtl\audio\voice_alloc.v') },
         @{ Name = 'tb_poly';        Top = 'sim\tb_poly.v';        Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',

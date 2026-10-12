@@ -6,9 +6,10 @@
 // controller feeds the same port.
 //
 // Allocation order:
-//   1. a voice whose envelope has already reached zero,
-//   2. the oldest voice that is in release,
-//   3. the oldest voice still held.
+//   1. a held voice playing the same note (retrigger without duplication),
+//   2. a voice whose envelope has already reached zero,
+//   3. the oldest voice that is in release,
+//   4. the oldest voice still held.
 // That keeps a held chord from being cut when the melody retriggers.
 module voice_alloc #(
     parameter integer VOICES = 4
@@ -24,18 +25,22 @@ module voice_alloc #(
     output reg  [VOICES-1:0]   v_gate,
     output reg  [VOICES*7-1:0] v_note,
     output reg  [VOICES*8-1:0] v_vel,
+    output reg  [VOICES-1:0]   v_start,     // one clk pulse for each Note On
     output wire [VOICES-1:0]   v_busy
 );
 
-    reg [VOICES*16-1:0] v_age;
-    reg [15:0]          age_cnt;
+    // A permutation of 0..VOICES-1: 0 is newest, VOICES-1 is oldest.
+    // Relative order cannot wrap after a long performance.
+    localparam integer AGE_W = (VOICES < 2) ? 1 : $clog2(VOICES);
+    reg [VOICES*AGE_W-1:0] v_age;
 
     integer k;
+    integer j;
     reg [VOICES-1:0] free_mask;
     reg [VOICES-1:0] rel_mask;
     reg [7:0]        pick;
     reg              picked;
-    reg [15:0]       best_age;
+    reg [AGE_W-1:0]  best_age;
 
     assign v_busy = v_gate;
 
@@ -43,7 +48,7 @@ module voice_alloc #(
     always @(*) begin
         free_mask = {VOICES{1'b0}};
         rel_mask  = {VOICES{1'b0}};
-        best_age  = 16'hFFFF;      // assigned on every path so no latch is inferred
+        best_age  = {AGE_W{1'b0}}; // assigned on every path so no latch is inferred
         for (k = 0; k < VOICES; k = k + 1) begin
             free_mask[k] = voice_idle[k] & ~v_gate[k];
             rel_mask[k]  = ~v_gate[k];
@@ -52,31 +57,39 @@ module voice_alloc #(
         pick   = 8'd0;
         picked = 1'b0;
 
-        // 1. envelope already at zero
+        // 1. A repeated Note On uses its existing held voice.
+        for (k = 0; k < VOICES; k = k + 1)
+            if (!picked && v_gate[k] && (v_note[k*7 +: 7] == ev_note)) begin
+                pick   = k[7:0];
+                picked = 1'b1;
+            end
+
+        // 2. envelope already at zero
         for (k = 0; k < VOICES; k = k + 1)
             if (!picked && free_mask[k]) begin
                 pick   = k[7:0];
                 picked = 1'b1;
             end
 
-        // 2. oldest voice in release
+        // 3. oldest voice in release
         if (!picked) begin
-            best_age = 16'hFFFF;
+            best_age = {AGE_W{1'b0}};
             for (k = 0; k < VOICES; k = k + 1)
-                if (rel_mask[k] && (v_age[k*16 +: 16] < best_age)) begin
-                    best_age = v_age[k*16 +: 16];
+                if (rel_mask[k] && (!picked || (v_age[k*AGE_W +: AGE_W] > best_age))) begin
+                    best_age = v_age[k*AGE_W +: AGE_W];
                     pick     = k[7:0];
                     picked   = 1'b1;
                 end
         end
 
-        // 3. oldest held voice
+        // 4. oldest held voice
         if (!picked) begin
-            best_age = 16'hFFFF;
+            best_age = {AGE_W{1'b0}};
             for (k = 0; k < VOICES; k = k + 1)
-                if (v_age[k*16 +: 16] < best_age) begin
-                    best_age = v_age[k*16 +: 16];
+                if (!picked || (v_age[k*AGE_W +: AGE_W] > best_age)) begin
+                    best_age = v_age[k*AGE_W +: AGE_W];
                     pick     = k[7:0];
+                    picked   = 1'b1;
                 end
         end
     end
@@ -87,21 +100,30 @@ module voice_alloc #(
             v_gate  <= {VOICES{1'b0}};
             v_note  <= {(VOICES*7){1'b0}};
             v_vel   <= {(VOICES*8){1'b0}};
-            v_age   <= {(VOICES*16){1'b0}};
-            age_cnt <= 16'd0;
-        end else if (panic) begin
-            v_gate <= {VOICES{1'b0}};
-        end else if (ev_valid) begin
-            if (ev_on) begin
-                v_gate[pick]        <= 1'b1;
-                v_note[pick*7 +: 7] <= ev_note;
-                v_vel[pick*8 +: 8]  <= ev_vel;
-                v_age[pick*16 +: 16] <= age_cnt;
-                age_cnt             <= age_cnt + 16'd1;
-            end else begin
-                for (k = 0; k < VOICES; k = k + 1)
-                    if (v_gate[k] && (v_note[k*7 +: 7] == ev_note))
-                        v_gate[k] <= 1'b0;
+            v_start <= {VOICES{1'b0}};
+            for (j = 0; j < VOICES; j = j + 1)
+                v_age[j*AGE_W +: AGE_W] <= j[AGE_W-1:0];
+        end else begin
+            v_start <= {VOICES{1'b0}};
+            if (panic) begin
+                v_gate <= {VOICES{1'b0}};
+            end else if (ev_valid) begin
+                if (ev_on) begin
+                    v_gate[pick]         <= 1'b1;
+                    v_note[pick*7 +: 7] <= ev_note;
+                    v_vel[pick*8 +: 8]  <= ev_vel;
+                    v_start[pick]       <= 1'b1;
+                    for (j = 0; j < VOICES; j = j + 1) begin
+                        if (j == pick)
+                            v_age[j*AGE_W +: AGE_W] <= {AGE_W{1'b0}};
+                        else if (v_age[j*AGE_W +: AGE_W] < v_age[pick*AGE_W +: AGE_W])
+                            v_age[j*AGE_W +: AGE_W] <= v_age[j*AGE_W +: AGE_W] + 1'b1;
+                    end
+                end else begin
+                    for (k = 0; k < VOICES; k = k + 1)
+                        if (v_gate[k] && (v_note[k*7 +: 7] == ev_note))
+                            v_gate[k] <= 1'b0;
+                end
             end
         end
     end

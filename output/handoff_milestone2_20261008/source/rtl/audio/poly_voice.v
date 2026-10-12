@@ -10,6 +10,7 @@ module poly_voice (
     input  wire               rst,
     input  wire               sample_tick,
     input  wire               gate,
+    input  wire               start,         // one clk pulse from the allocator
     input  wire        [31:0] phase_inc,
     input  wire        [7:0]  velocity,     // 0 .. 127
     output wire signed [15:0] sample,
@@ -18,11 +19,26 @@ module poly_voice (
 
     wire signed [15:0] osc_sample;
     wire        [15:0] env;
+    reg                start_pending;
+    wire               restart_sample = gate & (start | start_pending);
+
+    // Note events are not aligned to the audio frame.  Keep a one-clock start
+    // pulse until the next sample tick, where phase and envelope restart
+    // together.  A note released before that tick is not started again.
+    always @(posedge clk) begin
+        if (rst)
+            start_pending <= 1'b0;
+        else if (sample_tick)
+            start_pending <= 1'b0;
+        else if (start)
+            start_pending <= 1'b1;
+    end
 
     dds_osc u_dds (
         .clk         (clk),
         .rst         (rst),
         .sample_tick (sample_tick),
+        .retrigger   (restart_sample),
         .phase_inc   (phase_inc),
         .sample      (osc_sample)
     );
@@ -32,6 +48,7 @@ module poly_voice (
         .rst         (rst),
         .sample_tick (sample_tick),
         .gate        (gate),
+        .retrigger   (restart_sample),
         .env         (env),
         .idle        (idle)
     );
