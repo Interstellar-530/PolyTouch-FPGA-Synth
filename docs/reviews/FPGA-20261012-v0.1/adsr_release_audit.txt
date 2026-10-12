@@ -1,0 +1,4 @@
+Before note-off: env=45875 idle=0 state=3
+After 2000 release ticks: env=45875 idle=0 state=4 held_env=45875
+FATAL: archive\FPGA-20261012-v0.1\source\tb_adsr_release_audit.v:27: ADSR note-off never drains the envelope
+       Time: 38040000  Scope: tb_adsr_release_audit

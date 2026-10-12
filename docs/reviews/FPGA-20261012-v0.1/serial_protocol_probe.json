@@ -1,0 +1,8 @@
+{
+  "port": "COM13",
+  "baud": 115200,
+  "command": "F<CR> (missing digits, deliberately invalid)",
+  "functional_change": false,
+  "reply": "ERR\r",
+  "link_confirmed": true
+}
