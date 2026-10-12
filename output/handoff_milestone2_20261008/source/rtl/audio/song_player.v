@@ -29,8 +29,9 @@ module song_player #(
     input  wire       restart,
     input  wire       chord_set,        // 0 = set A, 1 = set B
     input  wire [1:0] tempo_sel,        // 0..3 -> every unit stretched 1x..4x
-    output reg        ev_wr,
-    output reg [15:0] ev_data,
+    input  wire       ev_ready,         // FIFO accepts current event this clock
+    output wire       ev_wr,
+    output wire [15:0] ev_data,
     output wire [5:0] mel_idx_dbg,
     output wire [4:0] chord_idx_dbg
 );
@@ -129,6 +130,8 @@ module song_player #(
     reg [15:0] bdata [0:7];
     reg [2:0]  bidx;
     reg        bactive;
+    assign ev_wr   = bactive && bmask[7-bidx];
+    assign ev_data = bdata[bidx];
 
     always @(posedge clk) begin
         if (rst) begin
@@ -143,11 +146,7 @@ module song_player #(
             bmask      <= 8'h00;
             bidx       <= 3'd0;
             bactive    <= 1'b0;
-            ev_wr      <= 1'b0;
-            ev_data    <= 16'd0;
         end else begin
-            ev_wr <= 1'b0;
-
             if (restart) begin
                 mel_idx    <= MELODY_LAST;
                 chord_idx  <= CHORD_LAST;
@@ -209,14 +208,14 @@ module song_player #(
                 end
             end else begin
                 // ---- walk the burst, one event per clock -----------------
-                if (bmask[7-bidx]) begin
-                    ev_wr   <= 1'b1;
-                    ev_data <= bdata[bidx];
+                // Hold an enabled slot until the FIFO actually accepts it.
+                // Disabled slots can be skipped immediately.
+                if (!ev_wr || ev_ready) begin
+                    if (bidx == 3'd7)
+                        bactive <= 1'b0;
+                    else
+                        bidx <= bidx + 3'd1;
                 end
-                if (bidx == 3'd7)
-                    bactive <= 1'b0;
-                else
-                    bidx <= bidx + 3'd1;
             end
         end
     end

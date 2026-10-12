@@ -32,6 +32,7 @@ module tb_song_timing;
         .restart      (restart),
         .chord_set    (chord_set),
         .tempo_sel    (tempo_sel),
+        .ev_ready     (1'b1),
         .ev_wr        (ev_wr),
         .ev_data      (ev_data),
         .mel_idx_dbg  (mel_idx_dbg),

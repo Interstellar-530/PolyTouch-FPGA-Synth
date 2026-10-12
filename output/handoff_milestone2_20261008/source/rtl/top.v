@@ -11,9 +11,9 @@
 // exactly the same {valid, on, note, velocity} signals the UART controller
 // drives today, and nothing downstream changes.
 //
-// Keys: S1 toggles the chord set A/B, S2 restarts the test tune, S3 resets.
+// Keys: S1 toggles the chord set A/B, S2 changes tempo, S3 resets.
 // UART 115200 8N1 on M11/T13: N<note> note on, O<note> note off, X all off,
-// M0/M1 mute.
+// M0/M1 mute, D0 manual mode, D1 demo mode. N/O/X enter manual mode.
 module top (
     input  wire clk_27m,
     input  wire key_rst,     // S3 / D7, active-low design reset
@@ -142,16 +142,50 @@ module top (
     wire [15:0] sp_ev_data;
     wire [5:0]  mel_idx_dbg;
     wire        fifo_empty;
+    wire        fifo_full;
+    wire        fifo_ready;
     wire [15:0] fifo_data;
     wire        fifo_rd;
+    wire        uart_ev_valid, uart_ev_on, uart_panic, uart_muted;
+    wire        uart_demo_on, uart_demo_off;
+    wire [6:0]  uart_ev_note;
+    wire [7:0]  uart_ev_vel;
+
+    reg         demo_mode;
+    reg         pending_valid;
+    reg [15:0]  pending_word;
+    wire        manual_transition = demo_mode && (uart_ev_valid || uart_panic);
+    wire        clear_events = uart_demo_on || uart_demo_off ||
+                               manual_transition || uart_panic || (restart && demo_mode);
+
+    always @(posedge clk_27m) begin
+        if (rst) begin
+            demo_mode     <= 1'b1; // preserve power-on song demonstration
+            pending_valid <= 1'b0;
+            pending_word  <= 16'd0;
+        end else begin
+            pending_valid <= 1'b0;
+            if (uart_demo_on)
+                demo_mode <= 1'b1;
+            else if (uart_demo_off || manual_transition)
+                demo_mode <= 1'b0;
+            // The first manual event is replayed after the old demo voices
+            // have been released; otherwise panic would swallow that note.
+            if (manual_transition && uart_ev_valid) begin
+                pending_valid <= 1'b1;
+                pending_word  <= {uart_ev_on, uart_ev_note, uart_ev_vel};
+            end
+        end
+    end
 
     song_player u_song (
         .clk          (clk_27m),
-        .rst          (rst),
+        .rst          (rst | ~demo_mode),
         .sample_tick  (sample_tick),
-        .restart      (restart),
+        .restart      (restart | uart_demo_on),
         .chord_set    (chord_set),
         .tempo_sel    (tempo_sel),
+        .ev_ready     (fifo_ready),
         .ev_wr        (sp_ev_wr),
         .ev_data      (sp_ev_data),
         .mel_idx_dbg  (mel_idx_dbg),
@@ -187,22 +221,19 @@ module top (
 
     event_fifo u_fifo (
         .clk     (clk_27m),
-        .rst     (rst),
-        .wr_en   (sp_ev_wr),
+        .rst     (rst | clear_events),
+        .wr_en   (sp_ev_wr & demo_mode),
         .wr_data (sp_ev_data),
         .rd_en   (fifo_rd),
         .rd_data (fifo_data),
         .empty   (fifo_empty),
-        .full    ()
+        .full    (fifo_full),
+        .wr_ready(fifo_ready)
     );
-
-    wire        uart_ev_valid, uart_ev_on, uart_panic, uart_muted;
-    wire [6:0]  uart_ev_note;
-    wire [7:0]  uart_ev_vel;
 
     uart_ctrl u_uart (
         .clk      (clk_27m),
-        .rst      (por),
+        .rst      (rst),
         .uart_rx  (uart_rx),
         .uart_tx  (uart_tx),
         .ev_valid (uart_ev_valid),
@@ -210,14 +241,20 @@ module top (
         .ev_note  (uart_ev_note),
         .ev_vel   (uart_ev_vel),
         .panic    (uart_panic),
-        .muted    (uart_muted)
+        .muted    (uart_muted),
+        .demo_on  (uart_demo_on),
+        .demo_off (uart_demo_off)
     );
 
-    // The UART wins when it has an event; otherwise the sequencer drains.
-    wire        ev_valid = uart_ev_valid | ~fifo_empty;
-    wire [15:0] ev_word  = uart_ev_valid ? {uart_ev_on, uart_ev_note, uart_ev_vel}
-                                         : fifo_data;
-    assign      fifo_rd  = ~uart_ev_valid & ~fifo_empty;
+    // Panic and mode changes clear stale demo events before dispatch.  UART
+    // Note Off has the same priority as Note On during manual performance.
+    wire        uart_direct = uart_ev_valid && !manual_transition;
+    wire        ev_valid = !clear_events &&
+                           (pending_valid || uart_direct || (demo_mode && !fifo_empty));
+    wire [15:0] ev_word  = pending_valid ? pending_word :
+                           uart_direct ? {uart_ev_on, uart_ev_note, uart_ev_vel} : fifo_data;
+    assign fifo_rd = demo_mode && !clear_events && !pending_valid &&
+                     !uart_direct && !fifo_empty;
 
     // ---------------------------------------------------- voice control ---
     wire [3:0]  v_gate;
@@ -228,12 +265,12 @@ module top (
 
     voice_alloc u_alloc (
         .clk        (clk_27m),
-        .rst        (por),
+        .rst        (rst),
         .ev_valid   (ev_valid),
         .ev_on      (ev_word[15]),
         .ev_note    (ev_word[14:8]),
         .ev_vel     (ev_word[7:0]),
-        .panic      (uart_panic | restart),
+        .panic      (clear_events),
         .voice_idle (v_idle),
         .v_gate     (v_gate),
         .v_note     (v_note),

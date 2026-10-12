@@ -1,7 +1,7 @@
 param(
     [ValidatePattern('^COM[0-9]+$')][string]$Port = 'COM13',
     [Parameter(Mandatory=$true)]
-    [ValidatePattern('^(M[01]|X|[NO][0-9]{1,3})$')][string]$Command,
+    [ValidatePattern('^(M[01]|D[01]|X|[NO][0-9]{1,3})$')][string]$Command,
     [ValidateRange(100,30000)][int]$TimeoutMs = 5000
 )
 $ErrorActionPreference = 'Stop'

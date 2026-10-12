@@ -11,6 +11,7 @@
 //   O<note>   note off
 //   X         all notes off
 //   M0 / M1   mute / unmute the DAC output
+//   D0 / D1   manual mode / restart demo mode
 // The module answers "OK\r\n" or "ERR\r\n" so the host can confirm the link
 // without listening to the headphones.
 module uart_ctrl #(
@@ -27,7 +28,9 @@ module uart_ctrl #(
     output reg [6:0]  ev_note,
     output reg [7:0]  ev_vel,
     output reg        panic,         // one clock pulse, all notes off
-    output reg        muted
+    output reg        muted,
+    output reg        demo_on,
+    output reg        demo_off
 );
 
     localparam integer BAUD_DIV  = (CLK_HZ + BAUD/2) / BAUD;
@@ -105,55 +108,69 @@ module uart_ctrl #(
     end
 
     // ------------------------------------------------------------- parse ---
-    localparam [1:0] CMD_NONE = 2'd0, CMD_NOTE = 2'd1, CMD_MUTE = 2'd2;
+    localparam [1:0] CMD_NONE = 2'd0, CMD_NOTE = 2'd1,
+                     CMD_MUTE = 2'd2, CMD_DEMO = 2'd3;
 
     reg [1:0]  cmd;
-    reg [7:0]  note_acc;
+    reg [11:0] note_acc;
     reg [2:0]  digit_cnt;
     reg        have_digit;
     reg        want_on;
     reg        have_panic;
+    reg        invalid;
     reg        reply_ok;
     reg        reply_err;
 
     always @(posedge clk) begin
         if (rst) begin
             cmd        <= CMD_NONE;
-            note_acc   <= 8'd0;
+            note_acc   <= 12'd0;
             digit_cnt  <= 3'd0;
             have_digit <= 1'b0;
             want_on    <= 1'b1;
             have_panic <= 1'b0;
+            invalid    <= 1'b0;
             ev_valid   <= 1'b0;
             ev_on      <= 1'b1;
             ev_note    <= 7'd60;
             ev_vel     <= DEFAULT_VEL;
             panic      <= 1'b0;
             muted      <= 1'b0;
+            demo_on    <= 1'b0;
+            demo_off   <= 1'b0;
             reply_ok   <= 1'b0;
             reply_err  <= 1'b0;
         end else begin
             ev_valid  <= 1'b0;
             panic     <= 1'b0;
+            demo_on   <= 1'b0;
+            demo_off  <= 1'b0;
             reply_ok  <= 1'b0;
             reply_err <= 1'b0;
 
             if (rx_valid) begin
                 if ((rx_byte == 8'h0D) || (rx_byte == 8'h0A)) begin
-                    if ((cmd == CMD_NOTE) && have_digit &&
-                        (note_acc >= 8'd1) && (note_acc <= 8'd127)) begin
+                    if (!invalid && (cmd == CMD_NOTE) && have_digit &&
+                        (digit_cnt <= 3'd3) &&
+                        (note_acc >= 12'd1) && (note_acc <= 12'd127)) begin
                         ev_valid <= 1'b1;
                         ev_on    <= want_on;
                         ev_note  <= note_acc[6:0];
                         ev_vel   <= DEFAULT_VEL;
                         reply_ok <= 1'b1;
-                    end else if ((cmd == CMD_MUTE) && have_digit) begin
-                        muted    <= (note_acc == 8'd0);
+                    end else if (!invalid && (cmd == CMD_MUTE) &&
+                                 (digit_cnt == 3'd1) && (note_acc <= 12'd1)) begin
+                        muted    <= (note_acc == 12'd0);
                         reply_ok <= 1'b1;
-                    end else if (have_panic) begin
+                    end else if (!invalid && (cmd == CMD_DEMO) &&
+                                 (digit_cnt == 3'd1) && (note_acc <= 12'd1)) begin
+                        demo_on  <= (note_acc == 12'd1);
+                        demo_off <= (note_acc == 12'd0);
+                        reply_ok <= 1'b1;
+                    end else if (!invalid && have_panic && (cmd == CMD_NONE)) begin
                         panic    <= 1'b1;
                         reply_ok <= 1'b1;
-                    end else if (cmd == CMD_NONE) begin
+                    end else if (!invalid && (cmd == CMD_NONE) && !have_panic) begin
                         // bare newline: stay quiet
                     end else begin
                         reply_err <= 1'b1;
@@ -161,37 +178,46 @@ module uart_ctrl #(
                     cmd        <= CMD_NONE;
                     have_digit <= 1'b0;
                     have_panic <= 1'b0;
-                    note_acc   <= 8'd0;
+                    invalid    <= 1'b0;
+                    note_acc   <= 12'd0;
                     digit_cnt  <= 3'd0;
                 end else if ((rx_byte == "N") || (rx_byte == "n")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
                     cmd        <= CMD_NOTE;
                     want_on    <= 1'b1;
                     have_digit <= 1'b0;
-                    note_acc   <= 8'd0;
+                    note_acc   <= 12'd0;
                     digit_cnt  <= 3'd0;
                 end else if ((rx_byte == "O") || (rx_byte == "o")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
                     cmd        <= CMD_NOTE;
                     want_on    <= 1'b0;
                     have_digit <= 1'b0;
-                    note_acc   <= 8'd0;
+                    note_acc   <= 12'd0;
                     digit_cnt  <= 3'd0;
                 end else if ((rx_byte == "X") || (rx_byte == "x")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
                     have_panic <= 1'b1;
                 end else if ((rx_byte == "M") || (rx_byte == "m")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
                     cmd        <= CMD_MUTE;
                     have_digit <= 1'b0;
+                    digit_cnt  <= 3'd0;
+                end else if ((rx_byte == "D") || (rx_byte == "d")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
+                    cmd        <= CMD_DEMO;
+                    have_digit <= 1'b0;
+                    note_acc   <= 12'd0;
                     digit_cnt  <= 3'd0;
                 end else if ((rx_byte >= "0") && (rx_byte <= "9")) begin
                     if (cmd != CMD_NONE) begin
                         if (digit_cnt < 3'd3)
-                            note_acc <= (note_acc * 8'd10) + (rx_byte - "0");
-                        digit_cnt  <= digit_cnt + 1'b1;
+                            note_acc <= (note_acc * 12'd10) + (rx_byte - "0");
+                        if (digit_cnt < 3'd4) digit_cnt <= digit_cnt + 1'b1;
                         have_digit <= 1'b1;
-                    end
+                    end else invalid <= 1'b1;
                 end else if ((rx_byte != " ") && (rx_byte != 8'h09)) begin
-                    cmd        <= CMD_NONE;
-                    have_digit <= 1'b0;
-                    have_panic <= 1'b0;
+                    invalid <= 1'b1;
                 end
             end
         end
@@ -241,6 +267,13 @@ module uart_ctrl #(
     reg [1:0] msg_state;
     reg [2:0] msg_idx;
     reg       msg_err;
+    reg [15:0] reply_queue;
+    reg [3:0]  reply_wr_ptr, reply_rd_ptr;
+    reg [4:0]  reply_count;
+    reg [15:0] reply_drop_count; // observable in simulation/GAO if host floods replies
+    wire reply_push = reply_ok || reply_err;
+    wire reply_pop  = (msg_state == TX_IDLE) && (reply_count != 0);
+    wire reply_room = (reply_count != 5'd16) || reply_pop;
 
     wire [2:0] msg_len = msg_err ? 3'd5 : 3'd4;
 
@@ -258,12 +291,28 @@ module uart_ctrl #(
             msg_state  <= TX_IDLE;
             msg_idx    <= 3'd0;
             msg_err    <= 1'b0;
+            reply_wr_ptr <= 4'd0;
+            reply_rd_ptr <= 4'd0;
+            reply_count <= 5'd0;
+            reply_drop_count <= 16'd0;
             send_byte  <= 8'd0;
             send_valid <= 1'b0;
         end else begin
+            if (reply_push && reply_room) begin
+                reply_queue[reply_wr_ptr] <= reply_err;
+                reply_wr_ptr <= reply_wr_ptr + 1'b1;
+            end else if (reply_push && reply_drop_count != 16'hFFFF)
+                reply_drop_count <= reply_drop_count + 1'b1;
+            if (reply_pop)
+                reply_rd_ptr <= reply_rd_ptr + 1'b1;
+            case ({reply_push && reply_room, reply_pop})
+                2'b10: reply_count <= reply_count + 1'b1;
+                2'b01: reply_count <= reply_count - 1'b1;
+                default: ;
+            endcase
             case (msg_state)
-                TX_IDLE: if (reply_ok || reply_err) begin
-                    msg_err   <= reply_err;
+                TX_IDLE: if (reply_pop) begin
+                    msg_err   <= reply_queue[reply_rd_ptr];
                     msg_idx   <= 3'd0;
                     msg_state <= TX_SEND;
                 end

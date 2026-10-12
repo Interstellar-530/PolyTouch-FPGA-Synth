@@ -15,7 +15,8 @@ module event_fifo #(
     input  wire             rd_en,
     output wire [WIDTH-1:0] rd_data,
     output wire             empty,
-    output wire             full
+    output wire             full,
+    output wire             wr_ready
 );
 
     localparam integer AW = 4;      // log2(DEPTH) for DEPTH = 16
@@ -26,6 +27,8 @@ module event_fifo #(
 
     assign empty   = (wr_ptr == rd_ptr);
     assign full    = (wr_ptr[AW] != rd_ptr[AW]) && (wr_ptr[AW-1:0] == rd_ptr[AW-1:0]);
+    // A simultaneous read frees a slot even when the FIFO starts full.
+    assign wr_ready = !full || (rd_en && !empty);
     assign rd_data = mem[rd_ptr[AW-1:0]];
 
     always @(posedge clk) begin
@@ -33,7 +36,7 @@ module event_fifo #(
             wr_ptr <= {AW+1{1'b0}};
             rd_ptr <= {AW+1{1'b0}};
         end else begin
-            if (wr_en && !full) begin
+            if (wr_en && wr_ready) begin
                 mem[wr_ptr[AW-1:0]] <= wr_data;
                 wr_ptr <= wr_ptr + 1'b1;
             end

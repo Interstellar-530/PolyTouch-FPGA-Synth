@@ -62,6 +62,14 @@ try {
                 'rtl\audio\voice_alloc.v', 'rtl\audio\poly_voice.v',
                 'rtl\audio\adsr.v', 'rtl\audio\dds_osc.v', 'rtl\audio\note_phase_inc.v') },
         @{ Name = 'tb_voice_order'; Top = 'sim\tb_voice_order.v'; Src = @('rtl\audio\voice_alloc.v') },
+        @{ Name = 'tb_event_fifo'; Top = 'sim\tb_event_fifo.v'; Src = @('rtl\audio\event_fifo.v') },
+        @{ Name = 'tb_song_backpressure'; Top = 'sim\tb_song_backpressure.v'; Src = @('rtl\audio\song_player.v') },
+        @{ Name = 'tb_mode_uart'; Top = 'sim\tb_mode_uart.v'; Src = @(
+                'rtl\top.v',
+                'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
+                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
+                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
+                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v') },
         @{ Name = 'tb_poly';        Top = 'sim\tb_poly.v';        Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
