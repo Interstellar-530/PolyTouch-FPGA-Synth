@@ -17,3 +17,4 @@ Invoke-WebRequest -Uri 'https://the.earth.li/~sgtatham/putty/0.85/sha256sums' -O
 Invoke-WebRequest -Uri 'https://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html' -OutFile (Join-Path $destination 'LICENCE.html')
 & (Join-Path $destination 'plink.exe') -V
 if ($LASTEXITCODE -ne 0) { throw 'Plink version check failed' }
+& (Join-Path $PSScriptRoot 'configure-session.ps1')
