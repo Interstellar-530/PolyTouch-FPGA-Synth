@@ -1,0 +1,16 @@
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{4pt}
+\setlength{\headheight}{15pt}
+\AtBeginEnvironment{longtable}{\small}
+\apptocmd{\tableofcontents}{\clearpage}{}{}
+\pretocmd{\section}{\Needspace{6\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{5\baselineskip}}{}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small PolyTouch FPGA 竞赛差距与执行计划}
+\fancyhead[R]{\small 2026-10-13}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
