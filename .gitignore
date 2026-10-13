@@ -26,3 +26,6 @@ tools/serial_console/serial_log.txt
 
 # Icarus Verilog simulation output.
 *.vvp
+
+# PC keyboard runtime logs; reviewed snapshots are archived separately.
+output/serial_keyboard/
