@@ -1,16 +1,9 @@
-// Four-voice note allocator.
-//
-// This module is the boundary the future performance keyboard plugs into:
-// anything that can present {valid, on/off, note, velocity} gets a voice.
-// Today the sequencer feeds it; later the MPR121 touch controller or the UART
-// controller feeds the same port.
-//
-// Allocation order:
-//   1. a held voice playing the same note (retrigger without duplication),
-//   2. a voice whose envelope has already reached zero,
-//   3. the oldest voice that is in release,
-//   4. the oldest voice still held.
-// That keeps a held chord from being cut when the melody retriggers.
+// 声部分配器，当前顶层使用 VOICES=4。输入为同一 clk 域的单周期音符事件；
+// 演示曲/UART 经外层事件队列与模式仲裁后共用此接口，外设扫描器尚未接入。
+// Note On 依次选择：仍按住的同音声部、包络结束的空闲声部、最老释音声部、
+// 最老按住声部。后两种属于声部窃取，重新启动相位/包络时可能产生瞬态。
+// Note Off 关闭匹配音高的 gate，实际释音由 ADSR 完成；panic 同样走释音。
+// ev_note 为 7 位 MIDI 音高，v_note/v_vel 为各声部顺序拼接的打包总线。
 module voice_alloc #(
     parameter integer VOICES = 4
 )(
@@ -29,8 +22,8 @@ module voice_alloc #(
     output wire [VOICES-1:0]   v_busy
 );
 
-    // A permutation of 0..VOICES-1: 0 is newest, VOICES-1 is oldest.
-    // Relative order cannot wrap after a long performance.
+    // 年龄使用相对排序 0..VOICES-1（0 最新），而非随时间无限增长的计数器。
+    // 每次 Note On 调整排序，长时间演奏不会因年龄计数回绕改变窃取顺序。
     localparam integer AGE_W = (VOICES < 2) ? 1 : $clog2(VOICES);
     reg [VOICES*AGE_W-1:0] v_age;
 
@@ -42,6 +35,7 @@ module voice_alloc #(
     reg              picked;
     reg [AGE_W-1:0]  best_age;
 
+    // v_busy 仅表示 gate/按住状态，用作显示；不包含 Release 中仍有声音的声部。
     assign v_busy = v_gate;
 
     // ------------------------------------------------------- pick a voice --
@@ -104,6 +98,7 @@ module voice_alloc #(
             for (j = 0; j < VOICES; j = j + 1)
                 v_age[j*AGE_W +: AGE_W] <= j[AGE_W-1:0];
         end else begin
+            // v_start 每 clk 默认清零，供 poly_voice 暂存到下个采样点。
             v_start <= {VOICES{1'b0}};
             if (panic) begin
                 v_gate <= {VOICES{1'b0}};

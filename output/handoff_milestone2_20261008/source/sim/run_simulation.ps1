@@ -11,6 +11,9 @@
       tb_adsr         覆盖各阶段松键、释放归零与快速重按
       tb_voice_retrigger  覆盖同音重按、满声部窃取与释放声部复用
       tb_voice_order  覆盖长时间演奏后的最老声部判断
+      tb_event_fifo   覆盖空满保护、满队列同拍读写和顺序
+      tb_song_backpressure 覆盖播放器保持未被接收的事件
+      tb_mode_uart   覆盖串口到顶层模式/事件路径；强制加速采样，非真实音频捕获
 #>
 param(
     [string]$Iverilog = '',

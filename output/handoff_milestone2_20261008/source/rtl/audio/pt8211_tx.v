@@ -1,21 +1,13 @@
-// PT8211 debug DAC transmitter for the Dock 3714 on-board audio path.
-// 27 MHz in, BCK = 27/18 = 1.5 MHz, one 32-BCK frame = 46.875 kHz sample rate.
+// Dock 3714 板载 PT8211 调试 DAC：16 位双声道，左右发送同一单声道采样。
+// 27 MHz / 18 = 1.5 MHz BCK；每帧 32 个 BCK，即 27 MHz / 576 = 46.875 kHz。
+// sample_tick 每帧仅一个 clk 宽，不是持续一整帧的电平，也不是新的时钟域。
 //
-// The bit/word layout follows the Sipeed / Gowin vendor example
-// (TangPrimer-20K-example, PT8211/src/pt8211_drive.v): the frame counter b_cnt
-// runs 0..31, a new word is requested at b_cnt 0 and 16, and WS is placed at
-// b_cnt 3 (low) and b_cnt 19 (high). PT8211 is the "Japanese" right-justified
-// format, so this WS offset is what the DAC expects. A plain 15/31 WS toggle
-// is one bit out of phase; the DAC then samples the word with the wrong sign
-// bit and the result is heard as heavy distortion on top of the tone.
-//
-// Difference from the vendor example: DIN and WS are updated on the BCK
-// falling edge instead of the rising edge. The DAC still samples on the BCK
-// rising edge, so it sees the same vendor sequence, but with about half a BCK
-// period of setup time instead of zero.
-//
-// The production audio path is still standard I2S to the external PCM5102A;
-// this module only drives the on-board PT8211 debug jack.
+// PT8211 使用右对齐格式，与 PCM5102A 所需标准 I2S 不同，不能直接复用。
+// framing 参照 Sipeed/Gowin TangPrimer-20K-example 的 PT8211/src/pt8211_drive.v：
+// b_cnt 0/16 请求装载，3/19 更新 WS；req_r/req_r1 的延迟须与移位时序一同理解。
+// 若只把 WS 改到 15/31，会破坏现有字边界关系。
+// 本版在 BCK 下降沿更新 DIN/WS，给 DAC 上升沿采样留下约半周期建立时间。
+// 外置 PCM5102A 标准 I2S 仍属后续任务，本模块仅服务板载耳机调试路径。
 module pt8211_tx (
     input  wire               clk,
     input  wire               rst,
@@ -48,6 +40,7 @@ module pt8211_tx (
             din         <= 1'b0;
             sample_tick <= 1'b0;
         end else begin
+            // 每 clk 先清零，只有下方帧边界置一，确保音源只前进一次。
             sample_tick <= 1'b0;
 
             if (div_cnt == 4'd8) begin
@@ -73,8 +66,9 @@ module pt8211_tx (
                 else if (b_cnt == 5'd19)
                     ws <= 1'b1;
 
-                // Frame boundary: latch one sample for both channels and
-                // advance the oscillator once per frame.
+                // 一帧末尾锁存 sample_in，后续两个声道共用 frame_data。
+                // 非阻塞赋值：其他模块在下一 clk 看到 sample_tick；这次锁存取旧采样，
+                // 所以整条音频流水线存在帧延迟，不能假定本帧 tick 算出的值立即发出。
                 if (b_cnt == 5'd31) begin
                     frame_data  <= sample_in;
                     sample_tick <= 1'b1;

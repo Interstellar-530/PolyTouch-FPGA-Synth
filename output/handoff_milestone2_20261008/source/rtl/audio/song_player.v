@@ -1,9 +1,6 @@
-// Test-tune player: melody plus a chord accompaniment, emitted as note events.
-//
-// The melody and the chord progression run on independent tick counters and
-// both write into the shared event bus, so the voice allocator sees one
-// uniform stream.  When the future MPR121 keyboard arrives it feeds exactly
-// the same bus; nothing in this file changes.
+// 《兰花草》演示事件播放器：旋律与三音伴奏共用节拍，各自维护剩余时长。
+// 曲目 ROM 保存音高、力度码和时长，不是 PCM 录音，也不是振荡器波表。
+// ev_wr/ev_ready 在 clk 上升沿同时为 1 才接受当前事件；外设模式仲裁位于 top。
 //
 // Table contents come from tools/gen_song_rom.py:
 //   melody : {velocity_code[2:0], note[6:0], sounding_units[5:0]}, note 0 = rest
@@ -37,9 +34,8 @@ module song_player #(
 );
 
     // ----------------------------------------------------------- tables ---
-    // Generated constant case functions, not $readmemh arrays.  The tables are
-    // tiny, and plain combinational logic cannot end up partially initialised
-    // the way an inferred internal RAM can.
+    // 这里的少量 case 是曲目事件表。音频单周期波表在 dds_osc.v 中使用 BSRAM，
+    // 不应把曲目表实现方式照搬到 512/1024 点振荡器波表。
     `include "rtl/audio/song_roms.vh"
 
     // ----------------------------------------------------------- tick base --
@@ -49,11 +45,9 @@ module song_player #(
     wire [31:0] tick_period = UNIT_SAMPLES * (tempo_sel + 1);
     wire [15:0] tick_top    = tick_period[15:0] - 16'd1;
 
-    // tick_cnt only advances on sample_tick, so it HOLDS tick_top for a whole
-    // sample tick interval (576 clocks).  Without the sample_tick qualifier
-    // tick_pulse would be a level, not a pulse, and the sequencer would
-    // decrement its counters hundreds of times per tick and race through the
-    // tune.  Qualifying with sample_tick makes it exactly one clock wide.
+    // tick_cnt 每个音频采样才更新，到顶比较会保持 576 个 clk。
+    // 必须与单周期 sample_tick 相与；否则 tick_pulse 会变成宽电平，
+    // 时长计数器在一个采样内连续递减，曲目会飞速跑圈。
     wire tick_pulse = sample_tick && (tick_cnt == tick_top);
 
     always @(posedge clk) begin
@@ -123,9 +117,9 @@ module song_player #(
                         (mel_left == (mel_gap_len + 8'd1));
 
     // -------------------------------------------------------- event bursts --
-    // One burst carries at most eight events.  All the note-offs are emitted
-    // before any note-on so the allocator never steals a voice that is about
-    // to be reused by the same burst.
+    // 一次转场最多八个事件，先发所有 Note Off 再发 Note On。
+    // 顺序保证先撤销旧 gate；Release 仍需时间，不能保证声部已空闲或无需窃取。
+    // bmask[7-i] 决定是否发送槽 i；未启用的槽只推进索引，不写入 FIFO。
     reg [7:0]  bmask;              // bmask[7-i] enables slot i
     reg [15:0] bdata [0:7];
     reg [2:0]  bidx;
@@ -135,6 +129,7 @@ module song_player #(
 
     always @(posedge clk) begin
         if (rst) begin
+            // 从表尾初始化，使第一个节拍转到索引 0，启动第一组旋律/和弦。
             mel_idx    <= MELODY_LAST;
             chord_idx  <= CHORD_LAST;
             mel_left   <= 8'd0;
@@ -208,8 +203,9 @@ module song_player #(
                 end
             end else begin
                 // ---- walk the burst, one event per clock -----------------
-                // Hold an enabled slot until the FIFO actually accepts it.
-                // Disabled slots can be skipped immediately.
+                // 启用槽在 ev_ready=0 时保持 bidx、ev_wr 和 ev_data，不丢事件。
+                // burst 未完成时不更新 mel_left/chord_left；若长期背压跨过节拍，
+                // 曲目时长会延长。正常 top 每 clk 消费一个，短 burst 可迅速清空。
                 if (!ev_wr || ev_ready) begin
                     if (bidx == 3'd7)
                         bactive <= 1'b0;

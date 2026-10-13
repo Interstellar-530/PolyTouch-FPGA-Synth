@@ -1,8 +1,8 @@
-// Four-stage ADSR envelope generator.
-//
-// The step sizes are parameters so a polyphonic build can use snappier
-// envelopes than the original single-voice bring-up: with four voices the
-// release has to finish quickly enough for the allocator to reuse the voice.
+// ADSR 的五状态实现：Idle、Attack、Decay、Sustain、Release。
+// env 是 16 位无符号幅度系数（0..65535），每个 sample_tick 增减一次步长；
+// 时间由步长和采样率共同决定，切换到 48 kHz 时需重新核对包络时长。
+// gate=0 进入 Release，直到 env=0 才 idle；松键不会立即截断输出。
+// 本版修复的关键是 Release 每个采样点继续递减，不能每次松键都重进 Release。
 module adsr #(
     parameter [15:0] ATTACK_STEP   = 16'd140,
     parameter [15:0] DECAY_STEP    = 16'd16,
@@ -26,8 +26,7 @@ module adsr #(
 
     reg [2:0] state;
 
-    // idle is what the voice allocator watches to tell a finished voice from
-    // one that is still ringing.
+    // 分配器只把 idle 视为真正空闲；gate 已低的声部仍可能处于释音尾部。
     assign idle = (state == ST_IDLE);
 
     always @(posedge clk) begin
@@ -35,6 +34,8 @@ module adsr #(
             state <= ST_IDLE;
             env   <= 16'd0;
         end else if (sample_tick) begin
+            // 优先级：有效重按 > 首次松键 > 释音中重新按下 > 正常状态推进。
+            // 排除 ST_RELEASE，保证 gate 保持低时不会阻断下面的释音递减。
             if (retrigger && gate) begin
                 env   <= 16'd0;
                 state <= ST_ATTACK;

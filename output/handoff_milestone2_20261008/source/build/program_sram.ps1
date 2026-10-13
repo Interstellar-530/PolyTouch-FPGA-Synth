@@ -1,7 +1,7 @@
 ﻿<#
     烧录脚本，带仿真门禁。
 
-    默认流程是：先跑 sim\run_simulation.ps1，三个测试台全部通过才调用
+    默认流程是：先跑 sim\run_simulation.ps1，全部自检（v1.0.0 为九台）通过才调用
     programmer_cli。这是项目规则，不是建议：任何 RTL 改动都必须先过仿真。
 
     -SkipSimulation 只为极端情况保留（例如仿真器本身不可用），使用时必须

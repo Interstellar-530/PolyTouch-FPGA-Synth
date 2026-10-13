@@ -1,16 +1,10 @@
-// MIDI note number -> 32 bit DDS phase increment.
-//
-// The audio sample rate of the on-board debug path is 46875 Hz
-// (27 MHz / 18 / 32), so a frequency f becomes
-//
-//     phase_inc = round(f * 2^32 / 46875)
-//
-// Only one chromatic octave is stored, starting at MIDI 0.  Every other note
-// is the same constant shifted left by the octave number, because shifting a
-// phase increment by one bit is exactly one octave.  Twelve constants keep
-// this in ordinary logic; the values were produced by tools/gen_song_rom.py,
-// and this is a frequency table rather than audio data, so a case statement is
-// the right implementation.
+// 7 位 MIDI 音高 -> 32 位 DDS 相位增量，组合逻辑，无额外寄存延迟。
+// 当前 PT8211 调试路径 Fs=46875 Hz（27 MHz / 18 / 32），
+// phase_inc = round(f * 2^32 / Fs)。未来标准 I2S 的 48 kHz 必须重生成这些常数。
+// 仅存 MIDI 0 起始的十二个半音常数，按八度左移即倍频；基础常数舍入误差
+// 也随左移放大。只有 12 项频率常数，因此 case 合理，不能类推为大型波表。
+// 现有常数由 tools/gen_song_rom.py 生成；改采样率时同时核对生成器设置。
+// 本模块不检查可播放音域/奈奎斯特界限；更换波形后需由上层限制高音或带限。
 module note_phase_inc (
     input  wire [6:0]  note,
     output reg  [31:0] inc

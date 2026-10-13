@@ -1,0 +1,2 @@
+# Preserve the exact bytes of the versioned, previously programmed bitstream.
+releases/v1.0.0/*.fs binary

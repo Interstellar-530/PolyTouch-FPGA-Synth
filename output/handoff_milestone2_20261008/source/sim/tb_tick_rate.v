@@ -61,7 +61,9 @@ module tb_tick_rate;
             $fatal(1, "FAIL tb_tick_rate: %0d of %0d periods wrong", bad, checked);
         $display("PASS tb_tick_rate: %0d periods, all %0d clocks (%0.1f Hz)",
                  checked, EXPECTED_CLOCKS,
-                 checked * 1.0e9 / (checked * EXPECTED_CLOCKS * 18.5185));
+                 // #18.5185 是半周期；频率显示用完整的 37.037 ns。
+                 // 此显示公式不改变上面的时钟计数/容差断言。
+                 checked * 1.0e9 / (checked * EXPECTED_CLOCKS * 37.037));
         $finish;
     end
 endmodule

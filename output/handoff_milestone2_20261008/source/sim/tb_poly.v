@@ -65,8 +65,8 @@ module tb_poly;
         // it before reading any output.
         #5000000;
 
-        // Default preset is index 2 (3x): bit 0 set, bit 1 clear.  The LEDs
-        // are active low, so lit means the bit is zero.
+        // 默认档位 index 1（2x），tempo_sel=01。LED 引脚低电平亮：
+        // led_t0=~bit0=0 表示 bit0=1，led_t1=~bit1=1 表示 bit1=0。
         check_equal("power-on reset released", pa_en, 1'b1);
         check_equal("default preset index 1, bit0 lit", led_t0, 1'b0);
         check_equal("default preset index 1, bit1 dark", led_t1, 1'b1);
@@ -79,7 +79,7 @@ module tb_poly;
         #1000000;
         check_equal("S1 selected chord set B", led_chord, 1'b0);
 
-        // S2 steps to preset 3 (4x): both bits set, both tempo LEDs dark.
+        // S2 从 index 1 到 index 2（3x），tempo_sel=10；bit0 灯灭、bit1 灯亮。
         key_s2 = 1'b0;
         #(DEBOUNCE_HOLD);
         key_s2 = 1'b1;

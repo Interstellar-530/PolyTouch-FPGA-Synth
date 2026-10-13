@@ -1,0 +1,150 @@
+{
+  "release": "v1.0.0",
+  "verified_date": "2026-10-13",
+  "release_parent": "55528a1b7999ee5e0c7a21b04ebd2d3a1fdda62b",
+  "functional_source_commit": "057d78cb909e18eebe831c387f30cf656709503e",
+  "baseline_selection": "用户指定最近支持D0/D1及电脑键盘演奏的SRAM版0x5633",
+  "live_device_read": false,
+  "hardware_programmed_this_task": false,
+  "production_rtl_equivalence": {
+    "result": "PASS",
+    "baseline_commit": "057d78cb909e18eebe831c387f30cf656709503e",
+    "effective_rtl_unchanged": true,
+    "checks": [
+      {
+        "file": "output/handoff_milestone2_20261008/source/constraints/primer20k.sdc",
+        "comparison": "text, ignoring platform newlines",
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/constraints/primer20k_dock3714.cst",
+        "comparison": "text, ignoring platform newlines",
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/adsr.v",
+        "comparison": "Verilog tokens",
+        "count": 379,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v",
+        "comparison": "Verilog tokens",
+        "count": 258,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/event_fifo.v",
+        "comparison": "Verilog tokens",
+        "count": 260,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/mixer.v",
+        "comparison": "Verilog tokens",
+        "count": 326,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/note_phase_inc.v",
+        "comparison": "Verilog tokens",
+        "count": 160,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/poly_voice.v",
+        "comparison": "Verilog tokens",
+        "count": 305,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/pt8211_tx.v",
+        "comparison": "Verilog tokens",
+        "count": 266,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/song_expect.vh",
+        "comparison": "Verilog tokens",
+        "count": 30,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/song_player.v",
+        "comparison": "Verilog tokens",
+        "count": 1139,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/song_roms.vh",
+        "comparison": "Verilog tokens",
+        "count": 552,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+        "comparison": "Verilog tokens",
+        "count": 1756,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/voice_alloc.v",
+        "comparison": "Verilog tokens",
+        "count": 838,
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/audio/wave_sine.hex",
+        "comparison": "text, ignoring platform newlines",
+        "result": "PASS"
+      },
+      {
+        "file": "output/handoff_milestone2_20261008/source/rtl/top.v",
+        "comparison": "Verilog tokens",
+        "count": 1714,
+        "result": "PASS"
+      }
+    ],
+    "historical_bitstream": {
+      "path": "releases/v1.0.0/instrument_sram_0x5633.fs",
+      "sha256": "2C7C7001DD3EABF24D2A4ABC2FC93BE1DD441D76812E248B3B84A235DBD22675",
+      "historical_user_code": "0x5633",
+      "live_device_read": false
+    },
+    "simulation_gate_required": true
+  },
+  "simulation": {
+    "result": "PASS",
+    "exit_code": 0,
+    "tests": [
+      "tb_tick_rate",
+      "tb_song_timing",
+      "tb_adsr",
+      "tb_voice_retrigger",
+      "tb_voice_order",
+      "tb_event_fifo",
+      "tb_song_backpressure",
+      "tb_mode_uart",
+      "tb_poly"
+    ],
+    "fresh_compile": true,
+    "location": "隔离源码副本",
+    "tick_report_hz": 46875.0,
+    "display_only_fix": {
+      "test": "tb_tick_rate",
+      "before_period_ns": 18.5185,
+      "after_period_ns": 37.037,
+      "assertions_changed": false
+    }
+  },
+  "keyboard_selftest": {
+    "result": "PASS",
+    "runtime": "Windows PowerShell 5.1",
+    "serial_port_opened": false
+  },
+  "evidence_sha256": {
+    "simulation_gate.log": "6a06f759e3227286d3a02b29e877e65a1b6631e38de087f971ac2b2458a24476",
+    "keyboard_selftest.log": "213f88b189a9c6c16e0f47007024767dfa11174ebfb6d235541c9c06ec241e6a"
+  },
+  "pnr": "沿用同逻辑历史已验证资源/时序报告，本轮未重新PnR"
+}
