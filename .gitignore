@@ -3,6 +3,7 @@ work/
 archive/
 tools/.venv-gowin-mcp/
 tools/.venv-docconvert/
+tools/.venv-audio-analysis/
 tools/vendor/
 tools/tessdata/*.traineddata
 __pycache__/

@@ -1,6 +1,6 @@
-# PolyTouch FPGA Synth — v1.0.0
+# PolyTouch FPGA Synth — v1.01
 
-v1.0.0 整理已经烧入 SRAM、支持 D0/D1 与电脑按住/松开演奏的四声部基线。历史 User Code 为 **0x5633**。本次发布补充中文注释、源码导读、复现入口和已验收位流，生产逻辑与模式修复版一致；不是竞赛整机功能全部完成的声明。
+v1.01 在 v1.0.0 四声部基线上加入 S1 真实音频捕获、PCM/WAV/FFT 验收及完整十项 RTL 门禁，并记录 Flash 持久化。生产逻辑和原位流保持一致，板内 User Code 仍为 **0x5633**，支持 D0/D1 与电脑按住/松开演奏。版本名称按用户指定保留为 `v1.01`；S2 GPIO 琴键与后续外设功能仍待执行。
 
 工程继续位于 [output/handoff_milestone2_20261008/source](output/handoff_milestone2_20261008/source/)。目录中的日期是旧交接包名称，版本以 Git 标签和本页为准，不维护第二份生产 RTL。
 
@@ -8,16 +8,19 @@ v1.0.0 整理已经烧入 SRAM、支持 D0/D1 与电脑按住/松开演奏的四
 
 | 阅读入口 | 内容 |
 | --- | --- |
-| [发布说明](docs/releases/v1.0.0.md) | 功能、ASCII 协议、硬件与版本限制、复现及回退 |
+| [v1.01 发布说明](docs/releases/v1.01.md) | S1 增量、Flash 固件、复现与验证边界 |
+| [v1.0.0 基线说明](docs/releases/v1.0.0.md) | 既有功能、ASCII 协议、硬件限制和源码导读背景 |
 | [源码导读](docs/releases/v1.0.0-code-guide.md) | 模块关系、状态/单拍控制、时钟/复位、定点与队列 |
 | [验证记录](docs/releases/v1.0.0-validation.json) | 生产 RTL 词法一致性、仿真结果和原位流校验 |
-| [已烧录 SRAM 位流](releases/v1.0.0/instrument_sram_0x5633.fs) | 原始 0x5633 配置文件，不是重新编译生成的文件 |
+| [固件位流](releases/v1.0.0/instrument_sram_0x5633.fs) | SRAM/外部 Flash 共用的原始 0x5633 配置文件 |
 | [电脑演奏工具](tools/serial_keyboard/README.md) | 键盘映射、GUI 和端口使用 |
 | [队友仿真配置提示词](docs/handoff/FPGA-队友仿真环境配置提示词-20261013-v0.1.md) | 无板卡电脑配置 Icarus/可选 GTKWave |
+| [S1 音频验收入口](tools/audio_capture/README.md) | 真实 PT8211 引脚捕获、PCM/WAV、频率与独立松键分析 |
+| [Flash 冷启动记录](docs/logs/FPGA_DEBUG_LOG_20261014_V1_FLASH.md) | 10/14 将同一 0x5633 位流写入 Flash，GAO-Bridge 校验及断电验收 |
 
 ## 运行基线
 
-在仓库根目录执行以下 Windows PowerShell 命令，Icarus 安装路径可通过门禁的 -Iverilog/-Vvp 参数覆盖。全部九个测试台通过才允许烧录。
+在仓库根目录执行以下 Windows PowerShell 命令，Icarus 安装路径可通过门禁的 -Iverilog/-Vvp 参数覆盖。v1.0.0 标签内是九台；10/14 工作区新增真实音频捕获，门禁为十台，全部通过才允许烧录。完整 S1 频谱验收还需运行上述音频验收入口。
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\output\handoff_milestone2_20261008\source\sim\run_simulation.ps1'
@@ -34,7 +37,7 @@ UART 使用 115200、8N1、CR/LF 结尾，支持 N1-N127、O1-O127、X、D0/D1�
 
 ## 版本与复现
 
-SRAM 配置掉电失效。旧 Flash 历史码为 0xFCF0，可自动播放兰花草但不支持 D0/D1。转运或断电后要核对实际配置，必要时重新加载 SRAM；本次发布没有烧录开发板或更新 Flash，基线由用户明确选择。
+SRAM 配置掉电失效。10/13 发布时没有改写 Flash；10/14 已按用户要求把同一 v1.0.0 位流写入 Flash，经 GAO-Bridge 完整校验、重载读码与用户断电验收，冷启动为 0x5633。原 Flash 0xFCF0 已被替换。转运或换板后仍需核对实际配置，不能仅凭仓库版本推断板内程序。
 
 源码 tag、历史 .fs 和本轮验证分别保存。原位流 SHA256 为 `2C7C7001DD3EABF24D2A4ABC2FC93BE1DD441D76812E248B3B84A235DBD22675`，历史已烧录/读码和串口证据见发布说明；新综合的字节、User Code 不保证相同。v1.0.0 是 Git 版本号，0x5633 是该历史位流的器件读码，两者不是同一编码体系。
 

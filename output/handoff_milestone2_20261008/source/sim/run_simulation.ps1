@@ -14,10 +14,13 @@
       tb_event_fifo   覆盖空满保护、满队列同拍读写和顺序
       tb_song_backpressure 覆盖播放器保持未被接收的事件
       tb_mode_uart   覆盖串口到顶层模式/事件路径；强制加速采样，非真实音频捕获
+      tb_audio_capture 从真实 PT8211 引脚解码样本；PCM/FFT 另由 tools/run_audio_verification.ps1 验收
 #>
 param(
     [string]$Iverilog = '',
-    [string]$Vvp = ''
+    [string]$Vvp = '',
+    [string]$AudioCaptureDir = '',
+    [string]$BuildDir = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -57,6 +60,16 @@ if (-not $Vvp -or -not (Test-Path -LiteralPath $Vvp -PathType Leaf)) {
 
 Push-Location $sourceRoot
 try {
+    # S1 捕获数据默认放在工作区 tmp，不向源码目录写大文件。
+    if (-not $AudioCaptureDir) {
+        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
+        $AudioCaptureDir = Join-Path $repoRoot 'tmp\audio_capture'
+    }
+    New-Item -ItemType Directory -Force -Path $AudioCaptureDir | Out-Null
+    $AudioCaptureDir = (Resolve-Path -LiteralPath $AudioCaptureDir).Path
+    if (-not $BuildDir) { $BuildDir = Join-Path $sourceRoot 'sim' }
+    New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
+    $BuildDir = (Resolve-Path -LiteralPath $BuildDir).Path
     $suite = @(
         @{ Name = 'tb_tick_rate';   Top = 'sim\tb_tick_rate.v';   Src = @('rtl\audio\pt8211_tx.v') },
         @{ Name = 'tb_song_timing'; Top = 'sim\tb_song_timing.v'; Src = @('rtl\audio\song_player.v') },
@@ -78,12 +91,18 @@ try {
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
                 'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
                 'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
+                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v') },
+        @{ Name = 'tb_audio_capture'; Top = 'sim\tb_audio_capture.v'; Src = @(
+                'rtl\top.v',
+                'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
+                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
+                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
                 'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v') }
     )
 
     $failed = 0
     foreach ($test in $suite) {
-        $out = Join-Path $sourceRoot ("sim\{0}.vvp" -f $test.Name)
+        $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
 
         $compileArgs = @('-g2012', '-I', '.', '-o', $out, $test.Top) + $test.Src
@@ -94,7 +113,11 @@ try {
             continue
         }
 
-        & $Vvp $out
+        if ($test.Name -eq 'tb_audio_capture') {
+            & $Vvp $out "+CAPTURE_DIR=$AudioCaptureDir"
+        } else {
+            & $Vvp $out
+        }
         if ($LASTEXITCODE -ne 0) {
             Write-Output ("仿真失败：{0}" -f $test.Name)
             $failed++
