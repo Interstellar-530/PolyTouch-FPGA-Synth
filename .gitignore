@@ -30,3 +30,7 @@ tools/serial_console/serial_log.txt
 
 # PC keyboard runtime logs; reviewed snapshots are archived separately.
 output/serial_keyboard/
+
+# 过时交接包的待清理区：文件已集中到这里，是否删除由用户核对后决定；
+# 内容不入库，说明见 docs/版本索引与文件地图-20261014-v0.1.md。
+legacy/pending_removal/untracked/

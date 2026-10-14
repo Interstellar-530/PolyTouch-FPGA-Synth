@@ -26,6 +26,48 @@ with clarified comments. See the repository-root README and
   per-key event queue and a single-event output with a ready handshake. A
   burst of simultaneous changes is submitted release-first, then press.
 
+[S3-AI] Added during task S3 on 2026-10-14 (author: deepseek, for later review):
+
+- `audio/clk_params.vh`: the single source of truth for clock and sample-rate
+  parameters. Two profiles: the 12.288 MHz / 48 kHz standard profile for
+  PCM5102A standard I2S, and the 27 MHz / 46.875 kHz debug profile for the
+  on-board PT8211 path. It also lists, as a checklist, every module that still
+  carries 27 MHz / 46.875 kHz constants and must be revisited when the system
+  clock is migrated.
+- `audio/i2s_tx.v`: parameterised standard I2S (Philips) transmitter. All state
+  updates in `posedge clk`; BCK comes from an integer counter (4 system cycles
+  per BCK in the standard profile, 9 with 4 high / 5 low in the debug profile),
+  never from a phase accumulator or a derived clock. DIN and LRCK only change on
+  BCK falling edges, position 0 of each channel is the zero-delay bit, then
+  `DATA_BITS` (16 or 24) bits MSB first, then zeros. Samples are latched once per
+  frame boundary, so a mid-frame change cannot tear the frame. After reset the
+  first complete frame is forced to zero and latching starts at the next
+  boundary (E0/E1 rule). `sample_tick` is one clock wide on every frame boundary
+  where LRCK falls. Illegal parameter sets are rejected at time 0 under
+  `\`ifdef SIMULATION` with an `S3_PARAM_INVALID` reason.
+
+The transmitter is deliberately **not** instantiated in `top.v`: the production
+bitstream and the on-board PT8211 path are untouched. When it is wired in later,
+tie `i2s_tx.rst` to the power-on reset only; runtime mute (M0) and panic must
+zero the left/right inputs instead of asserting `rst`, because stopping BCK and
+LRCK makes the DAC mute and re-lock. The isolated synthesis entry for the module
+is `build/build_i2s_tx.ps1` (wrapper `build/isolated/i2s_tx_top.v`, project and
+reports under `tmp/gowin_i2s_tx/`); it is a build-only project with its own
+pin assignment and does not change the production CST.
+
+Simulation added in S3: `sim/i2s_rx_model.v` (PCM5102A receive model that only
+observes BCK/LRCK/DIN, discards partial halves and reports one pair per frame),
+`sim/i2s_tx_checker.v` (one self-checking box per profile/width combination:
+vectors, seeded PRNG, mid-frame disturbance, digital mute, three hard resets at
+left-data / right-data / padding positions, plus offset, channel-swap and
+single-bit negative controls on the captured slots), `sim/tb_i2s_tx.v` (four
+combinations at 12.288 MHz and 27 MHz, 16 and 24 bits, >=264 data frames each,
+and a hand-built bit string that validates the receive model itself) and
+`sim/tb_i2s_tx_params.v` (five illegal parameter sets). The gate now runs
+thirteen positive testbenches plus those five expected-failure parameter runs;
+a parameter run only counts as passing when it exits non-zero *and* prints the
+matching reason.
+
 Pins:
 
 - `clk_27m`: H11, Dock 3714 27 MHz oscillator.

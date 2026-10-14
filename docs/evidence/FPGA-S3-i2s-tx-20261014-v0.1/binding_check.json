@@ -1,0 +1,20 @@
+{
+  "recorded_source_commit": "dd43257888d99236bed5951eba33aee1f2874ba0",
+  "recorded_inputs": 39,
+  "inputs_rehashed": 39,
+  "mismatched_inputs": [
+    "output/handoff_milestone2_20261008/source/rtl/README.md"
+  ],
+  "mismatch_reason": "验收运行结束后只补充了 rtl/README.md 的 S3 模块说明段落；RTL、测试台、约束与门禁脚本文件均未改动，逐文件哈希一致",
+  "functional_inputs_match": true,
+  "rerun_after_delivery_commit": {
+    "testbench": "tb_i2s_tx",
+    "result": "PASS",
+    "metrics_equal_to_recorded": true,
+    "log": "tb_i2s_tx_final_rerun.log",
+    "note": "四组合帧数、复位恢复次数与 tick 计数与验收记录逐项相同"
+  },
+  "delivery_commit": "b9c40f2",
+  "branch": "codex/s3-i2s-tx",
+  "pushed": false
+}

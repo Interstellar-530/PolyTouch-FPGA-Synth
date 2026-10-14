@@ -17,11 +17,16 @@
       tb_gpio_keyboard  [S2] 12 路 GPIO 键的同步/消抖/边沿/背压/flush 与响应上界
       tb_gpio_top       [S2] 顶层模式回归：GPIO 退出演示、四键同拍、Panic 优先
       tb_audio_capture 从真实 PT8211 引脚解码样本；PCM/FFT 另由 tools/run_audio_verification.ps1 验收
+      tb_i2s_tx        [S3] 标准 I2S 发送器：12.288 MHz/48 kHz 与 27 MHz/46.875 kHz
+                       两个档案各 16/24 位共四组合的周期、一位延迟、逐位解码、
+                       抗撕裂、复位恢复、数字静音、负面控制与无 X
+      tb_i2s_tx_params [S3] 参数负例：五组非法配置必须被 S3_PARAM_INVALID 拦截
 #>
 param(
     [string]$Iverilog = '',
     [string]$Vvp = '',
     [string]$AudioCaptureDir = '',
+    [string]$MetricsDir = '',
     [string]$BuildDir = ''
 )
 
@@ -72,6 +77,13 @@ try {
     if (-not $BuildDir) { $BuildDir = Join-Path $sourceRoot 'sim' }
     New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
     $BuildDir = (Resolve-Path -LiteralPath $BuildDir).Path
+    # S3 指标文件同样写到工作区 tmp，不向源码目录写大文件。
+    if (-not $MetricsDir) {
+        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
+        $MetricsDir = Join-Path $repoRoot 'tmp\i2s_metrics'
+    }
+    New-Item -ItemType Directory -Force -Path $MetricsDir | Out-Null
+    $MetricsDir = (Resolve-Path -LiteralPath $MetricsDir).Path
     $suite = @(
         @{ Name = 'tb_tick_rate';   Top = 'sim\tb_tick_rate.v';   Src = @('rtl\audio\pt8211_tx.v') },
         @{ Name = 'tb_song_timing'; Top = 'sim\tb_song_timing.v'; Src = @('rtl\audio\song_player.v') },
@@ -110,7 +122,9 @@ try {
                 'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
                 'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
                 'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
-                'rtl\audio\gpio_keyboard.v') }
+                'rtl\audio\gpio_keyboard.v') },
+        @{ Name = 'tb_i2s_tx'; Top = 'sim\tb_i2s_tx.v'; Src = @(
+                'rtl\audio\i2s_tx.v', 'sim\i2s_rx_model.v', 'sim\i2s_tx_checker.v') }
     )
 
     $failed = 0
@@ -118,7 +132,8 @@ try {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
 
-        $compileArgs = @('-g2012', '-I', '.', '-o', $out, $test.Top) + $test.Src
+        # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
+        $compileArgs = @('-g2012', '-DSIMULATION', '-I', '.', '-o', $out, $test.Top) + $test.Src
         & $Iverilog @compileArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Output ("编译失败：{0}" -f $test.Name)
@@ -128,6 +143,8 @@ try {
 
         if ($test.Name -eq 'tb_audio_capture') {
             & $Vvp $out "+CAPTURE_DIR=$AudioCaptureDir"
+        } elseif ($test.Name -eq 'tb_i2s_tx') {
+            & $Vvp $out "+METRICS_FILE=$(Join-Path $MetricsDir 'tb_i2s_tx_metrics.json')"
         } else {
             & $Vvp $out
         }
@@ -137,11 +154,51 @@ try {
         }
     }
 
+    # S3 参数负例：每一例都必须编译通过、运行以非零退出，并且给出匹配的原因。
+    $paramCases = @(
+        @{ Name = 'zero_fs';         Define = 'S3_CASE_ZERO_FS';
+           Reason = 'S3_PARAM_INVALID: SAMPLE_RATE_HZ' },
+        @{ Name = 'not_divisible';   Define = 'S3_CASE_NOT_DIVISIBLE';
+           Reason = 'S3_PARAM_INVALID: CLK_HZ not divisible' },
+        @{ Name = 'frame_not_div64'; Define = 'S3_CASE_FRAME_NOT_DIV64';
+           Reason = 'S3_PARAM_INVALID: FRAME_CYC not divisible by 64' },
+        @{ Name = 'bck_too_fast';    Define = 'S3_CASE_BCK_TOO_FAST';
+           Reason = 'S3_PARAM_INVALID: BCK_CYC must be at least 2' },
+        @{ Name = 'data_bits_32';    Define = 'S3_CASE_DATA_BITS_32';
+           Reason = 'S3_PARAM_INVALID: DATA_BITS must be 16 or 24' }
+    )
+    foreach ($case in $paramCases) {
+        $out = Join-Path $BuildDir ("tb_i2s_tx_params_{0}.vvp" -f $case.Name)
+        Write-Output ("=== tb_i2s_tx_params[{0}] （预期失败）===" -f $case.Name)
+        & $Iverilog '-g2012' '-DSIMULATION' ("-D" + $case.Define) '-I' '.' '-o' $out `
+            'sim\tb_i2s_tx_params.v' 'rtl\audio\i2s_tx.v' *> $null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Output ("参数负例编译失败：{0}（工具问题不是预期失败）" -f $case.Name)
+            $failed++
+            continue
+        }
+        $caseLog = (& $Vvp $out 2>&1 | Out-String)
+        $caseExit = $LASTEXITCODE
+        if ($caseExit -eq 0) {
+            Write-Output ("参数负例 {0} 退出码为 0：非法参数没有被拦截" -f $case.Name)
+            $failed++
+            continue
+        }
+        if ($caseLog -notmatch [regex]::Escape($case.Reason)) {
+            Write-Output ("参数负例 {0} 退出码 {1}，但原因不匹配，期望包含：{2}" -f
+                          $case.Name, $caseExit, $case.Reason)
+            $failed++
+            continue
+        }
+        Write-Output ("参数负例 {0} 按预期被拒绝（退出码 {1}，原因匹配）" -f $case.Name, $caseExit)
+    }
+
     if ($failed -ne 0) {
         Write-Output ("仿真门禁未通过，{0} 个测试台失败，禁止烧录。" -f $failed)
         exit 1
     }
-    Write-Output "全部测试台通过，允许烧录。"
+    Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许烧录。" -f
+                  $suite.Count, $paramCases.Count)
     exit 0
 }
 finally {

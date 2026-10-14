@@ -1,0 +1,308 @@
+{
+  "sha": "afbadb8df4d0059308b6080db3e105402fd070b1",
+  "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/trees/afbadb8df4d0059308b6080db3e105402fd070b1",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "242530d48577251b59666fa93585cbd1da749776",
+      "size": 147,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/242530d48577251b59666fa93585cbd1da749776"
+    },
+    {
+      "path": "CITATION.cff",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6f757921ebf593b345d26d668f3767c23148afa",
+      "size": 549,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/d6f757921ebf593b345d26d668f3767c23148afa"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4aa6ba2dc4a06590217610fba411e553265ba084",
+      "size": 1070,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/4aa6ba2dc4a06590217610fba411e553265ba084"
+    },
+    {
+      "path": "Makefile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73e124380a4b541e72eabc2b17c797087a1507c2",
+      "size": 2246,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/73e124380a4b541e72eabc2b17c797087a1507c2"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2d5602450eeae2d0bf4ad340d126aaa57609100",
+      "size": 12258,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/f2d5602450eeae2d0bf4ad340d126aaa57609100"
+    },
+    {
+      "path": "audio",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "782bbe7b8d5b6bf144fba51124de369416419e05",
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/trees/782bbe7b8d5b6bf144fba51124de369416419e05"
+    },
+    {
+      "path": "audio/phase1_silence.wav",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41fc7286e82e18dae4f8c8c996e65ba8dc5d794d",
+      "size": 9644,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/41fc7286e82e18dae4f8c8c996e65ba8dc5d794d"
+    },
+    {
+      "path": "audio/phase4_chord.wav",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a23e3240f90603afa0d8c9591bec84ed53122c05",
+      "size": 96044,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/a23e3240f90603afa0d8c9591bec84ed53122c05"
+    },
+    {
+      "path": "audio/phase4_chord_spectrogram.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5969dac4bab6b26ac8bc81cef8905cc12fb42581",
+      "size": 38402,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/5969dac4bab6b26ac8bc81cef8905cc12fb42581"
+    },
+    {
+      "path": "audio/phase5_melody.wav",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea8b8c5fb525c42ebf4ab8de1ee971cf66b34e3c",
+      "size": 50764,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/ea8b8c5fb525c42ebf4ab8de1ee971cf66b34e3c"
+    },
+    {
+      "path": "audio/phase5_melody_spectrogram.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7603f53bca3192b211d3ee8fc8d4109f589493b8",
+      "size": 25671,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/7603f53bca3192b211d3ee8fc8d4109f589493b8"
+    },
+    {
+      "path": "audio/synth_top_demo.wav",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f61c322e151b99d466f30139ab64c69e06a95e3",
+      "size": 12364,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/5f61c322e151b99d466f30139ab64c69e06a95e3"
+    },
+    {
+      "path": "rtl",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bdd6784e7d6d4aee88062b6168af2fee28dd9e7a",
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/trees/bdd6784e7d6d4aee88062b6168af2fee28dd9e7a"
+    },
+    {
+      "path": "rtl/adsr.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b8fa153f276c77a3a487433f44aae5a2b321bf7",
+      "size": 5213,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/9b8fa153f276c77a3a487433f44aae5a2b321bf7"
+    },
+    {
+      "path": "rtl/gen_sine_lut.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "accd6af35e0187524e97a4f50e5b768112ada130",
+      "size": 703,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/accd6af35e0187524e97a4f50e5b768112ada130"
+    },
+    {
+      "path": "rtl/mixer.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee18a652c78c43d29bc2860037d3a48f310515ba",
+      "size": 2679,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/ee18a652c78c43d29bc2860037d3a48f310515ba"
+    },
+    {
+      "path": "rtl/nco.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "947dbac6787b0be46349587a6db0f59c3ab8031f",
+      "size": 1288,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/947dbac6787b0be46349587a6db0f59c3ab8031f"
+    },
+    {
+      "path": "rtl/note_lut.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0053075ce05c2af819dfcce41ff167fe93a567de",
+      "size": 808,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/0053075ce05c2af819dfcce41ff167fe93a567de"
+    },
+    {
+      "path": "rtl/sine_lut.mem",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa8570fcef66c252313ead9ea6625b7c0c310ab1",
+      "size": 5120,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/fa8570fcef66c252313ead9ea6625b7c0c310ab1"
+    },
+    {
+      "path": "rtl/synth_top.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3712fd68f938a8abc14174a5d0400a671e36e6e",
+      "size": 4378,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/e3712fd68f938a8abc14174a5d0400a671e36e6e"
+    },
+    {
+      "path": "rtl/uart_midi.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48d673b5087f02659108655778075d0fde5e56d7",
+      "size": 6303,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/48d673b5087f02659108655778075d0fde5e56d7"
+    },
+    {
+      "path": "rtl/waveform_lut.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e861c4f04ae01d042e548cb11c197abf095c0e66",
+      "size": 2059,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/e861c4f04ae01d042e548cb11c197abf095c0e66"
+    },
+    {
+      "path": "sim",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "be6eccb7c7cb0a22702f3a1a748976942afc36c7",
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/trees/be6eccb7c7cb0a22702f3a1a748976942afc36c7"
+    },
+    {
+      "path": "sim/check_adsr.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa3b4e0ab89e7db4d1a3df379ada1d5a3a0820d9",
+      "size": 5750,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/fa3b4e0ab89e7db4d1a3df379ada1d5a3a0820d9"
+    },
+    {
+      "path": "sim/check_adsr_retrigger.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00accb043cf22f6baad00587baa548c929eac87b",
+      "size": 2446,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/00accb043cf22f6baad00587baa548c929eac87b"
+    },
+    {
+      "path": "sim/check_melody.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66d4a6384ca0cf55c11d3339d602cbc04c1837fd",
+      "size": 1671,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/66d4a6384ca0cf55c11d3339d602cbc04c1837fd"
+    },
+    {
+      "path": "sim/check_pitch.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3da5244d704644ecd2ea7cd0880240eb2268b73b",
+      "size": 1707,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/3da5244d704644ecd2ea7cd0880240eb2268b73b"
+    },
+    {
+      "path": "sim/check_poly.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "668576aa209c9eaca8b132a45b3807431ee66ac4",
+      "size": 3846,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/668576aa209c9eaca8b132a45b3807431ee66ac4"
+    },
+    {
+      "path": "sim/check_synth_top.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25b384aca733ebd8f5b65f2d61233c722851b0ed",
+      "size": 2486,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/25b384aca733ebd8f5b65f2d61233c722851b0ed"
+    },
+    {
+      "path": "sim/fft_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "651cae4a230ed54256793c29f2caa3e6b6486cd1",
+      "size": 1274,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/651cae4a230ed54256793c29f2caa3e6b6486cd1"
+    },
+    {
+      "path": "sim/render_wav.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7416b02aa9ab9fa3dc9f31621b031bf6e34f5a0",
+      "size": 1295,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/d7416b02aa9ab9fa3dc9f31621b031bf6e34f5a0"
+    },
+    {
+      "path": "sim/tb_adsr.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5df9ba14e3525238626df5110b4e9f9c70bd8dbe",
+      "size": 3360,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/5df9ba14e3525238626df5110b4e9f9c70bd8dbe"
+    },
+    {
+      "path": "sim/tb_adsr_retrigger.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0218456fcaf2f25611b30ceca047fc7ffe98bf7d",
+      "size": 2535,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/0218456fcaf2f25611b30ceca047fc7ffe98bf7d"
+    },
+    {
+      "path": "sim/tb_melody.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "918986f3226ff16797d30bc1a12db87997ecf08e",
+      "size": 4949,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/918986f3226ff16797d30bc1a12db87997ecf08e"
+    },
+    {
+      "path": "sim/tb_mixer.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd20f12423c8c490ec0627a82b659a5e44f0cab1",
+      "size": 2478,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/bd20f12423c8c490ec0627a82b659a5e44f0cab1"
+    },
+    {
+      "path": "sim/tb_nco.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5020b50dcd21e541d796bdffdbfd15ca14ed2199",
+      "size": 2521,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/5020b50dcd21e541d796bdffdbfd15ca14ed2199"
+    },
+    {
+      "path": "sim/tb_poly.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8660f2469403d7b8263eb1a950a23aa7d706256a",
+      "size": 3969,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/8660f2469403d7b8263eb1a950a23aa7d706256a"
+    },
+    {
+      "path": "sim/tb_synth_top.v",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc8707cfad3f71b17dfd1c0d9f930a2a2cf65386",
+      "size": 3302,
+      "url": "https://api.github.com/repos/nishadsuresh/fpga-verilog-synth/git/blobs/fc8707cfad3f71b17dfd1c0d9f930a2a2cf65386"
+    }
+  ],
+  "truncated": false
+}

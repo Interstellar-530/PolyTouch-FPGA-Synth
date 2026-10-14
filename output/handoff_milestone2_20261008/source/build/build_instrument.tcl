@@ -7,6 +7,7 @@ set project_dir [file join $build_dir instrument]
 file mkdir $project_dir
 set gprj_file [file join $project_dir instrument instrument.gprj]
 set gpio_file [file join $root rtl audio gpio_keyboard.v]
+set i2s_file  [file join $root rtl audio i2s_tx.v]
 
 if {![file exists $gprj_file]} {
     create_project -name instrument -dir $project_dir -pn GW2A-LV18PG256C8/I7 -device_version C
@@ -22,6 +23,7 @@ if {![file exists $gprj_file]} {
     add_file [file join $root rtl audio pt8211_tx.v]
     add_file [file join $root rtl audio uart_ctrl.v]
     add_file $gpio_file
+    add_file $i2s_file
     add_file [file join $root constraints primer20k_dock3714.cst]
     add_file [file join $root constraints primer20k.sdc]
 } else {
@@ -31,6 +33,9 @@ if {![file exists $gprj_file]} {
     close $project_handle
     if {[string first "gpio_keyboard.v" $project_text] < 0} {
         add_file $gpio_file
+    }
+    if {[string first "i2s_tx.v" $project_text] < 0} {
+        add_file $i2s_file
     }
 }
 

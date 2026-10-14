@@ -37,3 +37,11 @@ open ACL target for root-only update: 另一个程序正在使用此文件 (os e
 本轮没有修改 `config.toml`。屏保和显示器/系统/硬盘的自动关闭超时已按要求关闭（`ScreenSaveActive=0`、`monitor-timeout-ac/standby-timeout-ac/hibernate-timeout-ac/disk-timeout-ac` 均为 0），这一项是全局电源设置，需要时可以改回。
 
 2026-10-14 S2 复核再次用相同 `tb_adsr.v` 和 `adsr.v` 对照：默认沙箱编译退出 `-1073741819`，沙箱外编译退出 0，两者的 `vvp` 自检都退出 0。当前配置仍为 `prefer_mxc = true` 与 `windows.sandbox = "elevated"`。日志保存在 `docs/evidence/FPGA-S2-复核-20261014-v0.1/sandbox_probe.log` 与 `outside_probe.log`。本次只核对配置，没有更改全局设置。
+
+## 2026-10-14 S3 编码阶段第三次复测
+
+在 S3 编码期间用新测试台做同一对照。沙箱内编译命令
+`iverilog -g2012 -DSIMULATION -I . -o tmp\s3_sandbox_probe\tb_i2s_tx.vvp sim\tb_i2s_tx.v rtl\audio\i2s_tx.v sim\i2s_rx_model.v sim\i2s_tx_checker.v`
+退出 `-1073741819`（`0xC0000005`），没有诊断输出，但 `.vvp` 被写了出来；沙箱外同一命令退出 0。整轮门禁在沙箱内一次运行里十三台全部报“编译失败”。因此 S3 的全部仿真与综合都在沙箱外执行，编译退出码检查始终保留，没有把残留 `.vvp` 当成编译成功。
+
+配置仍为 `[features] prefer_mxc = true` 与 `[windows] sandbox = "elevated"`，`C:\Users\ROG\.codex\.sandbox\setup_error.json` 仍写着 `helper_unknown_error / setup refresh had errors`，即 `elevated` 后端因预配置失败而不可用，与 S0/S2 记录的现象一致。全局配置没有修改，电源相关设置也没有回改。
