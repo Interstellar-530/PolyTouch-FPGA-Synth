@@ -16,10 +16,10 @@
 //
 // 缓冲与延迟上界：每键最多缓存 2 个未发送事件，12 键合计 24 个。
 // 顶层在本模块后再接一个 16 项手动 FIFO，两者相加是 40 个事件。
-// 下游每拍至少消费 1 个事件，因此按键稳定后的数字响应上界是
-// PRESS_CYCLES + 40 + 常数拍，约 1.0 ms（27 MHz）。
-// 只有在超过 24 个事件完全不被消费时才会出现丢弃，丢弃计入 drop_count，
-// 用于工程判断，不当作正常路径。
+// 若下游持续每拍消费、没有清理或高优先级来源占用，排队开销最多约 40 拍。
+// PRESS_CYCLES + 队列/同步开销约为 1.0 ms（27 MHz）；持续背压时不承诺此上界。
+// 容量按键分配：同一键已积压 2 项时再来第 3 个边沿就会丢弃，
+// 即使其它键的队列尚空。drop_count 饱和统计发生丢弃的时钟拍数。
 module gpio_keyboard #(
     parameter integer KEYS           = 12,
     parameter integer PRESS_CYCLES   = 27000,   // 1 ms @ 27 MHz
@@ -45,7 +45,11 @@ module gpio_keyboard #(
     reg [KEYS-1:0]    stable;                 // 1 = 松开，0 = 按下
     reg [KEYS*CW-1:0] db_cnt;
 
-    integer k;
+    // 各过程使用独立的循环变量，避免多个 always 块驱动同一个 integer。
+    integer db_k;
+    integer commit_k;
+    integer emit_k;
+    integer queue_k;
 
     // ------------------------------------------------------- 同步与消抖 ---
     always @(posedge clk) begin
@@ -55,18 +59,18 @@ module gpio_keyboard #(
             stable <= {KEYS{1'b1}};
             db_cnt <= {(KEYS*CW){1'b0}};
         end else begin
-            // flush 只清事件队列，保留消抖状态：仍然按住的键不会因此重新起音。
+            // flush 保留消抖状态；下方 suppress_on 阻止正在按下的键补发起音。
             sync_m <= key_in;
             sync_s <= sync_m;
-            for (k = 0; k < KEYS; k = k + 1) begin
-                if (sync_s[k] == stable[k])
-                    db_cnt[k*CW +: CW] <= {CW{1'b0}};
-                else if (db_cnt[k*CW +: CW] ==
-                         (sync_s[k] ? (RELEASE_CYCLES - 1) : (PRESS_CYCLES - 1))) begin
-                    stable[k] <= sync_s[k];
-                    db_cnt[k*CW +: CW] <= {CW{1'b0}};
+            for (db_k = 0; db_k < KEYS; db_k = db_k + 1) begin
+                if (sync_s[db_k] == stable[db_k])
+                    db_cnt[db_k*CW +: CW] <= {CW{1'b0}};
+                else if (db_cnt[db_k*CW +: CW] ==
+                         (sync_s[db_k] ? (RELEASE_CYCLES - 1) : (PRESS_CYCLES - 1))) begin
+                    stable[db_k] <= sync_s[db_k];
+                    db_cnt[db_k*CW +: CW] <= {CW{1'b0}};
                 end else begin
-                    db_cnt[k*CW +: CW] <= db_cnt[k*CW +: CW] + 1'b1;
+                    db_cnt[db_k*CW +: CW] <= db_cnt[db_k*CW +: CW] + 1'b1;
                 end
             end
         end
@@ -77,37 +81,38 @@ module gpio_keyboard #(
     // 本拍消抖器将要提交状态改变。提交方向就是同步后的电平 sync_s[k]。
     reg [KEYS-1:0] db_commit;
     always @(*) begin
-        for (k = 0; k < KEYS; k = k + 1)
-            db_commit[k] = (sync_s[k] != stable[k]) &&
-                           (db_cnt[k*CW +: CW] ==
-                            (sync_s[k] ? (RELEASE_CYCLES - 1) : (PRESS_CYCLES - 1)));
+        for (commit_k = 0; commit_k < KEYS; commit_k = commit_k + 1)
+            db_commit[commit_k] = (sync_s[commit_k] != stable[commit_k]) &&
+                                  (db_cnt[commit_k*CW +: CW] ==
+                                   (sync_s[commit_k] ? (RELEASE_CYCLES - 1) : (PRESS_CYCLES - 1)));
     end
 
     // ------------------------------------------------ 每键 2 深度事件队列 ---
     reg [KEYS-1:0] q0_v, q1_v;      // 队首/队尾有效
     reg [KEYS-1:0] q0_on, q1_on;    // 对应事件方向，1 = Note On
+    reg [KEYS-1:0] suppress_on;    // flush 时已按下或正在按下的键，松开前禁止起音
     reg [KEYS-1:0] n_q0_v, n_q1_v, n_q0_on, n_q1_on, n_dropped;
 
     reg            emit_found;
     integer        emit_key;
-    reg            pop;
+    wire           pop;
     reg [7:0]      drop_count;      // 满载且仍有新边沿时饱和计数，仅供工程观察
 
     assign pop = ev_valid && ev_ready;
 
-    // 选择本拍要发送的事件：第一遍找最早的待发 Note Off，第二遍才找 Note On。
+    // 选择本拍事件：先按键编号找待发 Note Off，随后找 Note On；各键内部保持顺序。
     always @(*) begin
         emit_found = 1'b0;
         emit_key   = 0;
-        for (k = 0; k < KEYS; k = k + 1)
-            if (!emit_found && q0_v[k] && !q0_on[k]) begin
+        for (emit_k = 0; emit_k < KEYS; emit_k = emit_k + 1)
+            if (!emit_found && q0_v[emit_k] && !q0_on[emit_k]) begin
                 emit_found = 1'b1;
-                emit_key   = k;
+                emit_key   = emit_k;
             end
-        for (k = 0; k < KEYS; k = k + 1)
-            if (!emit_found && q0_v[k] && q0_on[k]) begin
+        for (emit_k = 0; emit_k < KEYS; emit_k = emit_k + 1)
+            if (!emit_found && q0_v[emit_k] && q0_on[emit_k]) begin
                 emit_found = 1'b1;
-                emit_key   = k;
+                emit_key   = emit_k;
             end
     end
 
@@ -119,33 +124,33 @@ module gpio_keyboard #(
     // 组合计算下一状态：先装载当前值，再应用本拍弹出，最后应用本轮边沿。
     reg push0_v, push0_on, push1_v, push1_on;
     always @(*) begin
-        for (k = 0; k < KEYS; k = k + 1) begin
-            push0_v  = q0_v[k];
-            push0_on = q0_on[k];
-            push1_v  = q1_v[k];
-            push1_on = q1_on[k];
-            if (pop && (emit_key == k)) begin
-                push0_v  = q1_v[k];
-                push0_on = q1_on[k];
+        for (queue_k = 0; queue_k < KEYS; queue_k = queue_k + 1) begin
+            push0_v  = q0_v[queue_k];
+            push0_on = q0_on[queue_k];
+            push1_v  = q1_v[queue_k];
+            push1_on = q1_on[queue_k];
+            if (pop && (emit_key == queue_k)) begin
+                push0_v  = q1_v[queue_k];
+                push0_on = q1_on[queue_k];
                 push1_v  = 1'b0;
                 push1_on = 1'b0;
             end
-            n_dropped[k] = 1'b0;
-            if (db_commit[k]) begin
+            n_dropped[queue_k] = 1'b0;
+            if (db_commit[queue_k] && (sync_s[queue_k] || !suppress_on[queue_k])) begin
                 if (!push0_v) begin
                     push0_v  = 1'b1;
-                    push0_on = ~sync_s[k];
+                    push0_on = ~sync_s[queue_k];
                 end else if (!push1_v) begin
                     push1_v  = 1'b1;
-                    push1_on = ~sync_s[k];
+                    push1_on = ~sync_s[queue_k];
                 end else begin
-                    n_dropped[k] = 1'b1;
+                    n_dropped[queue_k] = 1'b1;
                 end
             end
-            n_q0_v[k]  = push0_v;
-            n_q0_on[k] = push0_on;
-            n_q1_v[k]  = push1_v;
-            n_q1_on[k] = push1_on;
+            n_q0_v[queue_k]  = push0_v;
+            n_q0_on[queue_k] = push0_on;
+            n_q1_v[queue_k]  = push1_v;
+            n_q1_on[queue_k] = push1_on;
         end
     end
 
@@ -155,17 +160,22 @@ module gpio_keyboard #(
             q1_v  <= {KEYS{1'b0}};
             q0_on <= {KEYS{1'b0}};
             q1_on <= {KEYS{1'b0}};
+            suppress_on <= {KEYS{1'b0}};
             drop_count <= 8'd0;
         end else if (flush) begin
             q0_v  <= {KEYS{1'b0}};
             q1_v  <= {KEYS{1'b0}};
             q0_on <= {KEYS{1'b0}};
             q1_on <= {KEYS{1'b0}};
+            // raw 与两级同步/稳定态都要看，覆盖恰在消抖窗口内到来的 Panic。
+            suppress_on <= ~key_in | ~sync_m | ~sync_s | ~stable;
         end else begin
             q0_v  <= n_q0_v;
             q1_v  <= n_q1_v;
             q0_on <= n_q0_on;
             q1_on <= n_q1_on;
+            // 键和同步链都回到松开态后重新武装；松键事件仍可送出。
+            suppress_on <= suppress_on & ~(key_in & sync_m & sync_s & stable);
             if ((n_dropped != {KEYS{1'b0}}) && (drop_count != 8'hFF))
                 drop_count <= drop_count + 8'd1;
         end

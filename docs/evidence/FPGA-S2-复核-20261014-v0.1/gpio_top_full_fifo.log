@@ -1,0 +1,24 @@
+note-on start: t=3427515000 count=1 v_gate=0001 v_note=000003c
+ok   GPIO press-to-voice latency = 27005 cycles (bound 29000)
+note-on start: t=11835437000 count=2 v_gate=0011 v_note=0001ebc
+note-on start: t=11835474000 count=3 v_gate=0111 v_note=00f9ebc
+note-on start: t=11835511000 count=4 v_gate=1111 v_note=7ef9ebc
+note-on start: t=23446850000 count=5 v_gate=0010 v_note=7ef9e3c
+note-on start: t=26819457000 count=6 v_gate=0100 v_note=7f0de3c
+note-on start: t=28172010000 count=7 v_gate=0100 v_note=7ef1e3c
+note-on start: t=36166477000 count=8 v_gate=0010 v_note=7ef1e3c
+note-on start: t=46448226000 count=9 v_gate=0001 v_note=7ef1e3c
+note-on start: t=46448263000 count=10 v_gate=0101 v_note=7ef5e3c
+note-on start: t=46448300000 count=11 v_gate=1101 v_note=7cf5e3c
+note-on start: t=46448337000 count=12 v_gate=1111 v_note=7cf5fbc
+note-on start: t=46448374000 count=13 v_gate=1111 v_note=7cf5fc0
+note-on start: t=46448411000 count=14 v_gate=1111 v_note=7d05fc0
+note-on start: t=46448448000 count=15 v_gate=1111 v_note=8505fc0
+note-on start: t=46448485000 count=16 v_gate=1111 v_note=85061c0
+note-on start: t=46448522000 count=17 v_gate=1111 v_note=85061c4
+note-on start: t=46448559000 count=18 v_gate=1111 v_note=85161c4
+note-on start: t=46448597000 count=19 v_gate=1111 v_note=8d161c4
+note-on start: t=46448634000 count=20 v_gate=1111 v_note=8d163c4
+ok   full manual FIFO: 16 resident + 4 retained, 20 events delivered, full read/write
+PASS tb_gpio_top: GPIO mode switch, 4-key burst, panic priority, UART path
+sim\tb_gpio_top.v:247: $finish called at 46451874384 (1ps)

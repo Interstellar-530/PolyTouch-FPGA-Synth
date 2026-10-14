@@ -19,6 +19,10 @@ module tb_gpio_top;
     integer cycles = 0, start_pulses = 0, baseline = 0;
     integer press_cycle = 0, latency = 0, i;
     integer find_voice;
+    reg watch_manual = 1'b0;
+    reg [11:0] manual_on_seen = 0, manual_off_seen = 0;
+    integer manual_reads = 0, manual_ons = 0, manual_offs = 0;
+    reg saw_full_replace = 1'b0;
 
     top dut (.clk_27m(clk), .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
              .uart_rx(uart_rx), .gpio_key_n(gpio_key_n),
@@ -30,6 +34,24 @@ module tb_gpio_top;
 
     always @(posedge clk) begin
         cycles = cycles + 1;
+        if (watch_manual && dut.man_rd && !dut.man_empty) begin
+            if (dut.man_data[14:8] < 60 || dut.man_data[14:8] > 71)
+                $fatal(1, "manual FIFO delivered an unexpected pitch");
+            manual_reads = manual_reads + 1;
+            if (dut.man_data[15]) begin
+                if (manual_on_seen[dut.man_data[14:8]-60])
+                    $fatal(1, "manual FIFO duplicated a Note On");
+                manual_on_seen[dut.man_data[14:8]-60] = 1'b1;
+                manual_ons = manual_ons + 1;
+            end else begin
+                if (manual_off_seen[dut.man_data[14:8]-60])
+                    $fatal(1, "manual FIFO duplicated a Note Off");
+                manual_off_seen[dut.man_data[14:8]-60] = 1'b1;
+                manual_offs = manual_offs + 1;
+            end
+            if (dut.u_manual.full && dut.man_wr && dut.gp_ev_ready)
+                saw_full_replace = 1'b1;
+        end
         if (!dut.rst && (|dut.v_start)) begin
             start_pulses = start_pulses + 1;
             $display("note-on start: t=%0t count=%0d v_gate=%b v_note=%h",
@@ -188,6 +210,38 @@ module tb_gpio_top;
             $fatal(1, "returning to manual started %0d voices, want 1",
                    start_pulses - baseline);
         if (!dut.u_manual.empty) $fatal(1, "manual FIFO not drained after returning");
+
+        // ---- 7. UART 持续占用仲裁器，填满手动 FIFO 后让 GPIO 在上游等待 ----
+        gpio_key_n = 12'hFFF;
+        wait_cycles(RELEASE + 40);
+        send_byte("D"); send_byte("0"); send_byte(8'h0D); settle();
+        // 人为延长高优先级来源占用，检验实际仲裁/ready 连线；不加速按键消抖。
+        force dut.uart_ev_valid = 1'b1;
+        force dut.uart_ev_on = 1'b0;
+        force dut.uart_ev_note = 7'd0;
+        gpio_key_n = 12'h000;
+        wait_cycles(PRESS + 40);
+        gpio_key_n[3:0] = 4'hF;
+        wait_cycles(RELEASE + 40);
+        if (!dut.u_manual.full)
+            $fatal(1, "manual FIFO did not fill with 12 On and 4 Off events");
+        gpio_key_n[7:4] = 4'hF;
+        wait_cycles(RELEASE + 40);
+        if (!dut.gp_ev_valid || dut.gp_ev_ready || dut.u_gpio.drop_count !== 8'd0)
+            $fatal(1, "GPIO did not retain events behind the full manual FIFO");
+        watch_manual = 1'b1;
+        release dut.uart_ev_valid;
+        release dut.uart_ev_on;
+        release dut.uart_ev_note;
+        wait_cycles(100);
+        watch_manual = 1'b0;
+        if (manual_reads != 20 || manual_ons != 12 || manual_offs != 8 ||
+            manual_on_seen !== 12'hFFF || manual_off_seen !== 12'h0FF ||
+            !saw_full_replace || !dut.man_empty || dut.gp_ev_valid ||
+            dut.u_gpio.drop_count !== 8'd0)
+            $fatal(1, "full manual FIFO lost, duplicated or blocked events: reads=%0d On=%0d Off=%0d",
+                   manual_reads, manual_ons, manual_offs);
+        $display("ok   full manual FIFO: 16 resident + 4 retained, 20 events delivered, full read/write");
 
         $display("PASS tb_gpio_top: GPIO mode switch, 4-key burst, panic priority, UART path");
         $finish;

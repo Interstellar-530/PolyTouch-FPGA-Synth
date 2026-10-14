@@ -220,6 +220,39 @@ module tb_gpio_keyboard;
         key_in[0] = 1'b1;
         wait_cycles(RELEASE + 20);
 
+        // 阶段 8：Panic 恰在按下消抖结束前到来。持续按住不能在之后补发 Note On。
+        clear_stats;
+        key_in[0] = 1'b0;
+        wait_cycles(PRESS - 20);
+        flush = 1'b1;
+        @(negedge clk);
+        flush = 1'b0;
+        wait_cycles(PRESS + 40);
+        check("in-flight press stays silent after flush", ons, 0);
+        key_in[0] = 1'b1;
+        wait_cycles(RELEASE + 20);
+        clear_stats;
+        key_in[0] = 1'b0;
+        wait_cycles(PRESS + 20);
+        check("new press after in-flight flush sounds", ons, 1);
+
+        // 阶段 9：同一键的 2 项队列确实装满，解除背压后两个事件都送达。
+        ev_ready = 1'b0;
+        clear_stats;
+        key_in[0] = 1'b1;
+        wait_cycles(RELEASE + 20);
+        key_in[0] = 1'b0;
+        wait_cycles(PRESS + 20);
+        if (!(dut.q0_v[0] && dut.q1_v[0]))
+            $fatal(1, "per-key queue did not reach full occupancy");
+        ev_ready = 1'b1;
+        wait_cycles(5);
+        check("full per-key queue drains both events", events, 2);
+        check("full per-key queue Off count", offs, 1);
+        check("full per-key queue On count", ons, 1);
+        if (seq_on[0] !== 1'b0 || seq_on[1] !== 1'b1 || dut.drop_count !== 8'd0)
+            $fatal(1, "full per-key queue lost or reordered an event");
+
         $display("PASS tb_gpio_keyboard: sync, debounce, edge, burst, backpressure, flush, bound");
         $finish;
     end

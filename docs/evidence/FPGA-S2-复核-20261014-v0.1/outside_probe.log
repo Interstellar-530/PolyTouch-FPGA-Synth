@@ -1,0 +1,4 @@
+IVERILOG_EXIT=0
+PASS tb_adsr: attack/decay/sustain note-off, release and retrigger
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_adsr.v:93: $finish called at 516000 (1ps)
+VVP_EXIT=0

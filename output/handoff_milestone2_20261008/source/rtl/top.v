@@ -295,8 +295,7 @@ module top (
     // 同拍禁止分发新事件；之后优先级为首事件暂存 > UART N/O > GPIO 手动 FIFO > 演示 FIFO。
     // 分配器每个 clk 可接收一个事件；UART 事件没有反压端口，GPIO 手动 FIFO 有 ready。
     wire        uart_direct  = uart_ev_valid && !manual_transition;
-    // [S2-AI] 手动事件只在非演示模式送出：演示期间到达的松键事件留在 FIFO 里，
-    // 等真正进入手动后按顺序送出，不会在演示模式里改到声部状态。
+    // [S2-AI] 手动 FIFO 只在非演示模式送出；演示期间的 GPIO 松键已在 man_wr 处过滤。
     wire        man_deliver  = man_ev_valid && !demo_mode;
     wire        demo_deliver = demo_mode && !fifo_empty;
     wire        ev_valid = !clear_events &&
