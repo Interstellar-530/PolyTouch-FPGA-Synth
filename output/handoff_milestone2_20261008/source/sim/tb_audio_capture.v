@@ -6,9 +6,11 @@
 // the decoder never reads the serializer's bit counter or shift register.
 module tb_audio_capture;
     reg clk = 0, key_rst = 0, key_s1 = 1, key_s2 = 1, uart_rx = 1;
+    reg [11:0] gpio_key_n = 12'hFFF;    // [S2-AI] 全部松开；本台只走 UART 演奏路径
     wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, led_t0, led_t1, uart_tx;
     top dut (.clk_27m(clk), .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
-             .uart_rx(uart_rx), .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din),
+             .uart_rx(uart_rx), .gpio_key_n(gpio_key_n),
+             .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din),
              .pa_en(pa_en), .led(led), .led_chord(led_chord),
              .led_t0(led_t0), .led_t1(led_t1), .uart_tx(uart_tx));
     always #18.5185 clk = ~clk;

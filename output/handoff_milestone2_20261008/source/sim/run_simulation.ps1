@@ -14,6 +14,8 @@
       tb_event_fifo   覆盖空满保护、满队列同拍读写和顺序
       tb_song_backpressure 覆盖播放器保持未被接收的事件
       tb_mode_uart   覆盖串口到顶层模式/事件路径；强制加速采样，非真实音频捕获
+      tb_gpio_keyboard  [S2] 12 路 GPIO 键的同步/消抖/边沿/背压/flush 与响应上界
+      tb_gpio_top       [S2] 顶层模式回归：GPIO 退出演示、四键同拍、Panic 优先
       tb_audio_capture 从真实 PT8211 引脚解码样本；PCM/FFT 另由 tools/run_audio_verification.ps1 验收
 #>
 param(
@@ -80,24 +82,35 @@ try {
         @{ Name = 'tb_voice_order'; Top = 'sim\tb_voice_order.v'; Src = @('rtl\audio\voice_alloc.v') },
         @{ Name = 'tb_event_fifo'; Top = 'sim\tb_event_fifo.v'; Src = @('rtl\audio\event_fifo.v') },
         @{ Name = 'tb_song_backpressure'; Top = 'sim\tb_song_backpressure.v'; Src = @('rtl\audio\song_player.v') },
+        @{ Name = 'tb_gpio_keyboard'; Top = 'sim\tb_gpio_keyboard.v'; Src = @('rtl\audio\gpio_keyboard.v') },
         @{ Name = 'tb_mode_uart'; Top = 'sim\tb_mode_uart.v'; Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
                 'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
                 'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v') },
+                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v') },
+        @{ Name = 'tb_gpio_top'; Top = 'sim\tb_gpio_top.v'; Src = @(
+                'rtl\top.v',
+                'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
+                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
+                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
+                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v') },
         @{ Name = 'tb_poly';        Top = 'sim\tb_poly.v';        Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
                 'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
                 'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v') },
+                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v') },
         @{ Name = 'tb_audio_capture'; Top = 'sim\tb_audio_capture.v'; Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
                 'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
                 'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v') }
+                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v') }
     )
 
     $failed = 0

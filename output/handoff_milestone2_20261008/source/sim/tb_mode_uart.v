@@ -1,10 +1,12 @@
 `timescale 1ns/1ps
 module tb_mode_uart;
     reg clk = 0, key_rst = 0, key_s1 = 1, key_s2 = 1, uart_rx = 1;
+    reg [11:0] gpio_key_n = 12'hFFF;    // [S2-AI] 全部松开；GPIO 交互另见 tb_gpio_top
     wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, led_t0, led_t1, uart_tx;
     integer err_count = 0, accepted = 0, replies_dequeued = 0, i;
     top dut (.clk_27m(clk), .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
-             .uart_rx(uart_rx), .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din),
+             .uart_rx(uart_rx), .gpio_key_n(gpio_key_n),
+             .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din),
              .pa_en(pa_en), .led(led), .led_chord(led_chord),
              .led_t0(led_t0), .led_t1(led_t1), .uart_tx(uart_tx));
     always #18.5185 clk = ~clk;

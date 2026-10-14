@@ -3,8 +3,9 @@
 //          uart_ctrl -> 首事件暂存/直送 --+-> voice_alloc -> 4 个 poly_voice
 //                                      -> mixer -> pt8211_tx -> 板载耳机路径。
 // 演示事件经过 FIFO；UART 音符绕过 FIFO，由下方仲裁逻辑直接交给声部分配器。
-// 本版尚未接入 GPIO 琴键、MPR121、压力 ADC 或外置 PCM5102A 标准 I2S。
-// 后续外设须另加事件握手/仲裁，不能直接把连续事件接到 UART 的单拍接口。
+// [S2-AI 新增] 12 路 GPIO 琴键经 gpio_keyboard 同步/消抖后进入独立的手动事件
+// FIFO，再与 UART、演示事件在同一仲裁器汇合。GPIO 突发不再走 UART 的单拍入口。
+// 本版仍未接入 MPR121、压力 ADC 或外置 PCM5102A 标准 I2S。
 //
 // S1 切换伴奏 A/B；S2 循环四档速度并重启曲目；S3 复位演奏逻辑。
 // UART 115200 8N1：N<note>/O<note>/X 发音/松键/全部松键，M0/M1 数字静音/恢复，
@@ -15,6 +16,7 @@ module top (
     input  wire key_s1,      // S1 / T3, active-low, chord set A/B
     input  wire key_s2,      // S2 / T2，低有效；下一速度档并重启曲目
     input  wire uart_rx,     // T13, from BL702 UART1_TX
+    input  wire [11:0] gpio_key_n, // [S2-AI] 12 路琴键，低有效，外部上拉；键 0 = C4
     output wire hp_bck,
     output wire hp_ws,
     output wire hp_din,
@@ -142,10 +144,62 @@ module top (
     wire [6:0]  uart_ev_note;
     wire [7:0]  uart_ev_vel;
 
+    // [S2-AI-BEGIN] GPIO 手动来源：同步/消抖后的琴键事件进入 16 项手动 FIFO。
+    // gpio_keyboard 在没有 ready 时把事件留在自己的每键队列里，因此这里不会丢事件。
+    // 优先级定为：清理（Panic/模式切换）> 首事件暂存 > UART > GPIO 手动 FIFO > 演示 FIFO。
+    wire        gp_ev_valid, gp_ev_on, gp_ev_ready;
+    wire [6:0]  gp_ev_note;
+    wire [7:0]  gp_ev_vel;
+    wire        man_empty, man_ready;
+    wire [15:0] man_data;
+    wire        man_rd;
+
+    // X 全松键与 D1/D0 模式切换时，丢弃未发送的手动事件并重新武装琴键：
+    // 已经按住的键必须松开再按才会重新起音。这里不能直接用 clear_events 驱动，
+    // 否则由 GPIO 触发的那次“退出演示”会把首个按键事件一起清掉。
+    wire manual_flush = uart_panic || uart_demo_on || uart_demo_off;
+
+    gpio_keyboard u_gpio (
+        .clk       (clk_27m),
+        .rst       (rst),
+        .key_in    (gpio_key_n),
+        .flush     (manual_flush),
+        .ev_ready  (gp_ev_ready),
+        .ev_valid  (gp_ev_valid),
+        .ev_on     (gp_ev_on),
+        .ev_note   (gp_ev_note),
+        .ev_vel    (gp_ev_vel),
+        .key_pressed()          // 预留：后续可用于琴键指示 LED 或 GAO 观察
+    );
+
+    // 演示模式期间只接收按键（Note On）事件：进入演示时已经清空声部，
+    // 此时松键没有可关闭的音符，若把它排进队列，还会挡住后面真正的按键事件。
+    wire man_wr = gp_ev_valid && !(demo_mode && !gp_ev_on);
+
+    event_fifo u_manual (
+        .clk     (clk_27m),
+        .rst     (rst | manual_flush),
+        .wr_en   (man_wr),
+        .wr_data ({gp_ev_on, gp_ev_note, gp_ev_vel}),
+        .rd_en   (man_rd),
+        .rd_data (man_data),
+        .empty   (man_empty),
+        .full    (),
+        .wr_ready(gp_ev_ready)
+    );
+
+    wire        man_ev_valid = !man_empty;   // event_fifo 的 rd_data 是队首组合输出
+    wire [15:0] man_ev_word  = man_data;
+    wire        man_ev_on    = man_ev_word[15];
+    // [S2-AI-END]
+
     reg         demo_mode;
     reg         pending_valid;
     reg [15:0]  pending_word;
-    wire        manual_transition = demo_mode && (uart_ev_valid || uart_panic);
+    // [S2-AI] 只有 GPIO 的 Note On 才触发退出演示；单纯松开一个键不应该把
+    // 已经回到演示的设计再次拉进手动模式。
+    wire        manual_transition = demo_mode && (uart_ev_valid || uart_panic ||
+                                                  (man_ev_valid && man_ev_on));
     wire        clear_events = uart_demo_on || uart_demo_off ||
                                manual_transition || uart_panic || (restart && demo_mode);
 
@@ -238,15 +292,23 @@ module top (
     );
 
     // 模式切换、X 或演示重启先清 FIFO 并撤销旧声部 gate，走正常 Release。
-    // 同拍禁止分发新事件；之后优先级为首事件暂存 > UART N/O > 演示 FIFO。
-    // 分配器每个 clk 可接收一个事件；这里没有给 UART 事件提供反压端口。
-    wire        uart_direct = uart_ev_valid && !manual_transition;
+    // 同拍禁止分发新事件；之后优先级为首事件暂存 > UART N/O > GPIO 手动 FIFO > 演示 FIFO。
+    // 分配器每个 clk 可接收一个事件；UART 事件没有反压端口，GPIO 手动 FIFO 有 ready。
+    wire        uart_direct  = uart_ev_valid && !manual_transition;
+    // [S2-AI] 手动事件只在非演示模式送出：演示期间到达的松键事件留在 FIFO 里，
+    // 等真正进入手动后按顺序送出，不会在演示模式里改到声部状态。
+    wire        man_deliver  = man_ev_valid && !demo_mode;
+    wire        demo_deliver = demo_mode && !fifo_empty;
     wire        ev_valid = !clear_events &&
-                           (pending_valid || uart_direct || (demo_mode && !fifo_empty));
+                           (pending_valid || uart_direct || man_deliver || demo_deliver);
     wire [15:0] ev_word  = pending_valid ? pending_word :
-                           uart_direct ? {uart_ev_on, uart_ev_note, uart_ev_vel} : fifo_data;
-    assign fifo_rd = demo_mode && !clear_events && !pending_valid &&
-                     !uart_direct && !fifo_empty;
+                           uart_direct  ? {uart_ev_on, uart_ev_note, uart_ev_vel} :
+                           man_deliver  ? man_ev_word : fifo_data;
+    assign fifo_rd = demo_deliver && !clear_events && !pending_valid &&
+                     !uart_direct && !man_deliver;
+    // [S2-AI] 手动 FIFO 的弹出条件与上面的优先级一致：清理那一拍不消费，
+    // 于是由 GPIO 触发的“退出演示”不会把触发它的那个事件丢掉。
+    assign man_rd = man_deliver && !clear_events && !pending_valid && !uart_direct;
 
     // ---------------------------------------------------- voice control ---
     wire [3:0]  v_gate;

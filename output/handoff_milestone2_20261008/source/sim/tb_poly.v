@@ -17,6 +17,7 @@ module tb_poly;
     reg key_s1 = 1'b1;
     reg key_s2 = 1'b1;
     reg uart_rx = 1'b1;
+    reg [11:0] gpio_key_n = 12'hFFF;    // [S2-AI] 全部松开，本测试台不涉及 GPIO
 
     wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, led_t0, led_t1, uart_tx;
 
@@ -30,6 +31,7 @@ module tb_poly;
         .key_s1   (key_s1),
         .key_s2   (key_s2),
         .uart_rx  (uart_rx),
+        .gpio_key_n(gpio_key_n),
         .hp_bck   (hp_bck),
         .hp_ws    (hp_ws),
         .hp_din   (hp_din),
