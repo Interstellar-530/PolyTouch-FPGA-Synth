@@ -1,0 +1,4 @@
+﻿S3_PARAM_INVALID: 每帧 257 拍不能被 64 个 BCK 整除
+FATAL: rtl\audio\i2s_tx.v:91: S3_PARAM_INVALID: FRAME_CYC not divisible by 64
+       Time: 0  Scope: tb_i2s_tx_params.dut
+

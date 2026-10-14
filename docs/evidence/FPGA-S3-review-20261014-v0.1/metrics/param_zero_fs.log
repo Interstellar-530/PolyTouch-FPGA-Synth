@@ -1,0 +1,4 @@
+﻿S3_PARAM_INVALID: SAMPLE_RATE_HZ=0 必须大于 0
+FATAL: rtl\audio\i2s_tx.v:80: S3_PARAM_INVALID: SAMPLE_RATE_HZ must be greater than 0
+       Time: 0  Scope: tb_i2s_tx_params.dut
+

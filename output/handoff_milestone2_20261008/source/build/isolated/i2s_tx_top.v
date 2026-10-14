@@ -1,11 +1,13 @@
 // [S3-AI | deepseek | 2026-10-14] 隔离综合用顶层（只用于综合验证，不进生产顶层、不烧录）。
+// [S3-REVIEW | Codex | 2026-10-14] 时钟默认值来自统一头文件。
 //
 // 目的：i2s_tx 尚未被顶层实例化，用现有 top 的综合结果不能证明新模块可综合、也不能给出它的
 // 资源数字。这里把 i2s_tx 接到引脚上单独综合：输入样本来自自由计数器，复位由上电计数器产生，
 // 避免常量传播把模块内部逻辑优化掉。引脚只在本隔离工程里使用，不改生产 CST。
+`include "rtl/audio/clk_params.vh"
 module i2s_tx_top #(
-    parameter integer CLK_HZ         = 12288000,
-    parameter integer SAMPLE_RATE_HZ = 48000,
+    parameter integer CLK_HZ         = `FPGA_AUDIO_STD_CLK_HZ,
+    parameter integer SAMPLE_RATE_HZ = `FPGA_AUDIO_STD_FS_HZ,
     parameter integer DATA_BITS      = 16
 )(
     input  wire clk,          // 隔离工程时钟脚，标准档按 12.288 MHz 约束

@@ -1,5 +1,6 @@
 <#
 Run the complete RTL gate, then the independent S1 PCM/FFT checks.
+[S3-REVIEW | Codex | 2026-10-14] Bind S3 metrics to this run, preserving raw parameter diagnostics.
 Python is an offline analysis tool only; this script never programs hardware.
 The output contains raw capture, WAV/PNG/JSON and reproducibility evidence.
 #>
@@ -25,7 +26,8 @@ $OutputDir = (Resolve-Path -LiteralPath $OutputDir).Path
 $captureDir = Join-Path $OutputDir 'capture'
 $analysisDir = Join-Path $OutputDir 'analysis'
 $buildDir = Join-Path $OutputDir 'build'
-New-Item -ItemType Directory -Force -Path $captureDir, $analysisDir, $buildDir | Out-Null
+$metricsDir = Join-Path $OutputDir 'metrics'
+New-Item -ItemType Directory -Force -Path $captureDir, $analysisDir, $buildDir, $metricsDir | Out-Null
 $psExe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 Push-Location $repoRoot
 try {
@@ -54,7 +56,7 @@ try {
     } finally { $ErrorActionPreference = $savedPreference }
     if ($iverilogVersionExit -ne 0 -or $vvpVersionExit -ne 0) { throw 'Tool version query failed.' }
     Write-Output "Running complete RTL gate; log: $OutputDir\simulation_gate.log"
-    & $psExe -NoProfile -ExecutionPolicy Bypass -File $gate -Iverilog $Iverilog -Vvp $Vvp -AudioCaptureDir $captureDir -BuildDir $buildDir *> (Join-Path $OutputDir 'simulation_gate.log')
+    & $psExe -NoProfile -ExecutionPolicy Bypass -File $gate -Iverilog $Iverilog -Vvp $Vvp -AudioCaptureDir $captureDir -BuildDir $buildDir -MetricsDir $metricsDir *> (Join-Path $OutputDir 'simulation_gate.log')
     $gateExit = $LASTEXITCODE
     if ($gateExit -ne 0) { throw "RTL gate failed (exit $gateExit). See simulation_gate.log." }
     Write-Output 'RTL gate passed. Checking analyzer negative controls.'

@@ -1,0 +1,4 @@
+﻿S3_PARAM_INVALID: CLK_HZ=27000000 不能被 SAMPLE_RATE_HZ=48000 整除（每帧 562.5 拍）
+FATAL: rtl\audio\i2s_tx.v:88: S3_PARAM_INVALID: CLK_HZ not divisible by SAMPLE_RATE_HZ
+       Time: 0  Scope: tb_i2s_tx_params.dut
+

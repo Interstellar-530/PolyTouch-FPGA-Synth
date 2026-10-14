@@ -1,4 +1,5 @@
 // [S3-AI | deepseek | 2026-10-14] 单个档案的 I2S 发送器自检盒（仅仿真用）。
+// [S3-REVIEW | Codex | 2026-10-14] 补齐填充/tick/非零复位探针，三种复位位置实际逐项验证。
 //
 // 一个实例包含：被测 i2s_tx、独立接收模型 i2s_rx_model、激励与期望队列、引脚级断言和指标。
 // 期望值只由本模块驱动的输入产生（在帧边界之前稳定），绝不从解码结果反推。
@@ -50,6 +51,7 @@ module i2s_tx_checker #(
     localparam integer F_ALL     = F_VEC + F_PRNG + F_TEAR + F_MUTE;   // 264
     localparam integer N_RESET   = 3;
     localparam integer QDEPTH    = 8;
+    localparam [31:0] PADDING_MASK = (32'h1 << (31 - DATA_BITS)) - 1;
 
     // ------------------------------------------------------------ 被测与模型 ---
     reg                         rst;
@@ -125,7 +127,7 @@ module i2s_tx_checker #(
         end
 
         probe_l      = vec_l[2];                       // 复位测试期间的非零输入
-        probe_r      = vec_r[3];
+        probe_r      = vec_r[5];                       // 两路探针都非零，避免把静音算作恢复
         tear_probe_l = ~vec_l[0];                      // 既不是本帧也不是下帧的期望值
         tear_probe_r = ~vec_r[1];
 
@@ -173,6 +175,7 @@ module i2s_tx_checker #(
     integer reset_at;          // 本次复位注入在帧内的系统拍位置
     integer rst_hold;          // 复位保持拍数
     integer last_frame_cyc, last_lrck_cyc, last_tick_cyc, last_bck_cyc;
+    integer startup_cyc;
     integer gap_meas, lrck_meas, hi_meas, lo_meas;
     integer bck_rise_in_half;
     reg     prev_lrck, prev_bck, prev_din, prev_tick, prev_rst;
@@ -191,6 +194,7 @@ module i2s_tx_checker #(
         q_head = 0; q_tail = 0; q_count = 0;
         cyc = 0; sub_cnt = 0; frames_seen = 0; bck_rise_in_half = 0;
         last_frame_cyc = -1; last_lrck_cyc = -1; last_tick_cyc = -1; last_bck_cyc = -1;
+        startup_cyc = 0;
         prev_lrck = 1'b0; prev_bck = 1'b0; prev_din = 1'b0; prev_tick = 1'b0;
         half_pending = 1'b0; want_reset = 1'b0; inject_reset = 1'b0; finishing = 1'b0;
         frame_edge = 1'b0; rst_hold = 0; halt_push = 1'b0;
@@ -213,8 +217,8 @@ module i2s_tx_checker #(
         if (rst) begin
             // 同步复位至少要采样一次之后才检查引脚定义。
             if ((cyc > 2) && ((^{bck, lrck, din, tick}) === 1'bx))
-                $fatal(1, "%m: 复位期间引脚出现 X bck=%b lrck=%b din=%b tick=%b rst=%b cyc=%0d slot=%b state=%b",
-                       bck, lrck, din, tick, rst, cyc, dut.slot, dut.data_state);
+                $fatal(1, "%m: 复位期间引脚出现 X bck=%b lrck=%b din=%b tick=%b rst=%b cyc=%0d",
+                       bck, lrck, din, tick, rst, cyc);
             if ((cyc > 2) && (din !== 1'b0))
                 $fatal(1, "%m: 复位期间 DIN 不是 0");
             // 复位沿不能当成帧边界：清掉与边界相关的记录。
@@ -237,6 +241,7 @@ module i2s_tx_checker #(
 
             // ---------------- 复位释放后的重新武装 ----------------
             if (prev_rst) begin
+                startup_cyc <= cyc;
                 // 复位释放到 E0 之间的半帧是完整的（槽计数器从 0 开始），模型会把它作为
                 // 第一帧发布，所以这里先推一条强制零的期望，与它对齐。
                 q_head         <= 0;
@@ -249,9 +254,6 @@ module i2s_tx_checker #(
                     drive_mode  <= 2;                  // 复位探针：输入保持非零
                     probe_wait_left <= 3;              // 三次比较后记一次复位恢复
                     reset_round <= reset_round + 1;
-                    if (reset_round == 0) reset_at <= HALF_CYC / 2;                 // 左数据中途
-                    else if (reset_round == 1) reset_at <= HALF_CYC + HALF_CYC / 2; // 右数据中途
-                    else reset_at <= FRAME_CYC - BCK_CYC;                           // 填充槽中途
                 end else begin
                     drive_mode <= 1;                   // 正常启动：从第一个数据帧开始
                     drive_idx  <= 0;
@@ -261,6 +263,10 @@ module i2s_tx_checker #(
 
             // ---------------- 帧边界：LRCK 高→低 ----------------
             frame_edge = prev_lrck && !lrck && half_pending;
+            if (frame_edge !== tick)
+                $fatal(1, "S3_TICK_BOUNDARY: %m tick 与帧边界不一致");
+            if (!prev_rst && last_frame_cyc < 0 && cyc - startup_cyc > FRAME_CYC + BCK_CYC)
+                $fatal(1, "S3_STARTUP_TIMEOUT: %m 未在规定拍数内出现 E0");
             if (frame_edge) begin
                 half_pending <= 1'b0;
                 sub_cnt      <= 0;
@@ -282,10 +288,12 @@ module i2s_tx_checker #(
                 end else begin
                     q_l[q_tail] = drive_l;             // 边界前稳定的输入就是本帧期望
                     q_r[q_tail] = drive_r;
-                    if (data_idx < F_VEC) m_vector_frames <= m_vector_frames + 1;
-                    else if (data_idx < F_VEC + F_PRNG) m_prng_frames <= m_prng_frames + 1;
-                    else if (data_idx < F_VEC + F_PRNG + F_TEAR) m_tear_frames <= m_tear_frames + 1;
-                    else if (data_idx < F_ALL) m_mute_frames <= m_mute_frames + 1;
+                    if (!finishing) begin
+                        if (data_idx < F_VEC) m_vector_frames <= m_vector_frames + 1;
+                        else if (data_idx < F_VEC + F_PRNG) m_prng_frames <= m_prng_frames + 1;
+                        else if (data_idx < F_VEC + F_PRNG + F_TEAR) m_tear_frames <= m_tear_frames + 1;
+                        else if (data_idx < F_ALL) m_mute_frames <= m_mute_frames + 1;
+                    end
                     next_idx   <= (data_idx + 1 < F_ALL) ? (data_idx + 1) : (F_ALL - 1);
                 end
                 q_tail  <= (q_tail + 1) % QDEPTH;
@@ -294,6 +302,9 @@ module i2s_tx_checker #(
                 if (want_reset) begin
                     inject_reset <= 1'b1;
                     want_reset   <= 1'b0;
+                    if (reset_round == 0) reset_at <= 8 * BCK_CYC;
+                    else if (reset_round == 1) reset_at <= HALF_CYC + 8 * BCK_CYC;
+                    else reset_at <= FRAME_CYC - 2 * BCK_CYC;
                 end else if (!finishing && (data_idx >= F_ALL - 1)) begin
                     finishing <= 1'b1;                 // 数据帧跑完，三次复位即将开始
                     want_reset <= 1'b1;
@@ -316,17 +327,17 @@ module i2s_tx_checker #(
             end
             if (!prev_lrck && lrck) begin
                 half_pending <= 1'b1;
-                if ((data_idx >= F_VEC + F_PRNG) && (data_idx < F_VEC + F_PRNG + F_TEAR))
+                if (!finishing && (data_idx >= F_VEC + F_PRNG) && (data_idx < F_VEC + F_PRNG + F_TEAR))
                     drive_mode <= 3;                   // 撕裂期：左右边界处打探针
             end
 
             // 左声道中途换到下一帧的值；右声道中途恢复该值（撕裂期先被打过探针）。
-            if (sub_cnt == HALF_CYC / 2) begin
+            if (!finishing && sub_cnt == HALF_CYC / 2) begin
                 drive_mode <= 1;
                 drive_idx  <= next_idx;
                 data_idx   <= next_idx;
             end
-            if (sub_cnt == HALF_CYC + HALF_CYC / 2) begin
+            if (!finishing && sub_cnt == HALF_CYC + HALF_CYC / 2) begin
                 drive_mode <= 1;
                 drive_idx  <= next_idx;
             end
@@ -346,6 +357,8 @@ module i2s_tx_checker #(
 
             // ---------------- 位置 0 是零延迟位，半帧内 32 个上升沿 ----------------
             if (lrck !== prev_lrck) begin
+                if (last_lrck_cyc >= 0 && bck_rise_in_half != 32)
+                    $fatal(1, "S3_HALF_SLOTS: %m 半帧仅有 %0d 个 BCK 上升沿", bck_rise_in_half);
                 bck_rise_in_half <= 0;
             end else if (bck && !prev_bck) begin
                 if (bck_rise_in_half == 0 && din !== 1'b0)
@@ -389,6 +402,7 @@ module i2s_tx_checker #(
             rst_hold     <= 0;
             inject_reset <= 1'b0;
         end else if (inject_reset && finishing && (sub_cnt == reset_at)) begin
+            $display("S3_RESET_INJECT: %m round=%0d frame_cycle=%0d", reset_round + 1, sub_cnt);
             rst          <= 1'b1;
             rst_hold     <= 4;
             inject_reset <= 1'b0;
@@ -414,6 +428,8 @@ module i2s_tx_checker #(
             if ((dec_l !== exp_l) || (dec_r !== exp_r))
                 $fatal(1, "%m: 第 %0d 帧解码不一致 L=%h/%h R=%h/%h",
                        frames_seen, dec_l, exp_l, dec_r, exp_r);
+            if (((slot_l & PADDING_MASK) !== 32'd0) || ((slot_r & PADDING_MASK) !== 32'd0))
+                $fatal(1, "S3_PADDING_NONZERO: %m 数据后的填充位不是零");
 
             // 负面控制：错误偏移、声道互换、单比特翻转都必须能被察觉。
             if ((slot_l[31 -: DATA_BITS] !== exp_l) || (slot_r[31 -: DATA_BITS] !== exp_r))
@@ -430,7 +446,12 @@ module i2s_tx_checker #(
             m_frames    <= m_frames + 1;
             if (probe_wait_left > 0) begin
                 probe_wait_left <= probe_wait_left - 1;
-                if (probe_wait_left == 1) m_resets <= m_resets + 1;
+                if (probe_wait_left == 1) begin
+                    if ((exp_l !== probe_l) || (exp_r !== probe_r) || dec_l == 0 || dec_r == 0)
+                        $fatal(1, "S3_RESET_PROBE: %m 复位后未解出双路非零探针");
+                    $display("S3_RESET_RECOVERED: %m round=%0d L=%h R=%h", reset_round, dec_l, dec_r);
+                    m_resets <= m_resets + 1;
+                end
             end
         end
     end

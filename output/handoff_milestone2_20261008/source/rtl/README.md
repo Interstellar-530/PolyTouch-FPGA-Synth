@@ -111,3 +111,6 @@ wrap during long performances. The twelve self-checking testbenches in
 `../sim/run_simulation.ps1` (ten from S1 plus `tb_gpio_keyboard` and
 `tb_gpio_top` from S2) must pass before any programming.
 
+
+## S3 独立复核（2026-10-14）
+保留 DeepSeek 原实现标签，Codex 修正处以 S3-REVIEW 标记。最终十三台正向、六个参数负例、三种检查器故障注入及原音频回归通过；真实16/24位隔离综合的资源分别为93逻辑/68寄存器、125逻辑/92寄存器。复位模型在BCK停止时清配对，复位测试保持两路非零探针，填充位/tick边界有强制断言。头文件统一新模块默认值，Gowin产物限于临时工程。原阶段24位报告与复位覆盖结论以 docs/evidence/FPGA-S3-review-20261014-v0.1.md 为准；生产顶层仍未接入I2S。

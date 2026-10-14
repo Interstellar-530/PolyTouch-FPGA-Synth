@@ -1,4 +1,5 @@
 // [S3-AI | deepseek | 2026-10-14] 标准 I2S（Philips）发送器，参数化时钟与采样率。
+// [S3-REVIEW | Codex | 2026-10-14] 统一默认参数，端点常数不依赖隐式截断。
 //
 // 依据 TI PCM5102A 数据手册 SLAS859C：
 //   §9.3.2.1  DIN 在 BCK 上升沿被锁入器件，所以本模块在 BCK 下降沿更新 DIN/LRCK。
@@ -21,9 +22,10 @@
 // 抗撕裂：每个正常帧边界只锁存一次左右样本（左半帧直接用边界值，右半帧用同一拍的 hold_r），
 // 因此帧中途改变输入只影响下一帧。硬复位会清分频/槽状态、保持寄存器和 tick，三线输出为 0；
 // 运行中的数字静音应当把左右输入置零，不要拉高 rst。
+`include "rtl/audio/clk_params.vh"
 module i2s_tx #(
-    parameter integer CLK_HZ         = 12288000,   // 见 rtl/audio/clk_params.vh
-    parameter integer SAMPLE_RATE_HZ = 48000,
+    parameter integer CLK_HZ         = `FPGA_AUDIO_STD_CLK_HZ,
+    parameter integer SAMPLE_RATE_HZ = `FPGA_AUDIO_STD_FS_HZ,
     parameter integer DATA_BITS      = 16          // 每声道有效位数，只支持 16 或 24
 )(
     input  wire                        clk,
@@ -37,7 +39,7 @@ module i2s_tx #(
 );
 
     // ---------------------------------------------------- 协议常量与派生参数 ---
-    localparam integer SLOTS_PER_FRAME = 64;   // 每帧 BCK 周期数
+    localparam integer SLOTS_PER_FRAME = `FPGA_AUDIO_SLOTS_PER_FRAME;
     localparam integer SLOTS_PER_HALF  = 32;   // 每声道槽数
     localparam integer SLOT_BITS       = 6;    // 槽计数器 0..63
     localparam integer POS_BITS        = 5;    // 声道内位置 0..31
@@ -66,8 +68,8 @@ module i2s_tx #(
     endfunction
 
     localparam integer BCK_CNT_BITS = bits_for(BCK_CYC);
-    // 用隐式截断而不是位选，避免厂商综合器对参数位选的兼容问题。
-    localparam [BCK_CNT_BITS-1:0] BCK_CYC_C      = BCK_CYC;
+    // BCK_CYC 是 2 的幂时可能超出计数器宽度；保存实际末值，避免截断成零。
+    localparam [BCK_CNT_BITS-1:0] BCK_LAST_C     = BCK_CYC - 1;
     localparam [BCK_CNT_BITS-1:0] BCK_HIGH_CYC_C = BCK_HIGH_CYC;
 
 `ifdef SIMULATION
@@ -100,13 +102,12 @@ module i2s_tx #(
     reg [BCK_CNT_BITS-1:0] bck_cnt;    // 0..BCK_CYC-1
     reg [SLOT_BITS-1:0]    slot;       // 0..31 左声道，32..63 右声道
     reg [DATA_BITS:0]      sr;         // {待发数据位, 1'b0}，最高位是下一次送出的位
-    reg signed [DATA_BITS-1:0] hold_l, hold_r;
+    reg signed [DATA_BITS-1:0] hold_r;
     reg [1:0]              data_state; // 0 等 E0；1 E0..E1 强制零；2 正常运行
 
     // 本拍结束时的 BCK 计数器值与电平；翻转事件由计数器端点给出。
-    wire [BCK_CNT_BITS-1:0] bck_cnt_next = (bck_cnt == BCK_CYC_C - 1'b1) ? {BCK_CNT_BITS{1'b0}}
+    wire [BCK_CNT_BITS-1:0] bck_cnt_next = (bck_cnt == BCK_LAST_C) ? {BCK_CNT_BITS{1'b0}}
                                                                         : (bck_cnt + 1'b1);
-    wire bck_rise_now = (bck_cnt_next == {BCK_CNT_BITS{1'b0}});          // 下一拍 BCK 变高
     wire bck_fall_now = (bck_cnt_next == BCK_HIGH_CYC_C);                // 下一拍 BCK 变低
 
     wire [SLOT_BITS-1:0] slot_next  = slot + 1'b1;
@@ -118,11 +119,10 @@ module i2s_tx #(
 
     always @(posedge clk) begin
         if (rst) begin
-            // 复位结束时先走半个低电平再进入第一个完整 BCK 周期，避免首个高电平被截短。
-            bck_cnt     <= BCK_CYC_C - 1'b1;
+            // 释放后的第一拍开始完整高半周期；复位时的低段不参与稳态脉宽验收。
+            bck_cnt     <= BCK_LAST_C;
             slot        <= {SLOT_BITS{1'b0}};
             sr          <= {(DATA_BITS+1){1'b0}};
-            hold_l      <= {DATA_BITS{1'b0}};
             hold_r      <= {DATA_BITS{1'b0}};
             bck         <= 1'b0;
             din         <= 1'b0;
@@ -154,7 +154,7 @@ module i2s_tx #(
                         data_state <= 2'd1;                          // E0：本帧强制发零
                     end else begin
                         data_state <= 2'd2;
-                        hold_l     <= sample_l;                      // E1 起同拍锁存左右
+                        // 左样本在本边界进入 sr，右样本同拍保持到右半帧。
                         hold_r     <= sample_r;
                     end
                 end

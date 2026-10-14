@@ -1,0 +1,4 @@
+﻿S3_PARAM_INVALID: DATA_BITS=32 只支持 16 或 24
+FATAL: rtl\audio\i2s_tx.v:97: S3_PARAM_INVALID: DATA_BITS must be 16 or 24
+       Time: 0  Scope: tb_i2s_tx_params.dut
+

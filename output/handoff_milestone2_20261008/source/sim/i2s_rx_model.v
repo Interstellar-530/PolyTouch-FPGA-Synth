@@ -1,4 +1,5 @@
 // [S3-AI | deepseek | 2026-10-14] PCM5102A 接收行为模型（独立解码器，仅仿真用）。
+// [S3-REVIEW | Codex | 2026-10-14] rst 在 BCK 停止时也须清除未完成的左右配对。
 //
 // 它只观察 bck/lrck/din 三根引脚，不引用被测模块内部的槽计数器、相位或保持寄存器，
 // 也不导入被测模块的串行逻辑，因此可以独立证明发送端的位序、声道极性和零延迟位。
@@ -41,10 +42,10 @@ module i2s_rx_model #(
         align_discards = 32'd0;
     end
 
-    always @(posedge bck) begin
+    always @(posedge bck or posedge rst) begin
         frame_valid <= 1'b0;
         if (rst) begin
-            lrck_prev   <= lrck;
+            lrck_prev   <= 1'b0;  // 发送器硬复位后的 LRCK 固定为低
             pending_l   <= 1'b0;
             edge_cnt    <= 0;
             sh          <= 32'd0;

@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 // [S3-AI | deepseek | 2026-10-14] 参数负例台：非法配置必须在仿真开始时就以 $fatal 结束，
+// [S3-REVIEW | Codex | 2026-10-14] 补零时钟负例。
 // 退出码非零，并且输出里同时出现 S3_PARAM_INVALID 与对应原因。门禁脚本按 -D 宏逐例编译运行，
 // 任何一例退出码为 0、或退出码非零但没有匹配原因，都算门禁失败（不能拿语法错误或工具崩溃充数）。
 //
@@ -13,7 +14,13 @@
 
 module tb_i2s_tx_params;
 
-`ifdef S3_CASE_ZERO_FS
+`ifdef S3_CASE_ZERO_CLK
+    localparam integer P_CLK  = 0;
+    localparam integer P_FS   = 48000;
+    localparam integer P_BITS = 16;
+    localparam         P_OK   = 1'b1;
+    localparam [8*16-1:0] P_NAME = "zero_clk";
+`elsif S3_CASE_ZERO_FS
     localparam integer P_CLK  = 27000000;
     localparam integer P_FS   = 0;
     localparam integer P_BITS = 16;

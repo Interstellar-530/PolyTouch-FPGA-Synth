@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 // [S3-AI | deepseek | 2026-10-14] S3 第十三台门禁：标准 I2S 发送器与统一时钟参数。
+// [S3-REVIEW | Codex | 2026-10-14] 仿真时钟由档案生成，纠正调试档26ppm取整误差。
 //
 // 被测对象是 rtl/audio/i2s_tx.v，验收来自引脚级独立解码（sim/i2s_rx_model.v）与
 // 四个组合自检盒（sim/i2s_tx_checker.v）：
@@ -7,7 +8,7 @@
 // 每个组合至少 264 个完整数据帧，另含启动帧、三次硬复位恢复和数字静音。
 //
 // 时钟用取整到 1 ps 的周期驱动：81.380 ns（12.288 MHz 取整，相对误差约 2.6 ppm）与
-// 37.038 ns（27 MHz 取整，约 0.03 ppm）。断言全部按系统拍计数，不把小数周期当作 48 kHz 的证明。
+// 37.038 ns（周期 +26 ppm，频率约 -26 ppm）。断言全部按系统拍计数。
 //
 // 本台还先用人工构造的 I2S 位串检查接收模型本身，再用模型检查发送器。
 `include "rtl/audio/clk_params.vh"
@@ -22,8 +23,8 @@ module tb_i2s_tx;
     // ---------------------------------------------------------------- 时钟 ---
     reg clk_a = 1'b0;
     reg clk_b = 1'b0;
-    always #40.690 clk_a = ~clk_a;   // 81.380 ns
-    always #18.519 clk_b = ~clk_b;   // 37.038 ns
+    always #(1.0e9 / (2.0 * STD_CLK)) clk_a = ~clk_a;
+    always #(1.0e9 / (2.0 * DBG_CLK)) clk_b = ~clk_b;
 
     reg run = 1'b0;
 
@@ -132,6 +133,7 @@ module tb_i2s_tx;
 
     // 记录模型每次发布的左右字，供自检比较（不能从解码结果反推期望值）。
     integer pub_count;
+    reg model_reset_done = 1'b0;
     reg [15:0] pub_l [0:7];
     reg [15:0] pub_r [0:7];
 
@@ -189,6 +191,35 @@ module tb_i2s_tx;
             $fatal(1, "接收模型自检失败 %0d 项", selftest_fails);
         $display("自检：接收模型对人工构造的 I2S 位串解码正确（%0d 帧，含零、最小负数与左右不同值）",
                  selftest_frames);
+
+        // BCK 停止时复位：旧左样本不能与复位后的右残段拼成一个完整帧。
+        mrst = 1'b1;
+        // 先用一次复位采样沿将模型置于已知状态，随后才测试无 BCK 的复位。
+        #5 mbck = 1'b1;
+        #10 mbck = 1'b0;
+        #5;
+        mrst = 1'b0;
+        pub_count = 0;
+        send_half_i2s(16'h5A5A, 1'b0);
+        mlrck = 1'b1; mdin = 1'b0;
+        #10 mbck = 1'b1;  // 已结束完整左半帧，右半帧只收了一个位置
+        #10 mbck = 1'b0;
+        mrst = 1'b1;      // 故意不产生 BCK 上升沿
+        #20;
+        mrst = 1'b0;
+        for (mp = 0; mp < 31; mp = mp + 1) begin
+            mdin = 1'b0;
+            #10 mbck = 1'b1;
+            #10 mbck = 1'b0;
+        end
+        mlrck = 1'b0; mdin = 1'b0;
+        #10 mbck = 1'b1;
+        #1;
+        if (pub_count != 0)
+            $fatal(1, "S3_RX_RESET_STALE: BCK 停止期间复位后发布了旧左右配对");
+        #9 mbck = 1'b0;
+        model_reset_done = 1'b1;
+        $display("PASS S3_RX_RESET: BCK 停止期间复位丢弃旧配对");
     end
 
     // ------------------------------------------------------------ 指标输出 ---
@@ -196,8 +227,11 @@ module tb_i2s_tx;
     integer mfd;
     initial begin
         mfd = 0;
-        if ($value$plusargs("METRICS_FILE=%s", metrics_path))
+        if ($value$plusargs("METRICS_FILE=%s", metrics_path)) begin
             mfd = $fopen(metrics_path, "w");
+            if (mfd == 0)
+                $fatal(1, "S3_METRICS_OPEN: 无法创建指标文件 %0s", metrics_path);
+        end
     end
 
     task write_combo;
@@ -237,8 +271,8 @@ module tb_i2s_tx;
                 $fatal(1, "%0s: 只检查了 %0d 帧，少于 270", name, frames);
             if (vec != 16 || prng != 208 || tear != 24)
                 $fatal(1, "%0s: 阶段帧数异常 vec=%0d prng=%0d tear=%0d", name, vec, prng, tear);
-            if (mute < 8)
-                $fatal(1, "%0s: 数字静音帧只有 %0d，少于 8", name, mute);
+            if (mute != 16)
+                $fatal(1, "%0s: 数字静音帧数为 %0d，期望16", name, mute);
             if (resets != 3)
                 $fatal(1, "%0s: 复位恢复只完成 %0d 次，期望 3", name, resets);
             if (nlj < 16 || nrj < 16 || nsw < 16 || nfl < 16)
@@ -253,6 +287,8 @@ module tb_i2s_tx;
         run <= 1'b1;
         wait (c1_done && c2_done && c3_done && c4_done);
         repeat (64) @(posedge clk_a);
+        if (!model_reset_done)
+            $fatal(1, "S3_RX_RESET: 模型复位场景未完成");
 
         check_combo("std16", c1_frames, c1_vec, c1_prng, c1_tear, c1_mute, c1_rst,
                     c1_lj, c1_rj, c1_sw, c1_fl);
@@ -290,8 +326,9 @@ module tb_i2s_tx;
             $fwrite(mfd, "  \"result\": \"PASS\",\n");
             $fwrite(mfd, "  \"simulation\": {\n");
             $fwrite(mfd, "    \"status\": \"PASS\",\n");
-            $fwrite(mfd, "    \"clock_note\": \"clk_a=81.380ns (12.288MHz, +2.6ppm), clk_b=37.038ns (27MHz, +0.03ppm); 断言按系统拍计数\",\n");
+            $fwrite(mfd, "    \"clock_note\": \"clk_a=81.380ns (frequency +2.56ppm), clk_b=37.038ns (frequency -26ppm); assertions count system cycles\",\n");
             $fwrite(mfd, "    \"model_selftest_frames\": %0d,\n", selftest_frames);
+            $fwrite(mfd, "    \"model_reset_while_bck_stopped\": true,\n");
             $fwrite(mfd, "    \"prng_seed\": \"32'h53A32026\",\n");
             $fwrite(mfd, "    \"vectors_16bit\": \"0000 0001 7FFF 8000 FFFF 5555 AAAA 8001 + 独立右路序列\",\n");
             $fwrite(mfd, "    \"vectors_24bit\": \"000000 000001 7FFFFF 800000 FFFFFF 555555 AAAAAA 800001 + 独立右路序列\",\n");

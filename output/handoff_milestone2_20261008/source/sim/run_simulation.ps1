@@ -1,5 +1,7 @@
 ﻿<#
     RTL 仿真门禁。
+    [S3-AI | deepseek | 2026-10-14] S3 台与参数负例。
+    [S3-REVIEW | Codex | 2026-10-14] 六个负例、原始诊断、ASCII路径及本次指标绑定。
 
     编译并运行全部测试台，任何一个失败都以退出码 1 结束。烧录脚本在调用
     programmer_cli 之前必须先跑这个脚本，仿真不过就拒绝烧录。
@@ -74,7 +76,10 @@ try {
     }
     New-Item -ItemType Directory -Force -Path $AudioCaptureDir | Out-Null
     $AudioCaptureDir = (Resolve-Path -LiteralPath $AudioCaptureDir).Path
-    if (-not $BuildDir) { $BuildDir = Join-Path $sourceRoot 'sim' }
+    if (-not $BuildDir) {
+        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
+        $BuildDir = Join-Path $repoRoot 'tmp\simulation_build'
+    }
     New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
     $BuildDir = (Resolve-Path -LiteralPath $BuildDir).Path
     # S3 指标文件同样写到工作区 tmp，不向源码目录写大文件。
@@ -84,6 +89,11 @@ try {
     }
     New-Item -ItemType Directory -Force -Path $MetricsDir | Out-Null
     $MetricsDir = (Resolve-Path -LiteralPath $MetricsDir).Path
+    foreach ($runtimeDir in @($AudioCaptureDir, $BuildDir, $MetricsDir)) {
+        if ($runtimeDir -match '[^\x00-\x7F]') {
+            throw "Icarus runtime path must use ASCII characters (vvp plusargs encoding): $runtimeDir"
+        }
+    }
     $suite = @(
         @{ Name = 'tb_tick_rate';   Top = 'sim\tb_tick_rate.v';   Src = @('rtl\audio\pt8211_tx.v') },
         @{ Name = 'tb_song_timing'; Top = 'sim\tb_song_timing.v'; Src = @('rtl\audio\song_player.v') },
@@ -156,6 +166,8 @@ try {
 
     # S3 参数负例：每一例都必须编译通过、运行以非零退出，并且给出匹配的原因。
     $paramCases = @(
+        @{ Name = 'zero_clk';        Define = 'S3_CASE_ZERO_CLK';
+           Reason = 'S3_PARAM_INVALID: CLK_HZ must be greater than 0' },
         @{ Name = 'zero_fs';         Define = 'S3_CASE_ZERO_FS';
            Reason = 'S3_PARAM_INVALID: SAMPLE_RATE_HZ' },
         @{ Name = 'not_divisible';   Define = 'S3_CASE_NOT_DIVISIBLE';
@@ -170,21 +182,25 @@ try {
     foreach ($case in $paramCases) {
         $out = Join-Path $BuildDir ("tb_i2s_tx_params_{0}.vvp" -f $case.Name)
         Write-Output ("=== tb_i2s_tx_params[{0}] （预期失败）===" -f $case.Name)
-        & $Iverilog '-g2012' '-DSIMULATION' ("-D" + $case.Define) '-I' '.' '-o' $out `
-            'sim\tb_i2s_tx_params.v' 'rtl\audio\i2s_tx.v' *> $null
-        if ($LASTEXITCODE -ne 0) {
+        $compileLog = (& $Iverilog '-g2012' '-DSIMULATION' ("-D" + $case.Define) '-I' '.' '-o' $out `
+            'sim\tb_i2s_tx_params.v' 'rtl\audio\i2s_tx.v' 2>&1 | Out-String)
+        $compileExit = $LASTEXITCODE
+        if ($compileExit -ne 0) {
             Write-Output ("参数负例编译失败：{0}（工具问题不是预期失败）" -f $case.Name)
+            Write-Output $compileLog
             $failed++
             continue
         }
         $caseLog = (& $Vvp $out 2>&1 | Out-String)
         $caseExit = $LASTEXITCODE
+        $caseLog | Set-Content -LiteralPath (Join-Path $MetricsDir ("param_{0}.log" -f $case.Name)) -Encoding UTF8
         if ($caseExit -eq 0) {
             Write-Output ("参数负例 {0} 退出码为 0：非法参数没有被拦截" -f $case.Name)
             $failed++
             continue
         }
-        if ($caseLog -notmatch [regex]::Escape($case.Reason)) {
+        if ($caseExit -ne 1 -or $caseLog -notmatch 'FATAL:' -or
+            $caseLog -notmatch [regex]::Escape($case.Reason)) {
             Write-Output ("参数负例 {0} 退出码 {1}，但原因不匹配，期望包含：{2}" -f
                           $case.Name, $caseExit, $case.Reason)
             $failed++
