@@ -10,6 +10,9 @@ set gprj_file [file join $project_dir instrument instrument.gprj]
 
 if {![file exists $gprj_file]} {
     create_project -name instrument -dir $project_dir -pn GW2A-LV18PG256C8/I7 -device_version C
+    # 顶层用调试档封装（build/isolated/top_dbg_build.v），把标准 I2S 的四根输出收进内部，
+    # 避免未约束端口被自动放到 SOM 互连脚上。生产 RTL rtl/top.v 仍是被实例化的模块。
+    add_file [file join $root build isolated top_dbg_build.v]
     add_file [file join $root rtl top.v]
     add_file [file join $root rtl audio dds_osc.v]
     add_file [file join $root rtl audio adsr.v]
@@ -21,6 +24,9 @@ if {![file exists $gprj_file]} {
     add_file [file join $root rtl audio song_player.v]
     add_file [file join $root rtl audio mixer_s6.v]
     add_file [file join $root rtl audio pt8211_tx.v]
+    # i2s_tx 在 AUDIO_IF=1 的 generate 分支里实例化；本档不展开但仍加入文件表，
+    # 避免综合器对未定义模块的保守报错。标准档见 build/build_top_i2s_std.tcl。
+    add_file [file join $root rtl audio i2s_tx.v]
     add_file [file join $root rtl audio uart_ctrl.v]
     add_file [file join $root rtl audio gpio_keyboard.v]
     add_file [file join $root rtl audio mcp3208_spi.v]
@@ -37,7 +43,7 @@ if {![file exists $gprj_file]} {
     open_project $gprj_file -pn GW2A-LV18PG256C8/I7 -device_version C
 }
 
-set_option -top_module top
+set_option -top_module top_dbg_build
 set_option -output_base_name instrument
 cd $root
 run all

@@ -70,7 +70,9 @@ module tb_audio_capture;
         end
     end
 
-    // PT8211 receives data on BCK rising edges. WS transitions begin the new
+    // PT8211 实例在顶层 audio output 的 generate 分支 g_pt8211 内（另一分支是标准 I2S），
+// 因此层次路径是 dut.g_pt8211.u_pt8211.*。本台只跑默认的 AUDIO_IF=0 调试档。
+// PT8211 receives data on BCK rising edges. WS transitions begin the new
     // word with its MSB on that same rising edge (16-bit right-aligned words).
     // Synchronize at a complete right-to-left boundary to skip startup padding.
     always @(posedge hp_bck) begin
@@ -87,7 +89,7 @@ module tb_audio_capture;
                     decoder_synced = 1;
                     half_bits = 1;
                     word_shift = {15'd0, hp_din};
-                    left_reference = dut.u_pt8211.frame_data;
+                    left_reference = dut.g_pt8211.u_pt8211.frame_data;
                 end
             end else if (hp_ws == previous_ws) begin
                 if (half_bits >= 16)
@@ -119,7 +121,7 @@ module tb_audio_capture;
                     // previous right word was finishing. Save it at left start;
                     // comparing the finished right word directly to current
                     // frame_data would introduce a false one-frame mismatch.
-                    left_reference = dut.u_pt8211.frame_data;
+                    left_reference = dut.g_pt8211.u_pt8211.frame_data;
                 end
                 word_shift = {15'd0, hp_din};
                 half_bits = 1;

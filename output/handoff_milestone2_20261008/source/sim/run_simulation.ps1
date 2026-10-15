@@ -30,6 +30,8 @@
       tb_s6_audio      [S6] 3584 相位点、1024+256 混合点、510 混音样本与 32 个 FIR 样本
       tb_s6_rom_prim   [S6] 行为版与显式 Gowin pROM 版波表逐值等价（512 地址 × 5 小数位 × 3 混合）
       tb_shared_engine [S6] 共享引擎原型：分量和与逐声部参考逐位相等，全局交叉混合偏差 ≤2 LSB
+      tb_top_i2s       [集成] 标准 I2S 档顶层（AUDIO_IF=1）：48 kHz/3.072 MHz/64 BCK、
+                       24 位槽与 final_sample 逐帧对照、相位增量对 48 kHz 理想值、数字静音
 #>
 param(
     [string]$Iverilog = '',
@@ -191,6 +193,19 @@ try {
                 'rtl\audio\global_crossfade.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v') },
+        @{ Name = 'tb_top_i2s'; Top = 'sim\tb_top_i2s.v'; Src = @(
+                'rtl\top.v',
+                'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
+                'rtl\audio\poly_voice_s6.v', 'rtl\audio\wavetable_osc_dual_s6.v',
+                'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\mixer_s6.v',
+                'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
+                'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\global_crossfade.v', 'rtl\audio\i2s_tx.v',
+                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
+                'sim\gowin_prom_model.v', 'sim\mcp3208_model.v') },
         @{ Name = 'tb_s6_rom_prim'; Top = 'sim\tb_s6_rom_prim.v'; Src = @(
                 'rtl\audio\wavetable_osc_dual_s6.v', 'rtl\audio\wavetable_osc_dual_prom.v',
                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',

@@ -9,8 +9,9 @@
 // 不丢弃。flush 供 Panic 与模式切换使用：丢弃未发送事件并重新武装，
 // 已经按住的键必须松开再按才会重新起音。
 //
-// 门限默认按硬件文档给出的起点：按下 1 ms、松开 3 ms，主时钟 27 MHz。
-// 换用 12.288 MHz 或其它主时钟时必须同步改 PRESS_CYCLES/RELEASE_CYCLES。
+// 门限起点仍按硬件文档：按下 1 ms、松开 3 ms。CLK_HZ 是主时钟频率，
+// PRESS_CYCLES/RELEASE_CYCLES 默认由它推导，所以换用 12.288 MHz（标准 I2S 档）
+// 时只要把 CLK_HZ 传对，门限的毫秒数不变；显式指定两个门限的测试不受影响。
 // 本模块只做数字逻辑；实物上拉、共地与触点抖动仍需按硬件文档实测复核，
 // 仿真通过不等于实物按键已经验收。
 //
@@ -22,8 +23,9 @@
 // 即使其它键的队列尚空。drop_count 饱和统计发生丢弃的时钟拍数。
 module gpio_keyboard #(
     parameter integer KEYS           = 12,
-    parameter integer PRESS_CYCLES   = 27000,   // 1 ms @ 27 MHz
-    parameter integer RELEASE_CYCLES = 81000,   // 3 ms @ 27 MHz
+    parameter integer CLK_HZ         = 27_000_000,        // 主时钟，门限换算基准
+    parameter integer PRESS_CYCLES   = CLK_HZ / 1000,          // 1 ms
+    parameter integer RELEASE_CYCLES = (3 * CLK_HZ) / 1000,    // 3 ms
     parameter [6:0]   KEY_BASE_NOTE  = 7'd60,   // 键 0 = C4（MIDI 60）
     parameter [7:0]   KEY_VELOCITY   = 8'd100
 )(
