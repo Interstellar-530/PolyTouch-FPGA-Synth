@@ -1,2 +1,9 @@
 # Preserve the exact bytes of the versioned, previously programmed bitstream.
 releases/v1.0.0/*.fs binary
+
+# Wavetable and HDL vector images must keep LF line endings: the documented
+# SHA-256 values (docs/evidence/*) and the generator output in
+# tools/s6_reference.py are computed on the LF payload.  Without this rule a
+# core.autocrlf=true checkout rewrites the tables to CRLF and the recorded
+# hashes no longer match the files on disk.
+*.hex text eol=lf

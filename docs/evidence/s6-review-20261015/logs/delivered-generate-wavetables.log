@@ -1,0 +1,2 @@
+output\handoff_milestone2_20261008\source\rtl\audio\wave_sine.hex: depth=512 min=-32767 max=32767 sha256=b75030d2aee625d0628efc6e79d27ecbd52c747f1ba8deab5334064f3aa70ef9
+output\handoff_milestone2_20261008\source\rtl\audio\wave_bright.hex: depth=512 min=-32767 max=32767 sha256=c16616d4149f6d142569b266d325b5e99e13eb2f476a93bf8e67fd73d4bcfd63

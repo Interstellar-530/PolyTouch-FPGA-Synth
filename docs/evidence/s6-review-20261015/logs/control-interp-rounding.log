@@ -1,0 +1,14 @@
+FAIL osc sine phase=0c008000: dut=9513 ref=9514
+FAIL osc sine phase=2b810000: dut=28707 ref=28708
+FAIL osc sine phase=32808000: dut=30985 ref=30986
+FAIL osc sine phase=4d008000: dut=31112 ref=31113
+FAIL osc sine phase=54010000: dut=28896 ref=28897
+FAIL osc sine phase=73808000: dut=9894 ref=9895
+FAIL osc sine phase=8c008000: dut=-9514 ref=-9513
+FAIL osc sine phase=ab810000: dut=-28708 ref=-28707
+FAIL osc sine phase=b2808000: dut=-30986 ref=-30985
+FAIL osc sine phase=cd008000: dut=-31113 ref=-31112
+FAIL osc sine phase=d4010000: dut=-28897 ref=-28896
+FAIL osc sine phase=f3808000: dut=-9895 ref=-9894
+FATAL: sim/tb_s6_audio.v:331: tb_s6_audio failures=12
+       Time: 116756000  Scope: tb_s6_audio

@@ -1,0 +1,2 @@
+PASS tb_s6_audio: ROM sync/select, 3584 osc vectors, 1024+256 blend points, 510 mixer vectors, 32 FIR samples
+sim/tb_s6_audio.v:334: $finish called at 116756000 (1ps)

@@ -172,6 +172,10 @@ module top (
         .key_pressed()          // 预留：后续可用于琴键指示 LED 或 GAO 观察
     );
 
+    reg         demo_mode;
+    reg         pending_valid;
+    reg [15:0]  pending_word;
+
     // 演示模式期间只接收按键（Note On）事件：进入演示时已经清空声部，
     // 此时松键没有可关闭的音符，若把它排进队列，还会挡住后面真正的按键事件。
     wire man_wr = gp_ev_valid && !(demo_mode && !gp_ev_on);
@@ -193,9 +197,6 @@ module top (
     wire        man_ev_on    = man_ev_word[15];
     // [S2-AI-END]
 
-    reg         demo_mode;
-    reg         pending_valid;
-    reg [15:0]  pending_word;
     // [S2-AI] 只有 GPIO 的 Note On 才触发退出演示；单纯松开一个键不应该把
     // 已经回到演示的设计再次拉进手动模式。
     wire        manual_transition = demo_mode && (uart_ev_valid || uart_panic ||

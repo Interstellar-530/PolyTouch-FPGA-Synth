@@ -23,6 +23,11 @@
                        两个档案各 16/24 位共四组合的周期、一位延迟、逐位解码、
                        抗撕裂、复位恢复、数字静音、负面控制与无 X
       tb_i2s_tx_params [S3] 参数负例：五组非法配置必须被 S3_PARAM_INVALID 拦截
+      tb_mcp3208_spi   [S4] MCP3208 19 拍 DS21298E 帧、双通道、固定种子随机值与帧内复位
+      tb_mcp3208_i2s_coexist [S4] ADC 事务期间 PT8211 节拍仍严格 576 拍
+      tb_mcp3208_params [S4] 27 MHz/250 kHz 生产参数、分频钳位与 SPI_HZ=0 守护
+      tb_pressure_bend [S5] 640 个压力 tick 与 4096 个弯音 ADC 码逐值对照参考
+      tb_s6_audio      [S6] 3584 相位点、1024+256 混合点、510 混音样本与 32 个 FIR 样本
 #>
 param(
     [string]$Iverilog = '',
@@ -134,7 +139,19 @@ try {
                 'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v') },
         @{ Name = 'tb_i2s_tx'; Top = 'sim\tb_i2s_tx.v'; Src = @(
-                'rtl\audio\i2s_tx.v', 'sim\i2s_rx_model.v', 'sim\i2s_tx_checker.v') }
+                'rtl\audio\i2s_tx.v', 'sim\i2s_rx_model.v', 'sim\i2s_tx_checker.v') },
+        @{ Name = 'tb_mcp3208_spi'; Top = 'sim\tb_mcp3208_spi.v'; Src = @(
+                'rtl\audio\mcp3208_spi.v', 'sim\mcp3208_model.v') },
+        @{ Name = 'tb_mcp3208_i2s_coexist'; Top = 'sim\tb_mcp3208_i2s_coexist.v'; Src = @(
+                'rtl\audio\mcp3208_spi.v', 'rtl\audio\pt8211_tx.v',
+                'sim\mcp3208_model.v') },
+        @{ Name = 'tb_mcp3208_params'; Top = 'sim\tb_mcp3208_params.v'; Src = @(
+                'rtl\audio\mcp3208_spi.v', 'sim\mcp3208_model.v') },
+        @{ Name = 'tb_pressure_bend'; Top = 'sim\tb_pressure_bend.v'; Src = @(
+                'rtl\audio\pressure_bend.v', 'rtl\audio\adsr.v') },
+        @{ Name = 'tb_s6_audio'; Top = 'sim\tb_s6_audio.v'; Src = @(
+                'rtl\audio\wavetable_rom_dual.v', 'rtl\audio\wavetable_osc_dual_s6.v',
+                'rtl\audio\mixer_s6.v') }
     )
 
     $failed = 0
