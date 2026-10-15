@@ -170,6 +170,13 @@ rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of module pROM expec
 rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
 PASS tb_s6_rom_prim: pROM and behavioural wavetable ROM agree on 7682 comparisons
 sim\tb_s6_rom_prim.v:77: $finish called at 230496000 (1ps)
+=== tb_shared_engine ===
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of module pROM expects 32 bit(s), given 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of module pROM expects 32 bit(s), given 16.
+rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+PASS tb_shared_engine: 15 cases, component sums bit-exact, global crossfade within 2 LSB
+sim\tb_shared_engine.v:172: $finish called at 13726000 (1ps)
 === tb_i2s_tx_params[zero_clk] （预期失败）===
 参数负例 zero_clk 按预期被拒绝（退出码 1，原因匹配）
 === tb_i2s_tx_params[zero_fs] （预期失败）===
@@ -182,4 +189,4 @@ sim\tb_s6_rom_prim.v:77: $finish called at 230496000 (1ps)
 参数负例 bck_too_fast 按预期被拒绝（退出码 1，原因匹配）
 === tb_i2s_tx_params[data_bits_32] （预期失败）===
 参数负例 data_bits_32 按预期被拒绝（退出码 1，原因匹配）
-全部 20 台正向测试台与 6 个参数负例通过，允许烧录。
+全部 21 台正向测试台与 6 个参数负例通过，允许烧录。
