@@ -1,0 +1,15 @@
+OSVersion=10.0.26200.0
+OSArchitecture=AMD64
+ComputerName=RUBIAAWAKENING
+PowerShell5=5.1.26100.9444
+PowerShell7=7.6.5
+Git=git version 2.53.0.windows.3
+Repository=Interstellar-530/PolyTouch-FPGA-Synth
+RemoteRef=main
+RemoteCommit=55528a1b7999ee5e0c7a21b04ebd2d3a1fdda62b
+LocalBaseBranch=fix/m2-build-issues
+LocalBaseCommit=3a31eb288ae400830a18fdcde96350ac03c1bb07
+SyncMethod=GitHub connector overlay into clean simulation copy; original checkout preserved
+IverilogPath=D:\NanjingUniversity\FPGA\msys64\ucrt64\bin\iverilog.exe
+VvpPath=D:\NanjingUniversity\FPGA\msys64\ucrt64\bin\vvp.exe
+IverilogPackage=mingw-w64-ucrt-x86_64-iverilog 1~13.0-2

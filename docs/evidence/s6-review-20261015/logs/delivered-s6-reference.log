@@ -1,0 +1,1 @@
+PASS s6_reference: sine/bright depth=512, wrap/interp, blend=18869, extrema clipped
