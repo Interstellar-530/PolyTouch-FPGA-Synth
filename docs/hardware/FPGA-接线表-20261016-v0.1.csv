@@ -1,0 +1,41 @@
+signal,function,peripheral,connector,fpga_pin,bank,direction,vccio,note
+clk_27m,system clock,onboard,SOM,H11,0,input,3.3V,核心板晶振 H11_IOT27A_OSC_CK；调试档使用
+key_rst,design reset,onboard button S3,D7,4,input,1.5V,低有效；Bank 4 为 1.5 V，勿接 3.3 V 器件
+key_s1,chord set A/B,onboard button S1,T3,4,input,1.5V,低有效
+key_s2,tempo preset,onboard button S2,T2,4,input,1.5V,低有效
+uart_tx,UART TX,BL702 bridge,FPGA M11,2,output,3.3V,网络 M11_IOR27B_FPGA_TXO -> BL702 UART1_RX
+uart_rx,UART RX,BL702 bridge,FPGA T13,2,input,3.3V,网络 T13_IOR8B_FPGA_RXO <- BL702 UART1_TX
+led,loop marker,onboard LED,N16,1,output,3.3V,低有效
+led_chord,chord set LED,onboard LED,N14,1,output,3.3V,低有效
+led_t0,tempo LED bit0,onboard LED,L14,1,output,3.3V,低有效
+led_t1,tempo LED bit1,onboard LED,L16,1,output,3.3V,低有效
+hp_bck,PT8211 BCK,onboard audio (PT8211),N15,1,output,3.3V,网络 HP_BCK；板上已连
+hp_ws,PT8211 WS,onboard audio (PT8211),P16,1,output,3.3V,网络 HP_WS；板上已连
+hp_din,PT8211 DIN,onboard audio (PT8211),P15,1,output,3.3V,网络 HP_DIN；板上已连
+pa_en,headphone amp enable,onboard audio,R16,1,output,3.3V,高有效；标准 I2S 档不引出
+clk_12m288,audio clock,12.288 MHz active oscillator,J14-10,T7,3,input,3.3V,GCLKT_3；OUT 串 33 欧；旁置 100nF+1uF
+i2s_bck,I2S bit clock,PCM5102A module,J6-5,B12,7,output,3.3V,3.072 MHz；可串 22-33 欧
+i2s_lrck,I2S word clock,PCM5102A module,J6-6,C12,7,output,3.3V,48 kHz
+i2s_din,I2S data,PCM5102A module,J6-7,B13,7,output,3.3V,标准 I2S；MSB 比 LRCK 晚一个 BCK
+dac_xsmt,DAC soft mute,PCM5102A module,J14-12,P6,3,output,3.3V,高=解除静音；RTL 恒高
+adc_cs_n,ADC chip select,MCP3208 module,J5-9,N6,3,output,3.3V,低有效
+adc_sck,ADC clock,MCP3208 module,J5-10,D11,7,output,3.3V,250 kHz 规划
+adc_mosi,ADC data in,MCP3208 module,J5-11,A11,7,output,3.3V,FPGA -> MCP3208 DIN
+adc_miso,ADC data out,MCP3208 module,J5-12,B11,7,input,3.3V,MCP3208 DOUT -> FPGA
+pressure_adc,pressure sense,FSR + 10k divider,via MCP3208 CH0,-,-,input,3.3V,+3V3 -> FSR -> node -> 10k -> GND，node 接 CH0
+bend_adc,bend sense,10k linear pot,via MCP3208 CH1,-,-,input,3.3V,两端 +3V3/GND，滑臂接 CH1，中位约 2048
+gpio_key_n[0],key C4,12 mechanical keys,J5-5,L9,3,input,3.3V,低有效；10k 上拉到 +3V3
+gpio_key_n[1],key C#4,12 mechanical keys,J5-6,N8,3,input,3.3V,低有效；10k 上拉
+gpio_key_n[2],key D4,12 mechanical keys,J14-5,P9,3,input,3.3V,低有效；10k 上拉
+gpio_key_n[3],key D#4,12 mechanical keys,J5-8,N7,3,input,3.3V,低有效；10k 上拉
+gpio_key_n[4],key E4,12 mechanical keys,J6-8,A14,7,input,3.3V,低有效；10k 上拉
+gpio_key_n[5],key F4,12 mechanical keys,J6-9,B14,7,input,3.3V,低有效；10k 上拉
+gpio_key_n[6],key F#4,12 mechanical keys,J6-10,A15,7,input,3.3V,低有效；10k 上拉
+gpio_key_n[7],key G4,12 mechanical keys,J6-11,D14,1,input,3.3V,低有效；10k 上拉
+gpio_key_n[8],key G#4,12 mechanical keys,J6-12,E15,1,input,3.3V,低有效；10k 上拉
+gpio_key_n[9],key A4,12 mechanical keys,J14-7,T8,3,input,3.3V,低有效；10k 上拉
+gpio_key_n[10],key A#4,12 mechanical keys,J14-8,P8,3,input,3.3V,低有效；10k 上拉
+gpio_key_n[11],key B4,12 mechanical keys,J14-9,R8,3,input,3.3V,低有效；10k 上拉；与 T7 构成时钟对，本方案单端使用
+spare_1,spare,not used,J5-7,N9,3,-,3.3V,原理图网络 RGB_LCD_R2；空闲备用脚
+spare_2,spare,not used,J14-11,T6,3,-,3.3V,原理图网络 MIC_BCK；空闲备用脚
+reserved,J14-6 not used,WS2812 conflict,J14-6,T9,3,-,3.3V,与板载 WS2812 数据线并联，不要占用
