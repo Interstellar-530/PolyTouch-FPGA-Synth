@@ -70,3 +70,22 @@ D:\Gowin_V1.9.11.03_Education_x64_win\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\b
 **门禁**：19 台正向测试台加 6 个参数负例全部通过，退出码 0，日志 `logs/gate-integration.log`；Gowin 报告副本在 `reports/`。一处代价需要记住：S6 振荡器每个时钟读 4 个表项，`tb_audio_capture` 这类长仿真比之前慢约一倍；把 `en` 改成“每次 sample_tick 后两个时钟的脉冲”即可把读次数降三个数量级（功能等价、未在本增量实施）。
 
 **仍未完成**：`i2s_tx` 接顶层与标准 I2S 约束（等 12.288 MHz 晶振）；显式 BSRAM/pROM 原语替换与仿真等价比对；运行时可调音色与压力路由（当前固定 25% 明亮混合，压力只进折叠观测）；共享引擎（8/32 声部）；以及全部实机验收项。
+
+## 第三增量：显式 pROM 原语（综合侧完成，仿真等价受阻）
+
+**已完成**。`tools/gen_gowin_prom_init.py` 按 UG285 §3.4 的 pROM 约定生成两张表的显式原语封装：`BIT_WIDTH=16` 得到 1024 深地址空间，512 个样本放在 `INIT_RAM_00..1F`（每个 256 位字装 16 个样本，样本 i 位于第 `i%16` 个 16 位槽），源 hex 的 SHA256 与初始化字摘要写进 `gowin_prom_meta.json`；生成 `rtl/audio/gowin_prom_wave_sine.v`、`gowin_prom_wave_bright.v`。`rtl/audio/wavetable_osc_dual_prom.v` 是与 `wavetable_osc_dual_s6` 契约相同的 pROM 版振荡器（pROM 的 bypass 读自带一级寄存，插值与混合口径逐位照抄）。`rtl/synth_s6_prom_harness.v` 加 `build/build_s6_prom_harness.tcl` 与草稿 CST 组成测量顶层，Gowin 综合 + 布局布线 + 时序 + 位流全部通过（退出码 0）：
+
+| 资源（四声部 pROM 版） | 用量 | 占比 |
+| --- | ---: | ---: |
+| Logic | 698 / 20736 | 4% |
+| Register | 183 / 16173 | 2% |
+| **BSRAM（全部为 pROM）** | **16 / 46** | **35%** |
+| DSP（8 个 MULT18X18） | 10 / 24 | 42% |
+
+结论：**显式原语被综合器接受并确实映射到块存储**，不再依赖“行为数组被推断成 BSRAM”这条隐含路径，第三增量的主要目标达成。报告副本 `reports/pnr_prom_harness.rpt.txt`。
+
+**受阻**：行为版与 pROM 版的逐值等价测试 `sim/tb_s6_rom_prim.v`（512 地址 × 5 小数位 × 3 种混合 = 7680 点）目前失败，pROM 版输出恒为 0。用厂商 `prim_sim.v` 里的 `pROM` 模型单独探针验证：无论地址、位宽接法还是 32 位全宽 `DO`，读回都是 0，说明这个放在 IP 测试台目录下的模型并不能作为 pROM 的功能模型使用（它虽然声明了 `INIT_RAM_xx` 参数并按 `{INIT_RAM_3F..00}` 组成 16K 位向量，但读通路在 Icarus 下不产生数据）。因此“我的 INIT 字序是否正确”这件事**还没有被独立验证**。下一步有两条可走：一是改用 IP Core Generator 生成的 pROM IP（自带仿真模型与 .ini/hex 初始化文件），二是先用一个只写一个字的极小例子确认字序，再回到等价测试。
+
+**资源对比的注意点**：本次 pROM 版每个声部用了 4 个独立 ROM（相邻地址各一个），所以是 16 块；行为版是 8 块。把相邻地址合并进双端口块、或按 512×36 把两张表打包，预计能回到每声部 1–2 块，这一步属于下一步的优化，不能拿这两组数字直接对比。
+
+**共享引擎原型**（求和后全局交叉混合 + 双表读取时分复用）尚未开始，仍按第二增量末尾的计划执行。

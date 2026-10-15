@@ -23,6 +23,7 @@ output/handoff_milestone2_20261008/source/build/gowin_single_voice/
 output/handoff_milestone2_20261008/source/build/gowin_poly/
 output/handoff_milestone2_20261008/source/build/gowin_s4s6_harness/
 output/handoff_milestone2_20261008/source/build/gowin_top_integrated/
+output/handoff_milestone2_20261008/source/build/gowin_s6_prom_harness/
 
 # Runtime log written by tools/serial_console/serial_console.ps1.
 tools/serial_console/serial_log.txt

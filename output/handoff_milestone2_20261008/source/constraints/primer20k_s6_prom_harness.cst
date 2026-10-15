@@ -1,0 +1,21 @@
+// 测量顶层草稿约束：只用板载 27 MHz 时钟，其余端口借 GPIO 琴键引脚。
+IO_LOC "clk_27m" H11;
+IO_PORT "clk_27m" IO_TYPE=LVCMOS33;
+IO_LOC "rst" D7;
+IO_PORT "rst" IO_TYPE=LVCMOS15;
+IO_LOC "sample_out[0]" L9;
+IO_PORT "sample_out[0]" IO_TYPE=LVCMOS33;
+IO_LOC "sample_out[1]" N8;
+IO_PORT "sample_out[1]" IO_TYPE=LVCMOS33;
+IO_LOC "sample_out[2]" P9;
+IO_PORT "sample_out[2]" IO_TYPE=LVCMOS33;
+IO_LOC "sample_out[3]" N7;
+IO_PORT "sample_out[3]" IO_TYPE=LVCMOS33;
+IO_LOC "fold[0]" A14;
+IO_PORT "fold[0]" IO_TYPE=LVCMOS33;
+IO_LOC "fold[1]" B14;
+IO_PORT "fold[1]" IO_TYPE=LVCMOS33;
+IO_LOC "fold[2]" A15;
+IO_PORT "fold[2]" IO_TYPE=LVCMOS33;
+IO_LOC "fold[3]" D14;
+IO_PORT "fold[3]" IO_TYPE=LVCMOS33;

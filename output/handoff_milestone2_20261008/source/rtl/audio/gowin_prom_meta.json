@@ -1,0 +1,20 @@
+{
+  "depth": 512,
+  "tables": {
+    "wave_bright": {
+      "hex_sha256": "c16616d4149f6d142569b266d325b5e99e13eb2f476a93bf8e67fd73d4bcfd63",
+      "init_words_sha256": "7d95a61c8f75ae26228477db0cfb5650d2e4941f5d67209699358026c645776a",
+      "max": 32767,
+      "min": -32767,
+      "module": "gowin_prom_wave_bright"
+    },
+    "wave_sine": {
+      "hex_sha256": "b75030d2aee625d0628efc6e79d27ecbd52c747f1ba8deab5334064f3aa70ef9",
+      "init_words_sha256": "fdbfcaf3429436c32b502675bf563c848e97cd4598e5c6c83fcd4f20b336a708",
+      "max": 32767,
+      "min": -32767,
+      "module": "gowin_prom_wave_sine"
+    }
+  },
+  "words": 32
+}
