@@ -39,18 +39,24 @@ module shared_wavetable_engine (
         end
     end
 
-    localparam [3:0] ST_IDLE = 4'd0,
-                     ST_ADDR_A = 4'd1, ST_LATCH_A = 4'd2, ST_ADDR_B = 4'd3,
-                     ST_LATCH_B = 4'd4, ST_DIFF_S = 4'd5, ST_INTERP_S = 4'd6,
-                     ST_DIFF_B = 4'd7, ST_INTERP_B = 4'd8,
-                     ST_ENV_S = 4'd9, ST_VEL_S = 4'd10, ST_FIN_S = 4'd11,
-                     ST_ENV_B = 4'd12, ST_VEL_B = 4'd13, ST_FIN_B = 4'd14,
-                     ST_ACC = 4'd15;
+    localparam [4:0] ST_IDLE     = 5'd0,
+                     ST_ADDR_A   = 5'd1,  ST_LATCH_A = 5'd2,
+                     ST_ADDR_B   = 5'd3,  ST_LATCH_B = 5'd4,
+                     ST_DIFF_S   = 5'd5,  ST_W_DIFF_S = 5'd6,  ST_INTERP_S = 5'd7,
+                     ST_DIFF_B   = 5'd8,  ST_W_DIFF_B = 5'd9,  ST_INTERP_B = 5'd10,
+                     ST_ENV_S    = 5'd11, ST_W_ENV_S  = 5'd12, ST_VEL_S    = 5'd13,
+                     ST_W_VEL_S  = 5'd14, ST_FIN_S    = 5'd15,
+                     ST_ENV_B    = 5'd16, ST_W_ENV_B  = 5'd17, ST_VEL_B    = 5'd18,
+                     ST_W_VEL_B  = 5'd19, ST_FIN_B    = 5'd20,
+                     ST_ACC      = 5'd21;
 
-    reg [3:0]  state = ST_IDLE;
+    reg [4:0]  state = ST_IDLE;
 
     // ------------------------------------------------------- shared ROM ports ---
-    wire        rom_ce = (state == ST_ADDR_A) || (state == ST_LATCH_A);
+    // CE 必须覆盖 b 的读取窗口：地址在 LATCH_A 期间切到 idx_b，
+    // 数据在 ADDR_B 这一拍被 pROM 寄存，因此在 LATCH_B 捕获。
+    wire        rom_ce = (state == ST_ADDR_A) || (state == ST_LATCH_A) ||
+                         (state == ST_ADDR_B);
     reg  [8:0]  rom_addr = 9'd0;
     wire [15:0] rom_sine_d, rom_bright_d;
 
@@ -82,10 +88,9 @@ module shared_wavetable_engine (
     reg  signed [63:0] mul_p = 64'sd0;
 
     // ------------------------------------------------------------------- FSM ---
-    // 每个声部 9 拍：读 a、锁 a、读 b、锁 b、算 sine 插值、算 bright 插值、
-    // 包络缩放(sine)、力度缩放(sine)、包络缩放(bright)、力度缩放(bright)、累加。
-    // 全模块只有一条乘法表达式 mul_p <= mul_a * mul_b，操作数由 FSM 逐拍装入，
-    // 因此综合后只有一组共享乘法器。
+    // 每声部 21 拍。共享乘法器每拍都做 mul_p <= mul_a * mul_b，因此在某个状态里
+    // 装入的操作数，其乘积要到“两拍之后”的那个状态才能读（X 装入 -> X+1 操作数
+    // 生效 -> X+2 乘积可用）。下面的 *_W_* 等待态就是为此保留的。
 
     reg [8:0]  frac_q = 9'd0;
     reg signed [15:0] a_sine = 16'sd0, b_sine = 16'sd0;
@@ -127,18 +132,21 @@ module shared_wavetable_engine (
                     state    <= ST_ADDR_B;
                 end
                 ST_ADDR_B: begin
-                    a_sine   <= rom_sine_d;      // idx_a 的数据此刻有效
+                    a_sine   <= rom_sine_d;             // idx_a 的数据此刻有效
                     a_bright <= rom_bright_d;
                     state    <= ST_LATCH_B;
                 end
                 ST_LATCH_B: begin
-                    b_sine   <= rom_sine_d;
+                    b_sine   <= rom_sine_d;             // idx_b 的数据此刻有效
                     b_bright <= rom_bright_d;
                     state    <= ST_DIFF_S;
                 end
                 ST_DIFF_S: begin
                     mul_a <= $signed(b_sine) - $signed(a_sine);
                     mul_b <= {23'd0, frac_q};
+                    state <= ST_W_DIFF_S;
+                end
+                ST_W_DIFF_S: begin
                     state <= ST_INTERP_S;
                 end
                 ST_INTERP_S: begin
@@ -148,6 +156,9 @@ module shared_wavetable_engine (
                 ST_DIFF_B: begin
                     mul_a <= $signed(b_bright) - $signed(a_bright);
                     mul_b <= {23'd0, frac_q};
+                    state <= ST_W_DIFF_B;
+                end
+                ST_W_DIFF_B: begin
                     state <= ST_INTERP_B;
                 end
                 ST_INTERP_B: begin
@@ -159,25 +170,37 @@ module shared_wavetable_engine (
                 ST_ENV_S: begin
                     mul_a <= $signed(interp_s);
                     mul_b <= $signed({16'd0, env_q});
+                    state <= ST_W_ENV_S;
+                end
+                ST_W_ENV_S: begin
                     state <= ST_VEL_S;
                 end
                 ST_VEL_S: begin
-                    mul_a <= $signed(mul_p[31:16]);        // (interp*env) >> 16
+                    mul_a <= $signed(mul_p[31:16]);     // (interp*env) >> 16
                     mul_b <= $signed({24'd0, vel_q});
+                    state <= ST_W_VEL_S;
+                end
+                ST_W_VEL_S: begin
                     state <= ST_FIN_S;
                 end
                 ST_FIN_S: begin
-                    scaled_s <= $signed(mul_p[22:7]);      // (voiced*vel) >> 7
+                    scaled_s <= $signed(mul_p[22:7]);   // (voiced*vel) >> 7
                     state    <= ST_ENV_B;
                 end
                 ST_ENV_B: begin
                     mul_a <= $signed(interp_b);
                     mul_b <= $signed({16'd0, env_q});
+                    state <= ST_W_ENV_B;
+                end
+                ST_W_ENV_B: begin
                     state <= ST_VEL_B;
                 end
                 ST_VEL_B: begin
                     mul_a <= $signed(mul_p[31:16]);
                     mul_b <= $signed({24'd0, vel_q});
+                    state <= ST_W_VEL_B;
+                end
+                ST_W_VEL_B: begin
                     state <= ST_FIN_B;
                 end
                 ST_FIN_B: begin

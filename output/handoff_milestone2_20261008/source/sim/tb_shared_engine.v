@@ -121,10 +121,12 @@ module tb_shared_engine;
             ref_scaled = $signed(ref_mix_sum) >>> 1;
             ref_out = (ref_scaled > 28'sd32767) ? 16'sd32767 :
                       (ref_scaled < -28'sd32768) ? -16'sd32768 : ref_scaled[15:0];
-            if (shared_out !== ref_out) begin
-                if ((shared_out - ref_out > BOUND) || (ref_out - shared_out > BOUND)) begin
+            // 与全局混合的组合输出比较：寄存器输出要等下一个 sample_tick，
+            // 那是跨用例的一拍延迟，不是引擎差异。
+            if (u_xf.sat !== ref_out) begin
+                if ((u_xf.sat - ref_out > BOUND) || (ref_out - u_xf.sat > BOUND)) begin
                     failures = failures + 1;
-                    $display("FAIL w=%0d shared=%0d per-voice=%0d diff=%0d", w, shared_out, ref_out, shared_out - ref_out);
+                    $display("FAIL w=%0d global=%0d per-voice=%0d diff=%0d", w, u_xf.sat, ref_out, u_xf.sat - ref_out);
                 end
             end
             release u_engine.phase0;
@@ -159,8 +161,14 @@ module tb_shared_engine;
         vel0 = 8'd127; vel1 = 8'd1; vel2 = 8'd90; vel3 = 8'd127;
         for (ci = 0; ci < 5; ci = ci + 1) run_case(weights[ci]);
 
+        // 第三组：全部带非零小数位，专门压插值路径（此前的用例 frac 都是 0）
+        ph0 = 32'h0000_7FFF; ph1 = 32'h2001_FFC0; ph2 = 32'h4000_3FFF; ph3 = 32'h6002_0000;
+        env0 = 16'd65535; env1 = 16'd45000; env2 = 16'd60000; env3 = 16'd32768;
+        vel0 = 8'd127; vel1 = 8'd64; vel2 = 8'd127; vel3 = 8'd100;
+        for (ci = 0; ci < 5; ci = ci + 1) run_case(weights[ci]);
+
         if (failures != 0) $fatal(1, "tb_shared_engine failures=%0d", failures);
-        $display("PASS tb_shared_engine: 10 cases, component sums bit-exact, global crossfade within %0d LSB", BOUND);
+        $display("PASS tb_shared_engine: 15 cases, component sums bit-exact, global crossfade within %0d LSB", BOUND);
         $finish;
     end
 
