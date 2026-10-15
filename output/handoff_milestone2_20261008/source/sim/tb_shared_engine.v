@@ -45,7 +45,7 @@ module tb_shared_engine;
     // 全局交叉混合
     wire signed [15:0] shared_out;
     global_crossfade u_xf (
-        .clk(clk), .rst(rst), .sample_tick(sample_tick), .mix_weight(weight),
+        .clk(clk), .rst(rst), .update(sums_valid), .clear_clip(1'b0), .mix_weight(weight),
         .sine_sum(sine_sum), .bright_sum(bright_sum), .sample_out(shared_out)
     );
 
@@ -69,6 +69,15 @@ module tb_shared_engine;
         end
     endfunction
 
+    // 参考侧的符号扩展。旧版这里写成 {13'd0, x}，那会把 16 位有符号样值当
+    // 无符号数处理；引擎犯了同一个错误，两个错误互相抵消，测试因此看不出来。
+    function signed [18:0] ext19;
+        input signed [15:0] x;
+        begin
+            ext19 = {{3{x[15]}}, x};
+        end
+    endfunction
+
     // 逐声部混合（与 wavetable_osc_dual_s6 的 (255-w,w)>>8 相同）
     function signed [15:0] mix16;
         input signed [15:0] a;
@@ -82,6 +91,7 @@ module tb_shared_engine;
     endfunction
 
     reg signed [18:0] ref_sine_sum, ref_bright_sum;
+    reg [31:0] clip_before;
     reg signed [18:0] ref_mix_sum;
     reg signed [15:0] ref_out;
     reg signed [27:0] ref_scaled;
@@ -90,6 +100,7 @@ module tb_shared_engine;
         input [7:0] w;
         begin
             weight = w;
+            clip_before = u_xf.clip_count;
             // 固定相位：直接 force 引擎内部累加器，避免两套累加器漂移
             force u_engine.phase0 = ph0;
             force u_engine.phase1 = ph1;
@@ -101,10 +112,10 @@ module tb_shared_engine;
             repeat (90) @(posedge clk);
             #1;
             // (a) 分量和逐位核对
-            ref_sine_sum   = {13'd0, voice_out(s0, env0, vel0)} + {13'd0, voice_out(s1, env1, vel1)}
-                           + {13'd0, voice_out(s2, env2, vel2)} + {13'd0, voice_out(s3, env3, vel3)};
-            ref_bright_sum = {13'd0, voice_out(b0, env0, vel0)} + {13'd0, voice_out(b1, env1, vel1)}
-                           + {13'd0, voice_out(b2, env2, vel2)} + {13'd0, voice_out(b3, env3, vel3)};
+            ref_sine_sum   = ext19(voice_out(s0, env0, vel0)) + ext19(voice_out(s1, env1, vel1))
+                           + ext19(voice_out(s2, env2, vel2)) + ext19(voice_out(s3, env3, vel3));
+            ref_bright_sum = ext19(voice_out(b0, env0, vel0)) + ext19(voice_out(b1, env1, vel1))
+                           + ext19(voice_out(b2, env2, vel2)) + ext19(voice_out(b3, env3, vel3));
             if (sine_sum !== ref_sine_sum) begin
                 failures = failures + 1;
                 $display("FAIL w=%0d sine_sum=%0d ref=%0d", w, sine_sum, ref_sine_sum);
@@ -114,10 +125,10 @@ module tb_shared_engine;
                 $display("FAIL w=%0d bright_sum=%0d ref=%0d", w, bright_sum, ref_bright_sum);
             end
             // (b) 交叉混合位置差异有界
-            ref_mix_sum = {13'd0, voice_out(mix16(s0, b0, w), env0, vel0)}
-                        + {13'd0, voice_out(mix16(s1, b1, w), env1, vel1)}
-                        + {13'd0, voice_out(mix16(s2, b2, w), env2, vel2)}
-                        + {13'd0, voice_out(mix16(s3, b3, w), env3, vel3)};
+            ref_mix_sum = ext19(voice_out(mix16(s0, b0, w), env0, vel0))
+                        + ext19(voice_out(mix16(s1, b1, w), env1, vel1))
+                        + ext19(voice_out(mix16(s2, b2, w), env2, vel2))
+                        + ext19(voice_out(mix16(s3, b3, w), env3, vel3));
             ref_scaled = $signed(ref_mix_sum) >>> 1;
             ref_out = (ref_scaled > 28'sd32767) ? 16'sd32767 :
                       (ref_scaled < -28'sd32768) ? -16'sd32768 : ref_scaled[15:0];
@@ -128,6 +139,12 @@ module tb_shared_engine;
                     failures = failures + 1;
                     $display("FAIL w=%0d global=%0d per-voice=%0d diff=%0d", w, u_xf.sat, ref_out, u_xf.sat - ref_out);
                 end
+            end
+            // (c) 主增益边界削波统计：每帧最多计一次，且与逐声部参考同判
+            if ((u_xf.clip_count - clip_before) !== ((ref_scaled > 28'sd32767) || (ref_scaled < -28'sd32768) ? 32'd1 : 32'd0)) begin
+                failures = failures + 1;
+                $display("FAIL w=%0d clip_count delta=%0d ref_clip=%0d", w, u_xf.clip_count - clip_before,
+                         (ref_scaled > 28'sd32767) || (ref_scaled < -28'sd32768));
             end
             release u_engine.phase0;
             release u_engine.phase1;
@@ -167,8 +184,18 @@ module tb_shared_engine;
         vel0 = 8'd127; vel1 = 8'd64; vel2 = 8'd127; vel3 = 8'd100;
         for (ci = 0; ci < 5; ci = ci + 1) run_case(weights[ci]);
 
+        // 第四组：故意过载（四声部同相负峰、满包络满力度、全正弦）必须计一次削波
+        ph0 = 32'hC000_0000; ph1 = 32'hC000_0000; ph2 = 32'hC000_0000; ph3 = 32'hC000_0000;
+        env0 = 16'd65535; env1 = 16'd65535; env2 = 16'd65535; env3 = 16'd65535;
+        vel0 = 8'd127; vel1 = 8'd127; vel2 = 8'd127; vel3 = 8'd127;
+        run_case(8'd0);
+        if (u_xf.clip_count != (clip_before + 32'd1)) begin
+            failures = failures + 1;
+            $display("FAIL overdrive clip_count=%0d expected %0d", u_xf.clip_count, clip_before + 32'd1);
+        end
+
         if (failures != 0) $fatal(1, "tb_shared_engine failures=%0d", failures);
-        $display("PASS tb_shared_engine: 15 cases, component sums bit-exact, global crossfade within %0d LSB", BOUND);
+        $display("PASS tb_shared_engine: 16 cases, component sums bit-exact, global crossfade within %0d LSB and clip count on the master boundary", BOUND);
         $finish;
     end
 

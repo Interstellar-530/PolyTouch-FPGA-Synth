@@ -341,7 +341,6 @@ module top (
     );
 
     // ----------------------------------------------------------- voices ---
-    wire signed [15:0] vs0, vs1, vs2, vs3;
     wire [31:0] inc0, inc1, inc2, inc3;
 
     note_phase_inc u_inc0 (.note(v_note[6:0]),   .inc(inc0));
@@ -423,47 +422,77 @@ module top (
     // 本增量固定 25% 明亮混合；运行时可调的切换留给后续命令通道。
     localparam [7:0] TIMBRE_WEIGHT = 8'h40;
 
-    poly_voice_s6 u_v0 (
+    // [S6 共享引擎] 包络留在顶层（每声部一个 adsr），振荡/插值/混合交给共享引擎
+    // 时分复用：整机 2 个 pROM、一组共享乘法器、交叉混合全局一次。
+    wire [15:0] v_env0, v_env1, v_env2, v_env3;
+
+    // 与 poly_voice_s6 相同的“start 暂存到 sample_tick”口径，避免事件不对齐采样点。
+    reg  [3:0] v_pending = 4'd0;
+    always @(posedge clk_27m) begin
+        if (rst)
+            v_pending <= 4'd0;
+        else if (sample_tick)
+            v_pending <= 4'd0;
+        else
+            v_pending <= v_pending | v_start;
+    end
+    wire [3:0] v_retrig = v_gate & (v_start | v_pending);
+
+    adsr u_env0 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[0]), .start (v_start[0]), .phase_inc (bend_inc0),
-        .velocity (v_vel[7:0]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
-        .sample (vs0), .idle (v_idle[0])
+        .gate (v_gate[0]), .retrigger (v_retrig[0]), .env (v_env0), .idle (v_idle[0])
     );
-    poly_voice_s6 u_v1 (
+    adsr u_env1 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[1]), .start (v_start[1]), .phase_inc (bend_inc1),
-        .velocity (v_vel[15:8]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
-        .sample (vs1), .idle (v_idle[1])
+        .gate (v_gate[1]), .retrigger (v_retrig[1]), .env (v_env1), .idle (v_idle[1])
     );
-    poly_voice_s6 u_v2 (
+    adsr u_env2 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[2]), .start (v_start[2]), .phase_inc (bend_inc2),
-        .velocity (v_vel[23:16]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
-        .sample (vs2), .idle (v_idle[2])
+        .gate (v_gate[2]), .retrigger (v_retrig[2]), .env (v_env2), .idle (v_idle[2])
     );
-    poly_voice_s6 u_v3 (
+    adsr u_env3 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[3]), .start (v_start[3]), .phase_inc (bend_inc3),
-        .velocity (v_vel[31:24]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
-        .sample (vs3), .idle (v_idle[3])
+        .gate (v_gate[3]), .retrigger (v_retrig[3]), .env (v_env3), .idle (v_idle[3])
+    );
+
+    wire signed [18:0] sine_sum, bright_sum;
+    wire               sums_valid;
+
+    shared_wavetable_engine u_engine (
+        .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
+        .inc0 (bend_inc0), .inc1 (bend_inc1), .inc2 (bend_inc2), .inc3 (bend_inc3),
+        .retrig0 (v_retrig[0]), .retrig1 (v_retrig[1]),
+        .retrig2 (v_retrig[2]), .retrig3 (v_retrig[3]),
+        .env0 (v_env0), .env1 (v_env1), .env2 (v_env2), .env3 (v_env3),
+        .vel0 (v_vel[7:0]), .vel1 (v_vel[15:8]), .vel2 (v_vel[23:16]), .vel3 (v_vel[31:24]),
+        .sine_sum (sine_sum), .bright_sum (bright_sum), .sums_valid (sums_valid)
+    );
+
+    wire signed [15:0] mixed_shared;
+    wire [31:0] xf_clip_count;
+    wire        xf_clip_event;
+
+    global_crossfade #(.CLIP_COUNTER_WIDTH(32)) u_xf (
+        .clk (clk_27m), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
+        .mix_weight (TIMBRE_WEIGHT),
+        .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
+        .clip_count (xf_clip_count), .clip_event (xf_clip_event)
     );
 
     // ------------------------------------------------------------ mixer ---
-    // [S6] mixer_s6 取代原 mixer：VOLUME_SHIFT=1 与旧版“求和后除二”一致，
-    // FIR 默认旁路（启用会把 10 kHz 压到约 -8.5 dB，需要重做音频验收基线）。
+    // [S6 共享引擎] 逐声部的 mixer_s6 四路求和与 VOLUME_SHIFT=1 主增益已经由
+    // global_crossfade 接管：交叉混合与“除以 2”在同一处各做一次，削波统计也在
+    // 同一个主增益边界上计数，不会重复计数。mixer_s6 与它的 (1,4,6,4,1) FIR 仍
+    // 留在库里并由 tb_s6_audio 覆盖，产品顶层不再实例化：顶层再串一级只会多出
+    // 一拍延迟和一份死逻辑。FIR 仍然旁路，启用会把 10 kHz 压到约 -8.5 dB，
+    // 音频验收基线要重做。
     wire signed [15:0] mixed;
-    wire [31:0]        clip_count;
-    wire               clip_event;
-    mixer_s6 #(.VOLUME_SHIFT(1), .FIR_ENABLE(0), .CLIP_COUNTER_WIDTH(32)) u_mixer (
-        .clk (clk_27m), .rst (rst), .sample_tick (sample_tick), .clear_clip (1'b0),
-        .v0 (vs0), .v1 (vs1), .v2 (vs2), .v3 (vs3),
-        .sample_out (mixed), .clip_count (clip_count), .clip_event (clip_event)
-    );
+    assign mixed = mixed_shared;
 
     // 把削波计数与压力/弯音观测值折成 4 位，避免综合把未接引脚的通路裁掉。
-    wire [3:0] fold_clip = clip_count[31:28] ^ clip_count[27:24] ^ clip_count[23:20] ^
-                           clip_count[19:16] ^ clip_count[15:12] ^ clip_count[11:8] ^
-                           clip_count[7:4] ^ clip_count[3:0] ^ {3'd0, clip_event};
+    wire [3:0] fold_clip = xf_clip_count[31:28] ^ xf_clip_count[27:24] ^ xf_clip_count[23:20] ^
+                           xf_clip_count[19:16] ^ xf_clip_count[15:12] ^ xf_clip_count[11:8] ^
+                           xf_clip_count[7:4] ^ xf_clip_count[3:0] ^ {3'd0, xf_clip_event};
     wire [3:0] fold_pressure = pressure_level[11:8] ^ pressure_level[7:4] ^ pressure_level[3:0] ^
                                pressure_filtered[11:8] ^ pressure_filtered[7:4] ^ pressure_filtered[3:0];
     wire [3:0] fold_bend = bend_q8[15:12] ^ bend_q8[11:8] ^ bend_q8[7:4] ^ bend_q8[3:0] ^

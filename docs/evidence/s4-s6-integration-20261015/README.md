@@ -141,3 +141,42 @@ PASS tb_shared_engine: 15 cases, component sums bit-exact, global crossfade with
 两个顶层功能等价（差别仅上文那 ≤2 LSB 的舍入位置，以及 ROM/插值/混合的组织方式），报告副本在 `reports/pnr_voices_per_voice.rpt.txt` 与 `reports/pnr_voices_shared.rpt.txt`，构建日志 `logs/gowin_voice_variants.log`。这也顺带完成了上一轮遗留的“ROM 块数从每声部 4 块降到 1–2 块”目标——共享架构做到每声部 0.5 块，比原目标更好。
 
 **仍未做**：把共享引擎接入产品顶层（当前顶层仍用逐声部 `poly_voice_s6`）；共享版没有 FIR/削波统计（全局混合模块未接 `mixer_s6`，接顶层时需要补上）；共享版是否满足时序余量要等接入顶层后再看一次报告；实机验收项不变。
+
+## 第五增量：共享引擎接入产品顶层 + 一次真实缺陷的复核（2026-10-15）
+
+**目标**：把共享引擎真正接到产品顶层，同时保住 S1 音频验收基线（抽样抓取 + 独立 PCM/FFT 判据），并给出接入后的资源与时序。
+
+**顶层改动**
+
+- `rtl/top.v`：四个 `poly_voice_s6` 换成「4 × `adsr` + `v_pending`/`v_retrig`（start 暂存到 `sample_tick`，与 `poly_voice_s6` 同一口径）+ `shared_wavetable_engine` + `global_crossfade`」。逐声部 `vs0..vs3` 与其驱动逻辑删除。
+- `mixer_s6` 退出产品顶层：它的两项职责（四路求和 + `VOLUME_SHIFT=1` 主增益、采样帧寄存器边界）现在都由 `global_crossfade` 在同一处完成一次，顶层再串一级只会多出一拍延迟与一份死逻辑。`mixer_s6` 与它的 (1,4,6,4,1) FIR 仍留在库里并由 `tb_s6_audio` 覆盖。FIR 仍旁路（启用会把 10 kHz 压到约 −8.5 dB，音频验收基线要重做）。
+- `rtl/audio/global_crossfade.v`：补上**主增益边界的削波统计**（`clip_count` 饱和到全 1、`clip_event` 每帧一次、`clear_clip` 同步清零），语义与 `mixer_s6` 的文档定义一致。上一增量遗留的“共享版没有 FIR/削波统计”到此关闭。
+- `global_crossfade` 的更新节拍改接引擎 `sums_valid`（帧内有效），不再等下一个 `sample_tick`：产品通路因此比逐声部链路**少一帧（约 21.3 µs）延迟**，对音高与频谱无影响，逐值对照见下。
+- 门禁与构建脚本同步：`sim/run_simulation.ps1` 的 5 处顶层源文件表换成共享引擎/pROM，`sim/tb_shared_engine.v` 增加削波统计断言与一个故意过载用例（16 用例），`build/build_top_integrated.tcl` 补入引擎与 pROM 文件（旧工程目录要先删掉再重建，tcl 只在工程不存在时添加文件）。
+
+**复核发现一（我自己引入的中间态错误）**。顶层切到共享引擎后，`mixer_s6` 实例还在吃已被删除驱动的 `vs0..vs3`。Verilog 允许隐式连线，编译不报错，但无驱动网络是 X，整条音频通路随之变 X：`tb_audio_capture` 在 clk 66760 报 `Unknown audio pin or sample_tick`，用探针确认 `frame_data=xxxx` 而 `mixed_shared=0000`。已在同一次工作里改掉（mixer 退出顶层、削波统计迁到 `global_crossfade`）。
+
+**复核发现二（引擎的真实缺陷，关键）**。`shared_wavetable_engine.v` 把 16 位有符号的 `scaled_s`/`scaled_b` 用 `{13'd0, scaled_s}` 拼进 19 位累加器：**拼接结果是无符号的，`$signed()` 无法还原符号**，于是 −20840 变成 +44744，输出因此带上约半个满量程的直流。逐拍探针实测 `sine_acc=44696`（正是 −20840 的无符号回绕），独立抓取频谱显示单音直流 +16311、和弦直流 +32013，chord4 四个基频被压到 870–930 LSB（验收判据 ≥1000 LSB），S1 音频验收直接 FAIL。
+
+这个缺陷此前没被发现，是因为 `tb_shared_engine` 的参考模型写成 `ref_sine_sum = {13'd0, voice_out(...)} + ...`，**与引擎犯了同一个错误**：两边都丢符号，误差互相抵消，所以 15 个用例全绿。修复方式是在引擎里显式符号扩展（`scaled_s_ext`/`scaled_b_ext`），并把测试台参考侧改成 `ext19()` 函数；修复后用**变异验证**证明测试台不再盲目：
+
+```text
+engine=fixed  -> PASS tb_shared_engine: 16 cases ...
+engine=HEAD   -> FAIL w=0 sine_sum=102472 ref=-28600
+```
+
+**验证证据**
+
+- 完整门禁 exit 0：21 台正向测试台 + 6 个参数负例全绿（`logs/gate-top-shared-engine.log`，末尾为「全部 21 台正向测试台与 6 个参数负例通过，允许烧录」）。
+- S1 独立音频验收 PASS（`tools/analyze_audio_capture.py`，原始 WAV/PCM/PNG/JSON 在 `audio-shared-engine/`）：58880 帧，A4 = 440.000000 Hz（误差 2.9e-7 Hz），拟合残差 688 LSB。
+- 与逐声部顶层（HEAD 的 `top.v`）逐值 A/B：`a4_steady` 基频 7958.9 LSB、峰值 7731、RMS 5670.4（逐声部同值 7958.9 / 7730 / 5670.4）；`chord4` 四个基频 7966.4 / 7944.6 / 7974.7 / 7968.1（逐声部 7966.3 / 7944.4 / 7975.1 / 7968.7），差 ≤1 LSB。缺陷前后的完整数据见 `reports/audio-signext-defect-evidence.txt`。
+- Gowin 综合 + PnR + 时序 + 位流全部通过（`reports/pnr_instrument_shared_engine.rpt.txt`、`reports/timing_summary_instrument_shared_engine.txt`、`logs/gowin_top_shared_engine_build.log`）：0 条 setup/hold 违例，TNS 0，实际 Fmax 46.368 MHz（约束 27 MHz，逻辑级数 18）。
+
+| 资源 | 逐声部顶层（56577e3） | 共享引擎顶层（本次） | 变化 |
+| --- | ---: | ---: | --- |
+| Logic | 3516（17%） | 3776（19%） | +260（FSM 与时分复用控制） |
+| Register | 1128（7%） | 1460（10%） | +332 |
+| **BSRAM** | **8/46（18%）** | **2/46（5%）** | **4 倍下降** |
+| **DSP** | **18.5/24（78%）** | **6.5/24（28%）** | **约 2.8 倍下降** |
+
+**仍未做**：`i2s_tx` 接顶层与标准 I2S 约束（等 12.288 MHz 晶振）；运行时可调音色与压力路由；实机验收（T04）。共享引擎的第二条 ROM 端口与 FIR 是否回归，等实机有音频后再定。

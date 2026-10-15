@@ -101,6 +101,11 @@ module shared_wavetable_engine (
     reg [15:0] env_q = 16'd0;
     reg [7:0]  vel_q = 8'd0;
 
+    // 累加前必须按 16 位有符号符号扩展：{13'd0, scaled_s} 会把它当无符号数：
+    // −20840 会变成 +44744，在输出上留下约半个满量程的直流偏置。
+    wire signed [18:0] scaled_s_ext = {{3{scaled_s[15]}}, scaled_s};
+    wire signed [18:0] scaled_b_ext = {{3{scaled_b[15]}}, scaled_b};
+
     always @(posedge clk) begin
         if (rst) begin
             state <= ST_IDLE;
@@ -208,11 +213,11 @@ module shared_wavetable_engine (
                     state    <= ST_ACC;
                 end
                 default: begin
-                    sine_acc   <= sine_acc + $signed({13'd0, scaled_s});
-                    bright_acc <= bright_acc + $signed({13'd0, scaled_b});
+                    sine_acc   <= sine_acc + scaled_s_ext;
+                    bright_acc <= bright_acc + scaled_b_ext;
                     if (vsel == 2'd3) begin
-                        sine_sum   <= sine_acc + $signed({13'd0, scaled_s});
-                        bright_sum <= bright_acc + $signed({13'd0, scaled_b});
+                        sine_sum   <= sine_acc + scaled_s_ext;
+                        bright_sum <= bright_acc + scaled_b_ext;
                         sums_valid <= 1'b1;
                         state      <= ST_IDLE;
                     end else begin

@@ -4,8 +4,11 @@
 // wavetable_osc_dual_s6（sin/bright 两张 512 点表的相邻四点同步读取 + 9 位
 // 线性插值 + 8 位交叉混合），相位累加器因此上移到本模块。包络、力度缩放与
 // restart_sample 的时序口径与 poly_voice 完全一致，保持顶层行为可比。
-// mix_enable/mix_weight 由顶层统一给出（本增量固定为 25% 明亮混合），
-// 运行时可调的切换留给后续命令通道。
+// mix_enable/mix_weight 由本模块内部传给振荡器（本增量固定为 25% 明亮混合）。
+//
+// [2026-10-15 集成] 产品顶层已改用 shared_wavetable_engine + global_crossfade，
+// 本模块不再被 top 实例化，保留作为逐声部参考实现：tb_shared_engine 用它的
+// 振荡器做等价基准，资源对比顶层 synth_voices_per_voice_harness 也用它。
 module poly_voice_s6 (
     input  wire               clk,
     input  wire               rst,
