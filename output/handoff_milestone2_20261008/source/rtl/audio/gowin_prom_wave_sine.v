@@ -59,7 +59,10 @@ module gowin_prom_wave_sine (
         .INIT_RAM_3E(256'h0), .INIT_RAM_3F(256'h0)
     ) u_prom (
         .DO    (dout),
-        .AD    ({5'b0, addr}),
+        // UG285 pROM address convention for BIT_WIDTH=16: the word address
+        // occupies AD[13:4] and AD[3:0] is ignored (verified against the
+        // vendor prim_sim.v model shipped with the Gowin toolchain).
+        .AD    ({1'b0, addr, 4'b0000}),
         .CE    (ce),
         .CLK   (clk),
         .OCE   (1'b1),

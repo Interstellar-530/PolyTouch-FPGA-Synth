@@ -28,6 +28,7 @@
       tb_mcp3208_params [S4] 27 MHz/250 kHz 生产参数、分频钳位与 SPI_HZ=0 守护
       tb_pressure_bend [S5] 640 个压力 tick 与 4096 个弯音 ADC 码逐值对照参考
       tb_s6_audio      [S6] 3584 相位点、1024+256 混合点、510 混音样本与 32 个 FIR 样本
+      tb_s6_rom_prim   [S6] 行为版与显式 Gowin pROM 版波表逐值等价（512 地址 × 5 小数位 × 3 混合）
 #>
 param(
     [string]$Iverilog = '',
@@ -173,7 +174,11 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\wavetable_rom_dual.v',
-                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') }
+                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') },
+        @{ Name = 'tb_s6_rom_prim'; Top = 'sim\tb_s6_rom_prim.v'; Src = @(
+                'rtl\audio\wavetable_osc_dual_s6.v', 'rtl\audio\wavetable_osc_dual_prom.v',
+                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
+                'sim\gowin_prom_model.v') }
     )
 
     $failed = 0
