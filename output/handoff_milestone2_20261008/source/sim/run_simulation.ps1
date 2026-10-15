@@ -113,31 +113,43 @@ try {
         @{ Name = 'tb_mode_uart'; Top = 'sim\tb_mode_uart.v'; Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
-                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
-                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
-                'rtl\audio\gpio_keyboard.v') },
+                'rtl\audio\poly_voice_s6.v', 'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\mixer_s6.v',
+                'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
+                'rtl\audio\pressure_bend.v', 'rtl\audio\wavetable_rom_dual.v',
+                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') },
         @{ Name = 'tb_gpio_top'; Top = 'sim\tb_gpio_top.v'; Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
-                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
-                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
-                'rtl\audio\gpio_keyboard.v') },
-        @{ Name = 'tb_poly';        Top = 'sim\tb_poly.v';        Src = @(
+                'rtl\audio\poly_voice_s6.v', 'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\mixer_s6.v',
+                'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
+                'rtl\audio\pressure_bend.v', 'rtl\audio\wavetable_rom_dual.v',
+                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') },
+        @{ Name = 'tb_poly'; Top = 'sim\tb_poly.v'; Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
-                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
-                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
-                'rtl\audio\gpio_keyboard.v') },
+                'rtl\audio\poly_voice_s6.v', 'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\mixer_s6.v',
+                'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
+                'rtl\audio\pressure_bend.v', 'rtl\audio\wavetable_rom_dual.v',
+                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') },
         @{ Name = 'tb_audio_capture'; Top = 'sim\tb_audio_capture.v'; Src = @(
                 'rtl\top.v',
                 'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
-                'rtl\audio\note_phase_inc.v', 'rtl\audio\event_fifo.v',
-                'rtl\audio\voice_alloc.v', 'rtl\audio\song_player.v',
-                'rtl\audio\mixer.v', 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
-                'rtl\audio\gpio_keyboard.v') },
+                'rtl\audio\poly_voice_s6.v', 'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\mixer_s6.v',
+                'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
+                'rtl\audio\pressure_bend.v', 'rtl\audio\wavetable_rom_dual.v',
+                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') },
         @{ Name = 'tb_i2s_tx'; Top = 'sim\tb_i2s_tx.v'; Src = @(
                 'rtl\audio\i2s_tx.v', 'sim\i2s_rx_model.v', 'sim\i2s_tx_checker.v') },
         @{ Name = 'tb_mcp3208_spi'; Top = 'sim\tb_mcp3208_spi.v'; Src = @(
@@ -151,7 +163,17 @@ try {
                 'rtl\audio\pressure_bend.v', 'rtl\audio\adsr.v') },
         @{ Name = 'tb_s6_audio'; Top = 'sim\tb_s6_audio.v'; Src = @(
                 'rtl\audio\wavetable_rom_dual.v', 'rtl\audio\wavetable_osc_dual_s6.v',
-                'rtl\audio\mixer_s6.v') }
+                'rtl\audio\mixer_s6.v') },
+        @{ Name = 'tb_top_s4s6'; Top = 'sim\tb_top_s4s6.v'; Src = @(
+                'rtl\top.v',
+                'rtl\audio\dds_osc.v', 'rtl\audio\adsr.v', 'rtl\audio\poly_voice.v',
+                'rtl\audio\poly_voice_s6.v', 'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\mixer_s6.v',
+                'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
+                'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
+                'rtl\audio\pressure_bend.v', 'rtl\audio\wavetable_rom_dual.v',
+                'rtl\audio\wavetable_osc_dual_s6.v', 'sim\mcp3208_model.v') }
     )
 
     $failed = 0

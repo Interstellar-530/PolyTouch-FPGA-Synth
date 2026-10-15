@@ -4,11 +4,25 @@ module tb_mode_uart;
     reg [11:0] gpio_key_n = 12'hFFF;    // [S2-AI] 全部松开；GPIO 交互另见 tb_gpio_top
     wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, led_t0, led_t1, uart_tx;
     integer err_count = 0, accepted = 0, replies_dequeued = 0, i;
+    // [S4/S5/S6] 新增顶层端口与 MCP3208 器件模型：CH0 作压力、CH1 作弯音。
+    // 弯音保持在中点 2048，比率恰为 1.0，因此本测试台原有的音频期望不变。
+    wire adc_cs_n, adc_sck, adc_mosi, adc_miso;
+    wire [3:0] clip_fold;
+    reg [11:0] adc_ch0 = 12'd1024, adc_ch1 = 12'd2048;
+    mcp3208_model u_adc_model (
+        .cs_n(adc_cs_n), .sclk(adc_sck), .mosi(adc_mosi), .miso(adc_miso),
+        .ch0(adc_ch0), .ch1(adc_ch1), .ch2(12'd0), .ch3(12'd0),
+        .ch4(12'd0), .ch5(12'd0), .ch6(12'd0), .ch7(12'd0)
+    );
+
     top dut (.clk_27m(clk), .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
              .uart_rx(uart_rx), .gpio_key_n(gpio_key_n),
              .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din),
              .pa_en(pa_en), .led(led), .led_chord(led_chord),
-             .led_t0(led_t0), .led_t1(led_t1), .uart_tx(uart_tx));
+             .led_t0(led_t0), .led_t1(led_t1), .uart_tx(uart_tx),
+             .adc_cs_n(adc_cs_n), .adc_sck(adc_sck), .adc_mosi(adc_mosi),
+             .adc_miso(adc_miso), .clip_fold(clip_fold));
+
     always #18.5185 clk = ~clk;
     always @(posedge clk) begin
         if (dut.u_uart.reply_err) err_count = err_count + 1;

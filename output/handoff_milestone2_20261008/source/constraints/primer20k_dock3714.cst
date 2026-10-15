@@ -100,3 +100,26 @@ IO_PORT "gpio_key_n[11]" IO_TYPE=LVCMOS33;
 
 
 
+
+// [S4/S5/S6 集成] MCP3208 SPI 与折叠观测输出。引脚取自
+// docs/hardware/FPGA-pinplan-20261013-v0.1.csv（Bank 3/7，均按 3.3 V 规划），
+// 但仍属草稿：上板前需按到货验收流程核对接线与 Bank 电压。
+IO_LOC "adc_cs_n" N6;
+IO_PORT "adc_cs_n" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_sck" D11;
+IO_PORT "adc_sck" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_mosi" A11;
+IO_PORT "adc_mosi" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_miso" B11;
+IO_PORT "adc_miso" IO_TYPE=LVCMOS33;
+
+// 折叠观测（削波计数 + 压力/弯音状态）暂时借用 I2S/XSMT 组的草稿引脚，
+// 待标准 I2S 接入顶层时再重新分配。
+IO_LOC "clip_fold[0]" B12;
+IO_PORT "clip_fold[0]" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "clip_fold[1]" C12;
+IO_PORT "clip_fold[1]" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "clip_fold[2]" B13;
+IO_PORT "clip_fold[2]" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "clip_fold[3]" P6;
+IO_PORT "clip_fold[3]" IO_TYPE=LVCMOS33 DRIVE=4;

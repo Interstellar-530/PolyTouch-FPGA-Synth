@@ -17,6 +17,11 @@ module top (
     input  wire key_s2,      // S2 / T2，低有效；下一速度档并重启曲目
     input  wire uart_rx,     // T13, from BL702 UART1_TX
     input  wire [11:0] gpio_key_n, // [S2-AI] 12 路琴键，低有效，外部上拉；键 0 = C4
+    // [S4] MCP3208 SPI：CH0 = 压力 FSR，CH1 = 弯音电位器。
+    output wire             adc_cs_n,
+    output wire             adc_sck,
+    output wire             adc_mosi,
+    input  wire             adc_miso,
     output wire hp_bck,
     output wire hp_ws,
     output wire hp_din,
@@ -25,7 +30,9 @@ module top (
     output wire led_chord,   // N14, lit while chord set B is selected
     output wire led_t0,      // L14, tempo preset bit 0
     output wire led_t1,      // L16, tempo preset bit 1
-    output wire uart_tx      // M11, to BL702 UART1_RX
+    output wire uart_tx,     // M11, to BL702 UART1_RX
+    // [S6/S5] 削波计数与压力/弯音观测值折叠成的草稿输出，引脚待实物核对。
+    output wire [3:0]       clip_fold
 );
 
     // ------------------------------------------------------- reset tree ---
@@ -342,34 +349,126 @@ module top (
     note_phase_inc u_inc2 (.note(v_note[20:14]), .inc(inc2));
     note_phase_inc u_inc3 (.note(v_note[27:21]), .inc(inc3));
 
-    poly_voice u_v0 (
+    // ------------------------------------------- [S4/S5] ADC 控制路径 ---
+    // 2 kHz 控制节拍（27 MHz / 13 500）。一次 ADC 事务约 76 us，短于节拍
+    // 周期，因此 SPI 不会阻塞 I2S/音频帧；压力与弯音只在节拍上更新。
+    reg [13:0] ctrl_div = 14'd0;
+    reg        control_tick = 1'b0;
+    always @(posedge clk_27m) begin
+        if (ctrl_div == 14'd13499) begin
+            ctrl_div     <= 14'd0;
+            control_tick <= 1'b1;
+        end else begin
+            ctrl_div     <= ctrl_div + 1'b1;
+            control_tick <= 1'b0;
+        end
+    end
+
+    // CH0 = 压力 FSR，CH1 = 弯音电位器；空闲时按节拍轮流发起。
+    // 显式 1 位通道选择：写成 ~adc_channel[0] 会被上下文补成 3 位（得到 6/7），
+    // 这是本仓库第三次遇到 Verilog 上下文位宽坑，故用独立 1 位寄存器。
+    reg         adc_sel      = 1'b0;      // 0 = 压力 CH0, 1 = 弯音 CH1
+    reg         adc_start    = 1'b0;
+    reg  [11:0] pressure_raw = 12'd2048;
+    reg  [11:0] bend_raw     = 12'd2048;
+    wire        adc_busy;
+    wire        adc_done;
+    wire        adc_valid;
+    wire [11:0] adc_data;
+
+    always @(posedge clk_27m) begin
+        adc_start <= 1'b0;
+        if (control_tick && !adc_busy) begin
+            adc_start   <= 1'b1;
+            adc_sel     <= ~adc_sel;
+        end
+        if (adc_done) begin
+            if (adc_sel) bend_raw     <= adc_data;
+            else                pressure_raw <= adc_data;
+        end
+    end
+
+    mcp3208_spi #(.CLK_HZ(27_000_000), .SPI_HZ(250_000)) u_adc (
+        .clk (clk_27m), .rst (rst), .start (adc_start),
+        .channel ({2'b00, adc_sel}),
+        .miso (adc_miso), .cs_n (adc_cs_n), .sclk (adc_sck), .mosi (adc_mosi),
+        .busy (adc_busy), .done (adc_done), .data (adc_data),
+        .data_valid (adc_valid), .adc_data ()
+    );
+
+    wire [11:0]        pressure_filtered;
+    wire [11:0]        pressure_level;
+    wire signed [15:0] bend_q8;
+    wire [16:0]        bend_ratio_q16;
+    wire [31:0]        bend_inc0;      // 声部 0 的弯音后增量
+
+    pressure_bend u_bend (
+        .clk (clk_27m), .rst (rst), .control_tick (control_tick),
+        .pressure_adc (pressure_raw), .bend_adc (bend_raw),
+        .pressure_enable (1'b1), .base_phase_inc (inc0),
+        .pressure_filtered (pressure_filtered), .pressure_level (pressure_level),
+        .bend_q8 (bend_q8), .bend_ratio_q16 (bend_ratio_q16),
+        .phase_inc_out (bend_inc0)
+    );
+
+    // ----------------------------------------------------------- voices ---
+    // [S6] 双波表声部：相位增量先按弯音比率缩放（声部 0 用上面的输出，其余各一次乘法）。
+    // 显式加宽再截断，避免依赖工具对乘积宽度的上下文推断（同 S5 的修正口径）。
+    wire [48:0] bend_mul1 = {17'd0, inc1} * {32'd0, bend_ratio_q16};
+    wire [48:0] bend_mul2 = {17'd0, inc2} * {32'd0, bend_ratio_q16};
+    wire [48:0] bend_mul3 = {17'd0, inc3} * {32'd0, bend_ratio_q16};
+    wire [31:0] bend_inc1 = bend_mul1 >> 16;
+    wire [31:0] bend_inc2 = bend_mul2 >> 16;
+    wire [31:0] bend_inc3 = bend_mul3 >> 16;
+    // 本增量固定 25% 明亮混合；运行时可调的切换留给后续命令通道。
+    localparam [7:0] TIMBRE_WEIGHT = 8'h40;
+
+    poly_voice_s6 u_v0 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[0]), .start (v_start[0]), .phase_inc (inc0), .velocity (v_vel[7:0]),
+        .gate (v_gate[0]), .start (v_start[0]), .phase_inc (bend_inc0),
+        .velocity (v_vel[7:0]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
         .sample (vs0), .idle (v_idle[0])
     );
-    poly_voice u_v1 (
+    poly_voice_s6 u_v1 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[1]), .start (v_start[1]), .phase_inc (inc1), .velocity (v_vel[15:8]),
+        .gate (v_gate[1]), .start (v_start[1]), .phase_inc (bend_inc1),
+        .velocity (v_vel[15:8]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
         .sample (vs1), .idle (v_idle[1])
     );
-    poly_voice u_v2 (
+    poly_voice_s6 u_v2 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[2]), .start (v_start[2]), .phase_inc (inc2), .velocity (v_vel[23:16]),
+        .gate (v_gate[2]), .start (v_start[2]), .phase_inc (bend_inc2),
+        .velocity (v_vel[23:16]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
         .sample (vs2), .idle (v_idle[2])
     );
-    poly_voice u_v3 (
+    poly_voice_s6 u_v3 (
         .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
-        .gate (v_gate[3]), .start (v_start[3]), .phase_inc (inc3), .velocity (v_vel[31:24]),
+        .gate (v_gate[3]), .start (v_start[3]), .phase_inc (bend_inc3),
+        .velocity (v_vel[31:24]), .mix_enable (1'b1), .mix_weight (TIMBRE_WEIGHT),
         .sample (vs3), .idle (v_idle[3])
     );
 
     // ------------------------------------------------------------ mixer ---
+    // [S6] mixer_s6 取代原 mixer：VOLUME_SHIFT=1 与旧版“求和后除二”一致，
+    // FIR 默认旁路（启用会把 10 kHz 压到约 -8.5 dB，需要重做音频验收基线）。
     wire signed [15:0] mixed;
-    mixer u_mixer (
-        .clk (clk_27m), .rst (rst), .sample_tick (sample_tick),
+    wire [31:0]        clip_count;
+    wire               clip_event;
+    mixer_s6 #(.VOLUME_SHIFT(1), .FIR_ENABLE(0), .CLIP_COUNTER_WIDTH(32)) u_mixer (
+        .clk (clk_27m), .rst (rst), .sample_tick (sample_tick), .clear_clip (1'b0),
         .v0 (vs0), .v1 (vs1), .v2 (vs2), .v3 (vs3),
-        .sample_out (mixed)
+        .sample_out (mixed), .clip_count (clip_count), .clip_event (clip_event)
     );
+
+    // 把削波计数与压力/弯音观测值折成 4 位，避免综合把未接引脚的通路裁掉。
+    wire [3:0] fold_clip = clip_count[31:28] ^ clip_count[27:24] ^ clip_count[23:20] ^
+                           clip_count[19:16] ^ clip_count[15:12] ^ clip_count[11:8] ^
+                           clip_count[7:4] ^ clip_count[3:0] ^ {3'd0, clip_event};
+    wire [3:0] fold_pressure = pressure_level[11:8] ^ pressure_level[7:4] ^ pressure_level[3:0] ^
+                               pressure_filtered[11:8] ^ pressure_filtered[7:4] ^ pressure_filtered[3:0];
+    wire [3:0] fold_bend = bend_q8[15:12] ^ bend_q8[11:8] ^ bend_q8[7:4] ^ bend_q8[3:0] ^
+                           {2'b00, adc_busy, adc_valid};
+    assign clip_fold = fold_clip ^ fold_pressure ^ fold_bend;
 
     // M0 只把送入 DAC 的数字采样置零，不切断 pa_en，也不停止声部/曲目计时。
     // 静音仍有噪声时应继续检查供电、接地、DAC/耳放模拟路径。

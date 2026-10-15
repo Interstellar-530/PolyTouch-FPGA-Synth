@@ -47,3 +47,26 @@ D:\Gowin_V1.9.11.03_Education_x64_win\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\b
 ## 基线说明
 
 本工作树 `PolyTouch-FPGA-Synth-integration` 是主检出的第二个 worktree，分支 `codex/s4-s6-integration`（起自 `codex/s3-i2s-tx@17aff2d`）。S3 线原有的构建产物目录（`source/impl/`、`build/gowin_poly/`）已被其 `.gitignore` 排除；本增量把新项目目录 `build/gowin_s4s6_harness/` 也加入同样的排除，报告文本另存 `reports/` 入库。
+## 第二增量：S4/S5/S6 接进顶层（2026-10-15）
+
+**做了什么**。新增 `rtl/audio/poly_voice_s6.v`：双波表声部（32 位相位累加 + `wavetable_osc_dual_s6` + ADSR + 力度缩放），不改动已验证的 `poly_voice`。`rtl/top.v` 增加 MCP3208 SPI 端口与 2 kHz 控制节拍，CH0/CH1 轮流采样，`pressure_bend` 取弯音比率，四个声部改用 `poly_voice_s6`（声部 0 直接用 `pressure_bend` 的输出，其余三路各一次显式加宽的 32×17 乘法），混音换成 `mixer_s6`（`VOLUME_SHIFT=1` 与旧 `mixer` 的“求和除二”一致，FIR 默认旁路），并新增 `clip_fold[3:0]` 折叠观测输出。四个既有顶层测试接入 `mcp3208_model`（CH1 保持中点 2048，比率恰为 1.0，因此原有音频期望不变）。新增 `sim/tb_top_s4s6.v`：两个通道都被轮询、弯音逐值映射（0→-512/58400、2048→0/65536、4095→+512/73530、1024→-256/61858）、压力不改变音高与增量、折叠输出不留 X。约束补上 SPI 引脚（N6/D11/A11/B11）与 `clip_fold` 草稿引脚，新增 `build/build_top_integrated.tcl`。
+
+**集成期又抓到三个问题**。其一，`adc_channel <= ~adc_channel[0]` 被上下文补成 3 位，实际得到 6/7 通道，ADC 一直在问 CH6/CH7，压力与弯音从未更新；改成显式 1 位 `adc_sel` 后两路都正确。这是本仓库第三次踩 Verilog 上下文位宽坑（S5 的相位乘法、S4 注释里的 32/48 位积、这次的通道选择），值得当作编码规范条目。其二，我用脚本编辑 `top.v` 时再次写入 UTF-8 BOM，Icarus 会跳过整个文件并报 “Unable to find the root module”，上一版记录里已提示过，说明编辑脚本必须显式禁止 BOM。其三，我的测试台生成脚本把行尾写成 `\r\r\n`，导致后续按 CRLF 锚点的补丁全部失配，已统一回 CRLF。
+
+**Gowin 结果（集成顶层，实测，非估算）**
+
+| 资源 | 用量 | 占比 |
+| --- | ---: | ---: |
+| Logic（2596 LUT + 872 ALU） | 3516 / 20736 | 17% |
+| Register | 1128 / 16173 | 7% |
+| BSRAM（全部为 pROM） | 8 / 46 | 18% |
+| DSP（17 个 MULT18X18 + 12 个 PADD18） | 18.5 / 24 | 78% |
+| I/O | 34 / 207 | 17% |
+
+时序：setup 与 hold 违例均为 0、TNS 为 0，最差 setup slack +12.575 ns，工具报告 fmax 约 40.9 MHz（约束 27 MHz）。综合日志确认四张波表都落在 BSRAM/pROM，没有退化成 LUT ROM。
+
+关键结论是 DSP 预算：4 个 S6 声部已经用掉 **78% 的 DSP**（每声部 4 次 ROM 读 + 2 次混合乘法 + 包络/力度乘法），BSRAM 8 块。要扩到 8/32 声部必须做共享——把双表读取与插值改成时分复用，并把交叉混合从“每声部”改成“两组声部求和后混合一次”（全局音色权重时数学等价），可以省掉每声部两次混合乘法。
+
+**门禁**：19 台正向测试台加 6 个参数负例全部通过，退出码 0，日志 `logs/gate-integration.log`；Gowin 报告副本在 `reports/`。一处代价需要记住：S6 振荡器每个时钟读 4 个表项，`tb_audio_capture` 这类长仿真比之前慢约一倍；把 `en` 改成“每次 sample_tick 后两个时钟的脉冲”即可把读次数降三个数量级（功能等价、未在本增量实施）。
+
+**仍未完成**：`i2s_tx` 接顶层与标准 I2S 约束（等 12.288 MHz 晶振）；显式 BSRAM/pROM 原语替换与仿真等价比对；运行时可调音色与压力路由（当前固定 25% 明亮混合，压力只进折叠观测）；共享引擎（8/32 声部）；以及全部实机验收项。
