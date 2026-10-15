@@ -1,6 +1,9 @@
 tmp/
 work/
-archive/
+# Review archives stay in the repository (deliverable + MANIFEST + checksums).
+# Third-party vendor documents do not: the MCP3204/3208 datasheet PDF stays local,
+# its SHA256 is still recorded in the archive checksums file as a comment.
+archive/**/MCP3204-3208-datasheet.pdf
 tools/.venv-gowin-mcp/
 tools/.venv-docconvert/
 tools/vendor/

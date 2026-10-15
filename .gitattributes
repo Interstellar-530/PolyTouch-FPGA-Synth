@@ -4,3 +4,8 @@
 # core.autocrlf=true checkout rewrites the tables to CRLF and the recorded
 # hashes no longer match the files on disk.
 *.hex text eol=lf
+# Review archives are checksum-recorded deliverables: their bytes must survive
+# a clone untouched, otherwise the recorded SHA-256 values (computed on the
+# CRLF working copy) no longer describe the checked-out files.  This rule must
+# stay last so it wins over the *.hex rule above for paths under archive/.
+archive/** -text

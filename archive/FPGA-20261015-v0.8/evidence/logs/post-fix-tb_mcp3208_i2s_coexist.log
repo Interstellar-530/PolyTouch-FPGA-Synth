@@ -1,0 +1,3 @@
+VCD info: dumpfile sim/tb_mcp3208_i2s_coexist.vcd opened for output.
+tb_mcp3208_i2s_coexist PASS: 40 frames, 169 ticks, 1440 SCLK half periods
+D:\NanjingUniversity\FPGA\tmp\s4-review\work\tb_mcp3208_i2s_coexist.v:139: $finish called at 3634668573 (1ps)
