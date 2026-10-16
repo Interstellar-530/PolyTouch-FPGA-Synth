@@ -13,11 +13,13 @@ param(
     [int]$Operation = 2,              # 2 = SRAM Program；这块板子不要用 4
     [string]$Programmer = '',
     [string]$Cable = '',
-    [switch]$SkipSimulation
+    [switch]$SkipSimulation,
+    [ValidateSet('debug','standard')][string]$Profile = 'debug'
 )
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+. (Join-Path $PSScriptRoot 'profile_helpers.ps1')
 
 if (-not $SkipSimulation) {
     Write-Output '=== 仿真门禁 ==='
@@ -30,15 +32,25 @@ if (-not $SkipSimulation) {
 }
 
 if (-not $FsFile) {
-    $builtFs = Join-Path $projectRoot 'impl\pnr\instrument.fs'
-    $includedFs = Join-Path (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path 'artifacts\instrument.fs'
-    if (Test-Path -LiteralPath $builtFs -PathType Leaf) {
-        $FsFile = $builtFs
-    } elseif (Test-Path -LiteralPath $includedFs -PathType Leaf) {
-        $FsFile = $includedFs
-    } else {
-        throw 'Bitstream not found. Build first or pass -FsFile.'
+    $receiptPath = Join-Path $PSScriptRoot ('receipts/' + $Profile + '.json')
+    if (-not (Test-Path -LiteralPath $receiptPath -PathType Leaf)) {
+        throw "No successful $Profile build receipt. Run build.ps1 -Profile $Profile first, or explicitly pass -FsFile."
     }
+    $receipt = Get-Content -LiteralPath $receiptPath -Raw | ConvertFrom-Json
+    $configuration = Get-BuildProfile $Profile
+    $inputs = @(Get-BuildInputs $configuration)
+    if ($receipt.Profile -ne $Profile -or $receipt.Top -ne $configuration.Top -or
+        ($receipt.Inputs | ConvertTo-Json -Compress) -ne ($inputs | ConvertTo-Json -Compress)) {
+        throw "Build inputs differ from the successful $Profile build; rebuild first."
+    }
+    $FsFile = $receipt.Bitstream
+    $bitstream = Get-Item -LiteralPath $FsFile -ErrorAction Stop
+    if ($bitstream.Length -ne $receipt.BitstreamLength -or
+        $bitstream.LastWriteTimeUtc.Ticks -ne $receipt.BitstreamModifiedUtc) {
+        throw 'Bitstream changed after the successful build; rebuild first or explicitly pass -FsFile.'
+    }
+} else {
+    Write-Warning 'Explicit -FsFile selected; confirm its audio profile and physical wiring.'
 }
 $fs = (Resolve-Path -LiteralPath $FsFile).Path
 

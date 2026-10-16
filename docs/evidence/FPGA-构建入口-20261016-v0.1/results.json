@@ -1,0 +1,67 @@
+[
+  {
+    "test": "debug-gowin-setup",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "debug-rtl-elaboration",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "standard-gowin-setup",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "standard-rtl-elaboration",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "debug-wrapper-build",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "debug-program-selection",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "standard-wrapper-build",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "standard-program-selection",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "changed-source-rejected",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "test": "failed-build-reported",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "test": "legacy-fallback-rejected",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "test": "explicit-historical-file",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "failed-simulation-gate-rejected",
+    "exit": 1,
+    "passed": true
+  }
+]
