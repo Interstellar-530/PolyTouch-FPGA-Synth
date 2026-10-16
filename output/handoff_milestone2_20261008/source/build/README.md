@@ -33,3 +33,5 @@
 旧 Tcl 入口 build_instrument.tcl、build_top_integrated.tcl、build_top_i2s_std.tcl 已转发到共用逻辑。直接调用 Tcl 不生成 PowerShell 成功记录；自动选择位流时请使用 build.ps1。
 
 本项验证在仓库根目录运行 tools/verify_build_profiles.py。它实际调用 Gowin 创建工程、加入源文件并设置封装，只替换 run 以停止在综合前，再用 Icarus 编译两档。构建与烧录选择测试使用隔离目录和模拟工具，不接触 JTAG。证据见 docs/evidence/FPGA-构建入口-20261016-v0.1。
+
+2026-10-16 实际综合修正：Gowin 将 impl 输出写到当前工作目录。公共 Tcl 现在先进入本次工程目录，并复制所需的 Verilog 头文件，再执行构建。已通过真实综合确认输出落在本次工程的 impl/gwsynthesis 下；本轮未执行 PnR。该修正包含在第三项音色控制提交中。

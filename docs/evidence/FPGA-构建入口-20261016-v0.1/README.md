@@ -22,3 +22,5 @@ tools/verify_build_profiles.py 的 13 项检查全部通过，见 results.json�
 额度从本会话实时 token_count.rate_limits 读取，应用额度接口返回 Invalid app tool request。执行中两个窗口均未触及剩余 15% 暂停阈值，结束时另存额度快照。该监控依赖当前会话最近记录，不是后台独立监控。
 
 本项临时工程在 tmp/build-profiles-verification-20261016，仿真编译目录在 tmp/pressure-verification-20261016；结束前按明确路径列出、核对后删除。保留源文件、复现脚本、测试证据及归档。下一项等待用户继续指令。
+
+后续勘误：第三项的实际综合发现，Gowin 输出目录由工作目录决定，单看 GPRJ 位置不足以证明位流位置。原公共 Tcl 的 cd root 会将综合文件写到旧 source/impl。本轮已改为独立工程工作目录，并补齐相对 include 头文件，真实综合确认了新输出位置。详情见同级 FPGA-音色控制-20261016-v0.1；历史日志保留原样。

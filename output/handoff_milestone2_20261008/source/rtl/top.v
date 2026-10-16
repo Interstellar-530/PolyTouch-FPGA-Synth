@@ -7,9 +7,9 @@
 // FIFO，再与 UART、演示事件在同一仲裁器汇合。GPIO 突发不再走 UART 的单拍入口。
 // 标准档接入 MCP3208 压力/弯音与 PCM5102A I2S；MPR121 仍为备选。
 //
-// S1 切换伴奏 A/B；S2 循环四档速度并重启曲目；S3 复位演奏逻辑。
+// S1 短按松开切伴奏，长按 600 ms 切音色；S2 速度；S3 复位演奏逻辑。
 // UART 115200 8N1：N<note>/O<note>/X 发音/松键/全部松键，M0/M1 数字静音/恢复，
-// D0 手动等待、D1 重启演示；N/O/X 也会退出演示。命令以 CR 或 LF 结束。
+// T0..T255 设音色权重；D0 手动等待、D1 重启演示；N/O/X 也会退出演示。命令以 CR 或 LF 结束。
 `include "rtl/audio/clk_params.vh"
 
 // 音频接口由编译期参数 AUDIO_IF 选择，不做运行时切钟，避免时钟毛刺与 CDC：
@@ -100,58 +100,20 @@ module top #(
     wire rst      = por | soft_rst;
 
     // ------------------------------------------------------ user keys -----
-    reg [1:0] s1_sync = 2'b11;
-    reg [1:0] s2_sync = 2'b11;
-    always @(posedge clk_audio) begin
-        s1_sync <= {s1_sync[0], key_s1};
-        s2_sync <= {s2_sync[0], key_s2};
-    end
+    wire s1_press, s2_press;
+    wire uart_timbre_valid;
+    wire [7:0] uart_timbre_value, timbre_target;
+    wire show_timbre;
+    wire [1:0] timbre_preset;
+    instrument_controls #(.CLK_HZ(AUDIO_CLK_HZ)) u_controls (
+        .clk(clk_audio), .por(por), .rst(rst), .key_s1(key_s1), .key_s2(key_s2),
+        .timbre_valid(uart_timbre_valid), .timbre_value(uart_timbre_value),
+        .s1_short(s1_press), .s2_press(s2_press), .timbre_target(timbre_target),
+        .show_timbre(show_timbre), .preset(timbre_preset)
+    );
 
-    wire s1_pressed = ~s1_sync[1];
-    wire s2_pressed = ~s2_sync[1];
-
-    localparam [19:0] DEBOUNCE_MAX = 20'hFFFFF;   // about 38.8 ms at 27 MHz
-
-    reg [19:0] db1_cnt, db2_cnt;
-    reg        s1_stable, s2_stable;
-
-    always @(posedge clk_audio) begin
-        if (rst) begin
-            db1_cnt   <= 20'd0;
-            db2_cnt   <= 20'd0;
-            s1_stable <= 1'b0;
-            s2_stable <= 1'b0;
-        end else begin
-            if (!s1_pressed) begin
-                db1_cnt   <= 20'd0;
-                s1_stable <= 1'b0;
-            end else if (db1_cnt == DEBOUNCE_MAX) begin
-                s1_stable <= 1'b1;
-            end else begin
-                db1_cnt <= db1_cnt + 1'b1;
-            end
-
-            if (!s2_pressed) begin
-                db2_cnt   <= 20'd0;
-                s2_stable <= 1'b0;
-            end else if (db2_cnt == DEBOUNCE_MAX) begin
-                s2_stable <= 1'b1;
-            end else begin
-                db2_cnt <= db2_cnt + 1'b1;
-            end
-        end
-    end
-
-    reg s1_stable_d, s2_stable_d;
-    always @(posedge clk_audio) begin
-        s1_stable_d <= s1_stable;
-        s2_stable_d <= s2_stable;
-    end
-
-    wire s1_press = s1_stable & ~s1_stable_d;
-    wire s2_press = s2_stable & ~s2_stable_d;
-
-    // S1/S2 按下防抖约 38.8 ms，随后只产生一次 press；松开立即清除稳定态。
+    // S1 short press commits on debounced release; long press selects timbre.
+    // Both profiles debounce for 20 ms; S2 press still selects tempo immediately.
     // 档位索引 0..3 对应每个曲目时间单位的 1..4 倍时长，并非逐档翻倍。
     // 本组寄存器仅用 por 复位：S3 保留和弦集和速度档，rst 会重启演奏逻辑。
     reg chord_set;
@@ -335,7 +297,8 @@ module top #(
         .panic    (uart_panic),
         .muted    (uart_muted),
         .demo_on  (uart_demo_on),
-        .demo_off (uart_demo_off)
+        .demo_off (uart_demo_off),
+        .timbre_valid (uart_timbre_valid), .timbre_value (uart_timbre_value)
     );
 
     // 模式切换、X 或演示重启先清 FIFO 并撤销旧声部 gate，走正常 Release。
@@ -459,8 +422,7 @@ module top #(
     wire [31:0] bend_inc1 = bend_mul1 >> 16;
     wire [31:0] bend_inc2 = bend_mul2 >> 16;
     wire [31:0] bend_inc3 = bend_mul3 >> 16;
-    // 本增量固定 25% 明亮混合；运行时可调的切换留给后续命令通道。
-    localparam [7:0] TIMBRE_WEIGHT = 8'h40;
+    // 音色目标由 S1/串口设置，global_crossfade 在帧边界平滑更新。
 
     // [S6 共享引擎] 包络留在顶层（每声部一个 adsr），振荡/插值/混合交给共享引擎
     // 时分复用：整机 2 个 pROM、一组共享乘法器、交叉混合全局一次。
@@ -516,10 +478,10 @@ module top #(
         .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
-        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP)
+        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
-        .mix_weight (TIMBRE_WEIGHT),
+        .mix_weight (timbre_target),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
         .pressure_enable (!demo_mode), .pressure_level (pressure_level)
@@ -606,7 +568,7 @@ module top #(
     // loop directly.  N14 shows the chord set, L14/L16 the tempo preset.
     assign led       = uart_muted ? 1'b0 : ~loop_blink;
     assign led_chord = ~chord_set;
-    assign led_t0    = ~tempo_sel[0];
-    assign led_t1    = ~tempo_sel[1];
+    assign led_t0    = ~(show_timbre ? timbre_preset[0] : tempo_sel[0]);
+    assign led_t1    = ~(show_timbre ? timbre_preset[1] : tempo_sel[1]);
 
 endmodule

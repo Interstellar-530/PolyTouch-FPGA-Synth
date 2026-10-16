@@ -1,4 +1,4 @@
-﻿<#
+<#
     RTL 仿真门禁。
     [S3-AI | deepseek | 2026-10-14] S3 台与参数负例。
     [S3-REVIEW | Codex | 2026-10-14] 六个负例、原始诊断、ASCII路径及本次指标绑定。
@@ -232,6 +232,15 @@ try {
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v', 'sim\i2s_rx_model.v') }
     )
+
+    # Shared board controls are required by every bench containing rtl/top.v.
+    foreach ($entry in $suite) {
+        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += 'rtl\audio\instrument_controls.v' }
+    }
+    $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName)
+    foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top')) {
+        $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v')) }
+    }
 
     $failed = 0
     foreach ($test in $suite) {

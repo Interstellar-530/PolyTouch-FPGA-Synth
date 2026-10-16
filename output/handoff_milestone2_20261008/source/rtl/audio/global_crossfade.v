@@ -1,6 +1,6 @@
 // 全局交叉混合：把两条分量和（19 位）按 (255-w, w) >> 8 混合一次，
 // 再做与 mixer_s6 相同的“除以 2”、16 位饱和与主增益边界削波统计。
-// 与逐声部版相比，混合乘法从每声部 2 次降为整机 2 次；
+// 混合使用整机一个 18x9 可变乘法，高位用移位修正；
 // 舍入只发生一次而不是每声部一次，偏差界见集成复核记录。
 //
 // 削波统计沿用 S6 的定义：主增益边界上，本帧（混合/除二及可选压力增益后）的取值
@@ -14,7 +14,9 @@ module global_crossfade #(
     parameter integer PRESSURE_ADC_LOW = 128,
     parameter integer PRESSURE_ADC_FULL = 3200,
     parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
-    parameter integer PRESSURE_GAIN_STEP = 32
+    parameter integer PRESSURE_GAIN_STEP = 32,
+    parameter integer TIMBRE_SLEW_ENABLE = 0,
+    parameter [7:0] TIMBRE_RESET_WEIGHT = 64
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -31,9 +33,43 @@ module global_crossfade #(
     input  wire               pressure_enable,
     input  wire [11:0]        pressure_level
 );
-    wire signed [26:0] sine_prod = $signed(sine_sum) * $signed({19'd0, (8'hff - mix_weight)});
-    wire signed [26:0] bright_prod = $signed(bright_sum) * $signed({19'd0, mix_weight});
-    wire signed [26:0] blend = (sine_prod + bright_prod + 27'sd127) >>> 8;
+    reg [7:0] weight_state;
+    wire [7:0] weight_next = (mix_weight > weight_state) ? weight_state+8'd1 :
+                            (mix_weight < weight_state) ? weight_state-8'd1 : weight_state;
+    wire [7:0] active_weight = TIMBRE_SLEW_ENABLE ? weight_next : mix_weight;
+    always @(posedge clk) begin
+        if(rst) weight_state<=TIMBRE_RESET_WEIGHT;
+        else if(update) weight_state<=active_weight;
+    end
+    // Exact identity: A*(255-w)+B*w = (A<<8)-A+(B-A)*w.
+    // One variable multiply instead of two. The difference needs 20 signed
+    // bits, and its product 28; opposite full-scale inputs must not overflow.
+    wire signed [19:0] difference = $signed({bright_sum[18],bright_sum}) -
+                                   $signed({sine_sum[18],sine_sum});
+    // Recenter the low 18 bits as signed. The remaining coefficient is only
+    // -2..2, so its product is a mux/shift, leaving one true 18x9 multiply.
+    wire signed [17:0] difference_low = difference[17:0];
+    wire signed [2:0] difference_high = $signed({difference[19],difference[19:18]}) +
+                                         $signed({2'b0,difference[17]});
+    wire signed [26:0] low_product = difference_low * $signed({1'b0,active_weight});
+    wire signed [10:0] weight_wide = $signed({3'b0,active_weight});
+    reg signed [10:0] high_product;
+    always @* begin
+        case(difference_high)
+            -3'sd2: high_product=-(weight_wide <<< 1);
+            -3'sd1: high_product=-weight_wide;
+             3'sd1: high_product=weight_wide;
+             3'sd2: high_product=weight_wide <<< 1;
+            default: high_product=0;
+        endcase
+    end
+    wire signed [27:0] high_shifted = $signed({{17{high_product[10]}},high_product}) <<< 18;
+    wire signed [27:0] delta_product = $signed({low_product[26],low_product}) + high_shifted;
+    wire signed [27:0] sine_wide = {{9{sine_sum[18]}},sine_sum};
+    wire signed [27:0] base_product = (sine_wide <<< 8) - sine_wide;
+    wire signed [28:0] numerator = $signed({base_product[27],base_product}) +
+                                  $signed({delta_product[27],delta_product}) + 29'sd127;
+    wire signed [26:0] blend = numerator >>> 8;
     wire signed [27:0] scaled = blend >>> 1;              // 与 mixer_s6 的 VOLUME_SHIFT=1 一致
     wire signed [27:0] after_pressure;
     generate

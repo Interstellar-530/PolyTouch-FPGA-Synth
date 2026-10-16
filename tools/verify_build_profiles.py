@@ -3,7 +3,7 @@
 Does not synthesize, route, run the full simulation gate, or touch hardware.
 """
 from pathlib import Path
-import argparse, json, os, shutil, subprocess, sys
+import argparse, json, os, shutil, subprocess, sys, time
 
 
 def main():
@@ -11,11 +11,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gw-sh', default=r'E:\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\bin\gw_sh.exe')
     parser.add_argument('--iverilog', default=r'C:\iverilog\bin\iverilog.exe')
+    parser.add_argument('--out', type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     source = root/'output/handoff_milestone2_20261008/source'
-    work = root/'tmp/build-profiles-verification-20261016'
-    out = root/'docs/evidence/FPGA-构建入口-20261016-v0.1'
+    work = root/'tmp/build-profiles-verification-20261016'/str(time.time_ns())
+    out = args.out or root/'docs/evidence/FPGA-构建入口-20261016-v0.1'
     work.mkdir(parents=True, exist_ok=True)
     out.mkdir(parents=True, exist_ok=True)
     rows = []

@@ -1,0 +1,3 @@
+METRIC pressure_gain adc_codes=4096 gain_floor=1024 gain_max=4096 slew=32/frame full_span_frames=96
+PASS tb_pressure_gain: 4797 frames, signed reference, calibration, slew, both bypasses and pre-saturation VCA
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_pressure_gain.v:94: $finish called at 96070000 (1ps)

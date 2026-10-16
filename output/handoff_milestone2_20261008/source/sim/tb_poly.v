@@ -92,7 +92,7 @@ module tb_poly;
         key_s1 = 1'b0;
         #(DEBOUNCE_HOLD);
         key_s1 = 1'b1;
-        #1000000;
+        #25000000; // S1 short press commits after 20 ms release debounce.
         check_equal("S1 selected chord set B", led_chord, 1'b0);
 
         // S2 从 index 1 到 index 2（3x），tempo_sel=10；bit0 灯灭、bit1 灯亮。

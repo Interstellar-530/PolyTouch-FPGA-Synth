@@ -28,5 +28,12 @@ add_file [file join $root constraints $cst]
 add_file [file join $root constraints $sdc]
 set_option -top_module $top_module
 set_option -output_base_name instrument
-cd $root
+# Gowin writes impl/ relative to cwd, even when the GPRJ lives elsewhere.
+# Keep outputs inside this run and provide the relative include headers.
+set project_work [file join $run_dir instrument]
+file mkdir [file join $project_work rtl audio]
+foreach header [glob -directory [file join $root rtl audio] *.vh] {
+    file copy -force $header [file join $project_work rtl audio [file tail $header]]
+}
+cd $project_work
 run all

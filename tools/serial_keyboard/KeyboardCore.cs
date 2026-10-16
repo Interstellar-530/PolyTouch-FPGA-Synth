@@ -40,10 +40,12 @@ namespace PolyTouchPc
     {
         private readonly Queue<string> queue = new Queue<string>();
         private readonly object gate = new object();
+        private string pendingTimbre;
         public void Add(string command)
         {
             lock (gate)
             {
+                if (command.StartsWith("T")) { pendingTimbre = command; return; }
                 if (queue.Count >= 128) throw new InvalidOperationException("串口发送积压，请停止演奏并重新连接。");
                 queue.Enqueue(command);
             }
@@ -52,6 +54,7 @@ namespace PolyTouchPc
         {
             lock (gate)
             {
+                pendingTimbre = null;
                 queue.Clear(); // discard stale Note Ons before all-notes-off
                 queue.Enqueue("X");
                 if (next != null) queue.Enqueue(next);
@@ -61,7 +64,7 @@ namespace PolyTouchPc
         {
             lock (gate)
             {
-                if (queue.Count == 0) { command = null; return false; }
+                if (queue.Count == 0) { command = pendingTimbre; pendingTimbre = null; return command != null; }
                 command = queue.Dequeue(); return true;
             }
         }
@@ -97,8 +100,10 @@ namespace PolyTouchPc
         }
         public void Send(string command)
         {
-            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01])$"))
+            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3})$"))
                 throw new ArgumentException("不支持的命令。");
+            if (command.StartsWith("T") && Int32.Parse(command.Substring(1)) > 255)
+                throw new ArgumentException("音色权重必须为 0 到 255。");
             if (!connected || stopAfterDrain) throw new InvalidOperationException("串口尚未连接。");
             commands.Add(command); wake.Set();
         }
@@ -123,7 +128,7 @@ namespace PolyTouchPc
                     port.Write(command + "\r");
                     string reply = port.ReadLine().Trim();
                     if (reply != "OK")
-                        throw new InvalidOperationException(command + " 收到 " + reply + "；D0/D1 需要模式修复版固件。");
+                        throw new InvalidOperationException(command + " 收到 " + reply + "；请确认固件支持该命令，音色 T 命令需要本次版本。");
                     Report(command + " -> OK");
                 }
             }
@@ -171,6 +176,11 @@ namespace PolyTouchPc
             Check(q.Take(out item) && item == "X", "panic did not clear stale Note Ons");
             Check(q.Take(out item) && item == "D1", "mode did not follow panic");
             Check(!q.Take(out item), "stale queue entries survived panic");
+            q.Add("T0"); q.Add("T64"); q.Add("N60"); q.Add("T255");
+            Check(q.Take(out item) && item == "N60", "timbre delayed note event");
+            Check(q.Take(out item) && item == "T255" && !q.Take(out item), "timbre coalescing failed");
+            q.Add("T160"); q.Panic(null);
+            Check(q.Take(out item) && item == "X" && !q.Take(out item), "panic retained stale timbre");
             Console.WriteLine("PASS keyboard: press/release, repeat, chord, octave and panic queue");
         }
         public static void Smoke(string port)

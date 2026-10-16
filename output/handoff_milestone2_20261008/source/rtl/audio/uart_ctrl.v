@@ -7,6 +7,7 @@
 //   X：无数字参数，全部松键（top 撤销 gate，包络正常释音）。
 //   M0 / M1：恰好 1 位参数，数字静音/恢复；不停止曲目或切换演奏模式。
 //   D0 / D1：恰好 1 位参数，手动等待/重启演示；N/O/X 的模式切换由 top 完成。
+//   T<weight>：1..3 位十进制，范围 0..255；改变音色，不改变模式或音符。
 // 每个有效命令排队回复 "OK\r\n"，格式错误回复 "ERR\r\n"；CRLF 不重复执行。
 module uart_ctrl #(
     parameter integer CLK_HZ      = 27000000,
@@ -24,7 +25,9 @@ module uart_ctrl #(
     output reg        panic,         // one clock pulse, all notes off
     output reg        muted,
     output reg        demo_on,
-    output reg        demo_off
+    output reg        demo_off,
+    output reg        timbre_valid,
+    output reg [7:0]  timbre_value
 );
 
     // 整数四舍五入分频，默认 234 个 clk/位；RX 先在半位确认起始位，再逐位采样。
@@ -103,10 +106,10 @@ module uart_ctrl #(
     end
 
     // ------------------------------------------------------------- parse ---
-    localparam [1:0] CMD_NONE = 2'd0, CMD_NOTE = 2'd1,
-                     CMD_MUTE = 2'd2, CMD_DEMO = 2'd3;
+    localparam [2:0] CMD_NONE = 3'd0, CMD_NOTE = 3'd1,
+                     CMD_MUTE = 3'd2, CMD_DEMO = 3'd3, CMD_TIMBRE = 3'd4;
 
-    reg [1:0]  cmd;
+    reg [2:0]  cmd;
     reg [11:0] note_acc;
     reg [2:0]  digit_cnt; // 到 4 饱和：第 4 位即令行结束检查失败，避免超长数回绕
     reg        have_digit;
@@ -133,6 +136,8 @@ module uart_ctrl #(
             muted      <= 1'b0;
             demo_on    <= 1'b0;
             demo_off   <= 1'b0;
+            timbre_valid <= 1'b0;
+            timbre_value <= 8'd64;
             reply_ok   <= 1'b0;
             reply_err  <= 1'b0;
         end else begin
@@ -141,6 +146,7 @@ module uart_ctrl #(
             panic     <= 1'b0;
             demo_on   <= 1'b0;
             demo_off  <= 1'b0;
+            timbre_valid <= 1'b0;
             reply_ok  <= 1'b0;
             reply_err <= 1'b0;
 
@@ -162,6 +168,11 @@ module uart_ctrl #(
                                  (digit_cnt == 3'd1) && (note_acc <= 12'd1)) begin
                         demo_on  <= (note_acc == 12'd1);
                         demo_off <= (note_acc == 12'd0);
+                        reply_ok <= 1'b1;
+                    end else if (!invalid && (cmd == CMD_TIMBRE) && have_digit &&
+                                 (digit_cnt <= 3'd3) && (note_acc <= 12'd255)) begin
+                        timbre_value <= note_acc[7:0];
+                        timbre_valid <= 1'b1;
                         reply_ok <= 1'b1;
                     end else if (!invalid && have_panic && (cmd == CMD_NONE)) begin
                         panic    <= 1'b1;
@@ -205,6 +216,10 @@ module uart_ctrl #(
                     have_digit <= 1'b0;
                     note_acc   <= 12'd0;
                     digit_cnt  <= 3'd0;
+                end else if ((rx_byte == "T") || (rx_byte == "t")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
+                    cmd <= CMD_TIMBRE;
+                    have_digit <= 1'b0; note_acc <= 12'd0; digit_cnt <= 3'd0;
                 end else if ((rx_byte >= "0") && (rx_byte <= "9")) begin
                     if (cmd != CMD_NONE) begin
                         if (digit_cnt < 3'd3)

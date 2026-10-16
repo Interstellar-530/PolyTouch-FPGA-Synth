@@ -27,8 +27,8 @@ namespace PolyTouchPc
         {
             logPath = logFile;
             Text = "PolyTouch 电脑演奏";
-            ClientSize = new Size(880, 440);
-            MinimumSize = new Size(896, 479);
+            ClientSize = new Size(880, 510);
+            MinimumSize = new Size(896, 549);
             Font = new Font("Microsoft YaHei UI", 10);
             BackColor = Color.FromArgb(245, 247, 250);
             KeyPreview = true; ImeMode = ImeMode.Disable;
@@ -64,7 +64,37 @@ namespace PolyTouchPc
                 tile.Click += delegate { ActiveControl = manualButton; manualButton.Focus(); };
                 tiles.Add(key, tile); Controls.Add(tile);
             }
-            history.SetBounds(20, 274, 840, 144); history.Multiline = true;
+            Label timbreLabel = new Label(); timbreLabel.SetBounds(20, 270, 840, 24);
+            timbreLabel.Text = "音色目标 64 · 板载 S1 长按也可切换，主机不读取板上当前值";
+            Controls.Add(timbreLabel);
+            TrackBar timbre = new TrackBar(); timbre.SetBounds(20, 298, 540, 40);
+            timbre.Minimum = 0; timbre.Maximum = 255; timbre.TickFrequency = 32; timbre.Value = 64;
+            timbre.TabStop = false; Controls.Add(timbre);
+            // Limit host traffic, keep only the latest slider target, and leave
+            // ordinary note events ahead of pending timbre in the transport.
+            bool timbreDirty = false;
+            System.Windows.Forms.Timer timbreTimer = new System.Windows.Forms.Timer();
+            timbreTimer.Interval = 40;
+            timbre.ValueChanged += delegate {
+                timbreLabel.Text = "音色目标 " + timbre.Value + " · 0 正弦 / 64 柔和 / 160 明亮 / 255 亮波表";
+                timbreDirty = true;
+            };
+            timbreTimer.Tick += delegate {
+                if (timbreDirty && transport != null && transport.Connected) {
+                    timbreDirty = false; Send("T" + timbre.Value);
+                }
+            };
+            timbreTimer.Start();
+            FormClosed += delegate { timbreTimer.Stop(); timbreTimer.Dispose(); };
+            int[] presetValues = {0, 64, 160, 255};
+            for (int pi = 0; pi < presetValues.Length; pi++) {
+                int target = presetValues[pi];
+                Button preset = new Button(); preset.SetBounds(570 + pi * 73, 298, 68, 32);
+                preset.Text = target.ToString(); preset.TabStop = false;
+                preset.Click += delegate { timbre.Value = target; timbreDirty = true; ActiveControl = manualButton; };
+                Controls.Add(preset);
+            }
+            history.SetBounds(20, 350, 840, 144); history.Multiline = true;
             history.ReadOnly = true; history.ScrollBars = ScrollBars.Vertical;
             history.TabStop = false; Controls.Add(history);
             Shown += delegate
