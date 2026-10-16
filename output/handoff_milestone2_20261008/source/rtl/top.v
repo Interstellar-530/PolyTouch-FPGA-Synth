@@ -5,7 +5,7 @@
 // 演示事件经过 FIFO；UART 音符绕过 FIFO，由下方仲裁逻辑直接交给声部分配器。
 // [S2-AI 新增] 12 路 GPIO 琴键经 gpio_keyboard 同步/消抖后进入独立的手动事件
 // FIFO，再与 UART、演示事件在同一仲裁器汇合。GPIO 突发不再走 UART 的单拍入口。
-// 本版仍未接入 MPR121、压力 ADC 或外置 PCM5102A 标准 I2S。
+// 标准档接入 MCP3208 压力/弯音与 PCM5102A I2S；MPR121 仍为备选。
 //
 // S1 切换伴奏 A/B；S2 循环四档速度并重启曲目；S3 复位演奏逻辑。
 // UART 115200 8N1：N<note>/O<note>/X 发音/松键/全部松键，M0/M1 数字静音/恢复，
@@ -25,7 +25,14 @@ module top #(
     parameter integer I2S_DATA_BITS = 24,                     // AUDIO_IF=1 时每声道槽宽
     // 曲目单位时长：调试档 9766 采样 @46.875 kHz = 208.34 ms；48 kHz 档按同一时长
     // 换算得 10000.4，取 10000（208.33 ms，偏差 0.004%）。
-    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 0) ? 9766 : 10000
+    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 0) ? 9766 : 10000,
+    // FSR controls one global VCA. Standard profile enabled, legacy PT8211
+    // profile bypassed. These are provisional ADC calibration values, not N.
+    parameter integer PRESSURE_ENABLE = (AUDIO_IF == 1),
+    parameter integer PRESSURE_ADC_LOW = 128,
+    parameter integer PRESSURE_ADC_FULL = 3200,
+    parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
+    parameter integer PRESSURE_GAIN_STEP = 32
 ) (
     input  wire clk_27m,     // H11，板载 27 MHz；AUDIO_IF=1 时不使用
     input  wire clk_12m288,  // T7（J14-10，GCLKT_3），外置 3.3 V CMOS 12.288 MHz 有源晶振
@@ -505,11 +512,17 @@ module top #(
     wire [31:0] xf_clip_count;
     wire        xf_clip_event;
 
-    global_crossfade #(.CLIP_COUNTER_WIDTH(32)) u_xf (
+    global_crossfade #(
+        .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
+        .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
+        .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
+        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP)
+    ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (TIMBRE_WEIGHT),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
-        .clip_count (xf_clip_count), .clip_event (xf_clip_event)
+        .clip_count (xf_clip_count), .clip_event (xf_clip_event),
+        .pressure_enable (!demo_mode), .pressure_level (pressure_level)
     );
 
     // ------------------------------------------------------------ mixer ---

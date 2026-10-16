@@ -216,6 +216,23 @@ try {
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v') }
     )
 
+    # FSR gain is part of the product; these self-checking benches are also run
+    # when the full programming gate is used in a later hardware session.
+    $suite += @(
+        @{ Name = 'tb_pressure_gain'; Top = 'sim\tb_pressure_gain.v'; Src = @(
+                'rtl\audio\global_crossfade.v') },
+        @{ Name = 'tb_pressure_top'; Top = 'sim\tb_pressure_top.v'; Src = @(
+                'rtl\top.v', 'rtl\audio\adsr.v', 'rtl\audio\note_phase_inc.v',
+                'rtl\audio\event_fifo.v', 'rtl\audio\voice_alloc.v',
+                'rtl\audio\song_player.v', 'rtl\audio\pt8211_tx.v',
+                'rtl\audio\uart_ctrl.v', 'rtl\audio\gpio_keyboard.v',
+                'rtl\audio\mcp3208_spi.v', 'rtl\audio\pressure_bend.v',
+                'rtl\audio\shared_wavetable_engine.v', 'rtl\audio\global_crossfade.v',
+                'rtl\audio\i2s_tx.v', 'rtl\audio\gowin_prom_wave_sine.v',
+                'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
+                'sim\mcp3208_model.v', 'sim\i2s_rx_model.v') }
+    )
+
     $failed = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
