@@ -10,7 +10,8 @@
 //
 // bend_q8 is signed semitones in Q8: -512 .. +512 means -2 .. +2 semitones.
 // bend_ratio_q16 is a piecewise-linear interpolation between the five semitone
-// anchors at -2,-1,0,+1,+2 (within 0.8 cent of 2^(n/12), see the table below).
+// anchors at -2,-1,0,+1,+2 (anchor error <0.8 cent; interpolation and ADC
+// quantization add error between anchors, measured separately by the audit).
 // phase_inc_out = base_phase_inc * ratio.
 module pressure_bend #(
     parameter [11:0] ADC_CENTER = 12'd2048
@@ -51,7 +52,7 @@ module pressure_bend #(
     // +/-2 semitone endpoints correct if the midpoint is ever changed, and the
     // guards keep an out-of-range parameter from dividing by zero.  Both are
     // elaboration time constants: 2048 is a shift and only the 2047 side
-    // below needs a real divider.
+    // is simplified exactly by the default-center generate branch below.
     localparam [11:0] ADC_FULL = 12'hFFF;
     localparam integer BEND_POS_DEN = (ADC_FULL > ADC_CENTER) ? (ADC_FULL - ADC_CENTER) : 1;
     localparam integer BEND_NEG_DEN = (ADC_CENTER > 0) ? ADC_CENTER : 1;
@@ -62,8 +63,18 @@ module pressure_bend #(
         ({20'd0, bend_adc} - {20'd0, ADC_CENTER}) * 32'd512;
     wire [31:0] bend_neg_num =
         ({20'd0, ADC_CENTER} - {20'd0, bend_adc}) * 32'd512;
-    wire [31:0] bend_pos_q8 = bend_pos_num / BEND_POS_DEN;
-    wire [31:0] bend_neg_q8 = bend_neg_num / BEND_NEG_DEN;
+    wire [31:0] bend_pos_q8, bend_neg_q8;
+    generate if(ADC_CENTER==12'd2048) begin : g_exact_default
+        // For d=0..2047, floor(512*d/2047)=d>>2 except d=2047.
+        // The negative denominator is 2048, an exact shift. No divider needed.
+        wire [11:0] positive_delta=bend_adc-12'd2048;
+        wire [11:0] negative_delta=12'd2048-bend_adc;
+        assign bend_pos_q8=(positive_delta==2047)?32'd512:{22'd0,positive_delta[11:2]};
+        assign bend_neg_q8={22'd0,negative_delta[11:2]};
+    end else begin : g_calibrated_center
+        assign bend_pos_q8=bend_pos_num/BEND_POS_DEN;
+        assign bend_neg_q8=bend_neg_num/BEND_NEG_DEN;
+    end endgenerate
     wire signed [15:0] bend_mapped =
         (bend_adc >= ADC_CENTER) ? $signed(bend_pos_q8[15:0]) :
                                      -$signed(bend_neg_q8[15:0]);
@@ -119,6 +130,7 @@ module pressure_bend #(
     reg [16:0] ratio_b;
     reg [31:0] ratio_delta_frac;
     reg [16:0] ratio_interp;
+    wire [31:0] ratio_frac_wide={24'd0,ratio_frac};
 
     always @* begin
         // bend_q8 is bounded to [-512,+512], therefore bend_u is 0..1024.
@@ -132,7 +144,15 @@ module pressure_bend #(
         end
         ratio_a = ratio_at(ratio_seg);
         ratio_b = ratio_at(ratio_seg + 3'd1);
-        ratio_delta_frac = (ratio_b - ratio_a) * ratio_frac;
+        // Exact signed-digit forms of the four fixed anchor differences.
+        // Keep this control-rate interpolation out of the audio DSP block.
+        case(ratio_seg)
+            0:ratio_delta_frac=(ratio_frac_wide<<12)-(ratio_frac_wide<<9)-(ratio_frac_wide<<7)+(ratio_frac_wide<<1);
+            1:ratio_delta_frac=(ratio_frac_wide<<12)-(ratio_frac_wide<<9)+(ratio_frac_wide<<7)-(ratio_frac_wide<<5)-(ratio_frac_wide<<1);
+            2:ratio_delta_frac=(ratio_frac_wide<<12)-(ratio_frac_wide<<8)+(ratio_frac_wide<<5)-(ratio_frac_wide<<3)+(ratio_frac_wide<<1);
+            3:ratio_delta_frac=(ratio_frac_wide<<12)+(ratio_frac_wide<<5);
+            default:ratio_delta_frac=0;
+        endcase
         ratio_interp = ratio_a + (ratio_delta_frac >> 8);
     end
 

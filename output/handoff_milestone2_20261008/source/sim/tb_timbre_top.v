@@ -4,7 +4,7 @@ module tb_timbre_top;
     reg key_rst=0,k1=1,rx=1;
     wire cs,sck,mosi,miso,bck,lrck,din;
     wire [23:0] left,right;wire frame_valid;
-    integer frames=0,audible=0,checked=0;
+    integer frames=0,audible=0,checked=0,frame_cycle=0,product_requests=0;
     reg monitor=0;
     reg [31:0] e0,e1,e2,e3;
     time start_time,sweep_ns;
@@ -24,17 +24,26 @@ module tb_timbre_top;
         if(^left===1'bx)$fatal(1,"unknown decoded audio");
         if(left!=0)audible=audible+1;
     end
-    always @(posedge clk) if(monitor) begin
-        e0=dut.u_engine.phase0;e1=dut.u_engine.phase1;e2=dut.u_engine.phase2;e3=dut.u_engine.phase3;
-        if(dut.sample_tick)begin
-            e0=e0+dut.bend_inc0;e1=e1+dut.bend_inc1;e2=e2+dut.bend_inc2;e3=e3+dut.bend_inc3;
-        end
+    always @(posedge clk) begin
+      if(dut.sample_tick)begin frame_cycle=0;product_requests=0;end
+      else frame_cycle=frame_cycle+1;
+      if(dut.engine_mult_req || dut.xf_mult_req)product_requests=product_requests+1;
+      if(monitor) begin
         if(dut.v_retrig || dut.v_gate!==4'b1111 || dut.restart || dut.demo_mode)
             $fatal(1,"timbre disturbed held chord/mode");
-        #1;
-        if(dut.u_engine.phase0!==e0 || dut.u_engine.phase1!==e1 || dut.u_engine.phase2!==e2 || dut.u_engine.phase3!==e3)
-            $fatal(1,"phase discontinuity");
-        checked=checked+1;
+        if(dut.sample_tick)begin
+            e0=dut.u_engine.phase0+dut.bend_inc0;e1=dut.u_engine.phase1+dut.bend_inc1;
+            e2=dut.u_engine.phase2+dut.bend_inc2;e3=dut.u_engine.phase3+dut.bend_inc3;
+        end
+        if(dut.sums_valid) begin
+            #1;
+            if(dut.u_engine.phase0!==e0 || dut.u_engine.phase1!==e1 || dut.u_engine.phase2!==e2 || dut.u_engine.phase3!==e3)
+                $fatal(1,"frame phase discontinuity");
+            checked=checked+1;
+        end
+        if(dut.u_xf.result_valid && (frame_cycle!=81 || product_requests!=34))
+            $fatal(1,"frame deadline/products %d %d",frame_cycle,product_requests);
+      end
     end
     task byte_tx;input [7:0] data;integer bitno;
         begin @(negedge clk);rx=0;#8680;
@@ -49,7 +58,7 @@ module tb_timbre_top;
         byte_tx("D");byte_tx("0");byte_tx(13);#20000;
         note("6","0");note("6","4");note("6","7");note("7","1");#100000;
         if(dut.v_gate!=15)$fatal(1,"four voices not held");
-        @(negedge clk);monitor=1;
+        @(posedge dut.sample_tick);@(negedge clk);monitor=1;
         byte_tx("T");byte_tx("0");byte_tx(13);wait(dut.u_xf.weight_state==0);
         byte_tx("T");byte_tx("2");byte_tx("5");byte_tx("5");byte_tx(13);
         wait(dut.timbre_target==255);start_time=$time;
@@ -59,7 +68,7 @@ module tb_timbre_top;
         if(dut.timbre_target!=0 || dut.chord_set!=0 || dut.tempo_sel!=1)$fatal(1,"long press changed other controls");
         #6000000;if(dut.show_timbre)$fatal(1,"top LED overlay stuck");
         if(frames<500 || audible<200)$fatal(1,"insufficient real I2S audio");
-        $display("METRIC top_timbre frames=%0d audible=%0d phase_checks=%0d full_sweep_ns=%0d",frames,audible,checked,sweep_ns);
+        $display("METRIC top_timbre frames=%0d audible=%0d phase_checks=%0d full_sweep_ns=%0d full_pipeline_cycles=81 shared_products=34",frames,audible,checked,sweep_ns);
         $display("PASS tb_timbre_top: real UART, four held voices, continuous phases, real I2S, long press and overlay");$finish;
     end
     initial begin #60000000;$fatal(1,"timeout");end

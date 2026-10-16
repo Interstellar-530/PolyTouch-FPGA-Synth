@@ -414,7 +414,9 @@ module top #(
     );
 
     // ----------------------------------------------------------- voices ---
-    // [S6] 双波表声部：相位增量先按弯音比率缩放（声部 0 用上面的输出，其余各一次乘法）。
+    // Reference bend increments remain observable for simulation. The audio
+    // engine uses base increments and shares its multiplier for all four;
+    // these unused reference products are removed from the hardware netlist.
     // 显式加宽再截断，避免依赖工具对乘积宽度的上下文推断（同 S5 的修正口径）。
     wire [48:0] bend_mul1 = {17'd0, inc1} * {32'd0, bend_ratio_q16};
     wire [48:0] bend_mul2 = {17'd0, inc2} * {32'd0, bend_ratio_q16};
@@ -459,10 +461,24 @@ module top #(
 
     wire signed [18:0] sine_sum, bright_sum;
     wire               sums_valid;
+    wire engine_mult_req,xf_mult_req;
+    wire signed[17:0] engine_mult_a,engine_mult_b,xf_mult_a,xf_mult_b;
+    reg signed[35:0] audio_mult_result;
+    wire signed[17:0] audio_mult_a=engine_mult_req?engine_mult_a:xf_mult_a;
+    wire signed[17:0] audio_mult_b=engine_mult_req?engine_mult_b:xf_mult_b;
+    always @(posedge clk_audio)begin
+        if(rst)audio_mult_result<=0;
+        else if(engine_mult_req || xf_mult_req) audio_mult_result<=audio_mult_a*audio_mult_b;
+    end
+`ifdef SIMULATION
+    always @(posedge clk_audio)if(!rst && engine_mult_req && xf_mult_req)$fatal(1,"audio multiplier collision");
+`endif
 
-    shared_wavetable_engine u_engine (
+    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1)) u_engine (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
-        .inc0 (bend_inc0), .inc1 (bend_inc1), .inc2 (bend_inc2), .inc3 (bend_inc3),
+        .inc0 (inc0), .inc1 (inc1), .inc2 (inc2), .inc3 (inc3),
+        .bend_ratio_q16(bend_ratio_q16),
+        .mult_request(engine_mult_req),.mult_operand_a(engine_mult_a),.mult_operand_b(engine_mult_b),.mult_result(audio_mult_result),
         .retrig0 (v_retrig[0]), .retrig1 (v_retrig[1]),
         .retrig2 (v_retrig[2]), .retrig3 (v_retrig[3]),
         .env0 (v_env0), .env1 (v_env1), .env2 (v_env2), .env3 (v_env3),
@@ -478,10 +494,11 @@ module top #(
         .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
-        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1)
+        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (timbre_target),
+        .mult_request(xf_mult_req),.mult_operand_a(xf_mult_a),.mult_operand_b(xf_mult_b),.mult_result(audio_mult_result),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
         .pressure_enable (!demo_mode), .pressure_level (pressure_level)

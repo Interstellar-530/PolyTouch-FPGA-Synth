@@ -242,6 +242,10 @@ try {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v')) }
     }
 
+    foreach ($name in @('tb_architecture_equivalence','tb_shared_bend_equivalence','tb_bend_equivalence','tb_shared_master')) {
+        $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('sim\gowin_prom_model.v','sim\reference\baseline_shared_wavetable_engine.v','sim\reference\baseline_pressure_bend.v')) }
+    }
+
     $failed = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)

@@ -1,6 +1,6 @@
 """Targeted timbre controls, UART, exact arithmetic and audio metric checks."""
 from pathlib import Path
-import csv,json,subprocess,sys,time
+import argparse,csv,json,subprocess,sys,time
 import numpy as np
 
 def main():
@@ -8,10 +8,11 @@ def main():
     root=Path(__file__).resolve().parents[1]
     source=root/'output/handoff_milestone2_20261008/source'
     work=root/'tmp/timbre-verification-20261016';work.mkdir(parents=True,exist_ok=True)
-    out=root/'docs/evidence/FPGA-音色控制-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('tests',nargs='*');args=parser.parse_args()
+    out=args.out or root/'docs/evidence/FPGA-音色控制-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
     tests=['tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top','tb_mode_uart','tb_poly','tb_pressure_top','tb_top_i2s']
     # Arguments optionally narrow the run for repairs, preserving other rows.
-    only=sys.argv[1:]
+    only=args.tests
     results=json.loads((out/'results.json').read_text()) if only and (out/'results.json').exists() else []
     sources=list((source/'rtl/audio').glob('*.v'))+[source/'rtl/top.v']
     sources += [source/'sim'/name for name in ['gowin_prom_model.v','mcp3208_model.v','i2s_rx_model.v']]

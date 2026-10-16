@@ -1,0 +1,2 @@
+PASS tb_shared_engine: 16 cases, component sums bit-exact, global crossfade within 2 LSB and clip count on the master boundary
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_shared_engine.v:199: $finish called at 14636000 (1ps)

@@ -10,7 +10,7 @@ def resource_metrics(name, report):
         b=html.unescape(re.sub('<[^>]+>','',b)).strip()
         cells.setdefault(a,b)
     row=dict(variant=name,logic=int(re.match(r'\d+',cells['Logic']).group()),registers=int(cells['Register']),
-             bsram=int(cells['BSRAM']),mult18x18=int(cells['MULT18X18']),multalu36x18=int(cells['MULTALU36X18']))
+             bsram=int(cells['BSRAM']),mult18x18=int(cells.get('MULT18X18','0')),multalu36x18=int(cells.get('MULTALU36X18','0')))
     row['dsp_macro_equivalent']=row['multalu36x18']+row['mult18x18']/2
     return row
 

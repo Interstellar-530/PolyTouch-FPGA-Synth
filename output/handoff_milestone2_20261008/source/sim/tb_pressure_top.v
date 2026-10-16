@@ -21,7 +21,7 @@ module tb_pressure_top;
     i2s_rx_model #(.DATA_BITS(24)) rx(.bck(bck),.rst(a.por),.lrck(lrck),.din(din),
       .left_word(left_word),.right_word(right_word),.frame_valid(frame_valid));
     reg [23:0] sent_current=0,sent_previous=0;
-    integer serial_frames=0,frames=0,gain_reference;
+    integer serial_frames=0,frames=0,gain_reference,weight_reference;
     reg monitor=0,held_check=0;
     reg signed [63:0] master_before,expected,code;
     reg signed [63:0] low_energy=0,high_energy=0;
@@ -40,13 +40,19 @@ module tb_pressure_top;
     always @(posedge clk)begin
       if(held_check && a.v_retrig!==0)$fatal(1,"pressure retriggered held ADSR");
       if(a.sums_valid && !a.rst)begin
-        master_before=$signed(b.u_xf.scaled);
-        #1;
+        weight_reference=a.u_xf.active_weight;
+        master_before=$signed(a.sine_sum);
+        master_before=master_before*(255-weight_reference);
+        expected=$signed(a.bright_sum);
+        master_before=(master_before+expected*weight_reference+127)>>>9;
         // The independent model uses signed integers on both operands. Mixing
         // unsigned Q12 into a signed product would make >>> a logical shift.
-        gain_reference=a.u_xf.g_pressure.gain_q12;
+        gain_reference=a.u_xf.g_pressure.gain_next;
         expected=(master_before*gain_reference)>>>12;
         if(expected>32767)expected=32767;if(expected< -32768)expected=-32768;
+      end
+      if(a.u_xf.result_valid && !a.rst)begin
+        #1;
         if(a.mixed_shared!==expected[15:0])
           $fatal(1,"top pressure sample mismatch: actual=%0d expected=%0d master=%0d gain=%0d",
                  a.mixed_shared,expected,master_before,gain_reference);

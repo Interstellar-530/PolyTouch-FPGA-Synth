@@ -16,7 +16,8 @@ module global_crossfade #(
     parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
     parameter integer PRESSURE_GAIN_STEP = 32,
     parameter integer TIMBRE_SLEW_ENABLE = 0,
-    parameter [7:0] TIMBRE_RESET_WEIGHT = 64
+    parameter [7:0] TIMBRE_RESET_WEIGHT = 64,
+    parameter integer SHARED_MULT_ENABLE = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -31,7 +32,10 @@ module global_crossfade #(
     // Ignored at elaboration when PRESSURE_GAIN_ENABLE=0. No board ports or
     // UART commands are added; pressure_level is the filtered CH0 ADC code.
     input  wire               pressure_enable,
-    input  wire [11:0]        pressure_level
+    input  wire [11:0]        pressure_level,
+    output wire mult_request,
+    output wire signed [17:0] mult_operand_a,mult_operand_b,
+    input wire signed [35:0] mult_result
 );
     reg [7:0] weight_state;
     wire [7:0] weight_next = (mix_weight > weight_state) ? weight_state+8'd1 :
@@ -51,7 +55,8 @@ module global_crossfade #(
     wire signed [17:0] difference_low = difference[17:0];
     wire signed [2:0] difference_high = $signed({difference[19],difference[19:18]}) +
                                          $signed({2'b0,difference[17]});
-    wire signed [26:0] low_product = difference_low * $signed({1'b0,active_weight});
+    wire signed [26:0] low_product = SHARED_MULT_ENABLE ? $signed(mult_result[26:0]) :
+                                         difference_low * $signed({1'b0,active_weight});
     wire signed [10:0] weight_wide = $signed({3'b0,active_weight});
     reg signed [10:0] high_product;
     always @* begin
@@ -72,6 +77,7 @@ module global_crossfade #(
     wire signed [26:0] blend = numerator >>> 8;
     wire signed [27:0] scaled = blend >>> 1;              // 与 mixer_s6 的 VOLUME_SHIFT=1 一致
     wire signed [27:0] after_pressure;
+    wire [12:0] gain_for_frame;
     generate
         if (PRESSURE_GAIN_ENABLE != 0) begin : g_pressure
             localparam integer ADC_SPAN = (PRESSURE_ADC_FULL > PRESSURE_ADC_LOW) ?
@@ -94,6 +100,7 @@ module global_crossfade #(
             wire [12:0] target_gain = pressure_enable ? calibrated_gain : 13'd4096;
             reg  [12:0] gain_q12;
             reg  [12:0] gain_next;
+            assign gain_for_frame=gain_next;
             always @* begin
                 gain_next = target_gain;
                 if ((target_gain > gain_q12) &&
@@ -127,14 +134,45 @@ module global_crossfade #(
 `endif
         end else begin : g_pressure_bypass
             assign after_pressure = scaled;
+            assign gain_for_frame=13'd4096;
         end
     endgenerate
 
     // The gain acts on the wide sample, not on an already clipped 16-bit word.
     // Statistics describe the actual post-pressure master boundary once/frame.
-    wire raw_clip = (after_pressure > 28'sd32767) || (after_pressure < -28'sd32768);
-    wire signed [15:0] sat = (after_pressure > 28'sd32767) ? 16'sd32767 :
-                             (after_pressure < -28'sd32768) ? -16'sd32768 : after_pressure[15:0];
+    reg [2:0] shared_stage;
+    reg signed [28:0] shared_base;
+    reg [12:0] shared_gain;
+    reg signed [17:0] shared_a,shared_b;
+    wire signed [28:0] shared_numerator=shared_base+$signed({{2{mult_result[26]}},mult_result[26:0]});
+    assign mult_request=SHARED_MULT_ENABLE && (shared_stage==1 || shared_stage==3);
+    assign mult_operand_a=shared_a;
+    assign mult_operand_b=shared_b;
+    always @(posedge clk) begin
+        if(rst)begin shared_stage<=0;shared_base<=0;shared_gain<=4096;shared_a<=0;shared_b<=0;end
+        else if(SHARED_MULT_ENABLE)begin
+            case(shared_stage)
+                0:if(update)begin
+                    shared_base<=$signed({base_product[27],base_product})+$signed({high_shifted[27],high_shifted})+29'sd127;
+                    shared_gain<=gain_for_frame;
+                    shared_a<=difference_low;shared_b<=$signed({10'd0,active_weight});shared_stage<=1;
+                end
+                1:shared_stage<=2;
+                2:begin
+                    shared_a<=shared_numerator>>>9;
+                    shared_b<=$signed({5'd0,shared_gain});shared_stage<=3;
+                end
+                3:shared_stage<=4;
+                4:shared_stage<=0;
+                default:shared_stage<=0;
+            endcase
+        end
+    end
+    wire result_valid=SHARED_MULT_ENABLE?(shared_stage==4):update;
+    wire signed [27:0] output_value=SHARED_MULT_ENABLE?($signed(mult_result)>>>12):after_pressure;
+    wire raw_clip = (output_value > 28'sd32767) || (output_value < -28'sd32768);
+    wire signed [15:0] sat = (output_value > 28'sd32767) ? 16'sd32767 :
+                             (output_value < -28'sd32768) ? -16'sd32768 : output_value[15:0];
 
     always @(posedge clk) begin
         if (rst) begin
@@ -145,7 +183,7 @@ module global_crossfade #(
             clip_event <= 1'b0;
             if (clear_clip)
                 clip_count <= {CLIP_COUNTER_WIDTH{1'b0}};
-            if (update) begin
+            if (result_valid) begin
                 sample_out <= sat;
                 clip_event <= raw_clip;
                 if (raw_clip && !clear_clip &&
