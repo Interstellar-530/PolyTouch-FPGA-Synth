@@ -347,11 +347,14 @@ module top #(
 
     // ----------------------------------------------------------- voices ---
     wire [31:0] inc0, inc1, inc2, inc3;
+    wire [27:0] render_note;
+    wire [31:0] render_velocity;
+    wire [3:0] render_retrigger;
 
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc0 (.note(v_note[6:0]),   .inc(inc0));
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc1 (.note(v_note[13:7]),  .inc(inc1));
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc2 (.note(v_note[20:14]), .inc(inc2));
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc3 (.note(v_note[27:21]), .inc(inc3));
+    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc0 (.note(render_note[6:0]),   .inc(inc0));
+    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc1 (.note(render_note[13:7]),  .inc(inc1));
+    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc2 (.note(render_note[20:14]), .inc(inc2));
+    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc3 (.note(render_note[27:21]), .inc(inc3));
 
     // ------------------------------------------- [S4/S5] ADC 控制路径 ---
     // 2 kHz 控制节拍，分频数按当前主时钟推导：调试档 27 MHz / 13 500 = 2 kHz，
@@ -473,20 +476,28 @@ module top #(
     end
     wire [3:0] v_retrig = v_gate & (v_start | v_pending);
 
-    adsr u_env0 (
+    voice_transition u_env0 (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
+        .note(v_note[6:0]),.velocity(v_vel[7:0]),.render_note(render_note[6:0]),
+        .render_velocity(render_velocity[7:0]),.render_retrigger(render_retrigger[0]),
         .gate (v_gate[0]), .retrigger (v_retrig[0]), .env (v_env0), .idle (v_idle[0])
     );
-    adsr u_env1 (
+    voice_transition u_env1 (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
+        .note(v_note[13:7]),.velocity(v_vel[15:8]),.render_note(render_note[13:7]),
+        .render_velocity(render_velocity[15:8]),.render_retrigger(render_retrigger[1]),
         .gate (v_gate[1]), .retrigger (v_retrig[1]), .env (v_env1), .idle (v_idle[1])
     );
-    adsr u_env2 (
+    voice_transition u_env2 (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
+        .note(v_note[20:14]),.velocity(v_vel[23:16]),.render_note(render_note[20:14]),
+        .render_velocity(render_velocity[23:16]),.render_retrigger(render_retrigger[2]),
         .gate (v_gate[2]), .retrigger (v_retrig[2]), .env (v_env2), .idle (v_idle[2])
     );
-    adsr u_env3 (
+    voice_transition u_env3 (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
+        .note(v_note[27:21]),.velocity(v_vel[31:24]),.render_note(render_note[27:21]),
+        .render_velocity(render_velocity[31:24]),.render_retrigger(render_retrigger[3]),
         .gate (v_gate[3]), .retrigger (v_retrig[3]), .env (v_env3), .idle (v_idle[3])
     );
 
@@ -510,10 +521,10 @@ module top #(
         .inc0 (inc0), .inc1 (inc1), .inc2 (inc2), .inc3 (inc3),
         .bend_ratio_q16(bend_ratio_q16),
         .mult_request(engine_mult_req),.mult_operand_a(engine_mult_a),.mult_operand_b(engine_mult_b),.mult_result(audio_mult_result),
-        .retrig0 (v_retrig[0]), .retrig1 (v_retrig[1]),
-        .retrig2 (v_retrig[2]), .retrig3 (v_retrig[3]),
+        .retrig0 (render_retrigger[0]), .retrig1 (render_retrigger[1]),
+        .retrig2 (render_retrigger[2]), .retrig3 (render_retrigger[3]),
         .env0 (v_env0), .env1 (v_env1), .env2 (v_env2), .env3 (v_env3),
-        .vel0 (v_vel[7:0]), .vel1 (v_vel[15:8]), .vel2 (v_vel[23:16]), .vel3 (v_vel[31:24]),
+        .vel0 (render_velocity[7:0]), .vel1 (render_velocity[15:8]), .vel2 (render_velocity[23:16]), .vel3 (render_velocity[31:24]),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sums_valid (sums_valid)
     );
 

@@ -1,0 +1,9 @@
+=== 仿真门禁 ===
+仿真未通过，拒绝烧录。修复 RTL 后重跑。
+At E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792238095872396600\fixture\source\build\program_sram
+.ps1:28 char:9
++         throw '仿真未通过，拒绝烧录。修复 RTL 后重跑。'
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (仿真未通过，拒绝烧录。修复 RTL 后重跑。:String) [], RuntimeException
+    + FullyQualifiedErrorId : 仿真未通过，拒绝烧录。修复 RTL 后重跑。
+ 

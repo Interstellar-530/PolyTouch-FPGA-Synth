@@ -15,7 +15,7 @@ module tb_mode_uart;
         .ch4(12'd0), .ch5(12'd0), .ch6(12'd0), .ch7(12'd0)
     );
 
-    top dut (.clk_27m(clk), .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
+    top #(.SONG_UNIT_SAMPLES(4)) dut (.clk_27m(clk), .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
              .uart_rx(uart_rx), .gpio_key_n(gpio_key_n),
              .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din),
              .pa_en(pa_en), .led(led), .led_chord(led_chord),
@@ -53,7 +53,8 @@ module tb_mode_uart;
     initial begin
         #100000; key_rst = 1;
         wait (!dut.rst);
-        force dut.sample_tick = 1'b1; // speed up the sequencer, not the UART
+        // Speed up song durations with a parameter. Holding sample_tick high
+        // creates overlapping audio frames and invalidates shared-DSP timing.
         wait (dut.v_gate != 4'b0000);
         if (!dut.demo_mode) $fatal(1, "Power-on demo missing");
 

@@ -1,0 +1,2 @@
+PASS tb_voice_transition: repeat, steal, latest pending event, cancel, release reuse and reset; bounded fade cases=4
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_voice_transition.v:49: $finish called at 9430000 (1ps)

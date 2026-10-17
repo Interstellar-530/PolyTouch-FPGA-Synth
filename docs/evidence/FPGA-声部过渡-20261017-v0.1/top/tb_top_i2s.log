@@ -1,0 +1,7 @@
+INFO tb_top_i2s: A4 period=108.57 samples over 67 crossings
+INFO tb_top_i2s: voice 0 note 69 inc=39370528 ideal=39370534 diff=6
+INFO tb_top_i2s: voice 1 note 66 inc=33106528 ideal=33106541 diff=13
+INFO tb_top_i2s: voice 2 note 63 inc=27839136 ideal=27839171 diff=35
+INFO tb_top_i2s: voice 3 note 60 inc=23409824 ideal=23409859 diff=35
+PASS tb_top_i2s: 8721 frames decoded, 8722 sample ticks, 24-bit slots match final_sample, A4 within 1 percent
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_top_i2s.v:358: $finish called at 187041065770 (1ps)

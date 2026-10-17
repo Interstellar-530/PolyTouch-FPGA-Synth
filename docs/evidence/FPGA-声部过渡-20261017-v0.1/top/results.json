@@ -1,0 +1,27 @@
+[
+  {
+    "test": "tb_timbre_top",
+    "exit": 0,
+    "seconds": 7.907
+  },
+  {
+    "test": "tb_mode_uart",
+    "exit": 0,
+    "seconds": 4.719
+  },
+  {
+    "test": "tb_poly",
+    "exit": 0,
+    "seconds": 79.031
+  },
+  {
+    "test": "tb_pressure_top",
+    "exit": 0,
+    "seconds": 60.375
+  },
+  {
+    "test": "tb_top_i2s",
+    "exit": 0,
+    "seconds": 57.375
+  }
+]
