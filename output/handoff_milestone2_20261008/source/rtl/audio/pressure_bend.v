@@ -13,7 +13,8 @@
 // 2^(semitones/12) over all 4096 codes. Nondefault centers retain legacy mapping.
 // phase_inc_out = base_phase_inc * ratio.
 module pressure_bend #(
-    parameter [11:0] ADC_CENTER = 12'd2048
+    parameter [11:0] ADC_CENTER = 12'd2048,
+    parameter integer PIPELINE_FINE_RATIO_ENABLE = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -159,7 +160,11 @@ module pressure_bend #(
         ratio_interp = ratio_a + (ratio_delta_frac >> 8);
     end
 
-    assign bend_ratio_q16 = (ADC_CENTER==12'd2048) ? fine_ratio_from_adc(bend_sample) : ratio_interp;
+    generate if(ADC_CENTER==12'd2048 && PIPELINE_FINE_RATIO_ENABLE)begin:g_ratio_pipeline
+        bend_ratio_pipeline u_ratio(.clk(clk),.rst(rst),.update(control_tick),.code(bend_adc),.ratio(bend_ratio_q16),.valid());
+    end else begin:g_ratio_combinational
+        assign bend_ratio_q16 = (ADC_CENTER==12'd2048) ? fine_ratio_from_adc(bend_sample) : ratio_interp;
+    end endgenerate
 
     // 32x17 -> 49 bit product.  Both operands are widened explicitly: letting
     // the assignment context extend a multiply is tool dependent, and a tool

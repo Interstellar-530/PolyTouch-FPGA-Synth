@@ -235,7 +235,7 @@ try {
 
     # Shared board controls are required by every bench containing rtl/top.v.
     foreach ($entry in $suite) {
-        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v') }
+        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\bend_ratio_pipeline.v') }
     }
     $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName)
     foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top')) {
@@ -250,6 +250,7 @@ try {
     }
 
     $suite += @{ Name='tb_bandlimit_engine_wide'; Top='sim\tb_bandlimit_engine.v'; Src=($audioSources + @('sim\gowin_prom_model.v')) }
+    $suite += @{ Name='tb_bend_ratio_pipeline'; Top='sim\tb_bend_ratio_pipeline.v'; Src=$audioSources }
     $failed = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)

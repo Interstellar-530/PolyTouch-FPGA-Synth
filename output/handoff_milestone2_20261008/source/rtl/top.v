@@ -444,7 +444,7 @@ module top #(
     wire [16:0]        bend_ratio_q16;
     wire [31:0]        bend_inc0;      // 声部 0 的弯音后增量
 
-    pressure_bend u_bend (
+    pressure_bend #(.PIPELINE_FINE_RATIO_ENABLE(1)) u_bend (
         .clk (clk_audio), .rst (rst), .control_tick (control_sample_tick),
         .pressure_adc (pressure_raw), .bend_adc (bend_raw),
         .pressure_enable (1'b1), .base_phase_inc (inc0),
