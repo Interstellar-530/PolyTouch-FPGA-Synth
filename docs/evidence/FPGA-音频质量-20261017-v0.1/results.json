@@ -1,0 +1,22 @@
+[
+  {
+    "test": "tb_headroom",
+    "exit": 0,
+    "seconds": 0.812
+  },
+  {
+    "test": "tb_bend_precision",
+    "exit": 0,
+    "seconds": 0.172
+  },
+  {
+    "test": "tb_adc_reset_top-standard",
+    "exit": 0,
+    "seconds": 2.547
+  },
+  {
+    "test": "tb_adc_reset_top-debug",
+    "exit": 0,
+    "seconds": 4.563
+  }
+]

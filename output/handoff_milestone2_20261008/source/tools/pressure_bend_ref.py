@@ -10,7 +10,8 @@ piecewise linear pitch ratios.  It serves three purposes:
   compare every pressure tick and every one of the 4096 ADC codes instead of a
   handful of hand written points,
 * a self test (``--self-test``) that reports the 90 percent step response and
-  how far the five bend anchors sit from 2^(n/12).
+  tuning error across all 4096 ADC codes. Default-center tuning uses 32 ADC
+  intervals; the original five anchors remain the nondefault-center fallback.
 """
 
 from __future__ import annotations
@@ -100,11 +101,22 @@ def phase_inc(base_phase_inc: int, bend_adc_value: int) -> int:
     """Apply the bend ratio to a 32-bit DDS increment with Q16 truncation."""
 
     base = max(0, min(0xFFFFFFFF, int(base_phase_inc)))
-    return (base * bend_ratio_q16(bend_q8(bend_adc_value))) >> 16
+    return ((base * fine_ratio_from_adc(bend_adc_value)) >> 16) & 0xFFFFFFFF
+
+
+def fine_ratio_from_adc(adc: int) -> int:
+    """32 ADC intervals, rounded Q16 anchors and nearest interpolation."""
+    x = clamp_adc(adc)
+    segment, fraction = divmod(x, 128)
+    def anchor(code: int) -> int:
+        semi = 2 * (code - 2048) / (2047 if code >= 2048 else 2048)
+        return round(65536 * 2 ** (semi / 12))
+    a, b = anchor(segment*128), anchor((segment+1)*128)
+    return a + ((b-a)*fraction + 64 >> 7)
 
 
 def ratio_deviations() -> List[Dict[str, float]]:
-    """Report how far each bend anchor sits from the exact 2^(n/12) ratio."""
+    """Report legacy fallback anchor errors, not the default fine mapping."""
 
     report = []
     for semitone, value in zip(BEND_SEMITONES, RATIO_Q16):
@@ -117,6 +129,16 @@ def ratio_deviations() -> List[Dict[str, float]]:
             "deviation_cents": round(1200.0 * math.log2(value / exact), 3),
         })
     return report
+
+
+def fine_accuracy() -> dict:
+    errors = []
+    for adc in range(4096):
+        semi = 2 * (adc - 2048) / (2047 if adc >= 2048 else 2048)
+        errors.append(1200 * math.log2(fine_ratio_from_adc(adc) / 65536) - 100 * semi)
+    worst = max(range(4096), key=lambda adc: abs(errors[adc]))
+    assert abs(errors[worst]) < 0.04
+    return dict(max_abs_cents=abs(errors[worst]), worst_adc=worst)
 
 
 def build_pressure_sequence() -> List[int]:
@@ -150,7 +172,7 @@ def write_vectors(directory: str) -> Dict[str, object]:
         "pressure_inputs.hex": ["%03x" % value for value in sequence],
         "pressure_expected.hex": ["%03x" % value for value in filtered],
         "bend_q8_expected.hex": ["%04x" % (bend_q8(x) & 0xFFFF) for x in range(BEND_VECTORS)],
-        "bend_ratio_expected.hex": ["%05x" % bend_ratio_q16(bend_q8(x)) for x in range(BEND_VECTORS)],
+        "bend_ratio_expected.hex": ["%05x" % fine_ratio_from_adc(x) for x in range(BEND_VECTORS)],
         "bend_phase_expected.hex": ["%08x" % phase_inc(PHASE_BASE, x) for x in range(BEND_VECTORS)],
     }
     digests: Dict[str, str] = {}
@@ -166,8 +188,10 @@ def write_vectors(directory: str) -> Dict[str, object]:
         "adc_max": ADC_MAX,
         "adc_center": ADC_CENTER,
         "bend_q8_max": BEND_Q8_MAX,
-        "ratio_q16": list(RATIO_Q16),
-        "ratio_deviations": ratio_deviations(),
+        "ratio_mode": "adc_32_segment_q16",
+        "fine_accuracy": fine_accuracy(),
+        "legacy_ratio_q16": list(RATIO_Q16),
+        "legacy_ratio_deviations": ratio_deviations(),
         "phase_base": PHASE_BASE,
         "pressure_vectors": len(sequence),
         "bend_vectors": BEND_VECTORS,
@@ -205,7 +229,7 @@ def self_test() -> dict:
     assert [bend_q8(x) for x in (0, ADC_CENTER, ADC_MAX)] == [-512, 0, 512]
     mapped = [bend_q8(x) for x in range(0, ADC_MAX + 1, 31)]
     assert all(a <= b for a, b in zip(mapped, mapped[1:]))
-    ratios = [bend_ratio_q16(q) for q in range(-512, 513, 17)]
+    ratios = [fine_ratio_from_adc(x) for x in range(4096)]
     assert all(a <= b for a, b in zip(ratios, ratios[1:]))
     assert phase_inc(PHASE_BASE, 0) < phase_inc(PHASE_BASE, ADC_CENTER)
     assert phase_inc(PHASE_BASE, ADC_CENTER) < phase_inc(PHASE_BASE, ADC_MAX)
@@ -216,7 +240,8 @@ def self_test() -> dict:
         "pressure_step_trace": trace,
         "bend_edges_q8": {str(x): bend_q8(x) for x in (0, ADC_CENTER, ADC_MAX)},
         "phase_edges": {str(x): phase_inc(PHASE_BASE, x) for x in (0, ADC_CENTER, ADC_MAX)},
-        "ratio_deviations": ratio_deviations(),
+        "fine_accuracy": fine_accuracy(),
+        "legacy_ratio_deviations": ratio_deviations(),
     }
 
 

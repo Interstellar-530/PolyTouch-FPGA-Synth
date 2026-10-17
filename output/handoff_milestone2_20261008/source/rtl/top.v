@@ -32,7 +32,10 @@ module top #(
     parameter integer PRESSURE_ADC_LOW = 128,
     parameter integer PRESSURE_ADC_FULL = 3200,
     parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
-    parameter integer PRESSURE_GAIN_STEP = 32
+    parameter integer PRESSURE_GAIN_STEP = 32,
+    // Four signed 16-bit voices, unity pressure gain: divide by four before
+    // saturation. This adds 6.02 dB headroom over the historical shift=1.
+    parameter integer MASTER_VOLUME_SHIFT = 2
 ) (
     input  wire clk_27m,     // H11，板载 27 MHz；AUDIO_IF=1 时不使用
     input  wire clk_12m288,  // T7（J14-10，GCLKT_3），外置 3.3 V CMOS 12.288 MHz 有源晶振
@@ -357,7 +360,9 @@ module top #(
     reg [15:0] ctrl_div = 16'd0;
     reg        control_tick = 1'b0;
     always @(posedge clk_audio) begin
-        if (ctrl_div == (CTRL_TICK_DIV - 1)) begin
+        if (rst) begin
+            ctrl_div<=0;control_tick<=0;
+        end else if (ctrl_div == (CTRL_TICK_DIV - 1)) begin
             ctrl_div     <= 16'd0;
             control_tick <= 1'b1;
         end else begin
@@ -371,7 +376,7 @@ module top #(
     // 这是本仓库第三次遇到 Verilog 上下文位宽坑，故用独立 1 位寄存器。
     reg         adc_sel      = 1'b0;      // 0 = 压力 CH0, 1 = 弯音 CH1
     reg         adc_start    = 1'b0;
-    reg  [11:0] pressure_raw = 12'd2048;
+    reg  [11:0] pressure_raw = 12'd0;
     reg  [11:0] bend_raw     = 12'd2048;
     wire        adc_busy;
     wire        adc_done;
@@ -379,6 +384,9 @@ module top #(
     wire [11:0] adc_data;
 
     always @(posedge clk_audio) begin
+      if(rst)begin
+        adc_sel<=0;adc_start<=0;pressure_raw<=0;bend_raw<=12'd2048;
+      end else begin
         adc_start <= 1'b0;
         if (control_tick && !adc_busy) begin
             adc_start   <= 1'b1;
@@ -388,6 +396,7 @@ module top #(
             if (adc_sel) bend_raw     <= adc_data;
             else                pressure_raw <= adc_data;
         end
+      end
     end
 
     mcp3208_spi #(.CLK_HZ(AUDIO_CLK_HZ), .SPI_HZ(250_000)) u_adc (
@@ -494,7 +503,8 @@ module top #(
         .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
-        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1)
+        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),
+        .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (timbre_target),

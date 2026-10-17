@@ -22,3 +22,4 @@ rtl/audio/gowin_prom_wave_bright.v
 rtl/audio/wavetable_rom_dual.v
 rtl/audio/clk_params.vh
 rtl/audio/instrument_controls.v
+rtl/audio/bend_coefficients.vh

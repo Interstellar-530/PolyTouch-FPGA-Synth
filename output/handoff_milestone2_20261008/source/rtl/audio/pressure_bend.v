@@ -9,9 +9,8 @@
 // old stale sample.  Pressure is deliberately not part of phase_inc_out.
 //
 // bend_q8 is signed semitones in Q8: -512 .. +512 means -2 .. +2 semitones.
-// bend_ratio_q16 is a piecewise-linear interpolation between the five semitone
-// anchors at -2,-1,0,+1,+2 (anchor error <0.8 cent; interpolation and ADC
-// quantization add error between anchors, measured separately by the audit).
+// Default-center Q16 ratio uses 32 ADC intervals, independently checked against
+// 2^(semitones/12) over all 4096 codes. Nondefault centers retain legacy mapping.
 // phase_inc_out = base_phase_inc * ratio.
 module pressure_bend #(
     parameter [11:0] ADC_CENTER = 12'd2048
@@ -32,6 +31,8 @@ module pressure_bend #(
 
     reg [11:0] pressure_d0;
     reg [11:0] pressure_d1;
+    reg [11:0] bend_sample;
+`include "rtl/audio/bend_coefficients.vh"
 
     // Median is combinational from the two delayed samples and the current
     // sample.  The explicit comparisons avoid relying on a simulator's sort.
@@ -85,6 +86,7 @@ module pressure_bend #(
             pressure_d1      <= 12'd0;
             pressure_filtered <= 12'd0;
             bend_q8          <= 16'sd0;
+            bend_sample      <= ADC_CENTER;
         end else if (control_tick) begin
             pressure_d1 <= pressure_d0;
             pressure_d0 <= pressure_adc;
@@ -99,6 +101,7 @@ module pressure_bend #(
                 pressure_filtered <= pressure_next_ext[11:0];
 
             bend_q8 <= bend_mapped;
+            bend_sample <= bend_adc;
         end
     end
 
@@ -106,7 +109,7 @@ module pressure_bend #(
 
     // Semitone ratios in Q16 for -2,-1,0,+1,+2 semitones.  -1 and 0 equal the
     // rounded 2^(n/12) values; -2 is +0.42 cent and +1/+2 are -0.77/-0.75 cent
-    // away from 2^(n/12), so the whole bend range stays within 0.8 cent.  The
+    // away from 2^(n/12); these are retained for nondefault centers. The
     // deviation is reported per anchor by tools/pressure_bend_ref.py; use
     // 58386/61858/65536/69433/73562 instead if the anchors must equal the
     // rounded semitone ratios exactly.
@@ -156,7 +159,7 @@ module pressure_bend #(
         ratio_interp = ratio_a + (ratio_delta_frac >> 8);
     end
 
-    assign bend_ratio_q16 = ratio_interp;
+    assign bend_ratio_q16 = (ADC_CENTER==12'd2048) ? fine_ratio_from_adc(bend_sample) : ratio_interp;
 
     // 32x17 -> 49 bit product.  Both operands are widened explicitly: letting
     // the assignment context extend a multiply is tool dependent, and a tool

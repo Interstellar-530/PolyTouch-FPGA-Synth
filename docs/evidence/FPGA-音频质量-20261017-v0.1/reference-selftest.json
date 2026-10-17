@@ -1,0 +1,91 @@
+{
+  "bend_edges_q8": {
+    "0": -512,
+    "2048": 0,
+    "4095": 512
+  },
+  "fine_accuracy": {
+    "max_abs_cents": 0.03274119303019063,
+    "worst_adc": 960
+  },
+  "legacy_ratio_deviations": [
+    {
+      "deviation_cents": 0.417,
+      "exact_q16": 58385.938,
+      "ratio_q16": 58400,
+      "rounded_q16": 58386,
+      "semitone": -2
+    },
+    {
+      "deviation_cents": 0.007,
+      "exact_q16": 61857.747,
+      "ratio_q16": 61858,
+      "rounded_q16": 61858,
+      "semitone": -1
+    },
+    {
+      "deviation_cents": 0.0,
+      "exact_q16": 65536.0,
+      "ratio_q16": 65536,
+      "rounded_q16": 65536,
+      "semitone": 0
+    },
+    {
+      "deviation_cents": -0.772,
+      "exact_q16": 69432.973,
+      "ratio_q16": 69402,
+      "rounded_q16": 69433,
+      "semitone": 1
+    },
+    {
+      "deviation_cents": -0.746,
+      "exact_q16": 73561.673,
+      "ratio_q16": 73530,
+      "rounded_q16": 73562,
+      "semitone": 2
+    }
+  ],
+  "phase_edges": {
+    "0": 890899,
+    "2048": 1000000,
+    "4095": 1122467
+  },
+  "pressure_step_t90_ticks": 5,
+  "pressure_step_trace": [
+    0,
+    0,
+    0,
+    0,
+    2047,
+    3071,
+    3583,
+    3839,
+    3967,
+    4031,
+    4063,
+    4079,
+    4087,
+    4091,
+    4093,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094,
+    4094
+  ]
+}

@@ -44,7 +44,7 @@ module tb_pressure_top;
         master_before=$signed(a.sine_sum);
         master_before=master_before*(255-weight_reference);
         expected=$signed(a.bright_sum);
-        master_before=(master_before+expected*weight_reference+127)>>>9;
+        master_before=(master_before+expected*weight_reference+127)>>>(8+a.MASTER_VOLUME_SHIFT);
         // The independent model uses signed integers on both operands. Mixing
         // unsigned Q12 into a signed product would make >>> a logical shift.
         gain_reference=a.u_xf.g_pressure.gain_next;

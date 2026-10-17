@@ -245,6 +245,9 @@ try {
     foreach ($name in @('tb_architecture_equivalence','tb_shared_bend_equivalence','tb_bend_equivalence','tb_shared_master')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('sim\gowin_prom_model.v','sim\reference\baseline_shared_wavetable_engine.v','sim\reference\baseline_pressure_bend.v')) }
     }
+    foreach ($name in @('tb_headroom','tb_bend_precision','tb_adc_reset_top')) {
+        $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    }
 
     $failed = 0
     foreach ($test in $suite) {

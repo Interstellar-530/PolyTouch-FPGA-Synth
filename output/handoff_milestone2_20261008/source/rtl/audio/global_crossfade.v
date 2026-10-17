@@ -1,9 +1,10 @@
 // 全局交叉混合：把两条分量和（19 位）按 (255-w, w) >> 8 混合一次，
-// 再做与 mixer_s6 相同的“除以 2”、16 位饱和与主增益边界削波统计。
+// 再做参数指定的固定衰减、16 位饱和与主增益边界削波统计。
+// 独立模块默认除以 2；整机默认除以 4，给四路满幅声部留出余量。
 // 混合使用整机一个 18x9 可变乘法，高位用移位修正；
 // 舍入只发生一次而不是每声部一次，偏差界见集成复核记录。
 //
-// 削波统计沿用 S6 的定义：主增益边界上，本帧（混合/除二及可选压力增益后）的取值
+// 削波统计沿用 S6 的定义：主增益边界上，本帧（混合/固定衰减及可选压力增益后）的取值
 // 超出 16 位有符号范围时计一次，计数到全 1 饱和，clear_clip 同步清零。
 // 逐声部版由 mixer_s6 在该边界计数；共享引擎把这条边界移到了本模块。
 module global_crossfade #(
@@ -17,7 +18,8 @@ module global_crossfade #(
     parameter integer PRESSURE_GAIN_STEP = 32,
     parameter integer TIMBRE_SLEW_ENABLE = 0,
     parameter [7:0] TIMBRE_RESET_WEIGHT = 64,
-    parameter integer SHARED_MULT_ENABLE = 0
+    parameter integer SHARED_MULT_ENABLE = 0,
+    parameter integer MASTER_VOLUME_SHIFT = 1
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -75,7 +77,7 @@ module global_crossfade #(
     wire signed [28:0] numerator = $signed({base_product[27],base_product}) +
                                   $signed({delta_product[27],delta_product}) + 29'sd127;
     wire signed [26:0] blend = numerator >>> 8;
-    wire signed [27:0] scaled = blend >>> 1;              // 与 mixer_s6 的 VOLUME_SHIFT=1 一致
+    wire signed [27:0] scaled = blend >>> MASTER_VOLUME_SHIFT;
     wire signed [27:0] after_pressure;
     wire [12:0] gain_for_frame;
     generate
@@ -159,7 +161,7 @@ module global_crossfade #(
                 end
                 1:shared_stage<=2;
                 2:begin
-                    shared_a<=shared_numerator>>>9;
+                    shared_a<=shared_numerator>>>(8+MASTER_VOLUME_SHIFT);
                     shared_b<=$signed({5'd0,shared_gain});shared_stage<=3;
                 end
                 3:shared_stage<=4;
@@ -170,6 +172,10 @@ module global_crossfade #(
     end
     wire result_valid=SHARED_MULT_ENABLE?(shared_stage==4):update;
     wire signed [27:0] output_value=SHARED_MULT_ENABLE?($signed(mult_result)>>>12):after_pressure;
+`ifdef SIMULATION
+    initial if(MASTER_VOLUME_SHIFT<1 || MASTER_VOLUME_SHIFT>4)
+        $fatal(1,"MASTER_VOLUME_SHIFT must be 1..4");
+`endif
     wire raw_clip = (output_value > 28'sd32767) || (output_value < -28'sd32768);
     wire signed [15:0] sat = (output_value > 28'sd32767) ? 16'sd32767 :
                              (output_value < -28'sd32768) ? -16'sd32768 : output_value[15:0];

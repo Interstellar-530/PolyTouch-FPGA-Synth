@@ -1,0 +1,3 @@
+METRIC headroom frames=7168 weights=256 peak=32640 clipped_frames=0 legacy_clipped_frames=2370
+PASS tb_headroom: signed extrema, all weights, coherent and random-phase four-voice frames, local/shared exact
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_headroom.v:55: $finish called at 501800000 (1ps)

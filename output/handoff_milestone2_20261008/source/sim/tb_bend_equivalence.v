@@ -14,8 +14,11 @@ module tb_bend_equivalence;
         repeat(4)@(negedge clk);rst=0;
         for(n=0;n<4096;n=n+1)begin
             adc=n;pressure=$random;inc=$random;tick=1;@(negedge clk);tick=0;@(negedge clk);
-            if({p0,l0,b0,r0,i0}!=={p1,l1,b1,r1,i1} || {p2,l2,b2,r2,i2}!=={p3,l3,b3,r3,i3})$fatal(1,"bend equivalence ADC=%d",n);
+            // Default-center ratio was intentionally recalibrated. Pressure
+            // and diagnostic Q8 are unchanged; the separate analytic test
+            // checks the new ratio. Nondefault-center behavior is bit-exact.
+            if({p0,l0,b0}!=={p1,l1,b1} || {p2,l2,b2,r2,i2}!=={p3,l3,b3,r3,i3})$fatal(1,"bend equivalence ADC=%d",n);
         end
-        $display("PASS tb_bend_equivalence: all 4096 ADC codes, default and calibrated center, full 32-bit increments, pressure state exact");$finish;
+        $display("PASS tb_bend_equivalence: all 4096 codes, pressure/Q8 exact, nondefault-center full ratios/increments exact");$finish;
     end
 endmodule
