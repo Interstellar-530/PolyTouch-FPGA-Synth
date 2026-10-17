@@ -1,0 +1,32 @@
+tick time_ns=8833271000 pressure_raw=0 filtered=0 bend_raw=2048 ratio_q16=65536
+tick time_ns=9333270000 pressure_raw=0 filtered=0 bend_raw=2048 ratio_q16=65536
+tick time_ns=9833268000 pressure_raw=4095 filtered=0 bend_raw=2048 ratio_q16=65536
+tick time_ns=10333267000 pressure_raw=4095 filtered=2047 bend_raw=2048 ratio_q16=65536
+tick time_ns=10833266000 pressure_raw=0 filtered=3071 bend_raw=2048 ratio_q16=65536
+tick time_ns=11333265000 pressure_raw=0 filtered=1535 bend_raw=2048 ratio_q16=65536
+tick time_ns=11833263000 pressure_raw=0 filtered=767 bend_raw=2048 ratio_q16=65536
+tick time_ns=12333262000 pressure_raw=0 filtered=383 bend_raw=2048 ratio_q16=65536
+tick time_ns=12833261000 pressure_raw=0 filtered=191 bend_raw=2048 ratio_q16=65536
+tick time_ns=13333260000 pressure_raw=0 filtered=95 bend_raw=2048 ratio_q16=65536
+tick time_ns=13833258000 pressure_raw=0 filtered=47 bend_raw=2048 ratio_q16=65536
+CONFIRMED pressure_duplicate: physical_spikes=1 filter_peak=3071 of4095
+tick time_ns=14333257000 pressure_raw=0 filtered=23 bend_raw=2048 ratio_q16=65536
+tick time_ns=14833256000 pressure_raw=0 filtered=11 bend_raw=2048 ratio_q16=65536
+tick time_ns=15333254000 pressure_raw=0 filtered=5 bend_raw=2047 ratio_q16=65532
+tick time_ns=15833253000 pressure_raw=0 filtered=2 bend_raw=2047 ratio_q16=65532
+tick time_ns=16333252000 pressure_raw=0 filtered=1 bend_raw=2049 ratio_q16=65540
+tick time_ns=16833251000 pressure_raw=0 filtered=0 bend_raw=2049 ratio_q16=65540
+tick time_ns=17333249000 pressure_raw=0 filtered=0 bend_raw=2047 ratio_q16=65532
+tick time_ns=17833248000 pressure_raw=0 filtered=0 bend_raw=2047 ratio_q16=65532
+tick time_ns=18333247000 pressure_raw=0 filtered=0 bend_raw=2049 ratio_q16=65540
+tick time_ns=18833245000 pressure_raw=0 filtered=0 bend_raw=2049 ratio_q16=65540
+tick time_ns=19333244000 pressure_raw=0 filtered=0 bend_raw=2047 ratio_q16=65532
+tick time_ns=19833243000 pressure_raw=0 filtered=0 bend_raw=2047 ratio_q16=65532
+tick time_ns=20333242000 pressure_raw=0 filtered=0 bend_raw=2049 ratio_q16=65540
+tick time_ns=20833240000 pressure_raw=0 filtered=0 bend_raw=2049 ratio_q16=65540
+tick time_ns=21333239000 pressure_raw=0 filtered=0 bend_raw=2047 ratio_q16=65532
+tick time_ns=21833238000 pressure_raw=0 filtered=0 bend_raw=2047 ratio_q16=65532
+tick time_ns=22333236000 pressure_raw=0 filtered=0 bend_raw=2049 ratio_q16=65540
+CONFIRMED bend_raw_noise: adc_codes=2047/2049 ratio_q16_min=65532 max=65540 change_count=8 physical_conversions=8 interval_us=1000
+PASS audit probe: reproduced issues without changing production RTL
+E:\Working Space\FPGA\tmp\system-ceiling-20261017\tb_pressure_duplicate.v:51: $finish called at 22410661130 (1ps)
