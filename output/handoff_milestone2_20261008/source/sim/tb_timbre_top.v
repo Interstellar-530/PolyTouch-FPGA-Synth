@@ -41,7 +41,7 @@ module tb_timbre_top;
                 $fatal(1,"frame phase discontinuity");
             checked=checked+1;
         end
-        if(dut.u_xf.result_valid && (frame_cycle!=81 || product_requests!=34))
+        if(dut.u_xf.result_valid && (frame_cycle!=113 || product_requests!=42))
             $fatal(1,"frame deadline/products %d %d",frame_cycle,product_requests);
       end
     end
@@ -68,7 +68,7 @@ module tb_timbre_top;
         if(dut.timbre_target!=0 || dut.chord_set!=0 || dut.tempo_sel!=1)$fatal(1,"long press changed other controls");
         #6000000;if(dut.show_timbre)$fatal(1,"top LED overlay stuck");
         if(frames<500 || audible<200)$fatal(1,"insufficient real I2S audio");
-        $display("METRIC top_timbre frames=%0d audible=%0d phase_checks=%0d full_sweep_ns=%0d full_pipeline_cycles=81 shared_products=34",frames,audible,checked,sweep_ns);
+        $display("METRIC top_timbre frames=%0d audible=%0d phase_checks=%0d full_sweep_ns=%0d full_pipeline_cycles=113 shared_products=42",frames,audible,checked,sweep_ns);
         $display("PASS tb_timbre_top: real UART, four held voices, continuous phases, real I2S, long press and overlay");$finish;
     end
     initial begin #60000000;$fatal(1,"timeout");end

@@ -1,0 +1,6 @@
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.

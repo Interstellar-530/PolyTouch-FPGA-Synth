@@ -1,0 +1,19 @@
+{
+  "harmonics": [
+    16,
+    8,
+    4,
+    2,
+    1
+  ],
+  "depth": 512,
+  "bsram_blocks": 3,
+  "peaks": [
+    32767,
+    31187,
+    28456,
+    24204,
+    18632
+  ],
+  "source": "wave_bright.hex; identical fundamental amplitude; no per-bank normalization"
+}

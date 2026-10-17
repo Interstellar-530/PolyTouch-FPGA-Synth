@@ -521,7 +521,7 @@ module top #(
     always @(posedge clk_audio)if(!rst && engine_mult_req && xf_mult_req)$fatal(1,"audio multiplier collision");
 `endif
 
-    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1)) u_engine (
+    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1),.BANDLIMIT_ENABLE(1)) u_engine (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
         .inc0 (inc0), .inc1 (inc1), .inc2 (inc2), .inc3 (inc3),
         .bend_ratio_q16(bend_ratio_q16),

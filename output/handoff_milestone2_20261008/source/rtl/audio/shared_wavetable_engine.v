@@ -15,7 +15,8 @@
 // 偏差界记录在集成复核记录里。
 module shared_wavetable_engine #(
     parameter integer BEND_SHARED_ENABLE = 0,
-    parameter integer SHARED_MULT_ENABLE = 0
+    parameter integer SHARED_MULT_ENABLE = 0,
+    parameter integer BANDLIMIT_ENABLE = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -36,7 +37,7 @@ module shared_wavetable_engine #(
     // ---------------------------------------------------- phase accumulators ---
     reg [31:0] phase0 = 32'd0, phase1 = 32'd0, phase2 = 32'd0, phase3 = 32'd0;
 
-    localparam [4:0] ST_IDLE     = 5'd0,
+    localparam [5:0] ST_IDLE     = 5'd0,
                      ST_ADDR_A   = 5'd1,  ST_LATCH_A = 5'd2,
                      ST_ADDR_B   = 5'd3,  ST_LATCH_B = 5'd4,
                      ST_DIFF_S   = 5'd5,  ST_W_DIFF_S = 5'd6,  ST_INTERP_S = 5'd7,
@@ -47,9 +48,13 @@ module shared_wavetable_engine #(
                      ST_W_VEL_B  = 5'd19, ST_FIN_B    = 5'd20,
                      ST_ACC      = 5'd21,
                      ST_BEND_LO=5'd22, ST_BEND_HI=5'd23,
-                     ST_BEND_WAIT=5'd24, ST_BEND_APPLY=5'd25;
+                     ST_BEND_WAIT=5'd24, ST_BEND_APPLY=5'd25,
+                     ST_BANK_ADDR_A=6'd26, ST_BANK_LATCH_A=6'd27,
+                     ST_BANK_ADDR_B=6'd28, ST_BANK_LATCH_B=6'd29,
+                     ST_BANK_MUL=6'd30, ST_BANK_INTERP=6'd31,
+                     ST_BANK_MIX_MUL=6'd32, ST_BANK_MIX_APPLY=6'd33;
 
-    reg [4:0]  state = ST_IDLE;
+    reg [5:0]  state = ST_IDLE;
 
     // ------------------------------------------------------- shared ROM ports ---
     // CE 必须覆盖 b 的读取窗口：地址在 LATCH_A 期间切到 idx_b，
@@ -61,8 +66,31 @@ module shared_wavetable_engine #(
 
     gowin_prom_wave_sine u_sine_rom (
         .clk(clk), .ce(rom_ce), .rst(rst), .addr(rom_addr), .dout(rom_sine_d));
+    reg [2:0] rom_bank=0,bank_low=0;
+    reg [15:0] bank_weight=0;
+    wire bank_ce=rom_ce || state==ST_BANK_ADDR_A ||
+                 state==ST_BANK_LATCH_A || state==ST_BANK_ADDR_B;
+    generate if(BANDLIMIT_ENABLE) begin:g_banked
+        gowin_prom_bright_bank u_bright_rom (
+            .clk(clk),.ce(bank_ce),.rst(rst),.bank(rom_bank),.addr(rom_addr),.dout(rom_bright_d));
+    end else begin:g_original
     gowin_prom_wave_bright u_bright_rom (
         .clk(clk), .ce(rom_ce), .rst(rst), .addr(rom_addr), .dout(rom_bright_d));
+    end endgenerate
+
+    // Each richer bank reaches zero weight before its highest harmonic reaches
+    // Nyquist. Frequency is the actual bent phase increment, so Fs cancels.
+    function [18:0] band_config;
+        input [31:0] inc;
+        begin
+            if(inc>=32'h40000000) band_config={3'd4,16'd0};
+            else if(inc>=32'h20000000) band_config={3'd3,inc[28:13]};
+            else if(inc>=32'h10000000) band_config={3'd2,inc[27:12]};
+            else if(inc>=32'h08000000) band_config={3'd1,inc[26:11]};
+            else if(inc>=32'h04000000) band_config={3'd0,inc[25:10]};
+            else band_config=19'd0;
+        end
+    endfunction
 
     // 当前声部的相位/参数
     reg [1:0]  vsel = 2'd0;
@@ -75,6 +103,8 @@ module shared_wavetable_engine #(
     reg [3:0] retrig_frame;
     wire [31:0] cur_inc = inc_frame >> (vsel*32);
     wire [31:0] shared_inc = mul_p[31:0] + {15'd0,phase_low};
+    reg [31:0] bent_inc=0;
+    wire [18:0] selected_band=band_config(BEND_SHARED_ENABLE?bent_inc:cur_inc);
 
     always @* begin
         case (vsel)
@@ -97,7 +127,8 @@ module shared_wavetable_engine #(
     wire mul_enable = (state == ST_DIFF_B) || (state == ST_INTERP_S) ||
                       (state == ST_W_ENV_S) || (state == ST_W_VEL_S) ||
                       (state == ST_W_ENV_B) || (state == ST_W_VEL_B) ||
-                      (state == ST_BEND_HI) || (state == ST_BEND_WAIT);
+                      (state == ST_BEND_HI) || (state == ST_BEND_WAIT) ||
+                      (BANDLIMIT_ENABLE && ((state==ST_BANK_MUL) || (state==ST_BANK_MIX_MUL)));
     assign mult_request=mul_enable;
     assign mult_operand_a=mul_a;
     assign mult_operand_b=mul_b;
@@ -111,6 +142,9 @@ module shared_wavetable_engine #(
     reg signed [15:0] a_sine = 16'sd0, b_sine = 16'sd0;
     reg signed [15:0] a_bright = 16'sd0, b_bright = 16'sd0;
     reg signed [17:0] interp_s = 18'sd0, interp_b = 18'sd0;
+    reg signed [15:0] bank_a=0;
+    wire signed [17:0] bank_interpolated = $signed(bank_a) + $signed((mul_p[26:0]+27'sd256) >>> 9);
+    wire signed [35:0] bank_mixed_delta = (mul_p + 36'sd32768) >>> 16;
     reg signed [15:0] scaled_s = 16'sd0, scaled_b = 16'sd0;
     reg signed [18:0] sine_acc = 19'sd0, bright_acc = 19'sd0;
     reg [15:0] env_q = 16'd0;
@@ -133,6 +167,7 @@ module shared_wavetable_engine #(
             phase0<=0;phase1<=0;phase2<=0;phase3<=0;
             inc_frame<=0;ratio_frame<=65536;retrig_frame<=0;phase_low<=0;
             velocity_frame<=0;
+            rom_bank<=0;bank_low<=0;bank_weight<=0;bent_inc<=0;bank_a<=0;
         end else begin
             sums_valid <= 1'b0;
             if(sample_tick && BEND_SHARED_ENABLE==0) begin
@@ -162,6 +197,7 @@ module shared_wavetable_engine #(
                 end
                 ST_BEND_WAIT: begin phase_low<=mul_p[32:16];state<=ST_BEND_APPLY;end
                 ST_BEND_APPLY: begin
+                    bent_inc<=shared_inc;
                     case(vsel)
                         0:phase0<=retrig_frame[0]?0:phase0+shared_inc;
                         1:phase1<=retrig_frame[1]?0:phase1+shared_inc;
@@ -171,6 +207,10 @@ module shared_wavetable_engine #(
                     state<=ST_ADDR_A;
                 end
                 ST_ADDR_A: begin
+                    if(BANDLIMIT_ENABLE) begin
+                        bank_low<=selected_band[18:16];rom_bank<=selected_band[18:16];
+                        bank_weight<=selected_band[15:0];
+                    end
                     rom_addr <= cur_phase[31:23];
                     frac_q   <= cur_phase[22:14];
                     state    <= ST_LATCH_A;
@@ -217,7 +257,29 @@ module shared_wavetable_engine #(
                     vel_q    <= cur_vel;
                     mul_a <= $signed(interp_s);
                     mul_b <= $signed({2'd0,cur_env});
-                    state <= ST_W_ENV_S;
+                    state <= BANDLIMIT_ENABLE ? ST_BANK_ADDR_A : ST_W_ENV_S;
+                end
+                ST_BANK_ADDR_A: begin
+                    rom_bank<=bank_low==4?3'd4:bank_low+3'd1;
+                    rom_addr<=cur_phase[31:23];state<=ST_BANK_LATCH_A;
+                end
+                ST_BANK_LATCH_A: begin
+                    rom_addr<=cur_phase[31:23]+9'd1;state<=ST_BANK_ADDR_B;
+                end
+                ST_BANK_ADDR_B: begin bank_a<=rom_bright_d;state<=ST_BANK_LATCH_B;end
+                ST_BANK_LATCH_B: begin
+                    mul_a<=$signed({rom_bright_d[15],rom_bright_d})-$signed({bank_a[15],bank_a});
+                    mul_b<={9'd0,frac_q};state<=ST_BANK_MUL;
+                end
+                ST_BANK_MUL: state<=ST_BANK_INTERP;
+                ST_BANK_INTERP: begin
+                    mul_a<=bank_interpolated-interp_b;
+                    mul_b<=$signed({2'd0,bank_weight});state<=ST_BANK_MIX_MUL;
+                end
+                ST_BANK_MIX_MUL: state<=ST_BANK_MIX_APPLY;
+                ST_BANK_MIX_APPLY: begin
+                    interp_b<=interp_b+bank_mixed_delta;
+                    mul_a<=interp_s;mul_b<=$signed({2'd0,env_q});state<=ST_W_ENV_S;
                 end
                 ST_ENV_S: begin
                     mul_a <= $signed(interp_s);
