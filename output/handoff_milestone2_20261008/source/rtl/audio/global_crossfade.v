@@ -21,7 +21,8 @@ module global_crossfade #(
     parameter integer SHARED_MULT_ENABLE = 0,
     parameter integer MASTER_VOLUME_SHIFT = 1,
     parameter integer MUTE_SLEW_ENABLE = 0,
-    parameter integer EXTRA_FRACTION_BITS = 0
+    parameter integer EXTRA_FRACTION_BITS = 0,
+    parameter integer REGISTER_MIX_INPUTS_ENABLE = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -56,16 +57,27 @@ module global_crossfade #(
     // bits, and its product 28; opposite full-scale inputs must not overflow.
     localparam integer E=EXTRA_FRACTION_BITS;
     localparam integer MIX_ROUND=E>0 ? (1 << (7+MASTER_VOLUME_SHIFT)) : 127;
-    wire signed [19+E:0] difference = $signed({bright_sum[18+E],bright_sum}) -
-                                   $signed({sine_sum[18+E],sine_sum});
+    reg signed [18+E:0] saved_sine,saved_bright;
+    reg [7:0] saved_weight;
+    wire signed [18+E:0] calc_sine=REGISTER_MIX_INPUTS_ENABLE?saved_sine:sine_sum;
+    wire signed [18+E:0] calc_bright=REGISTER_MIX_INPUTS_ENABLE?saved_bright:bright_sum;
+    wire [7:0] calc_weight=REGISTER_MIX_INPUTS_ENABLE?saved_weight:active_weight;
+    always @(posedge clk)begin
+        if(rst)begin saved_sine<=0;saved_bright<=0;saved_weight<=0;end
+        else if(REGISTER_MIX_INPUTS_ENABLE && update)begin
+            saved_sine<=sine_sum;saved_bright<=bright_sum;saved_weight<=active_weight;
+        end
+    end
+    wire signed [19+E:0] difference = $signed({calc_bright[18+E],calc_bright}) -
+                                   $signed({calc_sine[18+E],calc_sine});
     // Recenter the low 18 bits as signed. The remaining coefficient is only
     // -2..2, so its product is a mux/shift, leaving one true 18x9 multiply.
     wire signed [17:0] difference_low = difference[17:0];
     wire signed [2+E:0] difference_high = $signed({difference[19+E],difference[19+E:18]}) +
                                          $signed({{(2+E){1'b0}},difference[17]});
     wire signed [26:0] low_product = SHARED_MULT_ENABLE ? $signed(mult_result[26:0]) :
-                                         difference_low * $signed({1'b0,active_weight});
-    wire signed [10+E:0] weight_wide = $signed({{(3+E){1'b0}},active_weight});
+                                         difference_low * $signed({1'b0,calc_weight});
+    wire signed [10+E:0] weight_wide = $signed({{(3+E){1'b0}},calc_weight});
     reg signed [10+E:0] high_product;
     integer high_bit;
     always @* begin
@@ -76,7 +88,7 @@ module global_crossfade #(
     end
     wire signed [27+E:0] high_shifted = $signed({{17{high_product[10+E]}},high_product}) <<< 18;
     wire signed [27+E:0] delta_product = $signed({{(1+E){low_product[26]}},low_product}) + high_shifted;
-    wire signed [27+E:0] sine_wide = {{9{sine_sum[18+E]}},sine_sum};
+    wire signed [27+E:0] sine_wide = {{9{calc_sine[18+E]}},calc_sine};
     wire signed [27+E:0] base_product = (sine_wide <<< 8) - sine_wide;
     wire signed [28+E:0] numerator = $signed({base_product[27+E],base_product}) +
                                   $signed({delta_product[27+E],delta_product}) + MIX_ROUND;
@@ -173,9 +185,16 @@ module global_crossfade #(
         else if(SHARED_MULT_ENABLE)begin
             case(shared_stage)
                 0:if(update)begin
-                    shared_base<=$signed({base_product[27+E],base_product})+$signed({high_shifted[27+E],high_shifted})+MIX_ROUND;
                     shared_gain<=gain_for_frame;
-                    shared_a<=difference_low;shared_b<=$signed({10'd0,active_weight});shared_stage<=1;
+                    if(REGISTER_MIX_INPUTS_ENABLE)shared_stage<=5;
+                    else begin
+                        shared_base<=$signed({base_product[27+E],base_product})+$signed({high_shifted[27+E],high_shifted})+MIX_ROUND;
+                        shared_a<=difference_low;shared_b<=$signed({10'd0,calc_weight});shared_stage<=1;
+                    end
+                end
+                5:begin
+                    shared_base<=$signed({base_product[27+E],base_product})+$signed({high_shifted[27+E],high_shifted})+MIX_ROUND;
+                    shared_a<=difference_low;shared_b<=$signed({10'd0,calc_weight});shared_stage<=1;
                 end
                 1:shared_stage<=2;
                 2:begin
@@ -200,6 +219,8 @@ module global_crossfade #(
         $fatal(1,"MASTER_VOLUME_SHIFT must be 1..4");
     initial if(E<0 || E>2 || (E>0 && MASTER_VOLUME_SHIFT<2))
         $fatal(1,"wide precision requires E=0..2 and at least divide-four headroom");
+    initial if(REGISTER_MIX_INPUTS_ENABLE && !SHARED_MULT_ENABLE)
+        $fatal(1,"registered mix inputs require the shared multiplier scheduler");
 `endif
     wire raw_clip = E==0 ? ((output_value > 28'sd32767) || (output_value < -28'sd32768)) :
                           ((output_value24 > 36'sd8388607) || (output_value24 < -36'sd8388608));

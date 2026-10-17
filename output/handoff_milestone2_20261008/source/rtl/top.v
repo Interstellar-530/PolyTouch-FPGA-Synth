@@ -546,7 +546,7 @@ module top #(
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
         .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),
         .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT), .MUTE_SLEW_ENABLE(1),
-        .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS)
+        .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS),.REGISTER_MIX_INPUTS_ENABLE(1)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (timbre_target),

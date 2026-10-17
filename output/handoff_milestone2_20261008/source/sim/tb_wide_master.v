@@ -8,7 +8,7 @@ module tb_wide_master;
   wire req;wire signed[17:0]ma,mb;reg signed[35:0]product=0;
   always @(posedge clk)if(req)product<=ma*mb;
   global_crossfade #(.PRESSURE_GAIN_ENABLE(1),.MUTE_SLEW_ENABLE(1),.TIMBRE_SLEW_ENABLE(1),
-   .MASTER_VOLUME_SHIFT(2),.SHARED_MULT_ENABLE(g),.EXTRA_FRACTION_BITS(2)) dut(
+   .MASTER_VOLUME_SHIFT(2),.SHARED_MULT_ENABLE(g),.EXTRA_FRACTION_BITS(2),.REGISTER_MIX_INPUTS_ENABLE(g)) dut(
    .clk(clk),.rst(rst),.update(update),.clear_clip(1'b0),.mix_weight(weight),.sine_sum(a),.bright_sum(b),
    .sample_out(sample16[g]),.sample_out24(value[g]),.clip_event(clip[g]),.pressure_enable(1'b1),
    .pressure_level(pressure),.mute(mute),.mult_request(req),.mult_operand_a(ma),.mult_operand_b(mb),.mult_result(product));
@@ -27,6 +27,8 @@ module tb_wide_master;
   update=1;@(negedge clk);update=0;
   // Local output is valid immediately; shared completion is five edges later.
   if(value[0]!==expected[23:0] || clip[0]!==expected_clip[0])$fatal(1,"local wide master mismatch %0d actual=%0d expected=%0d",i,value[0],expected);
+  // Adversarial mid-frame changes must not alter the registered frame.
+  a=~a;b=~b;weight=~weight;pressure=~pressure;mute=~mute;
   wait(lane[1].dut.result_valid);@(posedge clk);#1;
   if(value[1]!==expected[23:0] || sample16[1]!==expected[23:8] || clip[1]!==expected_clip[0])
    $fatal(1,"shared wide master mismatch %0d actual=%0d expected=%0d",i,value[1],expected);
