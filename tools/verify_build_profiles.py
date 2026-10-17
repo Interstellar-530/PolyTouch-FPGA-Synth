@@ -12,6 +12,7 @@ def main():
     parser.add_argument('--gw-sh', default=r'E:\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\bin\gw_sh.exe')
     parser.add_argument('--iverilog', default=r'C:\iverilog\bin\iverilog.exe')
     parser.add_argument('--out', type=Path)
+    parser.add_argument('--setup-only',action='store_true',help='only real project setup and RTL elaboration for both profiles')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     source = root/'output/handoff_milestone2_20261008/source'
@@ -65,6 +66,9 @@ close $fh
             '-s',top,'-o',work/(profile+'.vvp'),*rtl,source/'sim/gowin_prom_model.v'], cwd=source)
         (out/(profile+'-sources.txt')).write_text('\n'.join(paths)+'\n',encoding='utf-8')
 
+    if args.setup_only:
+        print(f'PASS: {len(rows)} real setup/elaboration checks; no mock programming checks.',flush=True)
+        return
     fixture = work/'fixture/source'
     fixture.mkdir(parents=True,exist_ok=True)
     for name in ['rtl','constraints']:

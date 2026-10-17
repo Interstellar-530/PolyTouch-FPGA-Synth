@@ -1,0 +1,2 @@
+FATAL: E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_note_ownership_top.v:18: held C4 must have one voice, found=0
+       Time: 7728984120  Scope: tb_note_ownership_top.require_held

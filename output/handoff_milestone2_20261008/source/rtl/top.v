@@ -328,11 +328,16 @@ module top #(
     wire [31:0] v_vel;       // 4 x 8 bit
     wire [3:0]  v_idle;
     wire [3:0]  v_start;
+    wire owned_ev_valid;
+    note_ownership u_ownership(
+        .clk(clk_audio),.rst(rst),.clear(clear_events),.manual_mode(!demo_mode),
+        .event_valid(ev_valid),.event_on(ev_word[15]),.note(ev_word[14:8]),
+        .source_uart(pending_valid || uart_direct),.forward_valid(owned_ev_valid));
 
     voice_alloc u_alloc (
         .clk        (clk_audio),
         .rst        (rst),
-        .ev_valid   (ev_valid),
+        .ev_valid   (owned_ev_valid),
         .ev_on      (ev_word[15]),
         .ev_note    (ev_word[14:8]),
         .ev_vel     (ev_word[7:0]),

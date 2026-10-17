@@ -24,3 +24,4 @@ rtl/audio/clk_params.vh
 rtl/audio/instrument_controls.v
 rtl/audio/bend_coefficients.vh
 rtl/audio/voice_transition.v
+rtl/audio/note_ownership.v

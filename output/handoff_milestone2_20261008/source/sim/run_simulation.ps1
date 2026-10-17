@@ -235,7 +235,7 @@ try {
 
     # Shared board controls are required by every bench containing rtl/top.v.
     foreach ($entry in $suite) {
-        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v') }
+        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v') }
     }
     $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName)
     foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top')) {
@@ -245,7 +245,7 @@ try {
     foreach ($name in @('tb_architecture_equivalence','tb_shared_bend_equivalence','tb_bend_equivalence','tb_shared_master','tb_frame_velocity')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('sim\gowin_prom_model.v','sim\reference\baseline_shared_wavetable_engine.v','sim\reference\baseline_pressure_bend.v')) }
     }
-    foreach ($name in @('tb_headroom','tb_bend_precision','tb_adc_reset_top','tb_control_sampling','tb_mute_slew','tb_voice_transition','tb_voice_transition_audio','tb_voice_transition_top')) {
+    foreach ($name in @('tb_headroom','tb_bend_precision','tb_adc_reset_top','tb_control_sampling','tb_mute_slew','tb_voice_transition','tb_voice_transition_audio','tb_voice_transition_top','tb_note_ownership','tb_note_ownership_top')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
     }
 
