@@ -331,7 +331,8 @@ module tb_top_i2s;
 
         // 5) 数字静音 M0 / 恢复 M1
         send_cmd3("M", "0", " ");
-        wait_frames(40);
+        // Unity-to-zero slew is 4096/32 = 128 frames, plus serial buffering.
+        wait_frames(140);
         if (decoded_latest !== 24'd0) begin
             $display("FAIL tb_top_i2s: M0 did not zero the DAC word (%h)", decoded_latest);
             errors = errors + 1;

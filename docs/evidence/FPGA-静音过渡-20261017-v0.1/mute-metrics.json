@@ -1,0 +1,8 @@
+{
+  "stimulus": "constant 24902 LSB, unity-to-zero transition; derivative spectrum",
+  "ramp_frames": 128,
+  "ramp_ms": 2.6666666666666665,
+  "max_step_smooth": 195.0,
+  "max_step_hard": 24902.0,
+  "high_band_energy_reduction_db": 40.73254229524736
+}

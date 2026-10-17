@@ -19,7 +19,8 @@ module global_crossfade #(
     parameter integer TIMBRE_SLEW_ENABLE = 0,
     parameter [7:0] TIMBRE_RESET_WEIGHT = 64,
     parameter integer SHARED_MULT_ENABLE = 0,
-    parameter integer MASTER_VOLUME_SHIFT = 1
+    parameter integer MASTER_VOLUME_SHIFT = 1,
+    parameter integer MUTE_SLEW_ENABLE = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -37,7 +38,8 @@ module global_crossfade #(
     input  wire [11:0]        pressure_level,
     output wire mult_request,
     output wire signed [17:0] mult_operand_a,mult_operand_b,
-    input wire signed [35:0] mult_result
+    input wire signed [35:0] mult_result,
+    input wire mute
 );
     reg [7:0] weight_state;
     wire [7:0] weight_next = (mix_weight > weight_state) ? weight_state+8'd1 :
@@ -81,7 +83,7 @@ module global_crossfade #(
     wire signed [27:0] after_pressure;
     wire [12:0] gain_for_frame;
     generate
-        if (PRESSURE_GAIN_ENABLE != 0) begin : g_pressure
+        if (PRESSURE_GAIN_ENABLE != 0 || MUTE_SLEW_ENABLE != 0) begin : g_pressure
             localparam integer ADC_SPAN = (PRESSURE_ADC_FULL > PRESSURE_ADC_LOW) ?
                                            PRESSURE_ADC_FULL - PRESSURE_ADC_LOW : 1;
             localparam integer GAIN_SPAN = 4096 - PRESSURE_MIN_GAIN_Q12;
@@ -99,7 +101,10 @@ module global_crossfade #(
                                           PRESSURE_MIN_GAIN_Q12 :
                                           (pressure_level >= PRESSURE_ADC_FULL) ?
                                           13'd4096 : mapped_gain;
-            wire [12:0] target_gain = pressure_enable ? calibrated_gain : 13'd4096;
+            wire [12:0] unmuted_gain = (PRESSURE_GAIN_ENABLE && pressure_enable) ? calibrated_gain : 13'd4096;
+            // Muting uses the same frame-rate VCA and slew as pressure. No
+            // extra multiplier, post-saturation scaling or phase reset.
+            wire [12:0] target_gain = (MUTE_SLEW_ENABLE && mute) ? 13'd0 : unmuted_gain;
             reg  [12:0] gain_q12;
             reg  [12:0] gain_next;
             assign gain_for_frame=gain_next;

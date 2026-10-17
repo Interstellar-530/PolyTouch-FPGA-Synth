@@ -526,14 +526,14 @@ module top #(
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
         .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),
-        .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT)
+        .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT), .MUTE_SLEW_ENABLE(1)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (timbre_target),
         .mult_request(xf_mult_req),.mult_operand_a(xf_mult_a),.mult_operand_b(xf_mult_b),.mult_result(audio_mult_result),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
-        .pressure_enable (!demo_mode), .pressure_level (pressure_level)
+        .pressure_enable (!demo_mode), .pressure_level (pressure_level), .mute(uart_muted)
     );
 
     // ------------------------------------------------------------ mixer ---
@@ -556,9 +556,9 @@ module top #(
                            {2'b00, adc_busy, adc_valid};
     assign clip_fold = fold_clip ^ fold_pressure ^ fold_bend;
 
-    // M0 只把送入 DAC 的数字采样置零，不切断 pa_en，也不停止声部/曲目计时。
+    // M0 通过现有全局VCA逐帧淡出，不切断 pa_en，也不停止声部/曲目计时。
     // 静音仍有噪声时应继续检查供电、接地、DAC/耳放模拟路径。
-    wire signed [15:0] final_sample = (rst | uart_muted) ? 16'sd0 : mixed;
+    wire signed [15:0] final_sample = rst ? 16'sd0 : mixed;
 
     // ------------------------------------------------------- audio output ---
     // AUDIO_IF 是编译期常数，两条接口互斥；未选中的那组输出固定为低电平，
