@@ -1,13 +1,13 @@
 `timescale 1ns/1ps
-module tb_bandlimit_engine;
+module tb_bandlimit_engine #(parameter integer EXTRA=0);
  reg clk=0;always #5 clk=~clk;
  reg rst=1,tick=0;reg[127:0]incs=0;reg[63:0]envs=0;reg[31:0]vels=0;
  reg[16:0]ratio=65536;reg[3:0]retrigs=0;
- wire[1:0]valid;wire signed[18:0]ss[0:1],bs[0:1];
+ wire[1:0]valid;wire signed[18+EXTRA:0]ss[0:1],bs[0:1];
  genvar g;generate for(g=0;g<2;g=g+1)begin:lane
   wire request;wire signed[17:0]ma,mb;reg signed[35:0]product=0;
   always @(posedge clk)if(request)product<=ma*mb;
-  shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1)) dut(
+  shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1),.EXTRA_FRACTION_BITS(EXTRA)) dut(
    .clk(clk),.rst(rst),.sample_tick(tick),.inc0(incs[31:0]),.inc1(incs[63:32]),.inc2(incs[95:64]),.inc3(incs[127:96]),
    .env0(envs[15:0]),.env1(envs[31:16]),.env2(envs[47:32]),.env3(envs[63:48]),
    .vel0(vels[7:0]),.vel1(vels[15:8]),.vel2(vels[23:16]),.vel3(vels[31:24]),
@@ -19,7 +19,7 @@ module tb_bandlimit_engine;
  reg[1023:0]path;
  initial begin
   if(!$value$plusargs("VECTORS=%s",path))begin
-   path="sim/vectors/bandlimit_smoke.txt";
+   path=EXTRA==0?"sim/vectors/bandlimit_smoke.txt":"sim/vectors/bandlimit_wide_smoke.txt";
   end
   fd=$fopen(path,"r");if(!fd)$fatal(1,"cannot open vectors");
   if($value$plusargs("CAPTURE=%s",path))capture=$fopen(path,"w");

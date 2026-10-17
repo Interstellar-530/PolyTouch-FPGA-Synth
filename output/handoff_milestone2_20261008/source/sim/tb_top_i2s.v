@@ -8,7 +8,7 @@
 //   1) sample_tick 单拍、间隔 256 个 clk_12m288（48 kHz）；
 //   2) BCK 周期 4 拍 = 3.072 MHz、高/低各 2 拍；LRCK 周期 256 拍；每帧 64 个 BCK；
 //   3) DIN 只在 BCK 下降沿变化；左右半帧各 32 槽、位置 0 与 25..31 为零填充；
-//   4) 每帧解出的 24 位槽与 DUT 的 final_sample 对齐：高 16 位相等、低 8 位为零；
+//   4) 每帧解出的24位字与DUT的完整final_sample24对齐；低位保留VCA计算结果；
 //   5) 未选中的板载 PT8211 三线恒低、dac_xsmt 恒高、三线无 X；
 //   6) 单音 A4 的解码波形向上过零平均周期 = 48000/440 = 109.09 拍（±1%）；
 //   7) 四个音的相位增量与 440*2^((n-69)/12)*2^32/48000 相差 < 3 ppm；
@@ -56,7 +56,7 @@ module tb_top_i2s;
     reg [23:0] decoded_latest = 24'd0;
     integer frames_checked = 0;
 
-    reg signed [15:0] final_pipe = 16'sd0; // dut.final_sample 的一拍流水
+    reg signed [23:0] final_pipe = 24'sd0;
     reg bck_q = 1'b0, din_q = 1'b1;
     reg mon_en = 1'b0;      // 上电复位释放后才开始判定，复位期间的 X/过渡不计分
 
@@ -67,7 +67,7 @@ module tb_top_i2s;
     // 时钟域监视：采样节拍间隔、DIN 稳定性、LRCK/BCK 周期
     always @(posedge clk12) begin
         cyc = cyc + 1;
-        final_pipe <= dut.final_sample;
+        final_pipe <= dut.final_sample24;
 
         if (!mon_en) begin
             bck_q = i2s_bck;
@@ -184,7 +184,7 @@ module tb_top_i2s;
         end
         last_lrck_fall = cyc;
         frame_cnt = frame_cnt + 1;
-        exp_word = {final_pipe[15:0], 8'b0};
+        exp_word = final_pipe;
         word = 24'd0;
         slot = 0;
         end

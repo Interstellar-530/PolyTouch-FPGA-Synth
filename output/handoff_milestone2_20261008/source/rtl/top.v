@@ -35,7 +35,8 @@ module top #(
     parameter integer PRESSURE_GAIN_STEP = 32,
     // Four signed 16-bit voices, unity pressure gain: divide by four before
     // saturation. This adds 6.02 dB headroom over the historical shift=1.
-    parameter integer MASTER_VOLUME_SHIFT = 2
+    parameter integer MASTER_VOLUME_SHIFT = 2,
+    parameter integer CORE_EXTRA_FRACTION_BITS = 2
 ) (
     input  wire clk_27m,     // H11，板载 27 MHz；AUDIO_IF=1 时不使用
     input  wire clk_12m288,  // T7（J14-10，GCLKT_3），外置 3.3 V CMOS 12.288 MHz 有源晶振
@@ -506,7 +507,7 @@ module top #(
         .gate (v_gate[3]), .retrigger (v_retrig[3]), .env (v_env3), .idle (v_idle[3])
     );
 
-    wire signed [18:0] sine_sum, bright_sum;
+    wire signed [18+CORE_EXTRA_FRACTION_BITS:0] sine_sum, bright_sum;
     wire               sums_valid;
     wire engine_mult_req,xf_mult_req;
     wire signed[17:0] engine_mult_a,engine_mult_b,xf_mult_a,xf_mult_b;
@@ -521,7 +522,8 @@ module top #(
     always @(posedge clk_audio)if(!rst && engine_mult_req && xf_mult_req)$fatal(1,"audio multiplier collision");
 `endif
 
-    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1),.BANDLIMIT_ENABLE(1)) u_engine (
+    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1),.BANDLIMIT_ENABLE(1),
+        .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS)) u_engine (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
         .inc0 (inc0), .inc1 (inc1), .inc2 (inc2), .inc3 (inc3),
         .bend_ratio_q16(bend_ratio_q16),
@@ -534,6 +536,7 @@ module top #(
     );
 
     wire signed [15:0] mixed_shared;
+    wire signed [23:0] mixed_shared24;
     wire [31:0] xf_clip_count;
     wire        xf_clip_event;
 
@@ -542,20 +545,21 @@ module top #(
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
         .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),
-        .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT), .MUTE_SLEW_ENABLE(1)
+        .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT), .MUTE_SLEW_ENABLE(1),
+        .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (timbre_target),
         .mult_request(xf_mult_req),.mult_operand_a(xf_mult_a),.mult_operand_b(xf_mult_b),.mult_result(audio_mult_result),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
+        .sample_out24(mixed_shared24),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
         .pressure_enable (!demo_mode), .pressure_level (pressure_level), .mute(uart_muted)
     );
 
     // ------------------------------------------------------------ mixer ---
-    // [S6 共享引擎] 逐声部的 mixer_s6 四路求和与 VOLUME_SHIFT=1 主增益已经由
-    // global_crossfade 接管：交叉混合与“除以 2”在同一处各做一次，削波统计也在
-    // 同一个主增益边界上计数，不会重复计数。mixer_s6 与它的 (1,4,6,4,1) FIR 仍
+    // 全局模块统一执行交叉混合、固定余量（生产默认除以4）、VCA及最终量化，
+    // 削波只在这一主增益边界计数。mixer_s6 与它的 (1,4,6,4,1) FIR 仍
     // 留在库里并由 tb_s6_audio 覆盖，产品顶层不再实例化：顶层再串一级只会多出
     // 一拍延迟和一份死逻辑。FIR 仍然旁路，启用会把 10 kHz 压到约 -8.5 dB，
     // 音频验收基线要重做。
@@ -575,6 +579,7 @@ module top #(
     // M0 通过现有全局VCA逐帧淡出，不切断 pa_en，也不停止声部/曲目计时。
     // 静音仍有噪声时应继续检查供电、接地、DAC/耳放模拟路径。
     wire signed [15:0] final_sample = rst ? 16'sd0 : mixed;
+    wire signed [23:0] final_sample24 = rst ? 24'sd0 : mixed_shared24;
 
     // ------------------------------------------------------- audio output ---
     // AUDIO_IF 是编译期常数，两条接口互斥；未选中的那组输出固定为低电平，
@@ -595,10 +600,10 @@ module top #(
             assign i2s_din  = 1'b0;
             assign dac_xsmt = 1'b0;
         end else begin : g_i2s
-            // 合成链本身是 16 位样值。槽宽 24 位时把样值放到高 16 位、低 8 位补零，
-            // 帧格式满足 24 位槽（赛题要求 48 kHz/24 位/64 BCK），但有效位深仍是 16 位，
-            // 不据此宣称已经具备 24 位合成精度；真正的 24 位数据通路属于后续工作。
-            wire signed [23:0] audio_24 = {final_sample, 8'b0};
+            // Keep two fractional bits through interpolation/envelope/velocity,
+            // then quantize the VCA product directly into the 24-bit I2S word.
+            // Numerical output width does not imply 24-bit analog SNR.
+            wire signed [23:0] audio_24 = final_sample24;
 
             // 嵌套的 generate 区不能再写 generate/endgenerate 关键字（Verilog 限制）。
             if (I2S_DATA_BITS == 24) begin : g_24

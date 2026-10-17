@@ -6,9 +6,9 @@
 //   * ROM：整机 2 个，而不是每声部 2 个（同 512 点表）；
 //   * 乘法器：整机只写一条乘法表达式（乘数与被乘数来自 mux），综合后约 1-2 个；
 //   * 交叉混合：全局一次（global_crossfade.v），而不是每声部一次。
-// 无弯音时每声部15拍，含共享弯音时19拍（四声部76拍）。
-// 标准档每帧256拍，调试档576拍；新增弯音仍复用同一乘法器。
-// 分量和是 19 位，插值/包络/力度仍保持原来的逐级舍入位置。
+// 默认兼容路径每声部15拍，含共享弯音19拍，带限时27拍。
+// 标准档每帧256拍，调试档576拍；四声部带限引擎108拍。
+// EXTRA_FRACTION_BITS=0保留旧数值；生产值2保留两个小数位并就近舍入。
 //
 // 数值口径与逐声部版一致的地方：插值 (yb-ya)*frac + 256 >>> 9；包络缩放取
 // [31:16]、力度缩放取 [22:7]。唯一不同的是交叉混合的舍入位置，
@@ -16,7 +16,8 @@
 module shared_wavetable_engine #(
     parameter integer BEND_SHARED_ENABLE = 0,
     parameter integer SHARED_MULT_ENABLE = 0,
-    parameter integer BANDLIMIT_ENABLE = 0
+    parameter integer BANDLIMIT_ENABLE = 0,
+    parameter integer EXTRA_FRACTION_BITS = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -25,8 +26,8 @@ module shared_wavetable_engine #(
     input  wire               retrig0, retrig1, retrig2, retrig3,
     input  wire [15:0]        env0, env1, env2, env3,
     input  wire [7:0]         vel0, vel1, vel2, vel3,
-    output reg signed [18:0]  sine_sum,
-    output reg signed [18:0]  bright_sum,
+    output reg signed [18+EXTRA_FRACTION_BITS:0]  sine_sum,
+    output reg signed [18+EXTRA_FRACTION_BITS:0]  bright_sum,
     output reg                sums_valid,
     input wire [16:0]         bend_ratio_q16,
     output wire mult_request,
@@ -143,17 +144,25 @@ module shared_wavetable_engine #(
     reg signed [15:0] a_bright = 16'sd0, b_bright = 16'sd0;
     reg signed [17:0] interp_s = 18'sd0, interp_b = 18'sd0;
     reg signed [15:0] bank_a=0;
-    wire signed [17:0] bank_interpolated = $signed(bank_a) + $signed((mul_p[26:0]+27'sd256) >>> 9);
+    wire signed [35:0] interpolation_delta = (mul_p + (36'sd256 >>> EXTRA_FRACTION_BITS)) >>> (9-EXTRA_FRACTION_BITS);
+    wire signed [17:0] bank_interpolated = ($signed(bank_a) <<< EXTRA_FRACTION_BITS) + interpolation_delta;
     wire signed [35:0] bank_mixed_delta = (mul_p + 36'sd32768) >>> 16;
-    reg signed [15:0] scaled_s = 16'sd0, scaled_b = 16'sd0;
-    reg signed [18:0] sine_acc = 19'sd0, bright_acc = 19'sd0;
+    reg signed [15+EXTRA_FRACTION_BITS:0] scaled_s = 0, scaled_b = 0;
+    reg signed [18+EXTRA_FRACTION_BITS:0] sine_acc = 0, bright_acc = 0;
     reg [15:0] env_q = 16'd0;
     reg [7:0]  vel_q = 8'd0;
 
     // 累加前必须按 16 位有符号符号扩展：{13'd0, scaled_s} 会把它当无符号数：
     // −20840 会变成 +44744，在输出上留下约半个满量程的直流偏置。
-    wire signed [18:0] scaled_s_ext = {{3{scaled_s[15]}}, scaled_s};
-    wire signed [18:0] scaled_b_ext = {{3{scaled_b[15]}}, scaled_b};
+    wire signed [18+EXTRA_FRACTION_BITS:0] scaled_s_ext = {{3{scaled_s[15+EXTRA_FRACTION_BITS]}}, scaled_s};
+    wire signed [18+EXTRA_FRACTION_BITS:0] scaled_b_ext = {{3{scaled_b[15+EXTRA_FRACTION_BITS]}}, scaled_b};
+    wire signed [17:0] envelope_result=(mul_p+(EXTRA_FRACTION_BITS>0?36'sd32768:36'sd0)) >>> 16;
+    wire signed [15+EXTRA_FRACTION_BITS:0] velocity_result=(mul_p+(EXTRA_FRACTION_BITS>0?36'sd64:36'sd0)) >>> 7;
+    wire signed [18+EXTRA_FRACTION_BITS:0] velocity_result_ext={{3{velocity_result[15+EXTRA_FRACTION_BITS]}},velocity_result};
+`ifdef SIMULATION
+    initial if(EXTRA_FRACTION_BITS<0 || EXTRA_FRACTION_BITS>2)
+        $fatal(1,"EXTRA_FRACTION_BITS must be 0..2 for the 18x18 datapath");
+`endif
 
     always @(posedge clk) begin
         if (rst) begin
@@ -240,7 +249,7 @@ module shared_wavetable_engine #(
                     state <= ST_INTERP_S;
                 end
                 ST_INTERP_S: begin
-                    interp_s <= $signed(a_sine) + $signed((mul_p[26:0] + 27'sd256) >>> 9);
+                    interp_s <= ($signed(a_sine) <<< EXTRA_FRACTION_BITS) + interpolation_delta;
                     state    <= ST_INTERP_B;
                 end
                 ST_DIFF_B: begin
@@ -252,7 +261,7 @@ module shared_wavetable_engine #(
                     state <= ST_INTERP_B;
                 end
                 ST_INTERP_B: begin
-                    interp_b <= $signed(a_bright) + $signed((mul_p[26:0] + 27'sd256) >>> 9);
+                    interp_b <= ($signed(a_bright) <<< EXTRA_FRACTION_BITS) + interpolation_delta;
                     env_q    <= cur_env;
                     vel_q    <= cur_vel;
                     mul_a <= $signed(interp_s);
@@ -290,7 +299,7 @@ module shared_wavetable_engine #(
                     state <= ST_VEL_S;
                 end
                 ST_VEL_S: begin
-                    mul_a <= $signed(mul_p[31:16]);     // (interp*env) >> 16
+                    mul_a <= envelope_result;
                     mul_b <= $signed({10'd0, vel_q});
                     state <= ST_W_VEL_S;
                 end
@@ -298,7 +307,7 @@ module shared_wavetable_engine #(
                     state <= ST_FIN_S;
                 end
                 ST_FIN_S: begin
-                    scaled_s <= $signed(mul_p[22:7]);   // (voiced*vel) >> 7
+                    scaled_s <= velocity_result;
                     mul_a <= $signed(interp_b);
                     mul_b <= $signed({2'd0,env_q});
                     state <= ST_W_ENV_B;
@@ -312,7 +321,7 @@ module shared_wavetable_engine #(
                     state <= ST_VEL_B;
                 end
                 ST_VEL_B: begin
-                    mul_a <= $signed(mul_p[31:16]);
+                    mul_a <= envelope_result;
                     mul_b <= $signed({10'd0, vel_q});
                     state <= ST_W_VEL_B;
                 end
@@ -320,12 +329,12 @@ module shared_wavetable_engine #(
                     state <= ST_FIN_B;
                 end
                 ST_FIN_B: begin
-                    scaled_b <= $signed(mul_p[22:7]);
+                    scaled_b <= velocity_result;
                     sine_acc <= sine_acc + scaled_s_ext;
-                    bright_acc <= bright_acc + {{3{mul_p[22]}},mul_p[22:7]};
+                    bright_acc <= bright_acc + velocity_result_ext;
                     if(vsel==3) begin
                         sine_sum <= sine_acc + scaled_s_ext;
-                        bright_sum <= bright_acc + {{3{mul_p[22]}},mul_p[22:7]};
+                        bright_sum <= bright_acc + velocity_result_ext;
                         sums_valid<=1'b1;state<=ST_IDLE;
                     end else begin vsel<=vsel+1'b1;state<=BEND_SHARED_ENABLE?ST_BEND_LO:ST_ADDR_A;end
                 end

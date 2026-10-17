@@ -1,0 +1,2 @@
+PASS tb_shared_master: 4096 ADC levels, all weights, random signed extrema, smoothing/gain/bypass/clipping match, two shared products
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_shared_master.v:29: $finish called at 327720000 (1ps)

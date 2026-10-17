@@ -27,12 +27,12 @@ module tb_pressure_top;
     reg signed [63:0] low_energy=0,high_energy=0;
     real step_time,response_time,rms_ratio;
     always @(negedge lrck)begin
-      sent_previous=sent_current;sent_current={a.final_sample,8'b0};
+      sent_previous=sent_current;sent_current=a.final_sample24;
     end
     always @(posedge frame_valid)begin
       #1;
       if(monitor)begin
-        if(left_word!==sent_previous || left_word!==right_word || left_word[7:0]!==0)
+        if(left_word!==sent_previous || left_word!==right_word)
           $fatal(1,"I2S sample mismatch left=%h right=%h expected=%h",left_word,right_word,sent_previous);
         serial_frames=serial_frames+1;
       end
@@ -44,16 +44,16 @@ module tb_pressure_top;
         master_before=$signed(a.sine_sum);
         master_before=master_before*(255-weight_reference);
         expected=$signed(a.bright_sum);
-        master_before=(master_before+expected*weight_reference+127)>>>(8+a.MASTER_VOLUME_SHIFT);
+        master_before=(master_before+expected*weight_reference+(a.CORE_EXTRA_FRACTION_BITS>0 ? (1 << (7+a.MASTER_VOLUME_SHIFT)) : 127))>>>(8+a.MASTER_VOLUME_SHIFT);
         // The independent model uses signed integers on both operands. Mixing
         // unsigned Q12 into a signed product would make >>> a logical shift.
         gain_reference=a.u_xf.g_pressure.gain_next;
-        expected=(master_before*gain_reference)>>>12;
-        if(expected>32767)expected=32767;if(expected< -32768)expected=-32768;
+        expected=(master_before*gain_reference+(1 << (3+a.CORE_EXTRA_FRACTION_BITS)))>>>(4+a.CORE_EXTRA_FRACTION_BITS);
+        if(expected>8388607)expected=8388607;if(expected< -8388608)expected=-8388608;
       end
       if(a.u_xf.result_valid && !a.rst)begin
         #1;
-        if(a.mixed_shared!==expected[15:0])
+        if(a.mixed_shared24!==expected[23:0])
           $fatal(1,"top pressure sample mismatch: actual=%0d expected=%0d master=%0d gain=%0d",
                  a.mixed_shared,expected,master_before,gain_reference);
         if(a.u_engine.phase0!==b.u_engine.phase0 || a.v_env0!==b.v_env0 ||

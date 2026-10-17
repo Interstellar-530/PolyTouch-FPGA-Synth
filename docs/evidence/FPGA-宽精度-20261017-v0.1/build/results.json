@@ -1,0 +1,22 @@
+[
+  {
+    "test": "debug-gowin-setup",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "debug-rtl-elaboration",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "standard-gowin-setup",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "test": "standard-rtl-elaboration",
+    "exit": 0,
+    "passed": true
+  }
+]

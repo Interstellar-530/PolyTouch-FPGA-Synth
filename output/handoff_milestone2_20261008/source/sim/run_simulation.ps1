@@ -245,10 +245,11 @@ try {
     foreach ($name in @('tb_architecture_equivalence','tb_shared_bend_equivalence','tb_bend_equivalence','tb_shared_master','tb_frame_velocity')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('sim\gowin_prom_model.v','sim\reference\baseline_shared_wavetable_engine.v','sim\reference\baseline_pressure_bend.v')) }
     }
-    foreach ($name in @('tb_headroom','tb_bend_precision','tb_adc_reset_top','tb_control_sampling','tb_mute_slew','tb_voice_transition','tb_voice_transition_audio','tb_voice_transition_top','tb_note_ownership','tb_note_ownership_top','tb_bright_banks','tb_bandlimit_engine')) {
+    foreach ($name in @('tb_headroom','tb_bend_precision','tb_adc_reset_top','tb_control_sampling','tb_mute_slew','tb_voice_transition','tb_voice_transition_audio','tb_voice_transition_top','tb_note_ownership','tb_note_ownership_top','tb_bright_banks','tb_bandlimit_engine','tb_wide_master','tb_precision_audio')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
     }
 
+    $suite += @{ Name='tb_bandlimit_engine_wide'; Top='sim\tb_bandlimit_engine.v'; Src=($audioSources + @('sim\gowin_prom_model.v')) }
     $failed = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
@@ -256,6 +257,7 @@ try {
 
         # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
         $compileArgs = @('-g2012', '-DSIMULATION', '-I', '.', '-o', $out, $test.Top) + $test.Src
+        if($test.Name -eq 'tb_bandlimit_engine_wide') { $compileArgs=@('-Ptb_bandlimit_engine.EXTRA=2')+$compileArgs }
         & $Iverilog @compileArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Output ("编译失败：{0}" -f $test.Name)

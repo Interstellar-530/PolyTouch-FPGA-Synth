@@ -13,10 +13,10 @@ def config(inc):
         if inc < 1<<(27+k):
             return k,max(0,(inc-(1<<(26+k)))>>(10+k))
     return 4,0
-def interp(table,p):
+def interp(table,p,extra=0):
     a=p>>23;f=(p>>14)&511
-    return table[a]+((table[(a+1)&511]-table[a])*f+256>>9)
-def vectors(path,smoke=False):
+    return (table[a]<<extra)+((table[(a+1)&511]-table[a])*f+(256>>extra)>>(9-extra))
+def vectors(path,smoke=False,extra=0):
     sine=load('wave_sine.hex');banks=[load(f'wave_bright_h{h}.hex') for h in [16,8,4,2,1]]
     phases=[0]*4;randoms=random.Random(20261017);rows=[];spec=[]
     def emit(incs,ratio,env,vel,retrig,case=-1):
@@ -25,10 +25,11 @@ def vectors(path,smoke=False):
             inc=(incs[v]*ratio>>16)&0xffffffff
             phases[v]=0 if retrig>>v&1 else (phases[v]+inc)&0xffffffff
             lo,w=config(inc);p=phases[v]
-            a=interp(banks[lo],p);b=interp(banks[min(lo+1,4)],p)
-            s=interp(sine,p);bright=a+((b-a)*w+32768>>16)
-            ss+=((s*env[v]>>16)*vel[v]>>7)
-            bs+=((bright*env[v]>>16)*vel[v]>>7)
+            a=interp(banks[lo],p,extra);b=interp(banks[min(lo+1,4)],p,extra)
+            s=interp(sine,p,extra);bright=a+((b-a)*w+32768>>16)
+            env_round=32768 if extra else 0;vel_round=64 if extra else 0
+            ss+=(((s*env[v]+env_round>>16)*vel[v])+vel_round>>7)
+            bs+=(((bright*env[v]+env_round>>16)*vel[v])+vel_round>>7)
         pack=lambda vals,bits:sum(int(x)<<(i*bits) for i,x in enumerate(vals))
         # case is encoded as a positive hex word for portable $fscanf.
         rows.append(f'{pack(incs,32):032x} {ratio:x} {pack(env,16):016x} {pack(vel,8):08x} {retrig:x} {case&0xffffffff:x} {ss} {bs}\n')
@@ -57,14 +58,16 @@ def vectors(path,smoke=False):
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
-    p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=ROOT/'docs/evidence/FPGA-高音带限-20261017-v0.1');p.add_argument('--smoke',action='store_true');p.add_argument('--generate-smoke',action='store_true');args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=ROOT/'docs/evidence/FPGA-高音带限-20261017-v0.1');p.add_argument('--smoke',action='store_true');p.add_argument('--generate-smoke',action='store_true');p.add_argument('--extra',type=int,default=0);args=p.parse_args()
     if args.generate_smoke:
-        vectors(SRC/'sim/vectors/bandlimit_smoke.txt',True);return
+        vectors(SRC/'sim/vectors/bandlimit_smoke.txt',True)
+        vectors(SRC/'sim/vectors/bandlimit_wide_smoke.txt',True,2);return
     out=args.out;out.mkdir(parents=True,exist_ok=True);work=ROOT/'tmp/bandlimit-20261017';work.mkdir(parents=True,exist_ok=True)
-    spec=vectors(work/'vectors.txt',args.smoke);results=[]
+    spec=vectors(work/'vectors.txt',args.smoke,args.extra);results=[]
     for name in ['tb_bright_banks','tb_bandlimit_engine']:
         exe=work/(name+'.vvp');capture=work/'audio.csv'
         cmd=[r'C:\iverilog\bin\iverilog.exe','-g2012','-DSIMULATION','-I',str(SRC),'-s',name,'-o',str(exe),str(SRC/'sim'/(name+'.v'))]+list(map(str,(SRC/'rtl/audio').glob('*.v')))+[str(SRC/'sim/gowin_prom_model.v')]
+        cmd.insert(1,'-Ptb_bandlimit_engine.EXTRA='+str(args.extra))
         cp=subprocess.run(cmd,cwd=SRC,capture_output=True);(out/(name+'-compile.log')).write_bytes(cp.stdout+cp.stderr)
         if cp.returncode:raise RuntimeError(cp.stderr.decode(errors='replace'))
         cp=subprocess.run([r'C:\iverilog\bin\vvp.exe',str(exe),'+VECTORS='+str(work/'vectors.txt'),'+CAPTURE='+str(capture)],cwd=SRC,capture_output=True,timeout=300)
@@ -83,7 +86,7 @@ def main():
             old=residual(legacy);new=residual(actual)
             s.update(alias_before_dbc=float(10*np.log10(old)),alias_after_dbc=float(10*np.log10(new)),reduction_db=float(10*np.log10(old/new)))
             if s['note']>=96:assert s['reduction_db']>35
-            if s['note']==60:assert np.array_equal(actual,legacy)
+            if s['note']==60 and args.extra==0:assert np.array_equal(actual,legacy)
             metrics.append(s)
         (out/'spectrum.json').write_text(json.dumps(metrics,indent=2));print(json.dumps(metrics,indent=2))
 

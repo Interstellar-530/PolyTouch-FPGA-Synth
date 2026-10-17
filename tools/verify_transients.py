@@ -18,13 +18,30 @@ def main():
         if not args.analyze_only:
             cp=subprocess.run(cmd,cwd=source,capture_output=True);(out/(name+'-compile.log')).write_bytes(cp.stdout+cp.stderr)
             if cp.returncode:raise RuntimeError(cp.stderr.decode('utf-8','replace'))
-            cp=subprocess.run([r'C:\iverilog\bin\vvp.exe',str(exe),'+CAPTURE='+str(capture)],cwd=source,capture_output=True,timeout=150)
+            cp=subprocess.run([r'C:\iverilog\bin\vvp.exe',str(exe),'+CAPTURE='+str(capture)],cwd=source,capture_output=True,timeout=300)
             (out/(name+'.log')).write_bytes(cp.stdout+cp.stderr)
             results.append(dict(test=name,exit=cp.returncode,seconds=round(time.monotonic()-started,3)))
             (out/'results.json').write_text(json.dumps(results,indent=2),encoding='utf-8')
             print(cp.stdout.decode('utf-8','replace')[-1800:],flush=True)
             if cp.returncode:raise RuntimeError(name+' failed')
         if capture.exists():(out/capture.name).write_bytes(capture.read_bytes())
+        if name=='tb_precision_audio':
+            rows=list(csv.DictReader(capture.open()));wave=np.array([int(x,16) for x in (source/'rtl/audio/wave_sine.hex').read_text().split()]);wave=np.where(wave>=32768,wave-65536,wave)
+            coefficient=np.fft.rfft(wave)[1]/512
+            metrics=[]
+            for case_id in range(8):
+                group=[r for r in rows if int(r['case_id'])==case_id]
+                phase=np.array([int(r['phase']) for r in group],dtype=float)/2**32
+                ideal=2*np.real(coefficient*np.exp(2j*np.pi*phase))*int(group[0]['env'])/65536*100/128*255/256/4*int(group[0]['gain'])/4096*256
+                snrs={}
+                for key in ['legacy','wide']:
+                    signal=np.array([int(r[key]) for r in group],dtype=float)
+                    snrs[key]=float(10*np.log10(np.mean(ideal**2)/np.mean((signal-ideal)**2)))
+                metric=dict(case_id=case_id,envelope=int(group[0]['env']),gain_q12=int(group[0]['gain']),legacy_snr_db=snrs['legacy'],wide_snr_db=snrs['wide'],improvement_db=snrs['wide']-snrs['legacy'])
+                assert metric['improvement_db']>8
+                if case_id==0:assert metric['wide_snr_db']>=92
+                metrics.append(metric)
+            (out/'precision-metrics.json').write_text(json.dumps(metrics,indent=2),encoding='utf-8');print(json.dumps(metrics),flush=True)
         if name=='tb_mute_slew':
             rows=list(csv.DictReader(capture.open()));soft=np.array([int(r['smooth']) for r in rows[:192]],dtype=float);hard=np.array([int(r['hard']) for r in rows[:192]],dtype=float)
             ds=np.diff(soft);dh=np.diff(hard);freq=np.fft.rfftfreq(16384,1/48000);band=(freq>=5000)&(freq<=20000)

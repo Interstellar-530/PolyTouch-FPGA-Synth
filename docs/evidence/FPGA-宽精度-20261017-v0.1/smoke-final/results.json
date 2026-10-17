@@ -1,0 +1,10 @@
+[
+  {
+    "test": "tb_bright_banks",
+    "exit": 0
+  },
+  {
+    "test": "tb_bandlimit_engine",
+    "exit": 0
+  }
+]
