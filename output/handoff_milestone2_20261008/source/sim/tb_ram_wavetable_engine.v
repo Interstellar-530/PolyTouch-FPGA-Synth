@@ -14,7 +14,8 @@ module tb_ram_wavetable_engine #(
   ram_wavetable_engine #(.VOICE_COUNT(VOICES),.FRAME_CYCLES(PERIOD)) dut(
    .clk(clk),.rst(rst),.sample_tick(tick),.cfg_valid(cfg_valid[g]),.cfg_ready(cfg_ready[g]),
    .cfg_voice(cfg_voice),.cfg_increment(cfg_inc),.cfg_envelope(cfg_env),.cfg_velocity(cfg_vel),.cfg_retrigger(cfg_rt),
-   .sine_sum(ss[g]),.bright_sum(bs[g]),.sums_valid(valid[g]),.busy(busy[g]),.initialized(initialized[g]));
+   .sine_sum(ss[g]),.bright_sum(bs[g]),.sums_valid(valid[g]),.busy(busy[g]),.initialized(initialized[g]),
+   .aux_request(1'b0),.aux_operand_a(33'sd0),.aux_operand_b(18'sd0));
  end endgenerate
  integer fd,cap=0,rc,voice_id,case_id,es,eb,frames=0,cycles=0,last_tick=0,n,wait_cycles;
  integer product_requests=0,rom_reads=0,active_count=0;

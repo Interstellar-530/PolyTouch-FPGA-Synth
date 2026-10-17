@@ -10,7 +10,10 @@ module ram_wavetable_engine #(
  input wire[31:0]cfg_increment,input wire[15:0]cfg_envelope,
  input wire[6:0]cfg_velocity,input wire cfg_retrigger,
  output reg signed[31:0]sine_sum,output reg signed[31:0]bright_sum,output reg sums_valid,
- output wire busy,output wire initialized
+ output wire busy,output wire initialized,
+ input wire aux_request,output wire aux_ready,
+ input wire signed[32:0]aux_operand_a,input wire signed[17:0]aux_operand_b,
+ output wire signed[50:0]aux_product
 );
  localparam [5:0] IDLE=0,ADDR_A=1,LATCH_A=2,ADDR_B=3,LATCH_B=4,
   INTERP_S=7,DIFF_B=8,INTERP_B=10,W_ENV_S=12,VEL_S=13,W_VEL_S=14,FIN_S=15,
@@ -69,7 +72,12 @@ module ram_wavetable_engine #(
  wire signed[50:0]product;
  wire mul_enable=voice_audible && (state==DIFF_B || state==INTERP_S || state==W_ENV_S || state==W_VEL_S ||
   state==W_ENV_B || state==W_VEL_B || state==BANK_MUL || state==BANK_MIX_MUL);
- split_audio_multiplier #(33) u_multiplier(clk,rst,mul_enable,mul_a,mul_b,product);
+ assign aux_ready=ram_ready && !sample_tick && (state==IDLE || state==CFG0 || state==CFG1);
+ wire aux_enable=aux_ready && aux_request;
+ wire signed[32:0]active_mul_a=aux_enable?aux_operand_a:mul_a;
+ wire signed[17:0]active_mul_b=aux_enable?aux_operand_b:mul_b;
+ split_audio_multiplier #(33) u_multiplier(clk,rst,mul_enable || aux_enable,active_mul_a,active_mul_b,product);
+ assign aux_product=product;
  wire signed[50:0]interp_delta=(product+51'sd1) >>> 1;
  wire signed[23:0]bank_interpolated=($signed(bank_a) <<< 8)+interp_delta;
  wire signed[50:0]bank_delta=(product+51'sd32768) >>>16;

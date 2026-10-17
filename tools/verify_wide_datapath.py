@@ -5,14 +5,16 @@ import argparse,json,subprocess,sys
 def main():
  sys.stdout.reconfigure(encoding='utf-8',errors='replace')
  root=Path(__file__).resolve().parents[1];src=root/'output/handoff_milestone2_20261008/source'
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'docs/evidence/FPGA-宽乘法通路-20261017-v0.1/model');p.add_argument('--state',action='store_true');args=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'docs/evidence/FPGA-宽乘法通路-20261017-v0.1/model');p.add_argument('--state',action='store_true');p.add_argument('--master',action='store_true');args=p.parse_args()
  out=args.out;out.mkdir(parents=True,exist_ok=True);work=root/'tmp/wide-datapath-20261017';work.mkdir(parents=True,exist_ok=True);results=[]
  module='voice_state_ram' if args.state else 'split_audio_multiplier'
+ bench='tb_wide_master_pair' if args.master else 'tb_'+module
  for name in ['portable','vendor']:
   exe=work/(name+'.vvp')
-  cmd=[r'C:\iverilog\bin\iverilog.exe','-g2012','-s','tb_'+module,'-o',str(exe)]
+  cmd=[r'C:\iverilog\bin\iverilog.exe','-g2012','-s',bench,'-o',str(exe)]
   cmd+=['-DSIMULATION'] if name=='portable' else ['-DGOWIN_VENDOR_MODEL']
-  cmd+=list(map(str,[src/'rtl/audio'/(module+'.v'),src/'sim'/('tb_'+module+'.v')]))
+  cmd+=list(map(str,[src/'rtl/audio'/(module+'.v'),src/'sim'/(bench+'.v')]))
+  if args.master:cmd+=[str(src/'rtl/audio/wide_master.v')]
   if name=='vendor':cmd+=[r'E:\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\simlib\gw2a\prim_sim.v']
   cp=subprocess.run(cmd,cwd=src,capture_output=True);(out/(name+'-compile.log')).write_bytes(cp.stdout+cp.stderr)
   if cp.returncode:raise RuntimeError(cp.stderr.decode(errors='replace')[-2000:])

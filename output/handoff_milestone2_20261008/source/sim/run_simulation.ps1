@@ -254,14 +254,22 @@ try {
     $suite += @{ Name='tb_split_audio_multiplier'; Top='sim\tb_split_audio_multiplier.v'; Src=$audioSources }
     $suite += @{ Name='tb_voice_state_ram'; Top='sim\tb_voice_state_ram.v'; Src=$audioSources }
     $suite += @{ Name='tb_ram_wavetable_engine'; Top='sim\tb_ram_wavetable_engine.v'; Src=($audioSources + @('sim\gowin_prom_model.v')) }
+    $suite += @{ Name='tb_wide_master_pair'; Top='sim\tb_wide_master_pair.v'; Src=$audioSources }
+    foreach($voices in @(8,32,64)) {
+        $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
+    }
     $failed = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
 
         # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
-        $compileArgs = @('-g2012', '-DSIMULATION', '-I', '.', '-o', $out, $test.Top) + $test.Src
+        # Explicit root prevents uninstantiated library prototypes from being
+        # elaborated as extra tops requiring unrelated primitive models.
+        $testModule = [System.IO.Path]::GetFileNameWithoutExtension($test.Top)
+        $compileArgs = @('-g2012', '-DSIMULATION', '-s', $testModule, '-I', '.', '-o', $out, $test.Top) + $test.Src
         if($test.Name -eq 'tb_bandlimit_engine_wide') { $compileArgs=@('-Ptb_bandlimit_engine.EXTRA=2')+$compileArgs }
+        if($test.ContainsKey('Voices')) { $compileArgs=@('-Ptb_ram_audio_datapath.VOICES='+$test.Voices)+$compileArgs }
         & $Iverilog @compileArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Output ("编译失败：{0}" -f $test.Name)
