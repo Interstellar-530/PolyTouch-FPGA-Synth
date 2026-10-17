@@ -70,6 +70,7 @@ module shared_wavetable_engine #(
     reg [15:0] cur_env;
     reg [7:0]  cur_vel;
     reg [127:0] inc_frame;
+    reg [31:0] velocity_frame;
     reg [16:0] ratio_frame, phase_low;
     reg [3:0] retrig_frame;
     wire [31:0] cur_inc = inc_frame >> (vsel*32);
@@ -77,10 +78,10 @@ module shared_wavetable_engine #(
 
     always @* begin
         case (vsel)
-            2'd0:    begin cur_phase = phase0; cur_env = env0; cur_vel = vel0; end
-            2'd1:    begin cur_phase = phase1; cur_env = env1; cur_vel = vel1; end
-            2'd2:    begin cur_phase = phase2; cur_env = env2; cur_vel = vel2; end
-            default: begin cur_phase = phase3; cur_env = env3; cur_vel = vel3; end
+            2'd0:    begin cur_phase = phase0; cur_env = env0; cur_vel = velocity_frame[7:0]; end
+            2'd1:    begin cur_phase = phase1; cur_env = env1; cur_vel = velocity_frame[15:8]; end
+            2'd2:    begin cur_phase = phase2; cur_env = env2; cur_vel = velocity_frame[23:16]; end
+            default: begin cur_phase = phase3; cur_env = env3; cur_vel = velocity_frame[31:24]; end
         endcase
     end
 
@@ -131,6 +132,7 @@ module shared_wavetable_engine #(
             bright_sum <= 19'sd0;
             phase0<=0;phase1<=0;phase2<=0;phase3<=0;
             inc_frame<=0;ratio_frame<=65536;retrig_frame<=0;phase_low<=0;
+            velocity_frame<=0;
         end else begin
             sums_valid <= 1'b0;
             if(sample_tick && BEND_SHARED_ENABLE==0) begin
@@ -145,6 +147,7 @@ module shared_wavetable_engine #(
                         sine_acc   <= 19'sd0;
                         bright_acc <= 19'sd0;
                         inc_frame<={inc3,inc2,inc1,inc0};ratio_frame<=bend_ratio_q16;
+                        velocity_frame<={vel3,vel2,vel1,vel0};
                         retrig_frame<={retrig3,retrig2,retrig1,retrig0};
                         state <= BEND_SHARED_ENABLE ? ST_BEND_LO : ST_ADDR_A;
                     end

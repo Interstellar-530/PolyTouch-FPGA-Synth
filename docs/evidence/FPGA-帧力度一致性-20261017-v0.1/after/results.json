@@ -1,0 +1,27 @@
+[
+  {
+    "test": "tb_architecture_equivalence",
+    "exit": 0,
+    "seconds": 2.187
+  },
+  {
+    "test": "tb_shared_bend_equivalence",
+    "exit": 0,
+    "seconds": 2.235
+  },
+  {
+    "test": "tb_bend_equivalence",
+    "exit": 0,
+    "seconds": 0.25
+  },
+  {
+    "test": "tb_shared_master",
+    "exit": 0,
+    "seconds": 0.453
+  },
+  {
+    "test": "tb_frame_velocity",
+    "exit": 0,
+    "seconds": 0.203
+  }
+]
