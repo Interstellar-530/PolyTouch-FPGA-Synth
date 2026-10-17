@@ -356,7 +356,8 @@ module top #(
     // ------------------------------------------- [S4/S5] ADC 控制路径 ---
     // 2 kHz 控制节拍，分频数按当前主时钟推导：调试档 27 MHz / 13 500 = 2 kHz，
     // 标准档 12.288 MHz / 6 144 = 2 kHz。一次 ADC 事务约 76 us（19 拍 SCLK 周期），
-    // 短于节拍周期，因此 SPI 不会阻塞音频帧；压力与弯音只在节拍上更新。
+    // 每个节拍连续采集 CH1、CH0，整组约 155 us；每路获得真正的 2 kHz 新样本。
+    // 滤波仅在整组完成后推进一次，不能把保持的原始值重复送入中值历史。
     reg [15:0] ctrl_div = 16'd0;
     reg        control_tick = 1'b0;
     always @(posedge clk_audio) begin
@@ -371,11 +372,17 @@ module top #(
         end
     end
 
-    // CH0 = 压力 FSR，CH1 = 弯音电位器；空闲时按节拍轮流发起。
+    // CH0 = 压力 FSR，CH1 = 弯音电位器；每组先 CH1 再 CH0。
     // 显式 1 位通道选择：写成 ~adc_channel[0] 会被上下文补成 3 位（得到 6/7），
     // 这是本仓库第三次遇到 Verilog 上下文位宽坑，故用独立 1 位寄存器。
     reg         adc_sel      = 1'b0;      // 0 = 压力 CH0, 1 = 弯音 CH1
     reg         adc_start    = 1'b0;
+    reg         adc_pair_active = 1'b0;
+    reg         control_sample_tick = 1'b0;
+    // MCP3208 tCSH is at least 500 ns; reserve a full microsecond between
+    // the two conversions instead of restarting on the next system clock.
+    localparam integer ADC_GAP_CYCLES = (AUDIO_CLK_HZ + 999999) / 1000000;
+    reg [$clog2(ADC_GAP_CYCLES+1)-1:0] adc_gap_count = 0;
     reg  [11:0] pressure_raw = 12'd0;
     reg  [11:0] bend_raw     = 12'd2048;
     wire        adc_busy;
@@ -385,16 +392,31 @@ module top #(
 
     always @(posedge clk_audio) begin
       if(rst)begin
-        adc_sel<=0;adc_start<=0;pressure_raw<=0;bend_raw<=12'd2048;
+        adc_sel<=0;adc_start<=0;adc_pair_active<=0;control_sample_tick<=0;
+        adc_gap_count<=0;
+        pressure_raw<=0;bend_raw<=12'd2048;
       end else begin
         adc_start <= 1'b0;
-        if (control_tick && !adc_busy) begin
+        control_sample_tick <= 1'b0;
+        if(adc_gap_count!=0) begin
+            adc_gap_count<=adc_gap_count-1'b1;
+            if(adc_gap_count==1) adc_start<=1'b1;
+        end
+        if (control_tick && !adc_busy && !adc_pair_active) begin
             adc_start   <= 1'b1;
-            adc_sel     <= ~adc_sel;
+            adc_sel     <= 1'b1;
+            adc_pair_active <= 1'b1;
         end
         if (adc_done) begin
-            if (adc_sel) bend_raw     <= adc_data;
-            else                pressure_raw <= adc_data;
+            if (adc_sel) begin
+                bend_raw <= adc_data;
+                adc_sel <= 1'b0;
+                adc_gap_count <= ADC_GAP_CYCLES;
+            end else begin
+                pressure_raw <= adc_data;
+                adc_pair_active <= 1'b0;
+                control_sample_tick <= 1'b1;
+            end
         end
       end
     end
@@ -414,7 +436,7 @@ module top #(
     wire [31:0]        bend_inc0;      // 声部 0 的弯音后增量
 
     pressure_bend u_bend (
-        .clk (clk_audio), .rst (rst), .control_tick (control_tick),
+        .clk (clk_audio), .rst (rst), .control_tick (control_sample_tick),
         .pressure_adc (pressure_raw), .bend_adc (bend_raw),
         .pressure_enable (1'b1), .base_phase_inc (inc0),
         .pressure_filtered (pressure_filtered), .pressure_level (pressure_level),

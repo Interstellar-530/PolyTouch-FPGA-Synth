@@ -12,8 +12,8 @@ module tb_adc_reset_top;
     mcp3208_model adc(cs,sck,mosi,miso,pressure,bend,12'd0,12'd0,12'd0,12'd0,12'd0,12'd0);
     task check_reset;
         begin
-            if(dut.ctrl_div!==0 || dut.control_tick!==0 || dut.adc_start!==0 || dut.adc_sel!==0 ||
-               dut.pressure_raw!==0 || dut.bend_raw!==2048 || dut.adc_busy!==0 || cs!==1)
+            if(dut.ctrl_div!==0 || dut.control_tick!==0 || dut.control_sample_tick!==0 || dut.adc_pair_active!==0 || dut.adc_start!==0 || dut.adc_sel!==0 ||
+               dut.adc_gap_count!==0 || dut.pressure_raw!==0 || dut.bend_raw!==2048 || dut.adc_busy!==0 || cs!==1)
                 $fatal(1,"ADC/control reset state is inconsistent");
         end
     endtask
@@ -28,9 +28,11 @@ module tb_adc_reset_top;
             repeat(100)begin @(negedge clk);check_reset();end
             key_rst=1;wait(!dut.rst);
             @(negedge cs);if(dut.adc_sel!==1)$fatal(1,"restart did not begin with CH1");
-            @(posedge cs);repeat(4)@(negedge clk);
+            // CH0 now starts immediately after CH1; do not skip its falling
+            // CS edge by waiting four system clocks as the old poller did.
+            @(posedge cs);@(negedge cs);
             if(dut.bend_raw!==bend || dut.pressure_raw!==0)$fatal(1,"stale data leaked after reset");
-            @(negedge cs);if(dut.adc_sel!==0)$fatal(1,"CH0 did not follow CH1");
+            if(dut.adc_sel!==0)$fatal(1,"CH0 did not follow CH1");
             @(posedge cs);repeat(4)@(negedge clk);
             if(dut.pressure_raw!==pressure)$fatal(1,"new pressure conversion missing");
             pass=pass+1;

@@ -1,0 +1,22 @@
+[
+  {
+    "test": "tb_adc_reset_top-standard",
+    "exit": 0,
+    "seconds": 1.969
+  },
+  {
+    "test": "tb_adc_reset_top-debug",
+    "exit": 0,
+    "seconds": 3.312
+  },
+  {
+    "test": "tb_control_sampling-standard",
+    "exit": 0,
+    "seconds": 32.61
+  },
+  {
+    "test": "tb_control_sampling-debug",
+    "exit": 0,
+    "seconds": 66.578
+  }
+]

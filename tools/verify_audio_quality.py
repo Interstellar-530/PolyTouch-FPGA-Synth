@@ -4,13 +4,13 @@ import argparse,json,subprocess,sys,time
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
-    parser=argparse.ArgumentParser();parser.add_argument('tests',nargs='*');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('tests',nargs='*');args=parser.parse_args()
     root=Path(__file__).resolve().parents[1];source=root/'output/handoff_milestone2_20261008/source'
     work=root/'tmp/audio-quality-20261017';work.mkdir(parents=True,exist_ok=True)
-    out=root/'docs/evidence/FPGA-音频质量-20261017-v0.1';out.mkdir(parents=True,exist_ok=True)
+    out=args.out or root/'docs/evidence/FPGA-音频质量-20261017-v0.1';out.mkdir(parents=True,exist_ok=True)
     result_file=out/'results.json'
     results=json.loads(result_file.read_text()) if args.tests and result_file.exists() else []
-    tests=[('tb_headroom',None),('tb_bend_precision',None),('tb_adc_reset_top',1),('tb_adc_reset_top',0)]
+    tests=[('tb_headroom',None),('tb_bend_precision',None),('tb_adc_reset_top',1),('tb_adc_reset_top',0),('tb_control_sampling',1),('tb_control_sampling',0)]
     sources=list((source/'rtl/audio').glob('*.v'))+[source/'rtl/top.v',source/'sim/gowin_prom_model.v',source/'sim/mcp3208_model.v']
     for name,profile in tests:
         label=name if profile is None else name+('-standard' if profile else '-debug')
