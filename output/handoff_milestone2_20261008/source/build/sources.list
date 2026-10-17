@@ -26,5 +26,6 @@ rtl/audio/instrument_controls.v
 rtl/audio/bend_coefficients.vh
 rtl/audio/bend_ratio_pipeline.v
 rtl/audio/split_audio_multiplier.v
+rtl/audio/voice_state_ram.v
 rtl/audio/voice_transition.v
 rtl/audio/note_ownership.v
