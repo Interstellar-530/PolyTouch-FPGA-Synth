@@ -251,6 +251,7 @@ try {
 
     $suite += @{ Name='tb_bandlimit_engine_wide'; Top='sim\tb_bandlimit_engine.v'; Src=($audioSources + @('sim\gowin_prom_model.v')) }
     $suite += @{ Name='tb_bend_ratio_pipeline'; Top='sim\tb_bend_ratio_pipeline.v'; Src=$audioSources }
+    $suite += @{ Name='tb_split_audio_multiplier'; Top='sim\tb_split_audio_multiplier.v'; Src=$audioSources }
     $failed = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)

@@ -9,9 +9,11 @@ def resource_metrics(name, report):
         a=html.unescape(re.sub('<[^>]+>','',a).replace('&nbsp','')).strip()
         b=html.unescape(re.sub('<[^>]+>','',b)).strip()
         cells.setdefault(a,b)
-    row=dict(variant=name,logic=int(re.match(r'\d+',cells['Logic']).group()),registers=int(cells['Register']),
-             bsram=int(cells['BSRAM']),mult18x18=int(cells.get('MULT18X18','0')),multalu36x18=int(cells.get('MULTALU36X18','0')))
-    row['dsp_macro_equivalent']=row['multalu36x18']+row['mult18x18']/2
+    number=lambda key:int(re.match(r'\d+',cells.get(key,'0')).group())
+    row=dict(variant=name,logic=number('Logic'),registers=number('Register'),
+             bsram=number('BSRAM'),mult18x18=number('MULT18X18'),multalu36x18=number('MULTALU36X18'),
+             multaddalu18x18=number('MULTADDALU18X18'),mult36x36=number('MULT36X36'),alu54d=number('ALU54D'))
+    row['dsp_macro_equivalent']=row['multalu36x18']+row['multaddalu18x18']+2*row['mult36x36']+row['alu54d']+row['mult18x18']/2
     return row
 
 def main():
