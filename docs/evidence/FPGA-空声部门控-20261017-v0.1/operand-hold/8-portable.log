@@ -1,0 +1,2 @@
+PASS tb_ram_wavetable_engine: voices=8 lanes=1 frames=512 cycles/frame=216 period=256 products=22416 avoided_products=10352
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_ram_wavetable_engine.v:78: $finish called at 10705864520 (1ps)

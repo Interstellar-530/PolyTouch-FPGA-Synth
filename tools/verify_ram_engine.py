@@ -20,7 +20,7 @@ def vectors(path,voices,frames=512,spectrum=False):
   rows.append(f'{v} {inc:x} {e:x} {w:x} {retrigger} {case} {ss} {bs}\n')
  for f in range(frames):
   v=f if f<voices else rng.randrange(voices) if f%3==0 else -1
-  emit(v,rng.randrange(1,1300000000),rng.randrange(65536),rng.randrange(128),rng.randrange(2))
+  emit(v,rng.randrange(1,1300000000),0 if f%5==0 else rng.randrange(65536),0 if f%7==0 else rng.randrange(128),rng.randrange(2))
  if spectrum:
   for v in range(voices):emit(v,(31+11*v)*(2**32//8192),65535,100,1)
   for f in range(8192):emit(-1,case=0)

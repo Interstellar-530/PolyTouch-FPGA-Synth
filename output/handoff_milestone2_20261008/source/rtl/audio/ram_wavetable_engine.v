@@ -21,6 +21,7 @@ module ram_wavetable_engine #(
  reg[5:0]state=IDLE;reg[4:0]voice=0,cfg_id=0;
  reg[31:0]cfg_word=0,cfg_inc=0,param_word=0,phase=0,increment=0;
  reg[15:0]envelope=0;reg[6:0]velocity=0;
+ wire voice_audible=(envelope!=0 && velocity!=0);
  reg signed[31:0]sine_acc=0,bright_acc=0;
  localparam integer COUNT_BITS=$clog2(FRAME_CYCLES);
  reg[COUNT_BITS-1:0]frame_clock=0;reg seen_tick=0;
@@ -57,8 +58,8 @@ module ram_wavetable_engine #(
  end endfunction
  wire[18:0]selected_band=band_config(increment);
  reg[8:0]rom_addr=0,frac=0;reg[2:0]rom_bank=0,bank_low=0;reg[15:0]bank_weight=0;
- wire rom_ce=state==ADDR_A || state==LATCH_A || state==ADDR_B;
- wire bank_ce=rom_ce || state==BANK_ADDR_A || state==BANK_LATCH_A || state==BANK_ADDR_B;
+ wire rom_ce=voice_audible && (state==ADDR_A || state==LATCH_A || state==ADDR_B);
+ wire bank_ce=voice_audible && (rom_ce || state==BANK_ADDR_A || state==BANK_LATCH_A || state==BANK_ADDR_B);
  wire[15:0]sine_data,bright_data;
  gowin_prom_wave_sine u_sine(clk,rom_ce,rst,rom_addr,sine_data);
  gowin_prom_bright_bank u_bright(clk,bank_ce,rst,rom_bank,rom_addr,bright_data);
@@ -66,8 +67,8 @@ module ram_wavetable_engine #(
  reg signed[23:0]interp_s=0,interp_b=0,scaled_s=0;
  reg signed[32:0]mul_a=0;reg signed[17:0]mul_b=0;
  wire signed[50:0]product;
- wire mul_enable=state==DIFF_B || state==INTERP_S || state==W_ENV_S || state==W_VEL_S ||
-  state==W_ENV_B || state==W_VEL_B || state==BANK_MUL || state==BANK_MIX_MUL;
+ wire mul_enable=voice_audible && (state==DIFF_B || state==INTERP_S || state==W_ENV_S || state==W_VEL_S ||
+  state==W_ENV_B || state==W_VEL_B || state==BANK_MUL || state==BANK_MIX_MUL);
  split_audio_multiplier #(33) u_multiplier(clk,rst,mul_enable,mul_a,mul_b,product);
  wire signed[50:0]interp_delta=(product+51'sd1) >>> 1;
  wire signed[23:0]bank_interpolated=($signed(bank_a) <<< 8)+interp_delta;
@@ -75,7 +76,7 @@ module ram_wavetable_engine #(
  wire signed[23:0]envelope_result=(product+51'sd32768) >>>16;
  wire signed[23:0]velocity_result=(product+51'sd64) >>>7;
  wire signed[31:0]scaled_s_extended={{8{scaled_s[23]}},scaled_s};
- wire signed[31:0]velocity_extended={{8{velocity_result[23]}},velocity_result};
+ wire signed[31:0]velocity_extended=voice_audible?{{8{velocity_result[23]}},velocity_result}:32'sd0;
  always @(posedge clk)begin
   if(rst)begin
    state<=IDLE;voice<=0;cfg_id<=0;cfg_word<=0;cfg_inc<=0;param_word<=0;
@@ -106,12 +107,16 @@ module ram_wavetable_engine #(
     ADDR_B:begin a_sine<=sine_data;a_bright<=bright_data;state<=LATCH_B;end
     LATCH_B:begin
      b_bright<=bright_data;
-     mul_a<=$signed({sine_data[15],sine_data})-$signed({a_sine[15],a_sine});
-     mul_b<={9'd0,frac};state<=DIFF_B;
+     if(voice_audible)begin
+      mul_a<=$signed({sine_data[15],sine_data})-$signed({a_sine[15],a_sine});mul_b<={9'd0,frac};
+     end
+     state<=DIFF_B;
     end
     DIFF_B:begin
-     mul_a<=$signed({b_bright[15],b_bright})-$signed({a_bright[15],a_bright});
-     mul_b<={9'd0,frac};state<=INTERP_S;
+     if(voice_audible)begin
+      mul_a<=$signed({b_bright[15],b_bright})-$signed({a_bright[15],a_bright});mul_b<={9'd0,frac};
+     end
+     state<=INTERP_S;
     end
     INTERP_S:begin interp_s<=($signed(a_sine) <<<8)+interp_delta;state<=INTERP_B;end
     INTERP_B:begin interp_b<=($signed(a_bright) <<<8)+interp_delta;state<=BANK_ADDR_A;end
@@ -119,24 +124,41 @@ module ram_wavetable_engine #(
     BANK_LATCH_A:begin rom_addr<=phase[31:23]+9'd1;state<=BANK_ADDR_B;end
     BANK_ADDR_B:begin bank_a<=bright_data;state<=BANK_LATCH_B;end
     BANK_LATCH_B:begin
-     mul_a<=$signed({bright_data[15],bright_data})-$signed({bank_a[15],bank_a});
-     mul_b<={9'd0,frac};state<=BANK_MUL;
+     if(voice_audible)begin
+      mul_a<=$signed({bright_data[15],bright_data})-$signed({bank_a[15],bank_a});mul_b<={9'd0,frac};
+     end
+     state<=BANK_MUL;
     end
     BANK_MUL:state<=BANK_INTERP;
     BANK_INTERP:begin
-     mul_a<=$signed({{9{bank_interpolated[23]}},bank_interpolated})-$signed({{9{interp_b[23]}},interp_b});
-     mul_b<=$signed({2'd0,bank_weight});state<=BANK_MIX_MUL;
+     if(voice_audible)begin
+      mul_a<=$signed({{9{bank_interpolated[23]}},bank_interpolated})-$signed({{9{interp_b[23]}},interp_b});
+      mul_b<=$signed({2'd0,bank_weight});
+     end
+     state<=BANK_MIX_MUL;
     end
     BANK_MIX_MUL:state<=BANK_MIX_APPLY;
     BANK_MIX_APPLY:begin
-     interp_b<=interp_b+bank_delta;mul_a<=interp_s;mul_b<=$signed({2'd0,envelope});state<=W_ENV_S;
+     interp_b<=interp_b+bank_delta;
+     if(voice_audible)begin mul_a<=interp_s;mul_b<=$signed({2'd0,envelope});end
+     state<=W_ENV_S;
     end
     W_ENV_S:state<=VEL_S;
-    VEL_S:begin mul_a<=envelope_result;mul_b<={11'd0,velocity};state<=W_VEL_S;end
+    VEL_S:begin
+     if(voice_audible)begin mul_a<=envelope_result;mul_b<={11'd0,velocity};end
+     state<=W_VEL_S;
+    end
     W_VEL_S:state<=FIN_S;
-    FIN_S:begin scaled_s<=velocity_result;mul_a<=interp_b;mul_b<={2'd0,envelope};state<=W_ENV_B;end
+    FIN_S:begin
+     scaled_s<=voice_audible?velocity_result:24'sd0;
+     if(voice_audible)begin mul_a<=interp_b;mul_b<={2'd0,envelope};end
+     state<=W_ENV_B;
+    end
     W_ENV_B:state<=VEL_B;
-    VEL_B:begin mul_a<=envelope_result;mul_b<={11'd0,velocity};state<=W_VEL_B;end
+    VEL_B:begin
+     if(voice_audible)begin mul_a<=envelope_result;mul_b<={11'd0,velocity};end
+     state<=W_VEL_B;
+    end
     W_VEL_B:state<=FIN_B;
     FIN_B:begin
      sine_acc<=sine_acc+scaled_s_extended;bright_acc<=bright_acc+velocity_extended;
