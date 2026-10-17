@@ -30,5 +30,9 @@ rtl/audio/voice_state_ram.v
 rtl/audio/ram_wavetable_engine.v
 rtl/audio/wide_master.v
 rtl/audio/ram_audio_datapath.v
+rtl/audio/ram_audio_compute.v
+rtl/audio/audio_pll_clock.v
+rtl/audio/audio_frame_bridge.v
+rtl/audio/ram_audio_clocked.v
 rtl/audio/voice_transition.v
 rtl/audio/note_ownership.v

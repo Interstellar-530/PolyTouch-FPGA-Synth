@@ -30,7 +30,7 @@ def main():
  ram_audio_datapath #(.VOICES({total}),.CLK_HZ({period*48000})) u_audio(clk,rst,cv,cr,id,inc,env,vel,rt,weight,pressure_enable,pressure,mute,bck,lrck,din,tick,sample,valid,clips,initialized);
  endmodule
 ''',encoding='ascii')
-   files+=['ram_audio_datapath','wide_master','i2s_tx']
+   files+=['ram_audio_datapath','ram_audio_compute','wide_master','i2s_tx']
    header_dir=project/'rtl/audio';header_dir.mkdir(parents=True)
    for header in (src/'rtl/audio').glob('*.vh'):shutil.copy2(header,header_dir/header.name)
   tcl=project/'run.tcl';add='\n'.join('add_file {%s}'%(src/'rtl/audio'/(f+'.v')).as_posix() for f in files)

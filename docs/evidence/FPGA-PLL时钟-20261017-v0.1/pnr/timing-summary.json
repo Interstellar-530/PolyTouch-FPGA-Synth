@@ -1,0 +1,13 @@
+{
+  "setup_violated_endpoints": 0,
+  "hold_violated_endpoints": 0,
+  "compute_mhz": 49.152,
+  "reported_fmax_mhz": 69.611,
+  "worst_setup_slack_ns": 5.98,
+  "pnr_logic": 2733,
+  "pnr_registers": 1364,
+  "bsram": 10,
+  "mult18x18": 4,
+  "rpll": 1,
+  "scope": "fixed64-tone prototype; precise bundled-data CDC exceptions; not complete instrument"
+}
