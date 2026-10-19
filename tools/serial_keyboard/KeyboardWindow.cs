@@ -21,14 +21,22 @@ namespace PolyTouchPc
         private readonly Label status = new Label();
         private readonly Button manualButton;
         private readonly TextBox history = new TextBox();
+        private readonly Label octaveLabel = new Label();
+        private readonly Label timbreLabel = new Label();
+        private readonly Button instrumentButton;
+        private readonly TrackBar timbre = new TrackBar();
+        private readonly Timer polyphonyTimer = new Timer();
         private readonly string logPath;
+        private int baseNote = KeyboardLayout.DefaultBaseNote;
+        private bool timbreDirty;
         private bool manual = true;
+        private bool guitarMode;
         public KeyboardWindow(string defaultPort, string logFile)
         {
             logPath = logFile;
             Text = "PolyTouch 电脑演奏";
-            ClientSize = new Size(880, 510);
-            MinimumSize = new Size(896, 549);
+            ClientSize = new Size(1200, 660);
+            MinimumSize = new Size(1216, 699);
             Font = new Font("Microsoft YaHei UI", 10);
             BackColor = Color.FromArgb(245, 247, 250);
             KeyPreview = true; ImeMode = ImeMode.Disable;
@@ -38,63 +46,72 @@ namespace PolyTouchPc
             if (!ports.Items.Contains(defaultPort)) ports.Items.Add(defaultPort);
             ports.SelectedItem = defaultPort;
             Controls.Add(ports);
-            ButtonAt("连接", 150, delegate { ConnectPort(); });
-            manualButton = ButtonAt("手动", 260, delegate { Mode(false); });
-            ButtonAt("演示", 370, delegate { Mode(true); });
-            ButtonAt("全松键", 480, delegate { AllOff(); });
-            ButtonAt("静音", 590, delegate { Send("M0"); });
-            ButtonAt("有声", 700, delegate { Send("M1"); });
-            status.SetBounds(20, 60, 840, 28); status.Text = "正在连接…"; Controls.Add(status);
-            Label guide = new Label(); guide.SetBounds(20, 98, 840, 50);
-            guide.Text = "按住下列电脑键发音，松开释音；可同时按多个键（当前最多四声部）。\n空格：全松键。切到其他窗口时自动松键。演示时按音符键自动转手动。";
+            ButtonAt("连接", 120, delegate { ConnectPort(); });
+            manualButton = ButtonAt("手动", 220, delegate { Mode(false); });
+            ButtonAt("演示", 320, delegate { Mode(true); });
+            ButtonAt("全松键", 420, delegate { AllOff(); });
+            ButtonAt("静音", 520, delegate { Send("M0"); });
+            ButtonAt("有声", 620, delegate { Send("M1"); });
+            ButtonAt("四音测试", 720, delegate { PolyphonyTest(); });
+            instrumentButton = ButtonAt("音色：钢琴", 820, delegate { ToggleInstrument(); });
+            instrumentButton.Width = 140;
+            status.SetBounds(20, 60, 1160, 28); status.Text = "正在连接…"; Controls.Add(status);
+            Label guide = new Label(); guide.SetBounds(20, 96, 1160, 52);
+            guide.Text = "两排钢琴键：低排 C3–B3，高排 C4–B4；A/F/K 保留为 C4/F4/C5 快捷别名。\r\nPageUp/PageDown 移调；F1–F5 切换钢琴硬度，F5 为最强击弦；F6 或“音色”按钮切换钢琴/吉他；空格全松键。";
             Controls.Add(guide);
-            string letters = "AWS EDFTGYHUJK".Replace(" ", "");
-            int[] offsets = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-            string[] names = { "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5" };
-            for (int i = 0; i < letters.Length; i++)
+
+            for (int i = 0; i < KeyboardLayout.LowerKeys.Length; i++)
             {
-                Keys key = (Keys)Enum.Parse(typeof(Keys), letters[i].ToString());
-                layout.Add(key, offsets[i]);
-                Label tile = new Label(); tile.SetBounds(20 + i * 64, 162, 60, 92);
-                bool sharp = names[i].Contains("#");
-                tile.Text = letters[i] + "\n" + names[i]; tile.TextAlign = ContentAlignment.MiddleCenter;
-                tile.BackColor = sharp ? Color.FromArgb(54, 65, 82) : Color.White;
-                tile.ForeColor = sharp ? Color.White : Color.FromArgb(28, 42, 59);
-                tile.BorderStyle = BorderStyle.FixedSingle;
-                tile.Click += delegate { ActiveControl = manualButton; manualButton.Focus(); };
-                tiles.Add(key, tile); Controls.Add(tile);
+                AddNoteTile((Keys)KeyboardLayout.LowerKeys[i], i - 12, i, 160);
             }
-            Label timbreLabel = new Label(); timbreLabel.SetBounds(20, 270, 840, 24);
-            timbreLabel.Text = "音色目标 64 · 板载 S1 长按也可切换，主机不读取板上当前值";
+            for (int i = 0; i < KeyboardLayout.UpperKeys.Length; i++)
+            {
+                AddNoteTile((Keys)KeyboardLayout.UpperKeys[i], i, i, 258);
+            }
+            layout.Add(Keys.A, 0);
+            layout.Add(Keys.F, 5);
+            layout.Add(Keys.K, 12);
+
+            octaveLabel.SetBounds(20, 350, 1160, 24);
+            Controls.Add(octaveLabel);
+            timbreLabel.SetBounds(20, 378, 1160, 24);
             Controls.Add(timbreLabel);
-            TrackBar timbre = new TrackBar(); timbre.SetBounds(20, 298, 540, 40);
-            timbre.Minimum = 0; timbre.Maximum = 255; timbre.TickFrequency = 32; timbre.Value = 64;
+            timbre.SetBounds(20, 404, 620, 40);
+            timbre.Minimum = 0; timbre.Maximum = 4; timbre.TickFrequency = 1; timbre.Value = 4;
             timbre.TabStop = false; Controls.Add(timbre);
             // Limit host traffic, keep only the latest slider target, and leave
             // ordinary note events ahead of pending timbre in the transport.
-            bool timbreDirty = false;
             System.Windows.Forms.Timer timbreTimer = new System.Windows.Forms.Timer();
             timbreTimer.Interval = 40;
             timbre.ValueChanged += delegate {
-                timbreLabel.Text = "音色目标 " + timbre.Value + " · 0 正弦 / 64 柔和 / 160 明亮 / 255 亮波表";
+                UpdateTimbreLabel();
                 timbreDirty = true;
             };
             timbreTimer.Tick += delegate {
                 if (timbreDirty && transport != null && transport.Connected) {
-                    timbreDirty = false; Send("T" + timbre.Value);
+                    timbreDirty = false; Send("T" + (250 + timbre.Value));
                 }
             };
             timbreTimer.Start();
             FormClosed += delegate { timbreTimer.Stop(); timbreTimer.Dispose(); };
-            int[] presetValues = {0, 64, 160, 255};
-            for (int pi = 0; pi < presetValues.Length; pi++) {
-                int target = presetValues[pi];
-                Button preset = new Button(); preset.SetBounds(570 + pi * 73, 298, 68, 32);
-                preset.Text = target.ToString(); preset.TabStop = false;
-                preset.Click += delegate { timbre.Value = target; timbreDirty = true; ActiveControl = manualButton; };
+            for (int pi = 0; pi < KeyboardLayout.TimbrePresets.Length; pi++) {
+                int presetIndex = pi;
+                Button preset = new Button(); preset.SetBounds(660 + pi * 80, 404, 72, 32);
+                preset.Text = "F" + (pi + 1); preset.TabStop = false;
+                preset.Click += delegate { SetTimbre(presetIndex); };
                 Controls.Add(preset);
             }
-            history.SetBounds(20, 350, 840, 144); history.Multiline = true;
+            UpdateOctaveLabel();
+            UpdateTimbreLabel();
+            UpdateTiles();
+            polyphonyTimer.Interval = 2600;
+            polyphonyTimer.Tick += delegate
+            {
+                polyphonyTimer.Stop();
+                AllOff();
+                status.Text = "四音测试结束 · 已全松键";
+            };
+            history.SetBounds(20, 458, 1160, 182); history.Multiline = true;
             history.ReadOnly = true; history.ScrollBars = ScrollBars.Vertical;
             history.TabStop = false; Controls.Add(history);
             Shown += delegate
@@ -121,12 +138,99 @@ namespace PolyTouchPc
                         ResetTile(key);
                     }
             };
-            FormClosing += delegate { if (transport != null) transport.Dispose(); };
+            FormClosing += delegate
+            {
+                polyphonyTimer.Stop(); polyphonyTimer.Dispose();
+                if (transport != null) transport.Dispose();
+            };
+        }
+        private void AddNoteTile(Keys key, int offset, int column, int y)
+        {
+            layout.Add(key, offset);
+            Label tile = new Label();
+            tile.SetBounds(20 + column * 93, y, 88, 84);
+            tile.TextAlign = ContentAlignment.MiddleCenter;
+            tile.BorderStyle = BorderStyle.FixedSingle;
+            tile.Click += delegate { ActiveControl = manualButton; manualButton.Focus(); };
+            tiles.Add(key, tile);
+            Controls.Add(tile);
+        }
+        private static string NoteName(int midi)
+        {
+            string[] names = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+            int octave = (midi / 12) - 1;
+            return names[((midi % 12) + 12) % 12] + octave;
+        }
+        private void UpdateTiles()
+        {
+            foreach (KeyValuePair<Keys, int> pair in layout)
+            {
+                Label tile;
+                if (!tiles.TryGetValue(pair.Key, out tile)) continue;
+                int note = baseNote + pair.Value;
+                string letter = ((char)(int)pair.Key).ToString();
+                bool sharp = NoteName(note).Contains("#");
+                tile.Text = letter + "\r\n" + NoteName(note);
+                tile.BackColor = sharp ? Color.FromArgb(54, 65, 82) : Color.White;
+                tile.ForeColor = sharp ? Color.White : Color.FromArgb(28, 42, 59);
+            }
         }
         private Button ButtonAt(string text, int x, EventHandler action)
         {
             Button button = new Button(); button.Text = text; button.SetBounds(x, 18, 100, 32);
             button.Click += action; Controls.Add(button); return button;
+        }
+        private void UpdateOctaveLabel()
+        {
+            octaveLabel.Text = "当前音域 " + NoteName(baseNote - 12) + " – " + NoteName(baseNote + 11) +
+                " · PageUp 升八度 / PageDown 降八度 · A/F/K 为 C4/F4/C5 别名";
+        }
+        private void UpdateTimbreLabel()
+        {
+            string[] names = { "柔和琴体", "温暖", "标准", "明亮", "强击弦" };
+            timbreLabel.Text = "钢琴硬度 " + (timbre.Value + 1) + " · " + names[timbre.Value] +
+                " · F1–F5 直接选择；包络会随衰减自动回归琴体";
+        }
+        private void SetTimbre(int value)
+        {
+            timbre.Value = value;
+            timbreDirty = true;
+            UpdateTimbreLabel();
+            ActiveControl = manualButton; manualButton.Focus();
+        }
+        private void ToggleInstrument()
+        {
+            if (transport == null || !transport.Connected) { status.Text = "请先连接串口。"; return; }
+            guitarMode = !guitarMode;
+            if (guitarMode) Send("I1");
+            else { Send("I0"); Send("T" + (250 + timbre.Value)); }
+            instrumentButton.Text = "音色：" + (guitarMode ? "吉他" : "钢琴");
+            status.Text = guitarMode ? "吉他音色 · 8 声部持续音" : "钢琴音色";
+            ActiveControl = manualButton; manualButton.Focus();
+        }
+        private void ShiftOctave(int semitones)
+        {
+            int shifted = KeyboardLayout.ShiftBase(baseNote, semitones);
+            if (shifted == baseNote) return;
+            baseNote = shifted;
+            notes.BaseNote = baseNote;
+            UpdateOctaveLabel();
+            UpdateTiles();
+            status.Text = "已移调到 " + NoteName(baseNote - 12) + " – " + NoteName(baseNote + 11);
+        }
+        private void PolyphonyTest()
+        {
+            if (transport == null || !transport.Connected) { status.Text = "请先连接串口。"; return; }
+            polyphonyTimer.Stop();
+            notes.Clear(); UpdateTiles(); manual = true;
+            transport.Panic("D0");
+            Send("M1");
+            foreach (string command in KeyboardLayout.PolyphonyTestNotes(baseNote))
+                Send(command);
+            status.Text = "四音测试中 · " + String.Join(" ", KeyboardLayout.PolyphonyTestNotes(baseNote)) +
+                " · 2.6 秒后自动全松键";
+            ActiveControl = manualButton; manualButton.Focus();
+            polyphonyTimer.Start();
         }
         private void Record(string text)
         {
@@ -166,11 +270,11 @@ namespace PolyTouchPc
         }
         private void ResetTiles()
         {
-            foreach (KeyValuePair<Keys, Label> pair in tiles)
-                pair.Value.BackColor = pair.Value.Text.Contains("#") ? Color.FromArgb(54, 65, 82) : Color.White;
+            UpdateTiles();
         }
         private void AllOff()
         {
+            polyphonyTimer.Stop();
             notes.Clear(); ResetTiles();
             if (transport != null && transport.Connected) transport.Panic(null);
             manual = true;
@@ -178,6 +282,21 @@ namespace PolyTouchPc
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (ActiveControl == ports || e.Control || e.Alt) { base.OnKeyDown(e); return; }
+            if (e.KeyCode == Keys.F6) {
+                ToggleInstrument();
+                e.Handled = true; e.SuppressKeyPress = true; return;
+            }
+            int timbreTarget = KeyboardLayout.TimbreForFunctionKey((int)e.KeyCode);
+            if (timbreTarget >= 0) {
+                SetTimbre(timbreTarget - 250);
+                e.Handled = true; e.SuppressKeyPress = true; return;
+            }
+            if (e.KeyCode == Keys.PageUp) {
+                ShiftOctave(12); e.Handled = true; e.SuppressKeyPress = true; return;
+            }
+            if (e.KeyCode == Keys.PageDown) {
+                ShiftOctave(-12); e.Handled = true; e.SuppressKeyPress = true; return;
+            }
             if (e.KeyCode == Keys.Space) { AllOff(); e.Handled = true; e.SuppressKeyPress = true; return; }
             int offset;
             if (layout.TryGetValue(e.KeyCode, out offset))
@@ -186,7 +305,13 @@ namespace PolyTouchPc
                 {
                     if (!manual && !notes.IsBlocked((int)e.KeyCode)) Mode(false);
                     string command = notes.Press((int)e.KeyCode, offset);
-                    if (command != null) { Send(command); tiles[e.KeyCode].BackColor = Color.FromArgb(42, 153, 130); }
+                    Label tile;
+                    if (command != null)
+                    {
+                        Send(command);
+                        if (tiles.TryGetValue(e.KeyCode, out tile))
+                            tile.BackColor = Color.FromArgb(42, 153, 130);
+                    }
                 }
                 e.Handled = true; e.SuppressKeyPress = true;
             }
@@ -197,6 +322,10 @@ namespace PolyTouchPc
             string command = notes.Release((int)e.KeyCode);
             if (command != null) { Send(command); ResetTile(e.KeyCode); e.Handled = true; }
             base.OnKeyUp(e);
+        }
+        protected override void OnHelpRequested(HelpEventArgs hevent)
+        {
+            hevent.Handled = true;
         }
         private void ResetTile(Keys key)
         {

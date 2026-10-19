@@ -22,7 +22,10 @@ module global_crossfade #(
     parameter integer MASTER_VOLUME_SHIFT = 1,
     parameter integer MUTE_SLEW_ENABLE = 0,
     parameter integer EXTRA_FRACTION_BITS = 0,
-    parameter integer REGISTER_MIX_INPUTS_ENABLE = 0
+    parameter integer REGISTER_MIX_INPUTS_ENABLE = 0,
+    // 8 声部生产档启用：0.75 FS 以上 4:1 软压缩，避免多声部叠加时硬削波。
+    // 默认关闭，旧 4 声部测试保持逐位不变。
+    parameter integer SOFT_LIMIT_ENABLE = 0
 ) (
     input  wire               clk,
     input  wire               rst,
@@ -222,10 +225,22 @@ module global_crossfade #(
     initial if(REGISTER_MIX_INPUTS_ENABLE && !SHARED_MULT_ENABLE)
         $fatal(1,"registered mix inputs require the shared multiplier scheduler");
 `endif
+    // 软限幅：24 位满幅 8388608，0.75 FS = 6291456。超过拐点后按 4:1 压缩，
+    // 满幅输入压到约 6815744，仍保留 24 位量化余量，不会硬削成方波。
+    // 只用比较、加减和右移，不占乘法器；重建滤波仍由 PCM5102A 内部完成。
+    localparam signed [35:0] SOFT_KNEE = 36'sd6291456;
+    wire signed [35:0] lim_in = output_value24;
+    wire [35:0] lim_abs = lim_in[35] ? (~lim_in + 36'd1) : lim_in;
+    wire [35:0] lim_abs_lim = (lim_abs > SOFT_KNEE) ?
+        (SOFT_KNEE + ((lim_abs - SOFT_KNEE) >>> 2)) : lim_abs;
+    wire signed [35:0] lim_out = lim_in[35] ? -$signed(lim_abs_lim) : $signed(lim_abs_lim);
+    wire soft_clip = (lim_abs > SOFT_KNEE);
+    wire signed [35:0] output_limited = SOFT_LIMIT_ENABLE ? lim_out : output_value24;
+
     wire raw_clip = E==0 ? ((output_value > 28'sd32767) || (output_value < -28'sd32768)) :
-                          ((output_value24 > 36'sd8388607) || (output_value24 < -36'sd8388608));
-    wire signed [23:0] sat24=(output_value24 > 36'sd8388607)?24'sh7fffff:
-                            (output_value24 < -36'sd8388608)?24'sh800000:output_value24[23:0];
+                          ((output_limited > 36'sd8388607) || (output_limited < -36'sd8388608));
+    wire signed [23:0] sat24=(output_limited > 36'sd8388607)?24'sh7fffff:
+                            (output_limited < -36'sd8388608)?24'sh800000:output_limited[23:0];
     wire signed [15:0] sat = E>0 ? sat24[23:8] : (output_value > 28'sd32767) ? 16'sd32767 :
                              (output_value < -28'sd32768) ? -16'sd32768 : output_value[15:0];
 
@@ -242,8 +257,9 @@ module global_crossfade #(
             if (result_valid) begin
                 sample_out <= sat;
                 sample_out24 <= E>0?sat24:{sat,8'b0};
-                clip_event <= raw_clip;
-                if (raw_clip && !clear_clip &&
+                // 软限幅启用时统计“拐点触发”，否则统计传统硬削波。
+                clip_event <= SOFT_LIMIT_ENABLE ? soft_clip : raw_clip;
+                if ((SOFT_LIMIT_ENABLE ? soft_clip : raw_clip) && !clear_clip &&
                     (clip_count != {CLIP_COUNTER_WIDTH{1'b1}}))
                     clip_count <= clip_count + {{(CLIP_COUNTER_WIDTH-1){1'b0}}, 1'b1};
             end

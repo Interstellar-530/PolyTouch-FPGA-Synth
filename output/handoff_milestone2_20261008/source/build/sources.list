@@ -20,6 +20,8 @@ rtl/audio/global_crossfade.v
 rtl/audio/gowin_prom_wave_sine.v
 rtl/audio/gowin_prom_wave_bright.v
 rtl/audio/gowin_prom_bright_bank.v
+rtl/audio/gowin_prom_guitar_bank.v
+rtl/audio/gowin_prom_piano_bank.v
 rtl/audio/wavetable_rom_dual.v
 rtl/audio/clk_params.vh
 rtl/audio/instrument_controls.v
@@ -36,3 +38,7 @@ rtl/audio/audio_frame_bridge.v
 rtl/audio/ram_audio_clocked.v
 rtl/audio/voice_transition.v
 rtl/audio/note_ownership.v
+rtl/audio/kbd_uart_rx.v
+rtl/audio/ch9350_rx.v
+rtl/audio/hid_keymap.v
+rtl/audio/host_kbd_input.v

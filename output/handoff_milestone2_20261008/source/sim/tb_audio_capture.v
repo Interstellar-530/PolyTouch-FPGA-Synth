@@ -29,6 +29,10 @@ module tb_audio_capture;
 
     always #18.5185 clk = ~clk;
     localparam real UART_BIT_NS = 1000000000.0 / 115200.0;
+    // Production M0/M1 now slews the existing Q12 VCA by 32 per frame:
+    // 4096/32 = 128 frames. Include serial latch/decoder margin, then retain
+    // the exact-zero and held-voice checks below. Capture lengths are unchanged.
+    localparam integer MUTE_SETTLE_FRAMES = 140;
 
     integer cycles = 0, last_tick_cycle = -1, last_bck_cycle = -1;
     integer last_frame_cycle = -1, tick_count = 0, bck_count = 0;
@@ -261,7 +265,7 @@ module tb_audio_capture;
         $fdisplay(manifest_file, "frame_period_clocks,576");
         $fdisplay(manifest_file, "settle_frames,2000");
         $fdisplay(manifest_file, "release_settle_frames,1600");
-        $fdisplay(manifest_file, "muting_flush_frames,8");
+        $fdisplay(manifest_file, "muting_flush_frames,%0d", MUTE_SETTLE_FRAMES);
         $fdisplay(manifest_file, "A4_hz,440");
         $fdisplay(manifest_file, "channel_format,PT8211_16bit_right_aligned");
         $fdisplay(manifest_file, "decoder_uses_serializer_bit_counter,false");
@@ -298,10 +302,10 @@ module tb_audio_capture;
         send_command("N60"); send_command("N63");
         send_command("N66"); send_command("N69");
         wait_frames(2000);
-        send_command("M0"); wait_frames(8);
+        send_command("M0"); wait_frames(MUTE_SETTLE_FRAMES);
         if (dut.uart_muted !== 1'b1) $fatal(1, "M0 failed to set digital mute");
         capture_stage("muted_active", 512, 4'b1111, 1, 1);
-        send_command("M1"); wait_frames(8);
+        send_command("M1"); wait_frames(MUTE_SETTLE_FRAMES);
         if (dut.uart_muted !== 1'b0) $fatal(1, "M1 failed to clear digital mute");
         capture_stage("unmuted_active", 4096, 4'b1111, 1, 0);
 

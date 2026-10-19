@@ -35,6 +35,7 @@ module tb_shared_engine;
     wire sums_valid;
     shared_wavetable_engine u_engine (
         .clk(clk), .rst(rst), .sample_tick(sample_tick),
+        .piano_enable(1'b0), .piano_tone(3'd0),
         .inc0(32'd1), .inc1(32'd1), .inc2(32'd1), .inc3(32'd1),
         .retrig0(1'b0), .retrig1(1'b0), .retrig2(1'b0), .retrig3(1'b0),
         .env0(env0), .env1(env1), .env2(env2), .env3(env3),

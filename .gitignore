@@ -27,6 +27,9 @@ output/handoff_milestone2_20261008/source/build/gowin_s6_prom_harness/
 output/handoff_milestone2_20261008/source/build/gowin_shared/
 output/handoff_milestone2_20261008/source/build/gowin_per_voice/
 output/handoff_milestone2_20261008/source/build/gowin_top_i2s_std/
+output/handoff_milestone2_20261008/source/build/gowin_top_i2s_std27/
+output/handoff_milestone2_20261008/source/build/gowin_top_dbg8/
+output/handoff_milestone2_20261008/source/build/gowin_top_dbg8g/
 output/handoff_milestone2_20261008/source/build/receipts/
 
 # Runtime log written by tools/serial_console/serial_console.ps1.

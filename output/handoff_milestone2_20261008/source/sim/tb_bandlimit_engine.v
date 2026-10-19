@@ -9,6 +9,7 @@ module tb_bandlimit_engine #(parameter integer EXTRA=0);
   always @(posedge clk)if(request)product<=ma*mb;
   shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1),.EXTRA_FRACTION_BITS(EXTRA)) dut(
    .clk(clk),.rst(rst),.sample_tick(tick),.inc0(incs[31:0]),.inc1(incs[63:32]),.inc2(incs[95:64]),.inc3(incs[127:96]),
+   .piano_enable(1'b0), .piano_tone(3'd0),
    .env0(envs[15:0]),.env1(envs[31:16]),.env2(envs[47:32]),.env3(envs[63:48]),
    .vel0(vels[7:0]),.vel1(vels[15:8]),.vel2(vels[23:16]),.vel3(vels[31:24]),
    .retrig0(retrigs[0]),.retrig1(retrigs[1]),.retrig2(retrigs[2]),.retrig3(retrigs[3]),

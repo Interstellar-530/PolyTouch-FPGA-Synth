@@ -4,7 +4,7 @@ module tb_voice_transition;
     reg rst=1,tick=0,gate=0,retrigger=0;reg[6:0]note=60;reg[7:0]velocity=100;
     wire[6:0]render_note;wire[7:0]render_velocity;wire restart,idle;wire[15:0]env;
     voice_transition #(.ATTACK_STEP(8192),.DECAY_STEP(4096),.RELEASE_STEP(2048),.SUSTAIN_LEVEL(32767)) dut(
-        .clk(clk),.rst(rst),.sample_tick(tick),.gate(gate),.retrigger(retrigger),.note(note),.velocity(velocity),
+        .clk(clk),.rst(rst),.sample_tick(tick),.gate(gate),.retrigger(retrigger),.piano_mode(1'b0),.note(note),.velocity(velocity),
         .render_note(render_note),.render_velocity(render_velocity),.render_retrigger(restart),.env(env),.idle(idle));
     integer n,cases=0;reg[15:0]previous,start_env;reg saw_restart;
     task step;

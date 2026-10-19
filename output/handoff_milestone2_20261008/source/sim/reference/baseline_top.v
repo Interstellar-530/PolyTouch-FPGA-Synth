@@ -462,6 +462,7 @@ module baseline_top #(
 
     shared_wavetable_engine u_engine (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
+        .piano_enable(1'b0), .piano_tone(3'd0),
         .inc0 (bend_inc0), .inc1 (bend_inc1), .inc2 (bend_inc2), .inc3 (bend_inc3),
         .retrig0 (v_retrig[0]), .retrig1 (v_retrig[1]),
         .retrig2 (v_retrig[2]), .retrig3 (v_retrig[3]),

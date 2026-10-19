@@ -10,6 +10,12 @@ module gowin_prom_wave_sine (
     output wire [15:0] dout
 );
 
+    // The vendor pROM primitive always drives a 32-bit DO; BIT_WIDTH=16
+    // uses the low half. Keeping the unused upper bits unconnected makes
+    // Icarus warn and aborts the simulation gate, so wire them explicitly.
+    wire [31:0] prom_dout;
+    assign dout = prom_dout[15:0];
+
     pROM #(
         .READ_MODE  (1'b0),
         .BIT_WIDTH  (6'd16),
@@ -58,7 +64,7 @@ module gowin_prom_wave_sine (
         .INIT_RAM_3B(256'h0), .INIT_RAM_3C(256'h0), .INIT_RAM_3D(256'h0),
         .INIT_RAM_3E(256'h0), .INIT_RAM_3F(256'h0)
     ) u_prom (
-        .DO    (dout),
+        .DO    (prom_dout),
         // UG285 pROM address convention for BIT_WIDTH=16: the word address
         // occupies AD[13:4] and AD[3:0] is ignored (verified against the
         // vendor prim_sim.v model shipped with the Gowin toolchain).

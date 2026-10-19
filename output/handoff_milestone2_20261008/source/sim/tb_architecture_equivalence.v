@@ -7,7 +7,7 @@ module tb_architecture_equivalence;
     reg [7:0] vel0=0,vel1=0,vel2=0,vel3=0;
     wire signed [18:0] s0,b0,s1,b1;wire v0,v1;
     shared_wavetable_engine optimized(clk,rst,tick,inc0,inc1,inc2,inc3,1'b0,1'b0,1'b0,1'b0,
-        env0,env1,env2,env3,vel0,vel1,vel2,vel3,s0,b0,v0,17'd65536,,,,36'd0);
+        env0,env1,env2,env3,vel0,vel1,vel2,vel3,1'b0,1'b0,s0,b0,v0,17'd65536,,,,36'd0);
     baseline_shared_wavetable_engine baseline(clk,rst,tick,inc0,inc1,inc2,inc3,1'b0,1'b0,1'b0,1'b0,
         env0,env1,env2,env3,vel0,vel1,vel2,vel3,s1,b1,v1);
     integer frame,cycle,new_latency,old_latency,products,total_products=0;

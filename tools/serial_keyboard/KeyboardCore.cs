@@ -6,6 +6,58 @@ using System.Threading;
 
 namespace PolyTouchPc
 {
+    public static class KeyboardLayout
+    {
+        public static readonly int[] LowerKeys =
+            { 'Z', 'S', 'X', 'D', 'C', 'V', 'G', 'B', 'H', 'N', 'J', 'M' };
+        public static readonly int[] UpperKeys =
+            { 'Q', '2', 'W', '3', 'E', 'R', '5', 'T', '6', 'Y', '7', 'U' };
+        public static readonly int[] TimbrePresets = { 250, 251, 252, 253, 254 };
+        public const int DefaultBaseNote = 60;
+        public const int MinBaseNote = 36;
+        public const int MaxBaseNote = 84;
+
+        public static bool TryOffset(int key, out int offset)
+        {
+            for (int i = 0; i < LowerKeys.Length; i++)
+            {
+                if (key == LowerKeys[i]) { offset = i - 12; return true; }
+            }
+            for (int i = 0; i < UpperKeys.Length; i++)
+            {
+                if (key == UpperKeys[i]) { offset = i; return true; }
+            }
+            switch (key)
+            {
+                case 'A': offset = 0; return true;  // legacy C4
+                case 'F': offset = 5; return true;  // legacy F4
+                case 'K': offset = 12; return true; // legacy C5
+                default: offset = 0; return false;
+            }
+        }
+
+        public static int ShiftBase(int baseNote, int semitones)
+        {
+            int shifted = baseNote + semitones;
+            return Math.Max(MinBaseNote, Math.Min(MaxBaseNote, shifted));
+        }
+
+        public static string[] PolyphonyTestNotes(int baseNote)
+        {
+            int[] offsets = { 0, 4, 7, 12 };
+            string[] commands = new string[offsets.Length];
+            for (int i = 0; i < offsets.Length; i++)
+                commands[i] = "N" + Math.Max(1, Math.Min(127, baseNote + offsets[i]));
+            return commands;
+        }
+
+        public static int TimbreForFunctionKey(int key)
+        {
+            int index = key - 112; // WinForms Keys.F1
+            return (index >= 0 && index < TimbrePresets.Length) ? TimbrePresets[index] : -1;
+        }
+    }
+
     public sealed class KeyboardState
     {
         private readonly Dictionary<int, int> held = new Dictionary<int, int>();
@@ -100,7 +152,7 @@ namespace PolyTouchPc
         }
         public void Send(string command)
         {
-            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3})$"))
+            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3}|I[01])$"))
                 throw new ArgumentException("不支持的命令。");
             if (command.StartsWith("T") && Int32.Parse(command.Substring(1)) > 255)
                 throw new ArgumentException("音色权重必须为 0 到 255。");
@@ -181,7 +233,32 @@ namespace PolyTouchPc
             Check(q.Take(out item) && item == "T255" && !q.Take(out item), "timbre coalescing failed");
             q.Add("T160"); q.Panic(null);
             Check(q.Take(out item) && item == "X" && !q.Take(out item), "panic retained stale timbre");
-            Console.WriteLine("PASS keyboard: press/release, repeat, chord, octave and panic queue");
+
+            int offset;
+            Check(KeyboardLayout.TryOffset('Z', out offset) && offset == -12,
+                "lower-row C3 key did not map one octave below");
+            Check(KeyboardLayout.TryOffset('Q', out offset) && offset == 0,
+                "upper-row C4 key did not map to base note");
+            Check(KeyboardLayout.TryOffset('U', out offset) && offset == 11,
+                "upper-row B4 key did not map to offset 11");
+            Check(KeyboardLayout.TryOffset('A', out offset) && offset == 0,
+                "legacy C4 alias disappeared");
+            Check(KeyboardLayout.TryOffset('F', out offset) && offset == 5,
+                "legacy F4 alias disappeared");
+            Check(KeyboardLayout.TryOffset('K', out offset) && offset == 12,
+                "legacy C5 alias disappeared");
+            Check(KeyboardLayout.ShiftBase(60, 12) == 72, "octave up did not shift twelve semitones");
+            Check(KeyboardLayout.ShiftBase(84, 12) == 84, "octave upper bound was not clamped");
+            Check(KeyboardLayout.ShiftBase(36, -12) == 36, "octave lower bound was not clamped");
+            string[] testNotes = KeyboardLayout.PolyphonyTestNotes(60);
+            Check(String.Join(",", testNotes) == "N60,N64,N67,N72",
+                "four-note polyphony test chord is wrong");
+            Check(KeyboardLayout.TimbreForFunctionKey(112) == 250, "F1 did not select piano soft");
+            Check(KeyboardLayout.TimbreForFunctionKey(113) == 251, "F2 did not select piano mellow");
+            Check(KeyboardLayout.TimbreForFunctionKey(114) == 252, "F3 did not select piano medium");
+            Check(KeyboardLayout.TimbreForFunctionKey(115) == 253, "F4 did not select piano bright");
+            Check(KeyboardLayout.TimbreForFunctionKey(116) == 254, "F5 did not select piano hard");
+            Console.WriteLine("PASS keyboard: press/release, chord, panic, range, octave and piano hardness keys");
         }
         public static void Smoke(string port)
         {

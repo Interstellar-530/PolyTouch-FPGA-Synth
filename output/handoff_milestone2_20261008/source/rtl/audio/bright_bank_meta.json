@@ -1,19 +1,15 @@
 {
-  "harmonics": [
-    16,
-    8,
-    4,
-    2,
-    1
-  ],
+  "stages": 6,
   "depth": 512,
   "bsram_blocks": 3,
+  "harmonics": 10,
   "peaks": [
     32767,
-    31187,
-    28456,
-    24204,
-    18632
+    32767,
+    32767,
+    32767,
+    32767,
+    32767
   ],
-  "source": "wave_bright.hex; identical fundamental amplitude; no per-bank normalization"
+  "source": "six continuous body-to-hammer piano spectra"
 }

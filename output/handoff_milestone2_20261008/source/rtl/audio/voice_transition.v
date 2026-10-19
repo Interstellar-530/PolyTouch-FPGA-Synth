@@ -6,9 +6,19 @@ module voice_transition #(
     parameter [15:0] ATTACK_STEP=16'd140,
     parameter [15:0] DECAY_STEP=16'd16,
     parameter [15:0] RELEASE_STEP=16'd48,
-    parameter [15:0] SUSTAIN_LEVEL=16'd45875
+    parameter [15:0] SUSTAIN_LEVEL=16'd45875,
+    parameter [15:0] PIANO_ATTACK_STEP=16'd1024,
+    parameter [15:0] PIANO_DECAY_STEP=16'd2,
+    parameter [15:0] PIANO_RELEASE_STEP=16'd24,
+    parameter [15:0] PIANO_SUSTAIN_LEVEL=16'd32768,
+    parameter [15:0] GUITAR_ATTACK_STEP=16'd256,
+    parameter [15:0] GUITAR_DECAY_STEP=16'd3,
+    parameter [15:0] GUITAR_RELEASE_STEP=16'd8,
+    parameter [15:0] GUITAR_SUSTAIN_LEVEL=16'd45875
 )(
     input wire clk,rst,sample_tick,gate,retrigger,
+    input wire piano_mode,
+    input wire guitar_mode,
     input wire [6:0] note,
     input wire [7:0] velocity,
     output wire [6:0] render_note,
@@ -19,11 +29,15 @@ module voice_transition #(
 );
     reg [6:0] active_note,pending_note;
     reg [7:0] active_velocity,pending_velocity;
+    reg active_piano,pending_piano;
+    reg active_guitar,pending_guitar;
     reg fading;
     reg [15:0] fade_env,fade_step;
-    wire [15:0] raw_env;
-    wire raw_idle;
+    wire [15:0] normal_env,piano_env,guitar_env,raw_env;
+    wire normal_idle,piano_idle,guitar_idle,raw_idle;
     wire requested=gate && retrigger;
+    wire next_piano=requested?piano_mode:pending_piano;
+    wire next_guitar=requested?guitar_mode:pending_guitar;
     wire immediate=requested && !fading && raw_env==0;
     wire begin_fade=requested && !fading && raw_env!=0;
     wire finishing=fading && fade_env<=fade_step;
@@ -42,23 +56,41 @@ module voice_transition #(
     adsr #(.ATTACK_STEP(ATTACK_STEP),.DECAY_STEP(DECAY_STEP),
            .RELEASE_STEP(RELEASE_STEP),.SUSTAIN_LEVEL(SUSTAIN_LEVEL)) u_adsr(
         .clk(clk),.rst(adsr_reset),.sample_tick(sample_tick),.gate(adsr_gate),
-        .retrigger(render_retrigger),.env(raw_env),.idle(raw_idle));
+        .retrigger(render_retrigger),.env(normal_env),.idle(normal_idle));
+    adsr #(.ATTACK_STEP(GUITAR_ATTACK_STEP),.DECAY_STEP(GUITAR_DECAY_STEP),
+           .RELEASE_STEP(GUITAR_RELEASE_STEP),.SUSTAIN_LEVEL(GUITAR_SUSTAIN_LEVEL)) u_adsr_guitar(
+        .clk(clk),.rst(adsr_reset),.sample_tick(sample_tick),.gate(adsr_gate),
+        .retrigger(render_retrigger),.env(guitar_env),.idle(guitar_idle));
+    adsr #(.ATTACK_STEP(PIANO_ATTACK_STEP),.DECAY_STEP(PIANO_DECAY_STEP),
+           .RELEASE_STEP(PIANO_RELEASE_STEP),.SUSTAIN_LEVEL(PIANO_SUSTAIN_LEVEL)) u_adsr_piano(
+        .clk(clk),.rst(adsr_reset),.sample_tick(sample_tick),.gate(adsr_gate),
+        .retrigger(render_retrigger),.env(piano_env),.idle(piano_idle));
+    assign raw_env=active_guitar?guitar_env:(active_piano?piano_env:normal_env);
+    assign raw_idle=active_guitar?guitar_idle:(active_piano?piano_idle:normal_idle);
 
     wire [16:0] rounded_step={1'b0,raw_env}+((1<<FADE_LOG2)-1);
     always @(posedge clk)begin
         if(rst)begin
             active_note<=0;pending_note<=0;active_velocity<=0;pending_velocity<=0;
+            active_piano<=0;pending_piano<=0;active_guitar<=0;pending_guitar<=0;
             fading<=0;fade_env<=0;fade_step<=1;
         end else if(sample_tick)begin
-            if(requested)begin pending_note<=note;pending_velocity<=velocity;end
+            if(requested)begin
+                pending_note<=note;pending_velocity<=velocity;pending_piano<=piano_mode;pending_guitar<=guitar_mode;
+            end
             if(fading)begin
                 if(finishing)begin
                     fading<=0;fade_env<=0;
-                    if(gate)begin active_note<=next_note;active_velocity<=next_velocity;end
+                    if(gate)begin
+                        active_note<=next_note;active_velocity<=next_velocity;
+                        active_piano<=next_piano;active_guitar<=next_guitar;
+                    end
                 end else fade_env<=fade_env-fade_step;
             end else if(begin_fade)begin
                 fading<=1;fade_env<=raw_env;fade_step<=rounded_step>>FADE_LOG2;
-            end else if(immediate)begin active_note<=note;active_velocity<=velocity;end
+            end else if(immediate)begin
+                active_note<=note;active_velocity<=velocity;active_piano<=piano_mode;active_guitar<=guitar_mode;
+            end
         end
     end
 `ifdef SIMULATION

@@ -12,6 +12,7 @@ module tb_precision_audio;
   end
   shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1),.BANDLIMIT_ENABLE(1),.EXTRA_FRACTION_BITS(2*g)) engine(
    .clk(clk),.rst(rst),.sample_tick(tick),.inc0(32'd39321600),.inc1(32'd0),.inc2(32'd0),.inc3(32'd0),
+   .piano_enable(1'b0), .piano_tone(3'd0),
    .env0(env),.env1(16'd0),.env2(16'd0),.env3(16'd0),.vel0(8'd100),.vel1(8'd0),.vel2(8'd0),.vel3(8'd0),
    .retrig0(retrigger),.retrig1(1'b0),.retrig2(1'b0),.retrig3(1'b0),.bend_ratio_q16(17'd65536),
    .sine_sum(sine),.bright_sum(bright),.sums_valid(valid),.mult_request(er),.mult_operand_a(ea),.mult_operand_b(eb),.mult_result(product));

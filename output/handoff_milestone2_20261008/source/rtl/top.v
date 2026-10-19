@@ -15,35 +15,47 @@
 // 音频接口由编译期参数 AUDIO_IF 选择，不做运行时切钟，避免时钟毛刺与 CDC：
 //   AUDIO_IF = 0：板载 PT8211，27 MHz / 46.875 kHz，18 拍 BCK 帧；点流与引脚维持原样。
 //   AUDIO_IF = 1：外置 PCM5102A 标准 I2S（Philips），12.288 MHz / 48 kHz、BCK 3.072 MHz、
-//                 每帧 64 个 BCK；全部逻辑改由 clk_12m288 驱动，27 MHz 输入不使用。
+//   AUDIO_IF = 2：外置 PCM5102A 标准 I2S，板载 27 MHz / 46.875 kHz、BCK 3.000 MHz、
+//                 每帧 64 个 BCK（27e6/9/64 = 46875 整除）。这是 12.288 MHz 成品时钟
+//                 缺件时的替代档：采样率是 46.875 kHz，不是 48 kHz，音高由 FS_HZ 保证。
+// 三档互斥；0/2 用 27 MHz，只有 1 用外部 12.288 MHz。
 // 与时钟配套的时间常数都按 AUDIO_CLK_HZ / AUDIO_FS_HZ 推导（UART 波特率分频、GPIO 消抖
 // 门限、ADC 控制节拍、曲目节拍与音高相位增量），避免只换时钟而漏改分频常数。
 module top #(
     parameter integer AUDIO_IF      = 0,
-    parameter integer AUDIO_CLK_HZ  = (AUDIO_IF == 0) ? `FPGA_AUDIO_DBG_CLK_HZ : `FPGA_AUDIO_STD_CLK_HZ,
-    parameter integer AUDIO_FS_HZ   = (AUDIO_IF == 0) ? `FPGA_AUDIO_DBG_FS_HZ  : `FPGA_AUDIO_STD_FS_HZ,
-    parameter integer I2S_DATA_BITS = 24,                     // AUDIO_IF=1 时每声道槽宽
+    parameter integer AUDIO_CLK_HZ  = (AUDIO_IF == 1) ? `FPGA_AUDIO_STD_CLK_HZ : `FPGA_AUDIO_DBG_CLK_HZ,
+    parameter integer AUDIO_FS_HZ   = (AUDIO_IF == 1) ? `FPGA_AUDIO_STD_FS_HZ  : `FPGA_AUDIO_DBG_FS_HZ,
+    parameter integer I2S_DATA_BITS = 24,                     // AUDIO_IF=1/2 时每声道槽宽
     // 曲目单位时长：调试档 9766 采样 @46.875 kHz = 208.34 ms；48 kHz 档按同一时长
     // 换算得 10000.4，取 10000（208.33 ms，偏差 0.004%）。
-    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 0) ? 9766 : 10000,
-    // FSR controls one global VCA. Standard profile enabled, legacy PT8211
-    // profile bypassed. These are provisional ADC calibration values, not N.
-    parameter integer PRESSURE_ENABLE = (AUDIO_IF == 1),
+    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 1) ? 10000 : 9766,
+    // 演奏输入选择：标准 27 MHz 生产档停用 12 路 GPIO 键（GPIO_KEY_ENABLE=0），
+    // 由 USB 电脑键盘经 CH9350L 串口输入（HOST_KBD_ENABLE=1）。旧 debug/standard
+    // profile 保持 GPIO=1、HOST=0，便于回归与回退。
+    parameter integer GPIO_KEY_ENABLE = 1,
+    parameter integer HOST_KBD_ENABLE = 0,
+    // FSR controls one global VCA. Standard profiles (1 and 2) enabled, legacy
+    // PT8211 profile bypassed. These are provisional ADC calibration values, not N.
+    parameter integer PRESSURE_ENABLE = (AUDIO_IF != 0),
     parameter integer PRESSURE_ADC_LOW = 128,
     parameter integer PRESSURE_ADC_FULL = 3200,
     parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
     parameter integer PRESSURE_GAIN_STEP = 32,
     // Four signed 16-bit voices, unity pressure gain: divide by four before
     // saturation. This adds 6.02 dB headroom over the historical shift=1.
+    parameter integer VOICES = 4,
+    parameter integer INSTRUMENT_DEFAULT = 0,
     parameter integer MASTER_VOLUME_SHIFT = 2,
     parameter integer CORE_EXTRA_FRACTION_BITS = 2
 ) (
-    input  wire clk_27m,     // H11，板载 27 MHz；AUDIO_IF=1 时不使用
-    input  wire clk_12m288,  // T7（J14-10，GCLKT_3），外置 3.3 V CMOS 12.288 MHz 有源晶振
+    input  wire clk_27m,     // H11，板载 27 MHz；AUDIO_IF=1 时不使用，0/2 使用
+    input  wire clk_12m288,  // T7（J14-10，GCLKT_3），外置 3.3 V CMOS 12.288 MHz 有源晶振；仅 AUDIO_IF=1 使用
     input  wire key_rst,     // S3 / D7, active-low design reset
     input  wire key_s1,      // S1 / T3, active-low, chord set A/B
     input  wire key_s2,      // S2 / T2，低有效；下一速度档并重启曲目
     input  wire uart_rx,     // T13, from BL702 UART1_TX
+    input  wire kbd_uart_rx, // 标准档：CH9350L 下位机 TXD -> FPGA（L9 / J5-5）
+    output wire kbd_uart_tx, // 标准档：FPGA -> CH9350L RXD（N8 / J5-6），当前固定高
     input  wire [11:0] gpio_key_n, // [S2-AI] 12 路琴键，低有效，外部上拉；键 0 = C4
     // [S4] MCP3208 SPI：CH0 = 压力 FSR，CH1 = 弯音电位器。
     output wire             adc_cs_n,
@@ -70,7 +82,7 @@ module top #(
 
     // 编译期选择的内部音频时钟。AUDIO_IF 是常数，综合会把它折叠成直连，
     // 因此不存在运行时切换时钟源的毛刺风险，也没有跨时钟域逻辑。
-    wire clk_audio = (AUDIO_IF == 0) ? clk_27m : clk_12m288;
+    wire clk_audio = (AUDIO_IF == 1) ? clk_12m288 : clk_27m;
 
     // 与音频时钟配套的编译期常数：2 kHz 控制节拍与约 111 ms 的循环标记。
     localparam integer CTRL_TICK_DIV = AUDIO_CLK_HZ / 2000;
@@ -107,11 +119,37 @@ module top #(
     wire s1_press, s2_press;
     wire uart_timbre_valid;
     wire [7:0] uart_timbre_value, timbre_target;
+    // HID 键盘的 F1-F5 与 UART 的 T250-T254 共用音色入口；同一拍 HID 优先。
+    wire hid_timbre_valid;
+    wire [7:0] hid_timbre_value;
+    wire       uart_instr_valid;
+    wire [1:0] uart_instr_id;
+    wire       timbre_valid_mux = uart_timbre_valid | hid_timbre_valid;
+    wire [7:0] timbre_value_mux = hid_timbre_valid ? hid_timbre_value : uart_timbre_value;
+    // 乐器运行时切换：I0 钢琴，I1 吉他。切换拍清声部/事件，避免持音中途换表。
+    reg  [1:0] instrument_id;
+    reg        instrument_change;
+    always @(posedge clk_audio) begin
+        if (rst) begin
+            instrument_id <= INSTRUMENT_DEFAULT[1:0];
+            instrument_change <= 1'b0;
+        end else begin
+            instrument_change <= 1'b0;
+            if (uart_instr_valid && (uart_instr_id != instrument_id)) begin
+                instrument_id <= uart_instr_id;
+                instrument_change <= 1'b1;
+            end
+        end
+    end
+    wire guitar_mode = (instrument_id != 2'd0);
+    wire piano_mode = !guitar_mode && (timbre_target >= 8'd250);
+    wire [2:0] piano_tone = piano_mode ? (timbre_target - 8'd250) : 3'd0;
+    wire [7:0] timbre_mix_weight = (piano_mode || guitar_mode) ? 8'hff : timbre_target;
     wire show_timbre;
     wire [1:0] timbre_preset;
     instrument_controls #(.CLK_HZ(AUDIO_CLK_HZ)) u_controls (
         .clk(clk_audio), .por(por), .rst(rst), .key_s1(key_s1), .key_s2(key_s2),
-        .timbre_valid(uart_timbre_valid), .timbre_value(uart_timbre_value),
+        .timbre_valid(timbre_valid_mux), .timbre_value(timbre_value_mux),
         .s1_short(s1_press), .s2_press(s2_press), .timbre_target(timbre_target),
         .show_timbre(show_timbre), .preset(timbre_preset)
     );
@@ -156,52 +194,111 @@ module top #(
     wire [6:0]  uart_ev_note;
     wire [7:0]  uart_ev_vel;
 
-    // [S2-AI-BEGIN] GPIO 手动来源：同步/消抖后的琴键事件进入 16 项手动 FIFO。
-    // gpio_keyboard 在没有 ready 时把事件留在自己的每键队列里，因此这里不会丢事件。
-    // 优先级定为：清理（Panic/模式切换）> 首事件暂存 > UART > GPIO 手动 FIFO > 演示 FIFO。
-    wire        gp_ev_valid, gp_ev_on, gp_ev_ready;
+    // [S2-AI-BEGIN] 手动来源：GPIO（旧档）与 CH9350L HID（标准档）共用 16 项 FIFO。
+    // 优先级：清理（Panic/模式切换/断线）> 首事件暂存 > UART > 手动 FIFO > 演示 FIFO。
+    wire        gp_ev_valid, gp_ev_on;
     wire [6:0]  gp_ev_note;
     wire [7:0]  gp_ev_vel;
+    wire        gp_ev_ready;
+    wire        hid_ev_valid, hid_ev_on;
+    wire [6:0]  hid_ev_note;
+    wire [7:0]  hid_ev_vel;
+    wire        hid_ev_ready;
+    wire        hid_panic, hid_link_timeout, hid_device_notify, hid_overflow;
+    wire [6:0]  hid_base_note;
+    wire [3:0]  hid_held_count;
     wire        man_empty, man_ready;
     wire [15:0] man_data;
     wire        man_rd;
 
-    // X 全松键与 D1/D0 模式切换时，丢弃未发送的手动事件并重新武装琴键：
+    // X 全松键、D1/D0 模式切换、HID Esc 或断线时，丢弃未发送的手动事件并重新武装输入：
     // 已经按住的键必须松开再按才会重新起音。这里不能直接用 clear_events 驱动，
-    // 否则由 GPIO 触发的那次“退出演示”会把首个按键事件一起清掉。
-    wire manual_flush = uart_panic || uart_demo_on || uart_demo_off;
+    // 否则由输入触发的那次“退出演示”会把首个按键事件一起清掉。
+    wire manual_flush = uart_panic || hid_panic || hid_link_timeout || hid_device_notify ||
+                        instrument_change ||
+                        uart_demo_on || uart_demo_off;
 
-    gpio_keyboard #(.CLK_HZ(AUDIO_CLK_HZ)) u_gpio (
-        .clk       (clk_audio),
-        .rst       (rst),
-        .key_in    (gpio_key_n),
-        .flush     (manual_flush),
-        .ev_ready  (gp_ev_ready),
-        .ev_valid  (gp_ev_valid),
-        .ev_on     (gp_ev_on),
-        .ev_note   (gp_ev_note),
-        .ev_vel    (gp_ev_vel),
-        .key_pressed()          // 预留：后续可用于琴键指示 LED 或 GAO 观察
-    );
+    // 标准 27 MHz 档不再使用 12 路 GPIO 演奏键；旧 debug/standard 档保留以便回退。
+    generate
+        if (GPIO_KEY_ENABLE) begin : g_gpio_keys
+            gpio_keyboard #(.CLK_HZ(AUDIO_CLK_HZ)) u_gpio (
+                .clk       (clk_audio),
+                .rst       (rst),
+                .key_in    (gpio_key_n),
+                .flush     (manual_flush),
+                .ev_ready  (gp_ev_ready),
+                .ev_valid  (gp_ev_valid),
+                .ev_on     (gp_ev_on),
+                .ev_note   (gp_ev_note),
+                .ev_vel    (gp_ev_vel),
+                .key_pressed()
+            );
+        end else begin : g_no_gpio_keys
+            assign gp_ev_valid = 1'b0;
+            assign gp_ev_on    = 1'b0;
+            assign gp_ev_note  = 7'd0;
+            assign gp_ev_vel   = 8'd0;
+        end
+    endgenerate
+
+    // 标准档演奏输入：CH9350L 下位机 state 2。kbd_uart_rx 未连接时按空闲高处理，
+    // 避免旧测试台省略该端口后出现 X 传播。
+    wire kbd_rx_i = (kbd_uart_rx === 1'b0) ? 1'b0 : 1'b1;
+    generate
+        if (HOST_KBD_ENABLE) begin : g_host_kbd
+            host_kbd_input #(.CLK_HZ(AUDIO_CLK_HZ)) u_host_kbd (
+                .clk(clk_audio), .rst(rst), .kbd_rx(kbd_rx_i), .kbd_tx(kbd_uart_tx),
+                .flush(manual_flush),
+                .ev_valid(hid_ev_valid), .ev_word({hid_ev_on, hid_ev_note, hid_ev_vel}),
+                .ev_ready(hid_ev_ready),
+                .panic(hid_panic), .timbre_valid(hid_timbre_valid),
+                .timbre_value(hid_timbre_value),
+                .base_note(hid_base_note), .held_count(hid_held_count),
+                .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
+                .frame_valid()
+            );
+        end else begin : g_no_host_kbd
+            assign hid_ev_valid  = 1'b0;
+            assign hid_ev_on     = 1'b0;
+            assign hid_ev_note   = 7'd0;
+            assign hid_ev_vel    = 8'd0;
+            assign hid_panic     = 1'b0;
+            assign hid_timbre_valid = 1'b0;
+            assign hid_timbre_value = 8'd0;
+            assign hid_base_note = 7'd60;
+            assign hid_held_count = 4'd0;
+            assign hid_overflow  = 1'b0;
+            assign hid_link_timeout = 1'b0;
+            assign hid_device_notify = 1'b0;
+            assign kbd_uart_tx   = 1'b1;
+        end
+    endgenerate
 
     reg         demo_mode;
     reg         pending_valid;
     reg [15:0]  pending_word;
 
-    // 演示模式期间只接收按键（Note On）事件：进入演示时已经清空声部，
-    // 此时松键没有可关闭的音符，若把它排进队列，还会挡住后面真正的按键事件。
-    wire man_wr = gp_ev_valid && !(demo_mode && !gp_ev_on);
+    // GPIO 与 HID 共用一个手动 FIFO：GPIO 优先，HID 在 ready 前保持自己的事件。
+    // 演示模式期间只接收 Note On；松键不进队列，避免挡住后面真正的按键。
+    wire gp_ok  = gp_ev_valid && !(demo_mode && !gp_ev_on);
+    wire hid_ok = hid_ev_valid && !(demo_mode && !hid_ev_on);
+    wire use_gpio = gp_ok;
+    wire man_wr = man_ready && (gp_ok || hid_ok);
+    wire [15:0] man_wr_data = use_gpio ? {gp_ev_on, gp_ev_note, gp_ev_vel}
+                                       : {hid_ev_on, hid_ev_note, hid_ev_vel};
+    assign gp_ev_ready  = man_ready && use_gpio;
+    assign hid_ev_ready = man_ready && !use_gpio;
 
     event_fifo u_manual (
         .clk     (clk_audio),
         .rst     (rst | manual_flush),
         .wr_en   (man_wr),
-        .wr_data ({gp_ev_on, gp_ev_note, gp_ev_vel}),
+        .wr_data (man_wr_data),
         .rd_en   (man_rd),
         .rd_data (man_data),
         .empty   (man_empty),
         .full    (),
-        .wr_ready(gp_ev_ready)
+        .wr_ready(man_ready)
     );
 
     wire        man_ev_valid = !man_empty;   // event_fifo 的 rd_data 是队首组合输出
@@ -214,7 +311,8 @@ module top #(
     wire        manual_transition = demo_mode && (uart_ev_valid || uart_panic ||
                                                   (man_ev_valid && man_ev_on));
     wire        clear_events = uart_demo_on || uart_demo_off ||
-                               manual_transition || uart_panic || (restart && demo_mode);
+                               manual_transition || uart_panic || hid_panic ||
+                               hid_link_timeout || hid_device_notify || instrument_change || (restart && demo_mode);
 
     always @(posedge clk_audio) begin
         if (rst) begin
@@ -302,7 +400,8 @@ module top #(
         .muted    (uart_muted),
         .demo_on  (uart_demo_on),
         .demo_off (uart_demo_off),
-        .timbre_valid (uart_timbre_valid), .timbre_value (uart_timbre_value)
+        .timbre_valid (uart_timbre_valid), .timbre_value (uart_timbre_value),
+        .instr_valid (uart_instr_valid), .instr_id (uart_instr_id)
     );
 
     // 模式切换、X 或演示重启先清 FIFO 并撤销旧声部 gate，走正常 Release。
@@ -324,18 +423,18 @@ module top #(
     assign man_rd = man_deliver && !clear_events && !pending_valid && !uart_direct;
 
     // ---------------------------------------------------- voice control ---
-    wire [3:0]  v_gate;
-    wire [27:0] v_note;      // 4 x 7 bit
-    wire [31:0] v_vel;       // 4 x 8 bit
-    wire [3:0]  v_idle;
-    wire [3:0]  v_start;
+    wire [VOICES-1:0]   v_gate;
+    wire [VOICES*7-1:0] v_note;      // VOICES x 7 bit
+    wire [VOICES*8-1:0] v_vel;       // VOICES x 8 bit
+    wire [VOICES-1:0]   v_idle;
+    wire [VOICES-1:0]   v_start;
     wire owned_ev_valid;
     note_ownership u_ownership(
         .clk(clk_audio),.rst(rst),.clear(clear_events),.manual_mode(!demo_mode),
         .event_valid(ev_valid),.event_on(ev_word[15]),.note(ev_word[14:8]),
         .source_uart(pending_valid || uart_direct),.forward_valid(owned_ev_valid));
 
-    voice_alloc u_alloc (
+    voice_alloc #(.VOICES(VOICES)) u_alloc (
         .clk        (clk_audio),
         .rst        (rst),
         .ev_valid   (owned_ev_valid),
@@ -352,15 +451,18 @@ module top #(
     );
 
     // ----------------------------------------------------------- voices ---
-    wire [31:0] inc0, inc1, inc2, inc3;
-    wire [27:0] render_note;
-    wire [31:0] render_velocity;
-    wire [3:0] render_retrigger;
-
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc0 (.note(render_note[6:0]),   .inc(inc0));
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc1 (.note(render_note[13:7]),  .inc(inc1));
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc2 (.note(render_note[20:14]), .inc(inc2));
-    note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc3 (.note(render_note[27:21]), .inc(inc3));
+    // 每声部一条相位增量；旧档 VOICES=4，标准 27 MHz 档 VOICES=8。
+    wire [31:0] inc [0:7];           // 只驱动 0..VOICES-1，其余未用
+    wire [VOICES*7-1:0] render_note;
+    wire [VOICES*8-1:0] render_velocity;
+    wire [VOICES-1:0] render_retrigger;
+    genvar gi;
+    generate
+        for (gi = 0; gi < VOICES; gi = gi + 1) begin : g_inc
+            note_phase_inc #(.FS_HZ(AUDIO_FS_HZ)) u_inc (
+                .note(render_note[gi*7 +: 7]), .inc(inc[gi]));
+        end
+    endgenerate
 
     // ------------------------------------------- [S4/S5] ADC 控制路径 ---
     // 2 kHz 控制节拍，分频数按当前主时钟推导：调试档 27 MHz / 13 500 = 2 kHz，
@@ -447,7 +549,7 @@ module top #(
     pressure_bend #(.PIPELINE_FINE_RATIO_ENABLE(1)) u_bend (
         .clk (clk_audio), .rst (rst), .control_tick (control_sample_tick),
         .pressure_adc (pressure_raw), .bend_adc (bend_raw),
-        .pressure_enable (1'b1), .base_phase_inc (inc0),
+        .pressure_enable (1'b1), .base_phase_inc (inc[0]),
         .pressure_filtered (pressure_filtered), .pressure_level (pressure_level),
         .bend_q8 (bend_q8), .bend_ratio_q16 (bend_ratio_q16),
         .phase_inc_out (bend_inc0)
@@ -458,9 +560,9 @@ module top #(
     // engine uses base increments and shares its multiplier for all four;
     // these unused reference products are removed from the hardware netlist.
     // 显式加宽再截断，避免依赖工具对乘积宽度的上下文推断（同 S5 的修正口径）。
-    wire [48:0] bend_mul1 = {17'd0, inc1} * {32'd0, bend_ratio_q16};
-    wire [48:0] bend_mul2 = {17'd0, inc2} * {32'd0, bend_ratio_q16};
-    wire [48:0] bend_mul3 = {17'd0, inc3} * {32'd0, bend_ratio_q16};
+    wire [48:0] bend_mul1 = {17'd0, inc[1]} * {32'd0, bend_ratio_q16};
+    wire [48:0] bend_mul2 = {17'd0, inc[2]} * {32'd0, bend_ratio_q16};
+    wire [48:0] bend_mul3 = {17'd0, inc[3]} * {32'd0, bend_ratio_q16};
     wire [31:0] bend_inc1 = bend_mul1 >> 16;
     wire [31:0] bend_inc2 = bend_mul2 >> 16;
     wire [31:0] bend_inc3 = bend_mul3 >> 16;
@@ -468,47 +570,39 @@ module top #(
 
     // [S6 共享引擎] 包络留在顶层（每声部一个 adsr），振荡/插值/混合交给共享引擎
     // 时分复用：整机 2 个 pROM、一组共享乘法器、交叉混合全局一次。
-    wire [15:0] v_env0, v_env1, v_env2, v_env3;
+    wire [15:0] v_env [0:7];   // 只驱动 0..VOICES-1
 
     // 与 poly_voice_s6 相同的“start 暂存到 sample_tick”口径，避免事件不对齐采样点。
-    reg  [3:0] v_pending = 4'd0;
+    reg  [VOICES-1:0] v_pending = {VOICES{1'b0}};
     always @(posedge clk_audio) begin
         if (rst)
-            v_pending <= 4'd0;
+            v_pending <= {VOICES{1'b0}};
         else if (sample_tick)
-            v_pending <= 4'd0;
+            v_pending <= {VOICES{1'b0}};
         else
             v_pending <= v_pending | v_start;
     end
-    wire [3:0] v_retrig = v_gate & (v_start | v_pending);
+    wire [VOICES-1:0] v_retrig = v_gate & (v_start | v_pending);
 
-    voice_transition u_env0 (
-        .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
-        .note(v_note[6:0]),.velocity(v_vel[7:0]),.render_note(render_note[6:0]),
-        .render_velocity(render_velocity[7:0]),.render_retrigger(render_retrigger[0]),
-        .gate (v_gate[0]), .retrigger (v_retrig[0]), .env (v_env0), .idle (v_idle[0])
-    );
-    voice_transition u_env1 (
-        .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
-        .note(v_note[13:7]),.velocity(v_vel[15:8]),.render_note(render_note[13:7]),
-        .render_velocity(render_velocity[15:8]),.render_retrigger(render_retrigger[1]),
-        .gate (v_gate[1]), .retrigger (v_retrig[1]), .env (v_env1), .idle (v_idle[1])
-    );
-    voice_transition u_env2 (
-        .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
-        .note(v_note[20:14]),.velocity(v_vel[23:16]),.render_note(render_note[20:14]),
-        .render_velocity(render_velocity[23:16]),.render_retrigger(render_retrigger[2]),
-        .gate (v_gate[2]), .retrigger (v_retrig[2]), .env (v_env2), .idle (v_idle[2])
-    );
-    voice_transition u_env3 (
-        .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
-        .note(v_note[27:21]),.velocity(v_vel[31:24]),.render_note(render_note[27:21]),
-        .render_velocity(render_velocity[31:24]),.render_retrigger(render_retrigger[3]),
-        .gate (v_gate[3]), .retrigger (v_retrig[3]), .env (v_env3), .idle (v_idle[3])
-    );
+    generate
+        for (gi = 0; gi < VOICES; gi = gi + 1) begin : g_voice
+            voice_transition u_env (
+                .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
+                .piano_mode (piano_mode), .guitar_mode (guitar_mode),
+                .note(v_note[gi*7 +: 7]), .velocity(v_vel[gi*8 +: 8]),
+                .render_note(render_note[gi*7 +: 7]),
+                .render_velocity(render_velocity[gi*8 +: 8]),
+                .render_retrigger(render_retrigger[gi]),
+                .gate (v_gate[gi]), .retrigger (v_retrig[gi]),
+                .env (v_env[gi]), .idle (v_idle[gi])
+            );
+        end
+    endgenerate
 
     wire signed [18+CORE_EXTRA_FRACTION_BITS:0] sine_sum, bright_sum;
     wire               sums_valid;
+    // 引擎和交叉淡化共用一套 18x18 乘法器：请求-下一拍读结果，分拍调度。
+    // 8 声部的音高 bug 已由“ST_BEND_APPLY 只更新当前 vsel”修复，不需要第二乘法器。
     wire engine_mult_req,xf_mult_req;
     wire signed[17:0] engine_mult_a,engine_mult_b,xf_mult_a,xf_mult_b;
     reg signed[35:0] audio_mult_result;
@@ -522,16 +616,37 @@ module top #(
     always @(posedge clk_audio)if(!rst && engine_mult_req && xf_mult_req)$fatal(1,"audio multiplier collision");
 `endif
 
-    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(1),.BANDLIMIT_ENABLE(1),
+    // 4/8 声部共用同一套 ROM 与乘法器；VOICES8 只改变 FSM 轮询次数。
+    wire [7:0] retrig8;
+    wire [63:0] vel8;
+    assign retrig8[VOICES-1:0] = render_retrigger;
+    assign vel8[VOICES*8-1:0] = render_velocity;
+    generate
+        if (VOICES < 8) begin : g_retrig_pad
+            assign retrig8[7:VOICES] = 8'd0;
+            assign vel8[63:VOICES*8] = 64'd0;
+        end
+    endgenerate
+
+    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.BANDLIMIT_ENABLE(1),.GENERIC_BRIGHT_ENABLE(1),
+        .ZONE_LATCH_ENABLE(1),.STAGE_TIME_ENABLE(1),.STAGE_STEP_SAMPLES(8192),
+        .VOICES8((VOICES == 8) ? 1 : 0),.SHARED_MULT_ENABLE(1),.GUITAR_ENABLE(1),
         .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS)) u_engine (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
-        .inc0 (inc0), .inc1 (inc1), .inc2 (inc2), .inc3 (inc3),
+        .inc0 (inc[0]), .inc1 (inc[1]), .inc2 (inc[2]), .inc3 (inc[3]),
+        .inc4 (inc[4]), .inc5 (inc[5]), .inc6 (inc[6]), .inc7 (inc[7]),
         .bend_ratio_q16(bend_ratio_q16),
+        .piano_enable(piano_mode), .guitar_enable(guitar_mode),
+        .piano_tone(piano_tone),
         .mult_request(engine_mult_req),.mult_operand_a(engine_mult_a),.mult_operand_b(engine_mult_b),.mult_result(audio_mult_result),
-        .retrig0 (render_retrigger[0]), .retrig1 (render_retrigger[1]),
-        .retrig2 (render_retrigger[2]), .retrig3 (render_retrigger[3]),
-        .env0 (v_env0), .env1 (v_env1), .env2 (v_env2), .env3 (v_env3),
-        .vel0 (render_velocity[7:0]), .vel1 (render_velocity[15:8]), .vel2 (render_velocity[23:16]), .vel3 (render_velocity[31:24]),
+        .retrig0 (retrig8[0]), .retrig1 (retrig8[1]), .retrig2 (retrig8[2]), .retrig3 (retrig8[3]),
+        .retrig4 (retrig8[4]), .retrig5 (retrig8[5]), .retrig6 (retrig8[6]), .retrig7 (retrig8[7]),
+        .env0 (v_env[0]), .env1 (v_env[1]), .env2 (v_env[2]), .env3 (v_env[3]),
+        .env4 (v_env[4]), .env5 (v_env[5]), .env6 (v_env[6]), .env7 (v_env[7]),
+        .vel0 (vel8[7:0]), .vel1 (vel8[15:8]),
+        .vel2 (vel8[23:16]), .vel3 (vel8[31:24]),
+        .vel4 (vel8[39:32]), .vel5 (vel8[47:40]),
+        .vel6 (vel8[55:48]), .vel7 (vel8[63:56]),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sums_valid (sums_valid)
     );
 
@@ -546,10 +661,10 @@ module top #(
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
         .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),
         .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT), .MUTE_SLEW_ENABLE(1),
-        .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS),.REGISTER_MIX_INPUTS_ENABLE(1)
+        .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS),.REGISTER_MIX_INPUTS_ENABLE(1),.SOFT_LIMIT_ENABLE((VOICES==8)?1:0)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
-        .mix_weight (timbre_target),
+        .mix_weight (timbre_mix_weight),
         .mult_request(xf_mult_req),.mult_operand_a(xf_mult_a),.mult_operand_b(xf_mult_b),.mult_result(audio_mult_result),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
         .sample_out24(mixed_shared24),
@@ -563,8 +678,16 @@ module top #(
     // 留在库里并由 tb_s6_audio 覆盖，产品顶层不再实例化：顶层再串一级只会多出
     // 一拍延迟和一份死逻辑。FIR 仍然旁路，启用会把 10 kHz 压到约 -8.5 dB，
     // 音频验收基线要重做。
-    wire signed [15:0] mixed;
-    assign mixed = mixed_shared;
+    // 高音区偏尖锐：主混合后加一级一阶低通，a=0.5 -> fc≈5.2 kHz（46.875 kHz）。
+    // 只用移位，不新增乘法器；低音区 3 kHz 以上能量很少，主要压高音。
+    reg signed [15:0] mix_lp_y;
+    wire signed [16:0] mix_lp_diff = mixed_shared - mix_lp_y;
+    wire signed [15:0] mixed_lpf = mix_lp_y + (mix_lp_diff >>> 1);
+    always @(posedge clk_audio) begin
+        if (rst) mix_lp_y <= 16'sd0;
+        else if (sums_valid) mix_lp_y <= mixed_lpf;
+    end
+    wire signed [15:0] mixed = mixed_lpf;
 
     // 把削波计数与压力/弯音观测值折成 4 位，避免综合把未接引脚的通路裁掉。
     wire [3:0] fold_clip = xf_clip_count[31:28] ^ xf_clip_count[27:24] ^ xf_clip_count[23:20] ^

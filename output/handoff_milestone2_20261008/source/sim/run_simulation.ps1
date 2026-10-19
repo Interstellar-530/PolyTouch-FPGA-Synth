@@ -210,10 +210,23 @@ try {
                 'rtl\audio\wavetable_osc_dual_s6.v', 'rtl\audio\wavetable_osc_dual_prom.v',
                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
                 'sim\gowin_prom_model.v') },
+        @{ Name = 'tb_piano_bank'; Top = 'sim\tb_piano_bank.v'; Src = @(
+                'rtl\audio\gowin_prom_piano_bank.v', 'sim\gowin_prom_model.v') },
+        @{ Name = 'tb_piano_engine'; Top = 'sim\tb_piano_engine.v'; Src = @(
+                'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_piano_bank.v',
+                'sim\gowin_prom_model.v') },
+        @{ Name = 'tb_piano_morph'; Top = 'sim\tb_piano_morph.v'; Src = @(
+                'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_piano_bank.v',
+                'sim\gowin_prom_model.v') },
+        @{ Name = 'tb_piano_envelope'; Top = 'sim\tb_piano_envelope.v'; Src = @(
+                'rtl\audio\voice_transition.v', 'rtl\audio\adsr.v') },
         @{ Name = 'tb_shared_engine'; Top = 'sim\tb_shared_engine.v'; Src = @(
                 'rtl\audio\shared_wavetable_engine.v', 'rtl\audio\global_crossfade.v',
                 'rtl\audio\wavetable_osc_dual_s6.v', 'rtl\audio\gowin_prom_wave_sine.v',
-                'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v') }
+                'rtl\audio\gowin_prom_wave_bright.v', 'rtl\audio\gowin_prom_piano_bank.v',
+                'sim\gowin_prom_model.v') }
     )
 
     # FSR gain is part of the product; these self-checking benches are also run
@@ -235,7 +248,7 @@ try {
 
     # Shared board controls are required by every bench containing rtl/top.v.
     foreach ($entry in $suite) {
-        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\bend_ratio_pipeline.v') }
+        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\bend_ratio_pipeline.v') }
     }
     $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName)
     foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top')) {
@@ -255,6 +268,12 @@ try {
     $suite += @{ Name='tb_voice_state_ram'; Top='sim\tb_voice_state_ram.v'; Src=$audioSources }
     $suite += @{ Name='tb_ram_wavetable_engine'; Top='sim\tb_ram_wavetable_engine.v'; Src=($audioSources + @('sim\gowin_prom_model.v')) }
     $suite += @{ Name='tb_wide_master_pair'; Top='sim\tb_wide_master_pair.v'; Src=$audioSources }
+    # 27 MHz 单时钟生产档（AUDIO_IF=2）：27e6/9/64 = 46875 Hz，BCK 3.000 MHz，24 位槽。
+    $suite += @{ Name='tb_top_i2s_27m'; Top='sim\tb_top_i2s_27m.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    # P0 选表语义、P1 音区/阶段、CH9350L HID 链路（2026-10-19）。
+    $suite += @{ Name='tb_generic_bright'; Top='sim\tb_generic_bright.v'; Src=@('rtl\audio\shared_wavetable_engine.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
+    $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
+    $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
     foreach($voices in @(8,32,64)) {
         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
     }

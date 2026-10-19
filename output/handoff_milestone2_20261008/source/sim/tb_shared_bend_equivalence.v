@@ -10,7 +10,7 @@ module tb_shared_bend_equivalence;
     wire[48:0] m0=inc0*ratio,m1=inc1*ratio,m2=inc2*ratio,m3=inc3*ratio;
     wire[31:0] bent0=m0>>16,bent1=m1>>16,bent2=m2>>16,bent3=m3>>16;
     shared_wavetable_engine #(.BEND_SHARED_ENABLE(1)) optimized(clk,rst,tick,inc0,inc1,inc2,inc3,retrig[0],retrig[1],retrig[2],retrig[3],
-        env0,env1,env2,env3,vel0,vel1,vel2,vel3,s0,b0,v0,ratio,,,,36'd0);
+        env0,env1,env2,env3,vel0,vel1,vel2,vel3,1'b0,1'b0,s0,b0,v0,ratio,,,,36'd0);
     baseline_shared_wavetable_engine baseline(clk,rst,tick,bent0,bent1,bent2,bent3,retrig[0],retrig[1],retrig[2],retrig[3],
         env0,env1,env2,env3,vel0,vel1,vel2,vel3,s1,b1,v1);
     integer frame,cycle,new_latency,old_latency,products,total_products=0;

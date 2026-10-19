@@ -17,15 +17,28 @@ module shared_wavetable_engine #(
     parameter integer BEND_SHARED_ENABLE = 0,
     parameter integer SHARED_MULT_ENABLE = 0,
     parameter integer BANDLIMIT_ENABLE = 0,
+    parameter integer GENERIC_BRIGHT_ENABLE = 0,
+    parameter integer GUITAR_ENABLE = 0,
+    parameter integer ZONE_LATCH_ENABLE = 0,
+    parameter integer STAGE_TIME_ENABLE = 0,
+    parameter integer STAGE_STEP_SAMPLES = 5859,
+    parameter integer VOICES8 = 0,
     parameter integer EXTRA_FRACTION_BITS = 0
 ) (
     input  wire               clk,
     input  wire               rst,
     input  wire               sample_tick,
     input  wire [31:0]        inc0, inc1, inc2, inc3,
+    input  wire [31:0]        inc4, inc5, inc6, inc7,
     input  wire               retrig0, retrig1, retrig2, retrig3,
+    input  wire               retrig4, retrig5, retrig6, retrig7,
     input  wire [15:0]        env0, env1, env2, env3,
+    input  wire [15:0]        env4, env5, env6, env7,
     input  wire [7:0]         vel0, vel1, vel2, vel3,
+    input  wire [7:0]         vel4, vel5, vel6, vel7,
+    input  wire               piano_enable,
+    input  wire               guitar_enable,
+    input  wire [2:0]         piano_tone,
     output reg signed [18+EXTRA_FRACTION_BITS:0]  sine_sum,
     output reg signed [18+EXTRA_FRACTION_BITS:0]  bright_sum,
     output reg                sums_valid,
@@ -36,7 +49,25 @@ module shared_wavetable_engine #(
 );
 
     // ---------------------------------------------------- phase accumulators ---
-    reg [31:0] phase0 = 32'd0, phase1 = 32'd0, phase2 = 32'd0, phase3 = 32'd0;
+    reg [31:0] phase_v [0:7];
+    localparam integer NV = (VOICES8 != 0) ? 8 : 4;
+    localparam integer STAGE_STEP = (STAGE_STEP_SAMPLES > 0) ? STAGE_STEP_SAMPLES : 1;
+
+    // 每声部输入的数组视图，便于用 for 循环展开 4/8 声部。
+    wire [31:0] inc_v    [0:7];
+    wire        retrig_v [0:7];
+    wire [15:0] env_v    [0:7];
+    wire [7:0]  vel_v    [0:7];
+    assign inc_v[0]=inc0; assign inc_v[1]=inc1; assign inc_v[2]=inc2; assign inc_v[3]=inc3;
+    assign inc_v[4]=inc4; assign inc_v[5]=inc5; assign inc_v[6]=inc6; assign inc_v[7]=inc7;
+    assign retrig_v[0]=retrig0; assign retrig_v[1]=retrig1;
+    assign retrig_v[2]=retrig2; assign retrig_v[3]=retrig3;
+    assign retrig_v[4]=retrig4; assign retrig_v[5]=retrig5;
+    assign retrig_v[6]=retrig6; assign retrig_v[7]=retrig7;
+    assign env_v[0]=env0; assign env_v[1]=env1; assign env_v[2]=env2; assign env_v[3]=env3;
+    assign env_v[4]=env4; assign env_v[5]=env5; assign env_v[6]=env6; assign env_v[7]=env7;
+    assign vel_v[0]=vel0; assign vel_v[1]=vel1; assign vel_v[2]=vel2; assign vel_v[3]=vel3;
+    assign vel_v[4]=vel4; assign vel_v[5]=vel5; assign vel_v[6]=vel6; assign vel_v[7]=vel7;
 
     localparam [5:0] ST_IDLE     = 5'd0,
                      ST_ADDR_A   = 5'd1,  ST_LATCH_A = 5'd2,
@@ -64,20 +95,43 @@ module shared_wavetable_engine #(
                          (state == ST_ADDR_B);
     reg  [8:0]  rom_addr = 9'd0;
     wire [15:0] rom_sine_d, rom_bright_d;
+    wire [15:0] bright_piano_d, bright_generic_d, bright_legacy_d, guitar_d;
+    reg         piano_sel_q = 1'b0, guitar_sel_q = 1'b0;
 
     gowin_prom_wave_sine u_sine_rom (
         .clk(clk), .ce(rom_ce), .rst(rst), .addr(rom_addr), .dout(rom_sine_d));
-    reg [2:0] rom_bank=0,bank_low=0;
+    reg [6:0] rom_bank=0,bank_low=0;
     reg [15:0] bank_weight=0;
     wire bank_ce=rom_ce || state==ST_BANK_ADDR_A ||
                  state==ST_BANK_LATCH_A || state==ST_BANK_ADDR_B;
-    generate if(BANDLIMIT_ENABLE) begin:g_banked
-        gowin_prom_bright_bank u_bright_rom (
-            .clk(clk),.ce(bank_ce),.rst(rst),.bank(rom_bank),.addr(rom_addr),.dout(rom_bright_d));
-    end else begin:g_original
-    gowin_prom_wave_bright u_bright_rom (
-        .clk(clk), .ce(rom_ce), .rst(rst), .addr(rom_addr), .dout(rom_bright_d));
-    end endgenerate
+    generate
+        if(BANDLIMIT_ENABLE) begin:g_banked
+            gowin_prom_piano_bank u_piano_rom (
+                .clk(clk),.ce(bank_ce),.rst(rst),.bank(rom_bank[5:0]),.addr(rom_addr),.dout(bright_piano_d));
+            if(GENERIC_BRIGHT_ENABLE) begin:g_generic
+                // 非钢琴音色走 6 级通用明亮表（3 块 BSRAM），不再把 bank 0..4 误当钢琴表。
+                // piano_sel_q 在 ST_ADDR_A 与本帧 bank/地址同拍锁存，整个读取窗口保持稳定；
+                // 钢琴路径的选择与改动前逐位相同，只有 piano_enable=0 时切到通用表。
+                gowin_prom_bright_bank u_bright_rom (
+                    .clk(clk),.ce(bank_ce),.rst(rst),.bank(rom_bank[2:0]),.addr(rom_addr),.dout(bright_generic_d));
+                if(GUITAR_ENABLE) begin:g_guitar
+                    // 6 张带限吉他表，3 块 BSRAM；与钢琴/通用表共用 bank 地址。
+                    gowin_prom_guitar_bank u_guitar_rom (
+                        .clk(clk),.ce(bank_ce),.rst(rst),.bank(rom_bank[5:0]),.addr(rom_addr),.dout(guitar_d));
+                    assign rom_bright_d = guitar_sel_q ? guitar_d :
+                                          (piano_sel_q ? bright_piano_d : bright_generic_d);
+                end else begin:g_no_guitar
+                    assign rom_bright_d = piano_sel_q ? bright_piano_d : bright_generic_d;
+                end
+            end else begin:g_piano_only
+                assign rom_bright_d = bright_piano_d;
+            end
+        end else begin:g_original
+            gowin_prom_wave_bright u_bright_rom (
+                .clk(clk), .ce(rom_ce), .rst(rst), .addr(rom_addr), .dout(bright_legacy_d));
+            assign rom_bright_d = bright_legacy_d;
+        end
+    endgenerate
 
     // Each richer bank reaches zero weight before its highest harmonic reaches
     // Nyquist. Frequency is the actual bent phase increment, so Fs cancels.
@@ -93,27 +147,139 @@ module shared_wavetable_engine #(
         end
     endfunction
 
+    // Piano mode uses all six ROM slots as a continuous body-to-hammer
+    // sequence. The upper envelope bits advance toward the hammer tables;
+    // the lower bits interpolate between adjacent stages.
+    function [2:0] piano_zone;
+        input [31:0] inc;
+        begin
+            if (inc < 32'h00400000) piano_zone = 3'd0;
+            else if (inc < 32'h00800000) piano_zone = 3'd1;
+            else if (inc < 32'h01000000) piano_zone = 3'd2;
+            else if (inc < 32'h02000000) piano_zone = 3'd3;
+            else if (inc < 32'h04000000) piano_zone = 3'd4;
+            else piano_zone = 3'd5;
+        end
+    endfunction
+
+    // 36-table e-piano layout: bank = zone*6 + stage. stage 5 is the bright
+    // attack; the engine walks toward stage 0 (body). A 0..5 stage is absolute.
+    function [22:0] piano_band_config;
+        input [2:0] stage;
+        input [2:0] zone;
+        input [12:0] frac;
+        reg [5:0] bank;
+        begin
+            if (stage >= 3'd5) begin
+                bank = {3'd0, zone} * 6'd6 + 6'd4;
+                piano_band_config = {1'b0, bank, 16'hffff};
+            end else begin
+                bank = {3'd0, zone} * 6'd6 + {3'd0, stage};
+                piano_band_config = {1'b0, bank, {frac, 3'b000}};
+            end
+        end
+    endfunction
+
     // 当前声部的相位/参数
-    reg [1:0]  vsel = 2'd0;
+    reg [2:0]  vsel = 3'd0;
     reg [31:0] cur_phase;
     reg [15:0] cur_env;
     reg [7:0]  cur_vel;
-    reg [127:0] inc_frame;
-    reg [31:0] velocity_frame;
+    reg [255:0] inc_frame;
+    reg [63:0] velocity_frame;
     reg [16:0] ratio_frame, phase_low;
-    reg [3:0] retrig_frame;
+    reg [7:0]  retrig_frame;
     wire [31:0] cur_inc = inc_frame >> (vsel*32);
     wire [31:0] shared_inc = mul_p[31:0] + {15'd0,phase_low};
     reg [31:0] bent_inc=0;
-    wire [18:0] selected_band=band_config(BEND_SHARED_ENABLE?bent_inc:cur_inc);
+    wire [31:0] piano_inc = BEND_SHARED_ENABLE ? bent_inc : cur_inc;
+
+    // P1：音区在起音时锁存（用未弯音的 inc），弯音不再把音符硬切到相邻音区；
+    // 音色阶段由独立计时器推进，不再借用包络高 3 位，因此 F5/tone 不会长期钉在最亮阶段。
+    reg [2:0]  zone_q  [0:7];
+    reg [2:0]  stage_q [0:7];
+    reg [15:0] stage_timer [0:7];
+    integer    vz;
+
+    // 6 段吉他频段：MIDI 48/60/67/76/84 为边界，返回 {bank, weight}。
+    // 36-table guitar layout: bank = band*6 + variant. Variant follows the
+    // velocity top bits (0..5), so soft notes use green/p and hard notes
+    // progress toward black/f. Six MIDI bands cover E2..E6.
+    function [22:0] guitar_band_config;
+        input [31:0] inc;
+        input [7:0] vel;
+        reg [2:0] band;
+        reg [2:0] variant;
+        reg [5:0] bank;
+        begin
+            if (inc < 32'd11985848) band = 3'd0;
+            else if (inc < 32'd23971696) band = 3'd1;
+            else if (inc < 32'd35916962) band = 3'd2;
+            else if (inc < 32'd60404889) band = 3'd3;
+            else if (inc < 32'd95886784) band = 3'd4;
+            else band = 3'd5;
+            if (band <= 3'd1) begin
+                // 低音区没有 E2 采样，统一用 green/f，避免 p 的噪声底被放大。
+                if (vel >= 8'd112) variant = 3'd5;
+                else variant = 3'd2;
+            end else begin
+                if (vel >= 8'd112) variant = 3'd5;
+                else if (vel >= 8'd96) variant = 3'd4;
+                else if (vel >= 8'd64) variant = 3'd2;
+                else if (vel >= 8'd32) variant = 3'd1;
+                else variant = 3'd0;
+            end
+            bank = {3'd0, band} * 6'd6 + {3'd0, variant};
+            guitar_band_config = {1'b0, bank, 16'h0000};
+        end
+    endfunction
+
+    wire [2:0] cur_zone  = ZONE_LATCH_ENABLE ? zone_q[vsel] : piano_zone(piano_inc);
+    wire [15:0] cur_stage_timer = stage_timer[vsel];
+    // 起音从较亮表开始，随时间连续衰减到琴体表（不是从琴体走向击弦并停住）。
+    // F1-F3 从第 4 级起步（跳过最硬的第 5 级），F4-F5 从第 5 级起步。
+    wire [2:0] start_stage = (piano_tone >= 3'd3) ? 3'd4 : 3'd3;
+    wire [2:0] stage_pos = (stage_q[vsel] < start_stage) ?
+                           (start_stage - stage_q[vsel]) : 3'd0;
+    wire [2:0] cur_stage = STAGE_TIME_ENABLE ? stage_pos : cur_env[15:13];
+    // 权重从 1 连续降到 0：到本阶段末尾正好等于下一张表，切级时不跳变。
+    wire [12:0] cur_frac = STAGE_TIME_ENABLE ?
+                           (13'd8191 - cur_stage_timer[12:0]) : cur_env[12:0];
+    // STAGE_TIME_ENABLE=1 时 stage_pos 已是绝对 0..5，tone 传 0；旧模式保留原语义。
+    wire [22:0] guitar_band = guitar_band_config(piano_inc, cur_vel);
+    wire [22:0] selected_band = (GUITAR_ENABLE && guitar_enable) ? guitar_band :
+        piano_enable ?
+        piano_band_config(cur_stage, cur_zone, cur_frac) :
+        {4'd0,band_config(piano_inc)};
+
+    always @(posedge clk) begin
+        if (rst) begin
+            for (vz = 0; vz < 8; vz = vz + 1) begin
+                zone_q[vz] <= 3'd0;
+                stage_q[vz] <= 3'd0;
+                stage_timer[vz] <= 16'd0;
+            end
+        end else if (sample_tick) begin
+            for (vz = 0; vz < NV; vz = vz + 1) begin
+                if (retrig_v[vz]) begin
+                    zone_q[vz] <= piano_zone(inc_v[vz]);
+                    stage_q[vz] <= 3'd0;
+                    stage_timer[vz] <= 16'd0;
+                end else if (stage_q[vz] >= start_stage) begin
+                    // 已到琴体表：计时器停在阶段末，保持 frac=0，不再周期性跳回上一张表。
+                    stage_timer[vz] <= STAGE_STEP - 1;
+                end else if (stage_timer[vz] >= STAGE_STEP - 1) begin
+                    stage_timer[vz] <= 16'd0;
+                    stage_q[vz] <= stage_q[vz] + 1'b1;
+                end else stage_timer[vz] <= stage_timer[vz] + 1'b1;
+            end
+        end
+    end
 
     always @* begin
-        case (vsel)
-            2'd0:    begin cur_phase = phase0; cur_env = env0; cur_vel = velocity_frame[7:0]; end
-            2'd1:    begin cur_phase = phase1; cur_env = env1; cur_vel = velocity_frame[15:8]; end
-            2'd2:    begin cur_phase = phase2; cur_env = env2; cur_vel = velocity_frame[23:16]; end
-            default: begin cur_phase = phase3; cur_env = env3; cur_vel = velocity_frame[31:24]; end
-        endcase
+        cur_phase = phase_v[vsel];
+        cur_env   = env_v[vsel];
+        cur_vel   = velocity_frame[vsel*8 +: 8];
     end
 
     // ------------------------------------------------------------- 共享乘法器 ---
@@ -167,32 +333,34 @@ module shared_wavetable_engine #(
     always @(posedge clk) begin
         if (rst) begin
             state <= ST_IDLE;
-            vsel <= 2'd0;
+            vsel <= 3'd0;
             sine_acc <= 19'sd0;
             bright_acc <= 19'sd0;
             sums_valid <= 1'b0;
             sine_sum <= 19'sd0;
             bright_sum <= 19'sd0;
-            phase0<=0;phase1<=0;phase2<=0;phase3<=0;
+            phase_v[0]<=0;phase_v[1]<=0;phase_v[2]<=0;phase_v[3]<=0;
+            phase_v[4]<=0;phase_v[5]<=0;phase_v[6]<=0;phase_v[7]<=0;
             inc_frame<=0;ratio_frame<=65536;retrig_frame<=0;phase_low<=0;
             velocity_frame<=0;
-            rom_bank<=0;bank_low<=0;bank_weight<=0;bent_inc<=0;bank_a<=0;
+            rom_bank<=0;bank_low<=0;bank_weight<=0;bent_inc<=0;bank_a<=0;piano_sel_q<=1'b0;guitar_sel_q<=1'b0;
         end else begin
             sums_valid <= 1'b0;
             if(sample_tick && BEND_SHARED_ENABLE==0) begin
-                phase0<=retrig0?0:phase0+inc0;phase1<=retrig1?0:phase1+inc1;
-                phase2<=retrig2?0:phase2+inc2;phase3<=retrig3?0:phase3+inc3;
+                for (vz = 0; vz < NV; vz = vz + 1)
+                    phase_v[vz] <= retrig_v[vz] ? 32'd0 : phase_v[vz] + inc_v[vz];
             end
             if (!SHARED_MULT_ENABLE && mul_enable) local_product <= mul_a * mul_b;
             case (state)
                 ST_IDLE: begin
                     if (sample_tick) begin
-                        vsel       <= 2'd0;
+                        vsel       <= 3'd0;
                         sine_acc   <= 19'sd0;
                         bright_acc <= 19'sd0;
-                        inc_frame<={inc3,inc2,inc1,inc0};ratio_frame<=bend_ratio_q16;
-                        velocity_frame<={vel3,vel2,vel1,vel0};
-                        retrig_frame<={retrig3,retrig2,retrig1,retrig0};
+                        inc_frame<={inc_v[7],inc_v[6],inc_v[5],inc_v[4],inc_v[3],inc_v[2],inc_v[1],inc_v[0]};
+                        ratio_frame<=bend_ratio_q16;
+                        velocity_frame<={vel_v[7],vel_v[6],vel_v[5],vel_v[4],vel_v[3],vel_v[2],vel_v[1],vel_v[0]};
+                        retrig_frame<={retrig_v[7],retrig_v[6],retrig_v[5],retrig_v[4],retrig_v[3],retrig_v[2],retrig_v[1],retrig_v[0]};
                         state <= BEND_SHARED_ENABLE ? ST_BEND_LO : ST_ADDR_A;
                     end
                 end
@@ -207,18 +375,16 @@ module shared_wavetable_engine #(
                 ST_BEND_WAIT: begin phase_low<=mul_p[32:16];state<=ST_BEND_APPLY;end
                 ST_BEND_APPLY: begin
                     bent_inc<=shared_inc;
-                    case(vsel)
-                        0:phase0<=retrig_frame[0]?0:phase0+shared_inc;
-                        1:phase1<=retrig_frame[1]?0:phase1+shared_inc;
-                        2:phase2<=retrig_frame[2]?0:phase2+shared_inc;
-                        3:phase3<=retrig_frame[3]?0:phase3+shared_inc;
-                    endcase
+                    // 只推进当前 vsel 的相位；shared_inc 是“这个声部”的弯音后增量。
+                    // 8 声部时若在这里 for 全部相位，会把当前声部的增量加到别的声部上。
+                    phase_v[vsel] <= retrig_frame[vsel] ? 32'd0 : phase_v[vsel] + shared_inc;
                     state<=ST_ADDR_A;
                 end
                 ST_ADDR_A: begin
                     if(BANDLIMIT_ENABLE) begin
-                        bank_low<=selected_band[18:16];rom_bank<=selected_band[18:16];
+                        bank_low<=selected_band[22:16];rom_bank<=selected_band[22:16];
                         bank_weight<=selected_band[15:0];
+                        piano_sel_q<=piano_enable;guitar_sel_q<=guitar_enable;
                     end
                     rom_addr <= cur_phase[31:23];
                     frac_q   <= cur_phase[22:14];
@@ -269,7 +435,7 @@ module shared_wavetable_engine #(
                     state <= BANDLIMIT_ENABLE ? ST_BANK_ADDR_A : ST_W_ENV_S;
                 end
                 ST_BANK_ADDR_A: begin
-                    rom_bank<=bank_low==4?3'd4:bank_low+3'd1;
+                    rom_bank<=bank_low+7'd1;
                     rom_addr<=cur_phase[31:23];state<=ST_BANK_LATCH_A;
                 end
                 ST_BANK_LATCH_A: begin
@@ -332,7 +498,7 @@ module shared_wavetable_engine #(
                     scaled_b <= velocity_result;
                     sine_acc <= sine_acc + scaled_s_ext;
                     bright_acc <= bright_acc + velocity_result_ext;
-                    if(vsel==3) begin
+                    if(vsel==NV-1) begin
                         sine_sum <= sine_acc + scaled_s_ext;
                         bright_sum <= bright_acc + velocity_result_ext;
                         sums_valid<=1'b1;state<=ST_IDLE;
@@ -341,13 +507,13 @@ module shared_wavetable_engine #(
                 default: begin
                     sine_acc   <= sine_acc + scaled_s_ext;
                     bright_acc <= bright_acc + scaled_b_ext;
-                    if (vsel == 2'd3) begin
+                    if (vsel == NV-1) begin
                         sine_sum   <= sine_acc + scaled_s_ext;
                         bright_sum <= bright_acc + scaled_b_ext;
                         sums_valid <= 1'b1;
                         state      <= ST_IDLE;
                     end else begin
-                        vsel  <= vsel + 2'd1;
+                        vsel  <= vsel + 3'd1;
                         state <= ST_ADDR_A;
                     end
                 end

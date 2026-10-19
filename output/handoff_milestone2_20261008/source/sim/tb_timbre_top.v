@@ -6,6 +6,7 @@ module tb_timbre_top;
     wire [23:0] left,right;wire frame_valid;
     integer frames=0,audible=0,checked=0,frame_cycle=0,product_requests=0;
     reg monitor=0;
+    reg saw_piano_bank=0;
     reg [31:0] e0,e1,e2,e3;
     time start_time,sweep_ns;
     top #(.AUDIO_IF(1),.PRESSURE_ENABLE(0)) dut(
@@ -43,6 +44,8 @@ module tb_timbre_top;
         end
         if(dut.u_xf.result_valid && (frame_cycle!=114 || product_requests!=42))
             $fatal(1,"frame deadline/products %d %d",frame_cycle,product_requests);
+        if(dut.u_engine.piano_enable && dut.u_engine.bank_low==7'd46)
+            saw_piano_bank=1;
       end
     end
     task byte_tx;input [7:0] data;integer bitno;
@@ -64,6 +67,15 @@ module tb_timbre_top;
         wait(dut.timbre_target==255);start_time=$time;
         wait(dut.u_xf.weight_state==255);sweep_ns=$time-start_time;
         if(sweep_ns>5334000 || sweep_ns<5270000)$fatal(1,"unexpected full sweep %t",sweep_ns);
+        byte_tx("T");byte_tx("2");byte_tx("5");byte_tx("4");byte_tx(13);
+        wait(dut.timbre_target==254);
+        repeat (2000) @(posedge clk);
+        if(!dut.piano_mode || !saw_piano_bank)$fatal(1,"T254 did not select piano bank");
+        byte_tx("T");byte_tx("0");byte_tx(13);wait(dut.timbre_target==0);
+        repeat (2000) @(posedge clk);
+        byte_tx("T");byte_tx("2");byte_tx("5");byte_tx("5");byte_tx(13);
+        wait(dut.timbre_target==255);
+        repeat (2000) @(posedge clk);
         k1=0;#6500000;k1=1;#2000000;
         if(dut.timbre_target!=0 || dut.chord_set!=0 || dut.tempo_sel!=1)$fatal(1,"long press changed other controls");
         #6000000;if(dut.show_timbre)$fatal(1,"top LED overlay stuck");

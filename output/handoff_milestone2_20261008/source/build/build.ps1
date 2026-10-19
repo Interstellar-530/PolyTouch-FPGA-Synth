@@ -1,6 +1,6 @@
-param(
+﻿param(
     [string]$GwSh = '',
-    [ValidateSet('debug','standard')][string]$Profile = 'debug'
+    [ValidateSet('debug','standard','standard27','debug8','debug8g')][string]$Profile = 'debug'
 )
 
 $ErrorActionPreference = 'Stop'

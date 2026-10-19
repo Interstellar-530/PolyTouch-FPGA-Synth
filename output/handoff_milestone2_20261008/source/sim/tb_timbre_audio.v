@@ -6,8 +6,18 @@ module tb_timbre_audio;
     wire signed [15:0] plain,smooth;
     wire [31:0] clips1,clips2;
     wire ce1,ce2;
-    global_crossfade direct(clk,rst,update,1'b0,weight,a,b,plain,clips1,ce1,1'b0,12'd0,,,,36'd0);
-    global_crossfade #(.TIMBRE_SLEW_ENABLE(1)) slew(clk,rst,update,1'b0,weight,a,b,smooth,clips2,ce2,1'b0,12'd0,,,,36'd0);
+    global_crossfade direct(
+        .clk(clk), .rst(rst), .update(update), .clear_clip(1'b0),
+        .mix_weight(weight), .sine_sum(a), .bright_sum(b),
+        .sample_out(plain), .clip_count(clips1), .clip_event(ce1),
+        .pressure_enable(1'b0), .pressure_level(12'd0),
+        .mult_result(36'sd0), .mute(1'b0));
+    global_crossfade #(.TIMBRE_SLEW_ENABLE(1)) slew(
+        .clk(clk), .rst(rst), .update(update), .clear_clip(1'b0),
+        .mix_weight(weight), .sine_sum(a), .bright_sum(b),
+        .sample_out(smooth), .clip_count(clips2), .clip_event(ce2),
+        .pressure_enable(1'b0), .pressure_level(12'd0),
+        .mult_result(36'sd0), .mute(1'b0));
     integer w,j,frames=0,state=64,expected_state,next_state,reference,previous,max_delta=0,delta,abrupt_delta;
     integer fd,p,n; reg [7:0] presets[0:3];
     reg signed [15:0] sine[0:511],bright[0:511];
