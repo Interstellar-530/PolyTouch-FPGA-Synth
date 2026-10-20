@@ -102,14 +102,15 @@ module tb_shared_engine;
         begin
             weight = w;
             clip_before = u_xf.clip_count;
-            // 固定相位：直接 force 引擎内部累加器，避免两套累加器漂移
-            force u_engine.phase0 = ph0;
-            force u_engine.phase1 = ph1;
-            force u_engine.phase2 = ph2;
-            force u_engine.phase3 = ph3;
+            // 固定相位：在 sample_tick 之后、FSM 读取相位之前用层次赋值写入。
+            // Icarus 不支持对未打包数组元素执行 force，因此不能继续使用 force。
             // 发一个采样节拍，等 FSM 跑完（15 拍 × 4 声部 + 余量）
             @(negedge clk); sample_tick = 1'b1;
             @(negedge clk); sample_tick = 1'b0;
+            u_engine.phase_v[0] = ph0;
+            u_engine.phase_v[1] = ph1;
+            u_engine.phase_v[2] = ph2;
+            u_engine.phase_v[3] = ph3;
             repeat (90) @(posedge clk);
             #1;
             // (a) 分量和逐位核对
@@ -147,10 +148,6 @@ module tb_shared_engine;
                 $display("FAIL w=%0d clip_count delta=%0d ref_clip=%0d", w, u_xf.clip_count - clip_before,
                          (ref_scaled > 28'sd32767) || (ref_scaled < -28'sd32768));
             end
-            release u_engine.phase0;
-            release u_engine.phase1;
-            release u_engine.phase2;
-            release u_engine.phase3;
         end
     endtask
 

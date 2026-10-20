@@ -33,18 +33,18 @@ module tb_timbre_top;
         if(dut.v_retrig || dut.v_gate!==4'b1111 || dut.restart || dut.demo_mode)
             $fatal(1,"timbre disturbed held chord/mode");
         if(dut.sample_tick)begin
-            e0=dut.u_engine.phase0+dut.bend_inc0;e1=dut.u_engine.phase1+dut.bend_inc1;
-            e2=dut.u_engine.phase2+dut.bend_inc2;e3=dut.u_engine.phase3+dut.bend_inc3;
+            e0=dut.u_engine.phase_v[0]+dut.bend_inc0;e1=dut.u_engine.phase_v[1]+dut.bend_inc1;
+            e2=dut.u_engine.phase_v[2]+dut.bend_inc2;e3=dut.u_engine.phase_v[3]+dut.bend_inc3;
         end
         if(dut.sums_valid) begin
             #1;
-            if(dut.u_engine.phase0!==e0 || dut.u_engine.phase1!==e1 || dut.u_engine.phase2!==e2 || dut.u_engine.phase3!==e3)
+            if(dut.u_engine.phase_v[0]!==e0 || dut.u_engine.phase_v[1]!==e1 || dut.u_engine.phase_v[2]!==e2 || dut.u_engine.phase_v[3]!==e3)
                 $fatal(1,"frame phase discontinuity");
             checked=checked+1;
         end
         if(dut.u_xf.result_valid && (frame_cycle!=114 || product_requests!=42))
             $fatal(1,"frame deadline/products %d %d",frame_cycle,product_requests);
-        if(dut.u_engine.piano_enable && dut.u_engine.bank_low==7'd46)
+        if(dut.u_engine.piano_sel_q)
             saw_piano_bank=1;
       end
     end

@@ -21,7 +21,7 @@ module tb_precision_audio;
    .sample_out24(audio[g]),.pressure_enable(1'b1),.pressure_level(pressure),.mute(1'b0),
    .mult_request(xr),.mult_operand_a(xa),.mult_operand_b(xb),.mult_result(product));
  end endgenerate
- assign phase=lane[1].engine.phase0;
+ assign phase=lane[1].engine.phase_v[0];
  integer fd=0,c,i,low_bits=0;reg[1023:0]path;
  task frame;begin tick=1;@(negedge clk);tick=0;repeat(120)@(negedge clk);end endtask
  task end_frame;begin repeat(135)@(negedge clk);end endtask

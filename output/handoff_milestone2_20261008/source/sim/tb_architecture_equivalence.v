@@ -6,8 +6,25 @@ module tb_architecture_equivalence;
     reg [15:0] env0=0,env1=0,env2=0,env3=0;
     reg [7:0] vel0=0,vel1=0,vel2=0,vel3=0;
     wire signed [18:0] s0,b0,s1,b1;wire v0,v1;
-    shared_wavetable_engine optimized(clk,rst,tick,inc0,inc1,inc2,inc3,1'b0,1'b0,1'b0,1'b0,
-        env0,env1,env2,env3,vel0,vel1,vel2,vel3,1'b0,1'b0,s0,b0,v0,17'd65536,,,,36'd0);
+    shared_wavetable_engine #(
+        .BEND_SHARED_ENABLE(0), .SHARED_MULT_ENABLE(0),
+        .BANDLIMIT_ENABLE(0), .GENERIC_BRIGHT_ENABLE(0), .GUITAR_ENABLE(0)
+    ) optimized (
+        .clk(clk), .rst(rst), .sample_tick(tick),
+        .inc0(inc0), .inc1(inc1), .inc2(inc2), .inc3(inc3),
+        .inc4(32'd0), .inc5(32'd0), .inc6(32'd0), .inc7(32'd0),
+        .retrig0(1'b0), .retrig1(1'b0), .retrig2(1'b0), .retrig3(1'b0),
+        .retrig4(1'b0), .retrig5(1'b0), .retrig6(1'b0), .retrig7(1'b0),
+        .env0(env0), .env1(env1), .env2(env2), .env3(env3),
+        .env4(16'd0), .env5(16'd0), .env6(16'd0), .env7(16'd0),
+        .vel0(vel0), .vel1(vel1), .vel2(vel2), .vel3(vel3),
+        .vel4(8'd0), .vel5(8'd0), .vel6(8'd0), .vel7(8'd0),
+        .piano_enable(1'b0), .guitar_enable(1'b0), .piano_tone(3'd0),
+        .sine_sum(s0), .bright_sum(b0), .sums_valid(v0),
+        .bend_ratio_q16(17'd65536),
+        .mult_request(), .mult_operand_a(), .mult_operand_b(),
+        .mult_result(36'sd0)
+    );
     baseline_shared_wavetable_engine baseline(clk,rst,tick,inc0,inc1,inc2,inc3,1'b0,1'b0,1'b0,1'b0,
         env0,env1,env2,env3,vel0,vel1,vel2,vel3,s1,b1,v1);
     integer frame,cycle,new_latency,old_latency,products,total_products=0;

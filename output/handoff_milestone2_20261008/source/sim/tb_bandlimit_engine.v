@@ -7,7 +7,7 @@ module tb_bandlimit_engine #(parameter integer EXTRA=0);
  genvar g;generate for(g=0;g<2;g=g+1)begin:lane
   wire request;wire signed[17:0]ma,mb;reg signed[35:0]product=0;
   always @(posedge clk)if(request)product<=ma*mb;
-  shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1),.EXTRA_FRACTION_BITS(EXTRA)) dut(
+  shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1),.GENERIC_BRIGHT_ENABLE(1),.GUITAR_ENABLE(0),.EXTRA_FRACTION_BITS(EXTRA)) dut(
    .clk(clk),.rst(rst),.sample_tick(tick),.inc0(incs[31:0]),.inc1(incs[63:32]),.inc2(incs[95:64]),.inc3(incs[127:96]),
    .piano_enable(1'b0), .piano_tone(3'd0),
    .env0(envs[15:0]),.env1(envs[31:16]),.env2(envs[47:32]),.env3(envs[63:48]),

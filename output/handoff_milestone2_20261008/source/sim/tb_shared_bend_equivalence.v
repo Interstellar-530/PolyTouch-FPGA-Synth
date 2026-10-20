@@ -9,8 +9,25 @@ module tb_shared_bend_equivalence;
     reg [16:0] ratio=65536;reg [3:0] retrig=0;
     wire[48:0] m0=inc0*ratio,m1=inc1*ratio,m2=inc2*ratio,m3=inc3*ratio;
     wire[31:0] bent0=m0>>16,bent1=m1>>16,bent2=m2>>16,bent3=m3>>16;
-    shared_wavetable_engine #(.BEND_SHARED_ENABLE(1)) optimized(clk,rst,tick,inc0,inc1,inc2,inc3,retrig[0],retrig[1],retrig[2],retrig[3],
-        env0,env1,env2,env3,vel0,vel1,vel2,vel3,1'b0,1'b0,s0,b0,v0,ratio,,,,36'd0);
+    shared_wavetable_engine #(
+        .BEND_SHARED_ENABLE(1), .SHARED_MULT_ENABLE(0),
+        .BANDLIMIT_ENABLE(0), .GENERIC_BRIGHT_ENABLE(0), .GUITAR_ENABLE(0)
+    ) optimized (
+        .clk(clk), .rst(rst), .sample_tick(tick),
+        .inc0(inc0), .inc1(inc1), .inc2(inc2), .inc3(inc3),
+        .inc4(32'd0), .inc5(32'd0), .inc6(32'd0), .inc7(32'd0),
+        .retrig0(retrig[0]), .retrig1(retrig[1]), .retrig2(retrig[2]), .retrig3(retrig[3]),
+        .retrig4(1'b0), .retrig5(1'b0), .retrig6(1'b0), .retrig7(1'b0),
+        .env0(env0), .env1(env1), .env2(env2), .env3(env3),
+        .env4(16'd0), .env5(16'd0), .env6(16'd0), .env7(16'd0),
+        .vel0(vel0), .vel1(vel1), .vel2(vel2), .vel3(vel3),
+        .vel4(8'd0), .vel5(8'd0), .vel6(8'd0), .vel7(8'd0),
+        .piano_enable(1'b0), .guitar_enable(1'b0), .piano_tone(3'd0),
+        .sine_sum(s0), .bright_sum(b0), .sums_valid(v0),
+        .bend_ratio_q16(ratio),
+        .mult_request(), .mult_operand_a(), .mult_operand_b(),
+        .mult_result(36'sd0)
+    );
     baseline_shared_wavetable_engine baseline(clk,rst,tick,bent0,bent1,bent2,bent3,retrig[0],retrig[1],retrig[2],retrig[3],
         env0,env1,env2,env3,vel0,vel1,vel2,vel3,s1,b1,v1);
     integer frame,cycle,new_latency,old_latency,products,total_products=0;

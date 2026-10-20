@@ -5,7 +5,7 @@ module tb_voice_transition_audio;
     wire[6:0]render_note;wire[7:0]render_velocity;wire restart;wire[15:0]soft_env,hard_env;
     wire[31:0]soft_inc,hard_inc;
     wire[1:0]valid;wire signed[18:0]ss[0:1],bs[0:1];wire signed[15:0]audio[0:1];
-    voice_transition voice_soft(.clk(clk),.rst(rst),.sample_tick(tick),.gate(gate),.retrigger(event_on),.piano_mode(1'b0),.note(note),.velocity(8'd100),
+    voice_transition voice_soft(.clk(clk),.rst(rst),.sample_tick(tick),.gate(gate),.retrigger(event_on),.piano_mode(1'b0),.guitar_mode(1'b0),.note(note),.velocity(8'd100),
         .render_note(render_note),.render_velocity(render_velocity),.render_retrigger(restart),.env(soft_env),.idle());
     adsr hard(.clk(clk),.rst(rst),.sample_tick(tick),.gate(gate),.retrigger(event_on),.env(hard_env),.idle());
     note_phase_inc #(.FS_HZ(48000)) s_inc(render_note,soft_inc),h_inc(note,hard_inc);

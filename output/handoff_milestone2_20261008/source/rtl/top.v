@@ -692,9 +692,14 @@ module top #(
     wire signed [15:0] mixed_lpf = mix_lp_y + (mix_lp_diff >>> 1);
     always @(posedge clk_audio) begin
         if (rst) mix_lp_y <= 16'sd0;
-        else if (sums_valid) mix_lp_y <= mixed_lpf;
+        else if (sums_valid) begin
+            // The one-pole state can settle at -1 LSB; flush it after the
+            // global VCA has reached exact zero so mute is true digital silence.
+            if (uart_muted && mixed_shared == 16'sd0) mix_lp_y <= 16'sd0;
+            else mix_lp_y <= mixed_lpf;
+        end
     end
-    wire signed [15:0] mixed = mixed_lpf;
+    wire signed [15:0] mixed = (uart_muted && mixed_shared == 16'sd0) ? 16'sd0 : mixed_lpf;
 
     // 把削波计数与压力/弯音观测值折成 4 位，避免综合把未接引脚的通路裁掉。
     wire [3:0] fold_clip = xf_clip_count[31:28] ^ xf_clip_count[27:24] ^ xf_clip_count[23:20] ^
