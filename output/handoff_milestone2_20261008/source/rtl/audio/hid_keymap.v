@@ -34,6 +34,7 @@ module hid_keymap (
 );
     localparam [7:0] VELOCITY = 8'd100;
     wire clear_all = flush || link_timeout || device_notify;
+    reg [4:0] count = 5'd0;
     // 满队列时若本拍同时出队，仍允许入队；否则会静默丢掉 Note Off。
     wire room = (count < 5'd16) || (ev_valid && ev_ready);
 
@@ -42,7 +43,6 @@ module hid_keymap (
     // mem 只有 16 项：地址指针必须是 4 位，count 单独 5 位；
     // 5 位指针累计 16 次后会指向 16/17 越界，旧实现有真实回绕 bug。
     reg [3:0]  wptr = 4'd0, rptr = 4'd0;
-    reg [4:0]  count = 5'd0;
     assign ev_valid = (count != 5'd0);
     assign ev_word  = mem[rptr];
 

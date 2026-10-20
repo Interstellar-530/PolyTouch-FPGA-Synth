@@ -1,0 +1,28 @@
+# RTL 门禁与构建状态（2026-10-20）
+
+## 构建
+
+- `debug8usb`：PASS，已生成 `instrument.fs`。
+- 资源：Logic 11214/20736，Register 3596/16173，BSRAM 40/46，DSP 0.75/24。
+- 时序：Setup 最差裕量 +5.765 ns，Hold +0.316 ns，0 条负裕量。
+- 引脚：CH9350L RX=L9、TX=N8；MCP3208 与 PT8211 均按 USB 档约束落位。
+
+## 已完成的定向测试
+
+- `tb_host_kbd`：PASS。覆盖按下/松开、去重、和弦、移调、Esc、F1、截断帧重同步和 rollover。
+- `tb_pressure_bend`：PASS。640 个压力 tick、4096 个弯音 ADC 码逐值匹配，t90=5 control ticks。
+
+## 完整门禁观察
+
+已确认通过：`tb_tick_rate`、`tb_song_timing`、`tb_adsr`、`tb_voice_retrigger`、`tb_voice_order`、`tb_event_fifo`、`tb_song_backpressure`、`tb_gpio_keyboard`、`tb_mode_uart`、`tb_poly`、`tb_i2s_tx`、`tb_mcp3208_spi`、`tb_mcp3208_i2s_coexist`、`tb_mcp3208_params`。
+
+仍存在的问题：
+
+- `tb_gpio_top`：失败于 `press during demo did not return to manual`。这是旧 GPIO 键档的演示/手动切换测试，`debug8usb` 档已关闭 GPIO 键，不直接影响本档，但在修复前不能宣称全门禁通过。
+- `tb_ram_wavetable_engine`：原型测试的 bright 输出与旧期望不一致；生产 `debug8usb` 使用 shared engine，`tb_ram_audio_datapath_8/32/64` 已通过。
+- 缺失历史测试台：`tb_top_i2s_27m`、`tb_generic_bright`、`tb_piano_engine`、`tb_piano_morph`、`tb_piano_envelope` 在仓库中不存在，门禁会明确跳过并计数。
+- `tb_audio_capture`：长时仿真运行超过 3 分钟后被停止，未取得完整结果。
+
+## 结论
+
+`debug8usb` 位流已可用于上板 bring-up，但完整 RTL 门禁尚未全部通过。按项目规则，不应把这次构建标记为最终比赛固件；上板前应至少修复旧 GPIO 测试、确认 `tb_ram_wavetable_engine` 是否为过时期望，并完成长时音频捕获或明确缩窄生产门禁。

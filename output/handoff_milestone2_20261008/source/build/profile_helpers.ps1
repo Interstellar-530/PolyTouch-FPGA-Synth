@@ -1,4 +1,4 @@
-function Get-BuildProfile([string]$Name) {
+﻿function Get-BuildProfile([string]$Name) {
     $row = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'profiles.tsv') |
         Where-Object { ($_ -split "`t")[0] -eq $Name } | Select-Object -First 1
     if (-not $row) { throw "Unknown build profile: $Name" }
