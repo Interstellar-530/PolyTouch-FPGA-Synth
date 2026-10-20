@@ -1,0 +1,238 @@
+{
+  "generated": "2026-10-20",
+  "source_repo": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth",
+  "source_commit": "9d467e01f3899933043ef759bdafe1f302dd9f4b",
+  "source_branch": "codex/s4-s6-pressure",
+  "source_hex": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\guitar_bank_all.hex",
+  "source_hex_sha256": "277133BE30B496B381D84B46B95310193CC7569C2C1AE8A36354E9E64B04433E",
+  "source_meta_sha256": "B9844C6A01B629CBD777D98C58946D0AB13439CC4DFB3BDCBB8CD1D355C3BEE7",
+  "source_license": "CC0",
+  "source_name": "Karoryfer Black And Green Guitars",
+  "tables": 36,
+  "bands": [
+    40,
+    48,
+    56,
+    64,
+    72,
+    80,
+    89
+  ],
+  "variants": [
+    "green/p",
+    "green/mf",
+    "green/f",
+    "black/p",
+    "black/mf",
+    "black/f"
+  ],
+  "render_rate_hz": 46875,
+  "playback_rate_hz": 48000,
+  "normalization": "-3 dBFS per preview; all_variants segments normalized individually",
+  "limitation": "One steady-state period per table; no pluck transient, pickup position variation over time, cabinet or overdrive.",
+  "clips": [
+    {
+      "file": "wav/00_all_variants_C4.wav",
+      "raw_file": "wav_raw_46875/00_all_variants_C4.wav",
+      "segments": [
+        {
+          "note": 60,
+          "note_name": "C4",
+          "velocity": 20,
+          "band": 2,
+          "variant_name": "green/p",
+          "bank": 12
+        },
+        {
+          "note": 60,
+          "note_name": "C4",
+          "velocity": 48,
+          "band": 2,
+          "variant_name": "green/mf",
+          "bank": 13
+        },
+        {
+          "note": 60,
+          "note_name": "C4",
+          "velocity": 80,
+          "band": 2,
+          "variant_name": "green/f",
+          "bank": 14
+        },
+        {
+          "note": 60,
+          "note_name": "C4",
+          "velocity": 100,
+          "band": 2,
+          "variant_name": "black/mf",
+          "bank": 16
+        },
+        {
+          "note": 60,
+          "note_name": "C4",
+          "velocity": 120,
+          "band": 2,
+          "variant_name": "black/f",
+          "bank": 17
+        }
+      ],
+      "duration_s": 4.15,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -11.28,
+      "spectral_centroid_hz": 436.6
+    },
+    {
+      "file": "wav/01_green_p_C4_vel20.wav",
+      "raw_file": "wav_raw_46875/01_green_p_C4_vel20.wav",
+      "note": 60,
+      "note_name": "C4",
+      "velocity": 20,
+      "band": 2,
+      "variant": 0,
+      "variant_name": "green/p",
+      "bank": 12,
+      "duration_s": 1.45,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -10.7,
+      "spectral_centroid_hz": 439.2
+    },
+    {
+      "file": "wav/02_green_mf_C4_vel48.wav",
+      "raw_file": "wav_raw_46875/02_green_mf_C4_vel48.wav",
+      "note": 60,
+      "note_name": "C4",
+      "velocity": 48,
+      "band": 2,
+      "variant": 1,
+      "variant_name": "green/mf",
+      "bank": 13,
+      "duration_s": 1.45,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -10.93,
+      "spectral_centroid_hz": 472.6
+    },
+    {
+      "file": "wav/03_green_f_C4_vel80.wav",
+      "raw_file": "wav_raw_46875/03_green_f_C4_vel80.wav",
+      "note": 60,
+      "note_name": "C4",
+      "velocity": 80,
+      "band": 2,
+      "variant": 2,
+      "variant_name": "green/f",
+      "bank": 14,
+      "duration_s": 1.45,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -11.91,
+      "spectral_centroid_hz": 521.8
+    },
+    {
+      "file": "wav/04_black_mf_C4_vel100.wav",
+      "raw_file": "wav_raw_46875/04_black_mf_C4_vel100.wav",
+      "note": 60,
+      "note_name": "C4",
+      "velocity": 100,
+      "band": 2,
+      "variant": 4,
+      "variant_name": "black/mf",
+      "bank": 16,
+      "duration_s": 1.45,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -10.28,
+      "spectral_centroid_hz": 412.3
+    },
+    {
+      "file": "wav/05_black_f_C4_vel120.wav",
+      "raw_file": "wav_raw_46875/05_black_f_C4_vel120.wav",
+      "note": 60,
+      "note_name": "C4",
+      "velocity": 120,
+      "band": 2,
+      "variant": 5,
+      "variant_name": "black/f",
+      "bank": 17,
+      "duration_s": 1.45,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -9.97,
+      "spectral_centroid_hz": 480.5
+    },
+    {
+      "file": "wav/06_green_f_phrase_C4_G4_C5_E5.wav",
+      "raw_file": "wav_raw_46875/06_green_f_phrase_C4_G4_C5_E5.wav",
+      "notes": [
+        {
+          "note": 60,
+          "note_name": "C4",
+          "band": 2,
+          "variant_name": "green/f",
+          "bank": 14
+        },
+        {
+          "note": 67,
+          "note_name": "G4",
+          "band": 3,
+          "variant_name": "green/f",
+          "bank": 20
+        },
+        {
+          "note": 72,
+          "note_name": "C5",
+          "band": 3,
+          "variant_name": "green/f",
+          "bank": 20
+        },
+        {
+          "note": 76,
+          "note_name": "E5",
+          "band": 4,
+          "variant_name": "green/f",
+          "bank": 26
+        }
+      ],
+      "velocity": 80,
+      "duration_s": 3.16,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -12.92,
+      "spectral_centroid_hz": 518.9
+    },
+    {
+      "file": "wav/07_black_f_phrase_C4_G4_C5_E5.wav",
+      "raw_file": "wav_raw_46875/07_black_f_phrase_C4_G4_C5_E5.wav",
+      "notes": [
+        {
+          "note": 60,
+          "note_name": "C4",
+          "band": 2,
+          "variant_name": "black/f",
+          "bank": 17
+        },
+        {
+          "note": 67,
+          "note_name": "G4",
+          "band": 3,
+          "variant_name": "black/f",
+          "bank": 23
+        },
+        {
+          "note": 72,
+          "note_name": "C5",
+          "band": 3,
+          "variant_name": "black/f",
+          "bank": 23
+        },
+        {
+          "note": 76,
+          "note_name": "E5",
+          "band": 4,
+          "variant_name": "black/f",
+          "bank": 29
+        }
+      ],
+      "velocity": 120,
+      "duration_s": 3.16,
+      "peak_dbfs": -3.0,
+      "rms_dbfs": -11.88,
+      "spectral_centroid_hz": 477.4
+    }
+  ]
+}
