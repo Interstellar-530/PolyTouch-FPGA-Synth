@@ -1,0 +1,1231 @@
+{
+  "scanned_files": 17796,
+  "matched_copies": 173,
+  "excluded_runtime_directories": [
+    ".git",
+    ".venv",
+    ".venv-audio-analysis",
+    ".venv-docconvert",
+    ".venv-gowin-mcp",
+    "__pycache__",
+    "agent-runtime",
+    "node_modules",
+    "tessdata",
+    "toolchains",
+    "vendor",
+    "venv"
+  ],
+  "copies": [
+    {
+      "path": "archive/FPGA-20261013-v0.2/deliverables/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 8348,
+      "modified_utc": "2026-10-13T02:53:09.472484+00:00",
+      "sha256": "26614b0081d01b0815b092e05fb3377ceba1e6c39abbe8320530123975228f3b"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.2/source/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 8348,
+      "modified_utc": "2026-10-13T02:53:09.472484+00:00",
+      "sha256": "26614b0081d01b0815b092e05fb3377ceba1e6c39abbe8320530123975228f3b"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.4/source/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 8348,
+      "modified_utc": "2026-10-13T02:53:09.472484+00:00",
+      "sha256": "26614b0081d01b0815b092e05fb3377ceba1e6c39abbe8320530123975228f3b"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.2/source/PolyTouch-v1.01/tools/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 8549,
+      "modified_utc": "2026-10-14T02:25:37.229142+00:00",
+      "sha256": "6a3cd2f0610906d3940cae2502efeb2713da6486fca2445261474a1eebec4440"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.5/tools/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 13246,
+      "modified_utc": "2026-10-18T05:07:12.005918+00:00",
+      "sha256": "9afe9eeefbaf4db470e5612a72ff2c2940c5401d6560d99580c45629169ed34b"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.1/evidence/source_snapshot/tools/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 13287,
+      "modified_utc": "2026-10-19T01:11:42.382163+00:00",
+      "sha256": "58747002614c4f975c57fbbf72c6fa8b80b0c9094f32a4cde0ac7116318a9ef9"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/ui/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 13293,
+      "modified_utc": "2026-10-19T07:37:19.520724+00:00",
+      "sha256": "fc95528ae4e0f2a6b03f527907bb81bad0fcfe5e0461eb766bcfbc05cfac076e"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/ui/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 13293,
+      "modified_utc": "2026-10-19T07:37:19.520724+00:00",
+      "sha256": "fc95528ae4e0f2a6b03f527907bb81bad0fcfe5e0461eb766bcfbc05cfac076e"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.4-timbre-volume/source/ui/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 13451,
+      "modified_utc": "2026-10-20T02:29:50.232574+00:00",
+      "sha256": "126a87f47fd28e675c0c55e577d0338f66258c018606a8ba69e032d6a215fa6b"
+    },
+    {
+      "path": "tools/serial_keyboard/KeyboardCore.cs",
+      "name": "KeyboardCore.cs",
+      "bytes": 13451,
+      "modified_utc": "2026-10-20T02:29:50.232574+00:00",
+      "sha256": "126a87f47fd28e675c0c55e577d0338f66258c018606a8ba69e032d6a215fa6b"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.2/deliverables/serial_keyboard/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 9312,
+      "modified_utc": "2026-10-13T03:08:16.571970+00:00",
+      "sha256": "a53c77143d2dafbc494b8261f87c8f0546b09a03476b20d2c20c1ff81fe34c9d"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.2/source/serial_keyboard/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 9312,
+      "modified_utc": "2026-10-13T03:08:16.571970+00:00",
+      "sha256": "a53c77143d2dafbc494b8261f87c8f0546b09a03476b20d2c20c1ff81fe34c9d"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.4/source/serial_keyboard/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 9312,
+      "modified_utc": "2026-10-13T03:08:16.571970+00:00",
+      "sha256": "a53c77143d2dafbc494b8261f87c8f0546b09a03476b20d2c20c1ff81fe34c9d"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.2/source/PolyTouch-v1.01/tools/serial_keyboard/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 9494,
+      "modified_utc": "2026-10-14T02:25:37.235148+00:00",
+      "sha256": "b09a3082d70f8963c04e73e79fcc94058416445faf9822ad59a7aaa78e7fff2c"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.5/tools/serial_keyboard/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 15457,
+      "modified_utc": "2026-10-18T05:07:12.298805+00:00",
+      "sha256": "66b5f6899ff30711077f09c02346821d0d836f5bfc8126dac521667163e7a0d2"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/ui/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 16513,
+      "modified_utc": "2026-10-19T07:35:09.988838+00:00",
+      "sha256": "fdc80bdf368f45622da5a679434dabca41e622d5e54e2490db8456ccf41ab280"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/ui/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 16513,
+      "modified_utc": "2026-10-19T07:35:09.988838+00:00",
+      "sha256": "fdc80bdf368f45622da5a679434dabca41e622d5e54e2490db8456ccf41ab280"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.4-timbre-volume/source/ui/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 17114,
+      "modified_utc": "2026-10-20T02:29:55.434368+00:00",
+      "sha256": "7d1263e07e768d3012311d468abfb7a22ecfbeeb4973c95292f496bae261df40"
+    },
+    {
+      "path": "tools/serial_keyboard/KeyboardWindow.cs",
+      "name": "KeyboardWindow.cs",
+      "bytes": 17114,
+      "modified_utc": "2026-10-20T02:29:55.434368+00:00",
+      "sha256": "7d1263e07e768d3012311d468abfb7a22ecfbeeb4973c95292f496bae261df40"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/rtl/audio/ch9350_rx.v",
+      "name": "ch9350_rx.v",
+      "bytes": 5610,
+      "modified_utc": "2026-10-19T02:50:35.488767+00:00",
+      "sha256": "179e5483f811d7f52c683014b3f270170e34bbb8030299139f6aadd768fbe0c3"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/ch9350_rx.v",
+      "name": "ch9350_rx.v",
+      "bytes": 5849,
+      "modified_utc": "2026-10-19T07:11:27.185677+00:00",
+      "sha256": "767ec5ba50536248048669924fe0f22e6471b4ae6e707d83133a65539b992382"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/ch9350_rx.v",
+      "name": "ch9350_rx.v",
+      "bytes": 5849,
+      "modified_utc": "2026-10-19T07:11:27.185677+00:00",
+      "sha256": "767ec5ba50536248048669924fe0f22e6471b4ae6e707d83133a65539b992382"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/audio/ch9350_rx.v",
+      "name": "ch9350_rx.v",
+      "bytes": 5849,
+      "modified_utc": "2026-10-19T07:11:27.185677+00:00",
+      "sha256": "767ec5ba50536248048669924fe0f22e6471b4ae6e707d83133a65539b992382"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/ch9350_rx.v",
+      "name": "ch9350_rx.v",
+      "bytes": 5849,
+      "modified_utc": "2026-10-19T07:11:27.185677+00:00",
+      "sha256": "767ec5ba50536248048669924fe0f22e6471b4ae6e707d83133a65539b992382"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/gen_epiano_bank.py",
+      "name": "gen_epiano_bank.py",
+      "bytes": 4071,
+      "modified_utc": "2026-10-19T07:49:18.829307+00:00",
+      "sha256": "934e3b0bb071a1da61d387fd23f2cd4d86cf9481603fd2a9ef7a9afb12a1c29d"
+    },
+    {
+      "path": "tools/gen_epiano_bank.py",
+      "name": "gen_epiano_bank.py",
+      "bytes": 4172,
+      "modified_utc": "2026-10-20T02:29:00.911165+00:00",
+      "sha256": "08c0d8037296e183697e47480e07ea36918dbea7ce07c002a254e4b7758135c3"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/gen_guitar_samples_bank.py",
+      "name": "gen_guitar_samples_bank.py",
+      "bytes": 5440,
+      "modified_utc": "2026-10-19T07:49:32.890147+00:00",
+      "sha256": "1eaaf290eec2157a7a51ec25076db1b79459b5270754d692af864093a8e7d69c"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.12/source/tools/gen_guitar_samples_bank.py",
+      "name": "gen_guitar_samples_bank.py",
+      "bytes": 6988,
+      "modified_utc": "2026-10-19T07:59:15.371872+00:00",
+      "sha256": "4a1dbbea2db465e69e12674f49c891b6dfd15a07d5761394610d3da39345a126"
+    },
+    {
+      "path": "tools/gen_guitar_samples_bank.py",
+      "name": "gen_guitar_samples_bank.py",
+      "bytes": 6988,
+      "modified_utc": "2026-10-19T07:59:15.371872+00:00",
+      "sha256": "4a1dbbea2db465e69e12674f49c891b6dfd15a07d5761394610d3da39345a126"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.6/source/rtl/audio/global_crossfade.v",
+      "name": "global_crossfade.v",
+      "bytes": 15683,
+      "modified_utc": "2026-10-19T04:03:12.444795+00:00",
+      "sha256": "f8bff88e89a48cfc74028c114f7d0d1bd7afcf0e7eae139dd5ad32fee2f8aa52"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.1/source/output/handoff_milestone2_20261008/source/rtl/audio/global_crossfade.v",
+      "name": "global_crossfade.v",
+      "bytes": 15683,
+      "modified_utc": "2026-10-19T04:03:12.444795+00:00",
+      "sha256": "f8bff88e89a48cfc74028c114f7d0d1bd7afcf0e7eae139dd5ad32fee2f8aa52"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.3-key-loudness/source/rtl/audio/global_crossfade.v",
+      "name": "global_crossfade.v",
+      "bytes": 15771,
+      "modified_utc": "2026-10-20T02:07:55.588521+00:00",
+      "sha256": "73063c38227953f51c42f0685f234ca2faaad457d63e796fa987c359382d58ee"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.5-guitar-level/source/rtl/audio/global_crossfade.v",
+      "name": "global_crossfade.v",
+      "bytes": 16111,
+      "modified_utc": "2026-10-20T02:41:20.943244+00:00",
+      "sha256": "f381fa064f0c2852ef4555ba40703bcce94451fbac998bce178bc9dd51cf930e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/global_crossfade.v",
+      "name": "global_crossfade.v",
+      "bytes": 16111,
+      "modified_utc": "2026-10-20T02:41:20.943244+00:00",
+      "sha256": "f381fa064f0c2852ef4555ba40703bcce94451fbac998bce178bc9dd51cf930e"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/gowin_prom_guitar_bank.v",
+      "name": "gowin_prom_guitar_bank.v",
+      "bytes": 17730,
+      "modified_utc": "2026-10-19T07:13:45.961142+00:00",
+      "sha256": "5e774341d717bd28e87836139976aa6bf418a75d1eab9c956b64c84400189025"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/audio/gowin_prom_guitar_bank.v",
+      "name": "gowin_prom_guitar_bank.v",
+      "bytes": 17730,
+      "modified_utc": "2026-10-19T07:13:45.961142+00:00",
+      "sha256": "5e774341d717bd28e87836139976aa6bf418a75d1eab9c956b64c84400189025"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/gowin_prom_guitar_bank.v",
+      "name": "gowin_prom_guitar_bank.v",
+      "bytes": 104560,
+      "modified_utc": "2026-10-19T07:49:35.821467+00:00",
+      "sha256": "66e7432b6f2acbc114df2525ba6c441b1e6bdb0ef20a12d8f2910582848e1f6b"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.12/source/rtl/audio/gowin_prom_guitar_bank.v",
+      "name": "gowin_prom_guitar_bank.v",
+      "bytes": 104540,
+      "modified_utc": "2026-10-19T07:59:22.021269+00:00",
+      "sha256": "05dad93c36357a592c5dca3c27033926a1782dcb1d6e9858bd02cb9c67dbe58a"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_guitar_bank.v",
+      "name": "gowin_prom_guitar_bank.v",
+      "bytes": 104540,
+      "modified_utc": "2026-10-19T07:59:22.021269+00:00",
+      "sha256": "05dad93c36357a592c5dca3c27033926a1782dcb1d6e9858bd02cb9c67dbe58a"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.1/evidence/source_snapshot/output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 208463,
+      "modified_utc": "2026-10-19T01:11:42.379168+00:00",
+      "sha256": "8eb54e22d68ea37fd4a2a8e3c1aab03bad33dedbd208e85249bcf695a3c766d2"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.4/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 208679,
+      "modified_utc": "2026-10-19T01:53:38.890668+00:00",
+      "sha256": "e4f860f6cbd6a61ed08bf90875160ab1a7b905b91ca20d423c3071250feb83d6"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 208679,
+      "modified_utc": "2026-10-19T01:53:38.890668+00:00",
+      "sha256": "e4f860f6cbd6a61ed08bf90875160ab1a7b905b91ca20d423c3071250feb83d6"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.7/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 208679,
+      "modified_utc": "2026-10-19T04:30:09.538063+00:00",
+      "sha256": "72407871cdbc03b14b9089297b04639a56a7ba87ebc3bf7b8493c157b2a66288"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 104540,
+      "modified_utc": "2026-10-19T07:49:21.732622+00:00",
+      "sha256": "ede5acf93d4b07830fc0b843cbec8119e89ff5c83d28cbffff1c4ae65b28ec4a"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.4-timbre-volume/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 104540,
+      "modified_utc": "2026-10-20T02:29:01.210839+00:00",
+      "sha256": "eab9e2bcee5e73f5c9f6803945a8448efda37677b3329c379c3e50018c23c58f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_piano_bank.v",
+      "name": "gowin_prom_piano_bank.v",
+      "bytes": 104540,
+      "modified_utc": "2026-10-20T02:29:01.210839+00:00",
+      "sha256": "eab9e2bcee5e73f5c9f6803945a8448efda37677b3329c379c3e50018c23c58f"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/rtl/audio/hid_keymap.v",
+      "name": "hid_keymap.v",
+      "bytes": 11495,
+      "modified_utc": "2026-10-19T03:02:55.268679+00:00",
+      "sha256": "e3f801a72e2590e04b0f286b633f0c191ae7b6f77d86e03566ba8b6fc472108a"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/hid_keymap.v",
+      "name": "hid_keymap.v",
+      "bytes": 12231,
+      "modified_utc": "2026-10-19T07:11:16.969560+00:00",
+      "sha256": "b886109df21fceaa757de920733e5c24e34ca3ef24285d2c18e39f7c32522896"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/hid_keymap.v",
+      "name": "hid_keymap.v",
+      "bytes": 12231,
+      "modified_utc": "2026-10-19T07:11:16.969560+00:00",
+      "sha256": "b886109df21fceaa757de920733e5c24e34ca3ef24285d2c18e39f7c32522896"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/audio/hid_keymap.v",
+      "name": "hid_keymap.v",
+      "bytes": 12231,
+      "modified_utc": "2026-10-19T07:11:16.969560+00:00",
+      "sha256": "b886109df21fceaa757de920733e5c24e34ca3ef24285d2c18e39f7c32522896"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v",
+      "name": "hid_keymap.v",
+      "bytes": 12231,
+      "modified_utc": "2026-10-19T07:11:16.969560+00:00",
+      "sha256": "b886109df21fceaa757de920733e5c24e34ca3ef24285d2c18e39f7c32522896"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/rtl/audio/host_kbd_input.v",
+      "name": "host_kbd_input.v",
+      "bytes": 2155,
+      "modified_utc": "2026-10-19T02:43:07.225132+00:00",
+      "sha256": "2c97df679d4d30cd22f88f50ef1ec03165b1d71f1e319b3ab77dbd585acce666"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/host_kbd_input.v",
+      "name": "host_kbd_input.v",
+      "bytes": 2205,
+      "modified_utc": "2026-10-19T07:11:31.836363+00:00",
+      "sha256": "bbf358a2838872ad678ec461f561e452c717da4443db45fdf6621951d763a8ff"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/host_kbd_input.v",
+      "name": "host_kbd_input.v",
+      "bytes": 2205,
+      "modified_utc": "2026-10-19T07:11:31.836363+00:00",
+      "sha256": "bbf358a2838872ad678ec461f561e452c717da4443db45fdf6621951d763a8ff"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/audio/host_kbd_input.v",
+      "name": "host_kbd_input.v",
+      "bytes": 2205,
+      "modified_utc": "2026-10-19T07:11:31.836363+00:00",
+      "sha256": "bbf358a2838872ad678ec461f561e452c717da4443db45fdf6621951d763a8ff"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v",
+      "name": "host_kbd_input.v",
+      "bytes": 2205,
+      "modified_utc": "2026-10-19T07:11:31.836363+00:00",
+      "sha256": "bbf358a2838872ad678ec461f561e452c717da4443db45fdf6621951d763a8ff"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.4/source/constraints/primer20k_i2s_27m.cst",
+      "name": "primer20k_i2s_27m.cst",
+      "bytes": 4391,
+      "modified_utc": "2026-10-19T02:07:01.503510+00:00",
+      "sha256": "a89ac4d1d3bea7319baf1cbbafb4a2f6ec090d384358f040ce5736e4c560faf5"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/constraints/primer20k_i2s_27m.cst",
+      "name": "primer20k_i2s_27m.cst",
+      "bytes": 3381,
+      "modified_utc": "2026-10-19T02:44:05.908035+00:00",
+      "sha256": "53f890ccda2c860ecf1209bde2ca0e7bbf51180dc25507501bf8a4a88ff0b325"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.6/source/constraints/primer20k_i2s_27m.cst",
+      "name": "primer20k_i2s_27m.cst",
+      "bytes": 3381,
+      "modified_utc": "2026-10-19T02:44:05.908035+00:00",
+      "sha256": "53f890ccda2c860ecf1209bde2ca0e7bbf51180dc25507501bf8a4a88ff0b325"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/constraints/primer20k_i2s_27m.cst",
+      "name": "primer20k_i2s_27m.cst",
+      "bytes": 3381,
+      "modified_utc": "2026-10-19T02:44:05.908035+00:00",
+      "sha256": "53f890ccda2c860ecf1209bde2ca0e7bbf51180dc25507501bf8a4a88ff0b325"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.10/01_source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 3549,
+      "modified_utc": "2026-10-10T09:46:57.062729+00:00",
+      "sha256": "401a30d42f00c8cf7654a6469ae1fab4bbe1170b89bac31b1464fd9380acff52"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.1/source/baseline/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 3549,
+      "modified_utc": "2026-10-10T09:46:57.062729+00:00",
+      "sha256": "401a30d42f00c8cf7654a6469ae1fab4bbe1170b89bac31b1464fd9380acff52"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.3/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 4214,
+      "modified_utc": "2026-10-12T03:17:16.529816+00:00",
+      "sha256": "38999e479e7657c915b3cf9c49168765c1cd3643c36527fb9c8060fd468b7f80"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.4/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 4214,
+      "modified_utc": "2026-10-12T03:17:16.529816+00:00",
+      "sha256": "38999e479e7657c915b3cf9c49168765c1cd3643c36527fb9c8060fd468b7f80"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.5/source/instrument/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 4214,
+      "modified_utc": "2026-10-12T03:17:16.529816+00:00",
+      "sha256": "38999e479e7657c915b3cf9c49168765c1cd3643c36527fb9c8060fd468b7f80"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.6/source/instrument/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 4848,
+      "modified_utc": "2026-10-12T07:41:43.621624+00:00",
+      "sha256": "b913fa49084c97eb63c0fdec39d0df4370671553f7e0b088d66ec4bae4bf16b7"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.1/source/instrument/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 4848,
+      "modified_utc": "2026-10-12T07:41:43.621624+00:00",
+      "sha256": "b913fa49084c97eb63c0fdec39d0df4370671553f7e0b088d66ec4bae4bf16b7"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.5/source/rtl-simulation/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 4848,
+      "modified_utc": "2026-10-12T07:41:43.621624+00:00",
+      "sha256": "b913fa49084c97eb63c0fdec39d0df4370671553f7e0b088d66ec4bae4bf16b7"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.8/source/instrument/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 5099,
+      "modified_utc": "2026-10-13T14:08:45.122370+00:00",
+      "sha256": "1359d3010b2fe39a0eca5ed681221c5788553924c6ad4daafa2d816ca818a435"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.1/source/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 6451,
+      "modified_utc": "2026-10-14T02:00:16.211898+00:00",
+      "sha256": "009be5e683ad778b6b1de29d84c9f4e19dd23b292a0217a655f0f7658022ede6"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.2/source/PolyTouch-v1.01/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 6587,
+      "modified_utc": "2026-10-14T02:25:37.080947+00:00",
+      "sha256": "25c3c9aaf142582237c5199cf8a1ccdad0e42ccacfbed350198a796757c417d3"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.3/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 7351,
+      "modified_utc": "2026-10-14T03:01:51.228174+00:00",
+      "sha256": "3d86ffa3e1ab57bf5eba27482d05550f3b280d42d33df4c5e0eb58ce13fdbc1b"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.4/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 7351,
+      "modified_utc": "2026-10-14T03:01:51.228174+00:00",
+      "sha256": "3d86ffa3e1ab57bf5eba27482d05550f3b280d42d33df4c5e0eb58ce13fdbc1b"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.6/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 10707,
+      "modified_utc": "2026-10-14T11:16:25.397574+00:00",
+      "sha256": "7685de5785199fc1d29710548601f2cecfa0de6ac83747a059394e959ee8bd21"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.7/source_before/before/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 10707,
+      "modified_utc": "2026-10-14T11:16:25.397574+00:00",
+      "sha256": "7685de5785199fc1d29710548601f2cecfa0de6ac83747a059394e959ee8bd21"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.7/source/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 11645,
+      "modified_utc": "2026-10-14T12:09:55.593280+00:00",
+      "sha256": "5bfc49c12cf6f1f9d993c06ccfc0164f0560121cd286eac8aa0c0bed83b94665"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.5/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 22395,
+      "modified_utc": "2026-10-18T05:07:30.354628+00:00",
+      "sha256": "bc4b0653da5447ba4ea02335338d9e99550dcc1bad1a4ba0ed29f27c3da69054"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.4/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 23009,
+      "modified_utc": "2026-10-19T02:19:53.887616+00:00",
+      "sha256": "829238f54335580e9048c7562230c8b782f168030cf94a1b6c77b91014e0194c"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 23771,
+      "modified_utc": "2026-10-19T02:45:48.524821+00:00",
+      "sha256": "7b2ef00593084188347634a4afcca70a57613cbdb6d4dab057badea8ffd0fcd6"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.3-key-loudness/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 24752,
+      "modified_utc": "2026-10-20T02:14:33.847972+00:00",
+      "sha256": "d8cce592d5e45620d52b7b0f97889cd41f182b627d9c3a0c71540a6947a97235"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/run_simulation.ps1",
+      "name": "run_simulation.ps1",
+      "bytes": 24752,
+      "modified_utc": "2026-10-20T02:14:33.847972+00:00",
+      "sha256": "d8cce592d5e45620d52b7b0f97889cd41f182b627d9c3a0c71540a6947a97235"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.5/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 18052,
+      "modified_utc": "2026-10-18T05:06:42.889036+00:00",
+      "sha256": "939453bc36317c68120d4ea824fc943295068fc8d68c6d4621d0a524ef4bad71"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.1/evidence/source_snapshot/output/handoff_milestone2_20261008/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 19496,
+      "modified_utc": "2026-10-19T01:11:42.378156+00:00",
+      "sha256": "446a19d6926db4ba51551cdb6f556c5c1f744c2f59aa1693fbd9898033588093"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 23266,
+      "modified_utc": "2026-10-19T02:44:58.700511+00:00",
+      "sha256": "2a8000ba3546ea8d061be0191fd92f4ff7201cddb6a8131ca554843ce7c59b4e"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.6/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 23521,
+      "modified_utc": "2026-10-19T04:20:18.361498+00:00",
+      "sha256": "b79d6927a86898e7f70bdb06b249b14532c3bbd36d82c98e75e13402b9c794f0"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.7/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 24440,
+      "modified_utc": "2026-10-19T04:30:37.070939+00:00",
+      "sha256": "0404391ade525ded52636664bf2849475cc721cd9068f96f5ddfe5e51eab0569"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 25929,
+      "modified_utc": "2026-10-19T07:14:42.498548+00:00",
+      "sha256": "b8e5a58345580d2ce6998e557e5b76707cbb5d1bb1da258656e5beacd15ba35a"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 25929,
+      "modified_utc": "2026-10-19T07:14:42.498548+00:00",
+      "sha256": "b8e5a58345580d2ce6998e557e5b76707cbb5d1bb1da258656e5beacd15ba35a"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9/source/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 25929,
+      "modified_utc": "2026-10-19T07:14:42.498548+00:00",
+      "sha256": "b8e5a58345580d2ce6998e557e5b76707cbb5d1bb1da258656e5beacd15ba35a"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 26240,
+      "modified_utc": "2026-10-19T07:50:29.857937+00:00",
+      "sha256": "a8d7c14bc0174a36bab6edd858e2616f0ad4eabc30805fe2df8ef3fe96041739"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.12/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 26712,
+      "modified_utc": "2026-10-19T07:59:28.312215+00:00",
+      "sha256": "785a63003f824f56d7169fb1fff8853b2b5398229beaaa06886eddeba55ffbaa"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.1/source/output/handoff_milestone2_20261008/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 26712,
+      "modified_utc": "2026-10-19T07:59:28.312215+00:00",
+      "sha256": "785a63003f824f56d7169fb1fff8853b2b5398229beaaa06886eddeba55ffbaa"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.3-key-loudness/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 29440,
+      "modified_utc": "2026-10-20T02:02:46.174591+00:00",
+      "sha256": "bd6d6223d13ae6c345f7d774984d7b6a537d08a50716c16a740caf0d4ccfd363"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/shared_wavetable_engine.v",
+      "name": "shared_wavetable_engine.v",
+      "bytes": 29440,
+      "modified_utc": "2026-10-20T02:02:46.174591+00:00",
+      "sha256": "bd6d6223d13ae6c345f7d774984d7b6a537d08a50716c16a740caf0d4ccfd363"
+    },
+    {
+      "path": "archive/FPGA-20261007-v0.1/05_tooling/smoke_design/top.v",
+      "name": "top.v",
+      "bytes": 242,
+      "modified_utc": "2026-09-17T02:52:32.937166+00:00",
+      "sha256": "11cb109e68925655150f3d56390ed55ab9a95d87f16d3fd75b848dd9eae6ae39"
+    },
+    {
+      "path": "tools/smoke_design/top.v",
+      "name": "top.v",
+      "bytes": 242,
+      "modified_utc": "2026-09-17T02:52:32.937166+00:00",
+      "sha256": "11cb109e68925655150f3d56390ed55ab9a95d87f16d3fd75b848dd9eae6ae39"
+    },
+    {
+      "path": "legacy/pending_removal/untracked/handoff_milestone1_20261007/handoff_milestone1_20261007/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 2414,
+      "modified_utc": "2026-10-08T02:54:41.842872+00:00",
+      "sha256": "16dc2b1c5e482622daee9026a16d4e73fd4e4d69461644c5d1a967813a7d0905"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.2/04_reference/pt8211/top.v",
+      "name": "top.v",
+      "bytes": 2224,
+      "modified_utc": "2026-10-10T01:49:50.729696+00:00",
+      "sha256": "ef7aa701595b01a28631fa7e101ec769a7869d453e6134369f8d21fa86ffa0ad"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/reference/vendor_examples/pt8211/top.v",
+      "name": "top.v",
+      "bytes": 2224,
+      "modified_utc": "2026-10-10T01:49:50.729696+00:00",
+      "sha256": "ef7aa701595b01a28631fa7e101ec769a7869d453e6134369f8d21fa86ffa0ad"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.2/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 5059,
+      "modified_utc": "2026-10-10T01:54:19.150806+00:00",
+      "sha256": "47b643a08828195457ca1f17c8520c920db1e1b48d018f5c31a9b9ae9417fe80"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.5/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 9059,
+      "modified_utc": "2026-10-10T08:54:49.048663+00:00",
+      "sha256": "d962fd27a4da434384bb9eaa1931b3a328596646b1ad75c86b47f6c4ed4df650"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.6/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 9059,
+      "modified_utc": "2026-10-10T08:54:49.048663+00:00",
+      "sha256": "d962fd27a4da434384bb9eaa1931b3a328596646b1ad75c86b47f6c4ed4df650"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.7/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 9743,
+      "modified_utc": "2026-10-10T09:16:44.639049+00:00",
+      "sha256": "83be01b7aeedb1455f2cee9f42c4cf6279e4e568a9cec4cccb4fd80f4e10eb06"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.8/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 10682,
+      "modified_utc": "2026-10-10T09:25:53.750834+00:00",
+      "sha256": "eb4ea9492c2d81300ffe1aaa032d4bf8d3220929a6261c33c086034d83ae9b07"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.9/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 10682,
+      "modified_utc": "2026-10-10T09:25:53.750834+00:00",
+      "sha256": "eb4ea9492c2d81300ffe1aaa032d4bf8d3220929a6261c33c086034d83ae9b07"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.10/01_source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 11234,
+      "modified_utc": "2026-10-10T09:50:14.373124+00:00",
+      "sha256": "ed89ee6ece950c6d9bde7f8054822bb85c4b6ee9a1dd7460a5b28968eeae8616"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.1/source/baseline/rtl/top.v",
+      "name": "top.v",
+      "bytes": 11234,
+      "modified_utc": "2026-10-10T09:50:14.373124+00:00",
+      "sha256": "ed89ee6ece950c6d9bde7f8054822bb85c4b6ee9a1dd7460a5b28968eeae8616"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.3/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 11374,
+      "modified_utc": "2026-10-12T03:12:24.569896+00:00",
+      "sha256": "6d8218eb62c6b70c6e78cb0bfd589478ed09024392b4104ea36f440a09b6f7fb"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.4/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 11374,
+      "modified_utc": "2026-10-12T03:12:24.569896+00:00",
+      "sha256": "6d8218eb62c6b70c6e78cb0bfd589478ed09024392b4104ea36f440a09b6f7fb"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.5/source/instrument/rtl/top.v",
+      "name": "top.v",
+      "bytes": 11374,
+      "modified_utc": "2026-10-12T03:12:24.569896+00:00",
+      "sha256": "6d8218eb62c6b70c6e78cb0bfd589478ed09024392b4104ea36f440a09b6f7fb"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.6/source/instrument/rtl/top.v",
+      "name": "top.v",
+      "bytes": 13113,
+      "modified_utc": "2026-10-12T07:40:23.351804+00:00",
+      "sha256": "6fd94ef8e8749fe4da9721730ce11168394c0d12bc145ddb8ee4c7ec59597599"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.1/source/instrument/rtl/top.v",
+      "name": "top.v",
+      "bytes": 13113,
+      "modified_utc": "2026-10-12T07:40:23.351804+00:00",
+      "sha256": "6fd94ef8e8749fe4da9721730ce11168394c0d12bc145ddb8ee4c7ec59597599"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.5/source/rtl-simulation/rtl/top.v",
+      "name": "top.v",
+      "bytes": 13113,
+      "modified_utc": "2026-10-12T07:40:23.351804+00:00",
+      "sha256": "6fd94ef8e8749fe4da9721730ce11168394c0d12bc145ddb8ee4c7ec59597599"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.8/source/instrument/rtl/top.v",
+      "name": "top.v",
+      "bytes": 13468,
+      "modified_utc": "2026-10-13T14:00:29.884915+00:00",
+      "sha256": "b7f87fc26781ecc159eaf635a2e6abf946c2155232fbdadb853cd55e7e51bbc9"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.1/source/output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 13468,
+      "modified_utc": "2026-10-13T14:00:29.884915+00:00",
+      "sha256": "b7f87fc26781ecc159eaf635a2e6abf946c2155232fbdadb853cd55e7e51bbc9"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.2/source/PolyTouch-v1.01/output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 13804,
+      "modified_utc": "2026-10-14T02:25:37.072937+00:00",
+      "sha256": "572b1e9092e8a6d9a8d31f051746d89722a75a2207dc2b86b3ff9701c002e43a"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.3/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 16695,
+      "modified_utc": "2026-10-14T03:20:14.102465+00:00",
+      "sha256": "29a29750089e20799bf9de5c3f1064eb13173f66f6cb95c4a50cf725434237a7"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.4/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 16602,
+      "modified_utc": "2026-10-14T08:32:36.020869+00:00",
+      "sha256": "7a341861899bc08ff125e4cdd9717fcfa35a4713409e89adfef9cbac091a37d1"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.6/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 16602,
+      "modified_utc": "2026-10-14T08:32:36.020869+00:00",
+      "sha256": "7a341861899bc08ff125e4cdd9717fcfa35a4713409e89adfef9cbac091a37d1"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.7/source/output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 16602,
+      "modified_utc": "2026-10-14T08:32:36.020869+00:00",
+      "sha256": "7a341861899bc08ff125e4cdd9717fcfa35a4713409e89adfef9cbac091a37d1"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.1/source/output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 32447,
+      "modified_utc": "2026-10-17T12:30:19.106551+00:00",
+      "sha256": "c14917ce23c8c16b40b15399490e4132d6d53e82fee7572637f65f0cdd6e8e40"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.5/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 32673,
+      "modified_utc": "2026-10-18T05:06:46.437819+00:00",
+      "sha256": "970506feb24c29021ac07c3dca22727ae69931bb65e1832a6652d3e869663276"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.1/evidence/source_snapshot/output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 32858,
+      "modified_utc": "2026-10-19T01:11:42.376648+00:00",
+      "sha256": "b42a1ff0e718b99c731f087e4cd90378ec0bb2cf1a5b2f61f7a7204bcc711a0e"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.4/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 33181,
+      "modified_utc": "2026-10-19T02:06:47.096479+00:00",
+      "sha256": "598f764072166796d6300cd26e5be3280b152643985ea24d84cb2c9efa5f64c0"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 36772,
+      "modified_utc": "2026-10-19T02:44:58.722547+00:00",
+      "sha256": "288f602e47c778da8a1f0465f80875958f74faee93f3df77dee9ead25f2f404e"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.6/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 37009,
+      "modified_utc": "2026-10-19T04:24:22.502651+00:00",
+      "sha256": "7470e6bc88162635bb5641300cb9616087d58270deb7292f79025b6bdd58b5bc"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.7/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 37000,
+      "modified_utc": "2026-10-19T04:30:37.550812+00:00",
+      "sha256": "d17c57b149db4279c3456425a586462e5e32db8d4a919f4ca688e57940fb7fb8"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 37348,
+      "modified_utc": "2026-10-19T07:15:09.883255+00:00",
+      "sha256": "373304dcb99d4cd4fea68ea13249ce74c2d6be78c0c753d755e296a15bac1dce"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 38156,
+      "modified_utc": "2026-10-19T07:30:31.947101+00:00",
+      "sha256": "e1900c5cc723e3032b65a5d35c0853c060a362a4a7efc02a0f03fe37611fd718"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 38156,
+      "modified_utc": "2026-10-19T07:30:31.947101+00:00",
+      "sha256": "e1900c5cc723e3032b65a5d35c0853c060a362a4a7efc02a0f03fe37611fd718"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.13/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 38643,
+      "modified_utc": "2026-10-19T08:06:52.987660+00:00",
+      "sha256": "7c7dfc025d694da71ac24059cac8db39d8586ceb1e1e3d2f3b63886fc0282eaa"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.1/source/output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 38643,
+      "modified_utc": "2026-10-19T08:06:52.987660+00:00",
+      "sha256": "7c7dfc025d694da71ac24059cac8db39d8586ceb1e1e3d2f3b63886fc0282eaa"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.3-key-loudness/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 39929,
+      "modified_utc": "2026-10-20T02:07:55.590520+00:00",
+      "sha256": "2541e295f3b34a72a89a36e8bee4d5df0d8e090700c7e9486b46081e7e3289d0"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.4-timbre-volume/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 46202,
+      "modified_utc": "2026-10-20T02:29:44.583241+00:00",
+      "sha256": "2922f2ad248bf499ba3016da5f0007eabcce551678e446aacdab18a731c9b3fc"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.5-guitar-level/source/top.v",
+      "name": "top.v",
+      "bytes": 45764,
+      "modified_utc": "2026-10-20T02:41:20.942244+00:00",
+      "sha256": "8c961e020744a2e9075c44b5c600e28f8d82e303253599477eb39da5ba18e384"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.6-volume-fix/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 45922,
+      "modified_utc": "2026-10-20T02:48:02.211063+00:00",
+      "sha256": "3ad743087be28facd2faea361910a6d98b136ed9aad4fedd7264662d76da0958"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/top.v",
+      "name": "top.v",
+      "bytes": 45922,
+      "modified_utc": "2026-10-20T02:48:02.211063+00:00",
+      "sha256": "3ad743087be28facd2faea361910a6d98b136ed9aad4fedd7264662d76da0958"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.4/source/build/isolated/top_std27_build.v",
+      "name": "top_std27_build.v",
+      "bytes": 2411,
+      "modified_utc": "2026-10-19T02:06:51.119159+00:00",
+      "sha256": "ad009fa2bf8d15105d9be50f1cf6de6d2372a2468364c3850c9385d76e5683ae"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.5/source/build/isolated/top_std27_build.v",
+      "name": "top_std27_build.v",
+      "bytes": 2852,
+      "modified_utc": "2026-10-19T02:44:05.427863+00:00",
+      "sha256": "89fdc5f9158289f49a917dbf2091155dbdbf4ae05cea122f1a551b43c0dbc0c7"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.6/source/build/isolated/top_std27_build.v",
+      "name": "top_std27_build.v",
+      "bytes": 2897,
+      "modified_utc": "2026-10-19T04:02:13.889779+00:00",
+      "sha256": "b365b54b9f6e7e269e622eb49a17856c5607a346c079041f1dcab705c7e565be"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.7/source/build/isolated/top_std27_build.v",
+      "name": "top_std27_build.v",
+      "bytes": 2897,
+      "modified_utc": "2026-10-19T04:02:13.889779+00:00",
+      "sha256": "b365b54b9f6e7e269e622eb49a17856c5607a346c079041f1dcab705c7e565be"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/build/isolated/top_std27_build.v",
+      "name": "top_std27_build.v",
+      "bytes": 2897,
+      "modified_utc": "2026-10-19T04:02:13.889779+00:00",
+      "sha256": "b365b54b9f6e7e269e622eb49a17856c5607a346c079041f1dcab705c7e565be"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.10/01_source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.5/01_source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.6/01_source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.7/01_source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.8/01_source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261010-v0.9/01_source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.1/source/baseline/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.4/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.5/source/instrument/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 10483,
+      "modified_utc": "2026-10-10T08:54:04.694435+00:00",
+      "sha256": "ec72a1a95cf195db44094c9129e239ce4fcd81784b9e01fc1a336e73b7f2dc51"
+    },
+    {
+      "path": "archive/FPGA-20261012-v0.6/source/instrument/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13018,
+      "modified_utc": "2026-10-12T07:46:07.325577+00:00",
+      "sha256": "d073da81400bff57ed00e711627b75ebf70480f231cad3ccc1ed131f31071f1c"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.1/source/instrument/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13018,
+      "modified_utc": "2026-10-12T07:46:07.325577+00:00",
+      "sha256": "d073da81400bff57ed00e711627b75ebf70480f231cad3ccc1ed131f31071f1c"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.5/source/rtl-simulation/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13018,
+      "modified_utc": "2026-10-12T07:46:07.325577+00:00",
+      "sha256": "d073da81400bff57ed00e711627b75ebf70480f231cad3ccc1ed131f31071f1c"
+    },
+    {
+      "path": "archive/FPGA-20261013-v0.8/source/instrument/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13883,
+      "modified_utc": "2026-10-13T14:02:11.725279+00:00",
+      "sha256": "517f1ab47c379071b799e96abb89c830f742cac379f68213c740d54303ba779c"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.1/source/output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13883,
+      "modified_utc": "2026-10-13T14:02:11.725279+00:00",
+      "sha256": "517f1ab47c379071b799e96abb89c830f742cac379f68213c740d54303ba779c"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.4/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13883,
+      "modified_utc": "2026-10-13T14:02:11.725279+00:00",
+      "sha256": "517f1ab47c379071b799e96abb89c830f742cac379f68213c740d54303ba779c"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.6/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13883,
+      "modified_utc": "2026-10-13T14:02:11.725279+00:00",
+      "sha256": "517f1ab47c379071b799e96abb89c830f742cac379f68213c740d54303ba779c"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.7/source/output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 13883,
+      "modified_utc": "2026-10-13T14:02:11.725279+00:00",
+      "sha256": "517f1ab47c379071b799e96abb89c830f742cac379f68213c740d54303ba779c"
+    },
+    {
+      "path": "archive/FPGA-20261014-v0.2/source/PolyTouch-v1.01/output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 14224,
+      "modified_utc": "2026-10-14T02:25:37.051205+00:00",
+      "sha256": "1391bca63528a315251e77d5d72e48d182ff2fd5b6999ced20d6b06ec0ff9c6e"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.1/source/output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 14747,
+      "modified_utc": "2026-10-16T11:42:32.041410+00:00",
+      "sha256": "8af8bec610cab11bc99a8f248ccf671e2214311d4500de82065bbc354311334b"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.1/evidence/source_snapshot/output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 14747,
+      "modified_utc": "2026-10-19T01:11:42.380164+00:00",
+      "sha256": "8af8bec610cab11bc99a8f248ccf671e2214311d4500de82065bbc354311334b"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 15849,
+      "modified_utc": "2026-10-19T07:29:57.887883+00:00",
+      "sha256": "80674917bf3d59982c62a401f85bdf50c7946a616bd98387a75decf03926da8c"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 15849,
+      "modified_utc": "2026-10-19T07:29:57.887883+00:00",
+      "sha256": "80674917bf3d59982c62a401f85bdf50c7946a616bd98387a75decf03926da8c"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.4-timbre-volume/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 16645,
+      "modified_utc": "2026-10-20T02:29:29.719800+00:00",
+      "sha256": "d9bd5bb20c4f93511b40cf043b129a4cefa6a37e5e73e66cb1159bcecfd4540f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "name": "uart_ctrl.v",
+      "bytes": 16645,
+      "modified_utc": "2026-10-20T02:29:29.719800+00:00",
+      "sha256": "d9bd5bb20c4f93511b40cf043b129a4cefa6a37e5e73e66cb1159bcecfd4540f"
+    },
+    {
+      "path": "archive/FPGA-20261018-v0.5/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 4134,
+      "modified_utc": "2026-10-18T05:06:19.916015+00:00",
+      "sha256": "9e9f918730ce2359ec29e22e851491f83c180b8982c6d4abde1ef1727e9deb96"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.10/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 5078,
+      "modified_utc": "2026-10-19T07:14:57.606431+00:00",
+      "sha256": "e2a31d2e5900005a079dd1d44bf9c660969f2f6304440c1ddee01b084eb29fbb"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.9-guitar/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 5078,
+      "modified_utc": "2026-10-19T07:14:57.606431+00:00",
+      "sha256": "e2a31d2e5900005a079dd1d44bf9c660969f2f6304440c1ddee01b084eb29fbb"
+    },
+    {
+      "path": "archive/FPGA-20261019-v0.11/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 5080,
+      "modified_utc": "2026-10-19T07:50:00.438394+00:00",
+      "sha256": "bdf2a50156fd39aff74c69ec05dbc7bf22a7b447580407624cc247560688ed1c"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.1/source/output/handoff_milestone2_20261008/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 5080,
+      "modified_utc": "2026-10-19T07:50:00.438394+00:00",
+      "sha256": "bdf2a50156fd39aff74c69ec05dbc7bf22a7b447580407624cc247560688ed1c"
+    },
+    {
+      "path": "archive/FPGA-20261020-v0.4-timbre-volume/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 5080,
+      "modified_utc": "2026-10-20T02:29:01.697958+00:00",
+      "sha256": "82bc9e7560edd81875ea67ab6682b5bdf805c4e45a2624ecfde101fba9e82e9b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/voice_transition.v",
+      "name": "voice_transition.v",
+      "bytes": 5080,
+      "modified_utc": "2026-10-20T02:29:01.697958+00:00",
+      "sha256": "82bc9e7560edd81875ea67ab6682b5bdf805c4e45a2624ecfde101fba9e82e9b"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+PASS tb_piano_bank: six stages x 512 addresses match generated piano spectra
+sim\tb_piano_bank.v:53: $finish called at 30756000 (1ps)

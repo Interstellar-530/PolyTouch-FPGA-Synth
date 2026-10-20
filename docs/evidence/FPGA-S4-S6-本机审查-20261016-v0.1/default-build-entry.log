@@ -1,0 +1,11 @@
+E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\rtl\top.v:423: error: Unknown module type: mcp3208_spi
+E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\rtl\top.v:437: error: Unknown module type: pressure_bend
+E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\rtl\top.v:494: error: Unknown module type: shared_wavetable_engine
+E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\rtl\top.v:508: error: Unknown module type: global_crossfade
+5 error(s) during elaboration.
+*** These modules were missing:
+        global_crossfade referenced 1 times.
+        mcp3208_spi referenced 1 times.
+        pressure_bend referenced 1 times.
+        shared_wavetable_engine referenced 1 times.
+***

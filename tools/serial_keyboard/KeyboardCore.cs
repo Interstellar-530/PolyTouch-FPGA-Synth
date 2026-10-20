@@ -152,8 +152,9 @@ namespace PolyTouchPc
         }
         public void Send(string command)
         {
-            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3}|I[01])$"))
+            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3}|I[01]|V[0-9]{1,3})$"))
                 throw new ArgumentException("不支持的命令。");
+            if (command.StartsWith("V") && Int32.Parse(command.Substring(1)) > 100) throw new ArgumentException("音量必须为 0 到 100。");
             if (command.StartsWith("T") && Int32.Parse(command.Substring(1)) > 255)
                 throw new ArgumentException("音色权重必须为 0 到 255。");
             if (!connected || stopAfterDrain) throw new InvalidOperationException("串口尚未连接。");

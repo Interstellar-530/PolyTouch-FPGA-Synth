@@ -49,12 +49,12 @@ for z in range(6):
     hmax = max(1, min(240, int(0.45 * FS / fmax)))
     for s in range(6):
         # stage 5 = bright attack, stage 0 = soft body.
-        alpha = 0.012 + 0.020 * (5 - s)
+        alpha = 0.006 + 0.014 * (5 - s)
         spec = np.fft.rfft(table0)
         h = np.arange(len(spec))
         tilt = np.exp(-alpha * h)
         # E-piano bell: lift harmonics 2-4 a little on the bright stages.
-        bell = 1.0 + 0.18 * (5 - s) / 5.0 * np.exp(-((h - 3.0) / 1.4) ** 2)
+        bell = 1.0 + 0.30 * (5 - s) / 5.0 * np.exp(-((h - 3.0) / 1.4) ** 2)
         spec = spec * tilt * bell
         spec[hmax + 1:] = 0.0
         spec[0] = 0.0

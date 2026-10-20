@@ -1,0 +1,56 @@
+{
+  "default_divider_replacement_exact_codes": 4096,
+  "bend_worst_full_mapping": {
+    "adc": 417,
+    "q8": -407,
+    "ratio": 59818,
+    "interpolation_error_cent": 0.9348405944687386,
+    "full_mapping_error_cent": 1.2278093444687386
+  },
+  "bend_max_interpolation_error_cent": 0.9348405944687386,
+  "four_same_phase_mix": [
+    {
+      "envelope": 45875,
+      "velocity": 100,
+      "voices": 4,
+      "weight": 64,
+      "peak": 30920,
+      "clipped_table_points": 0,
+      "points": 512
+    },
+    {
+      "envelope": 65535,
+      "velocity": 100,
+      "voices": 4,
+      "weight": 64,
+      "peak": 44173,
+      "clipped_table_points": 258,
+      "points": 512
+    }
+  ],
+  "engine": {
+    "voices": 4,
+    "clocks": 84,
+    "standard_budget": 256,
+    "estimated_serial_32_clocks": 672,
+    "parallel_4_engines_8_voices_clocks": 168
+  },
+  "conversion": {
+    "debug_sck_hz": 250000.0,
+    "std_sck_hz": 245760.0,
+    "debug_frame_us": 76.0,
+    "std_frame_us": 77.31119791666667,
+    "control_hz": 2000,
+    "per_channel_fresh_sample_hz": 1000
+  },
+  "adc_unfiltered_bend_step_cent": 0.390625,
+  "mode_button_debounce_ms": {
+    "debug": 38.83614814814815,
+    "standard": 85.33333333333333
+  },
+  "adsr_48k": {
+    "attack_full_ms": 9.770833333333334,
+    "decay_to_sustain_ms": 25.604166666666668,
+    "release_from_sustain_ms": 19.916666666666668
+  }
+}

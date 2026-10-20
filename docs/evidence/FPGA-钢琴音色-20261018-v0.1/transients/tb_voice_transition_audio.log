@@ -1,0 +1,2 @@
+PASS tb_voice_transition_audio: 16 phase/timbre cases, actual waveform chains, captured_frames=16384 total_frames=50456 restart_delay<=64
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_voice_transition_audio.v:47: $finish called at 39860880000 (1ps)

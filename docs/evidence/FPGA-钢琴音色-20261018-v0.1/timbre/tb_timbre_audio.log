@@ -1,0 +1,3 @@
+METRIC timbre frames=37370 weights=256 max_control_step=40 abrupt_control_step=9961 full_sweep_frames=255 variable_multipliers=1
+PASS tb_timbre_audio: signed 64-bit reference, opposite/full scale, random sums, slew/hold, preset capture
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_timbre_audio.v:82: $finish called at 747550000 (1ps)

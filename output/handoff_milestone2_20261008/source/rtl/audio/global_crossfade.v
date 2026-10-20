@@ -20,6 +20,7 @@ module global_crossfade #(
     parameter [7:0] TIMBRE_RESET_WEIGHT = 64,
     parameter integer SHARED_MULT_ENABLE = 0,
     parameter integer MASTER_VOLUME_SHIFT = 1,
+    parameter integer GUITAR_BOOST_ENABLE = 0,
     parameter integer MUTE_SLEW_ENABLE = 0,
     parameter integer EXTRA_FRACTION_BITS = 0,
     parameter integer REGISTER_MIX_INPUTS_ENABLE = 0,
@@ -34,6 +35,7 @@ module global_crossfade #(
     input  wire [7:0]         mix_weight,
     input  wire signed [18+EXTRA_FRACTION_BITS:0] sine_sum,
     input  wire signed [18+EXTRA_FRACTION_BITS:0] bright_sum,
+    input  wire               guitar_boost,
     output reg  signed [15:0] sample_out,
     output reg  [CLIP_COUNTER_WIDTH-1:0] clip_count,
     output reg                clip_event,
@@ -45,7 +47,8 @@ module global_crossfade #(
     output wire signed [17:0] mult_operand_a,mult_operand_b,
     input wire signed [35:0] mult_result,
     input wire mute,
-    output reg signed [23:0] sample_out24
+    output reg signed [23:0] sample_out24,
+    output wire               result_valid_o
 );
     reg [7:0] weight_state;
     wire [7:0] weight_next = (mix_weight > weight_state) ? weight_state+8'd1 :
@@ -212,6 +215,7 @@ module global_crossfade #(
         end
     end
     wire result_valid=SHARED_MULT_ENABLE?(shared_stage==4):update;
+    assign result_valid_o=result_valid;
     wire signed [27+E:0] output_value=SHARED_MULT_ENABLE?($signed(mult_result)>>>12):after_pressure;
     wire signed [35:0] final_product=SHARED_MULT_ENABLE?shared_corrected_product:local_pressure_product;
     // Internal samples carry E sub-LSB bits; retain VCA fractional bits until
@@ -229,7 +233,10 @@ module global_crossfade #(
     // 满幅输入压到约 6815744，仍保留 24 位量化余量，不会硬削成方波。
     // 只用比较、加减和右移，不占乘法器；重建滤波仍由 PCM5102A 内部完成。
     localparam signed [35:0] SOFT_KNEE = 36'sd6291456;
-    wire signed [35:0] lim_in = output_value24;
+    // 吉他 +3.5 dB（×1.5），在软限幅之前；钢琴直通。
+    wire               boost_en = GUITAR_BOOST_ENABLE && guitar_boost;
+    wire signed [35:0] boosted24 = boost_en ? (output_value24 + (output_value24 >>> 1)) : output_value24;
+    wire signed [35:0] lim_in = boosted24;
     wire [35:0] lim_abs = lim_in[35] ? (~lim_in + 36'd1) : lim_in;
     wire [35:0] lim_abs_lim = (lim_abs > SOFT_KNEE) ?
         (SOFT_KNEE + ((lim_abs - SOFT_KNEE) >>> 2)) : lim_abs;

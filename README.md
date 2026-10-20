@@ -1,48 +1,44 @@
-# PolyTouch FPGA Synth — v1.01
+# PolyTouch FPGA Synth
 
-v1.01 在 v1.0.0 四声部基线上加入 S1 真实音频捕获、PCM/WAV/FFT 验收及完整十项 RTL 门禁，并记录 Flash 持久化。生产逻辑和原位流保持一致，板内 User Code 仍为 **0x5633**，支持 D0/D1 与电脑按住/松开演奏。版本名称按用户指定保留为 `v1.01`。
+当前工作入口是 `codex/s4-s6-pressure`。2026-10-20 的同步包含最新 8 声部电钢琴/吉他、键控响度、主音量、24 位公共低通定标修复，以及周末装配与软件安排。吉他试听和 DDR3 独立实验的 `16f9c32` 已快进纳入分支历史。
 
-工作分支上已有两块数字交付：S2 在 `codex/s2-gpio-keyboard`（12 路 GPIO 琴键与手动事件仲裁），S3 在 `codex/s3-i2s-tx`（标准 I2S 发送器、独立接收模型、统一时钟参数与隔离综合）。S3 经[独立复核与修正](docs/evidence/FPGA-S3-review-20261014-v0.1.md)，十三台正向、六个参数负例、三种检查器故障注入及原音频回归通过，真实16/24位分别完成综合/PnR。两块均未烧录，实体接线与PCM5102A实机验收保持待测。最新清单见[2026-10-14任务清单](docs/planning/FPGA-缺件期间仿真与算法任务-20261014-v0.2.md)。
+## 当前代码与验证范围
 
-工程继续位于 [output/handoff_milestone2_20261008/source](output/handoff_milestone2_20261008/source/)。目录中的日期是旧交接包名称，版本以 Git 标签和本页为准，不维护第二份生产 RTL；代码、日志、计划、资料和归档的分类与逐版本定位见 [版本索引与文件地图](docs/版本索引与文件地图-20261014-v0.1.md)。
+正式源码只维护一份：`output/handoff_milestone2_20261008/source`。目录日期是历史交接包名称，不能据此判断版本；`archive/`、`tmp/`、独立硬件实验和生成的工程不是生产源码入口。
 
-已有四个独立相位/频率/ADSR 声部、一种512点正弦波表与插值、力度缩放/混音、事件背压及演示/手动隔离。已烧录音频仍通过板载PT8211右对齐格式输出，采样率 **46.875 kHz**。GPIO与标准I2S的数字模块已交付；实体GPIO、正式时钟/I2S集成、压力ADC、双音色和扩声部仍待后续验收。
+当前已使用的是 `debug8`：板载 27MHz、46.875kHz、PT8211 耳机输出，8 个独立声部，可经 UART/电脑界面切换电钢琴和吉他。支持 `I0/I1`、`V0..V100`、`D0/D1`、音符按下/松开与清音；音频由 FPGA 实时生成。主音量 100 为本路径原始电平，50 约 −12dB，0 静音。
 
-| 阅读入口 | 内容 |
-| --- | --- |
-| [v1.01 发布说明](docs/releases/v1.01.md) | S1 增量、Flash 固件、复现与验证边界 |
-| [v1.0.0 基线说明](docs/releases/v1.0.0.md) | 既有功能、ASCII 协议、硬件限制和源码导读背景 |
-| [源码导读](docs/releases/v1.0.0-code-guide.md) | 模块关系、状态/单拍控制、时钟/复位、定点与队列 |
-| [验证记录](docs/releases/v1.0.0-validation.json) | 生产 RTL 词法一致性、仿真结果和原位流校验 |
-| [固件位流](releases/v1.0.0/instrument_sram_0x5633.fs) | SRAM/外部 Flash 共用的原始 0x5633 配置文件 |
-| [电脑演奏工具](tools/serial_keyboard/README.md) | 键盘映射、GUI 和端口使用 |
-| [队友仿真配置提示词](docs/handoff/FPGA-队友仿真环境配置提示词-20261013-v0.1.md) | 无板卡电脑配置 Icarus/可选 GTKWave |
-| [S1 音频验收入口](tools/audio_capture/README.md) | 真实 PT8211 引脚捕获、PCM/WAV、频率与独立松键分析 |
-| [Flash 冷启动记录](docs/logs/FPGA_DEBUG_LOG_20261014_V1_FLASH.md) | 10/14 将同一 0x5633 位流写入 Flash，GAO-Bridge 校验及断电验收 |
-| [S3 验收记录](docs/evidence/FPGA-S3-i2s-tx-20261014-v0.1.md) | 标准 I2S 发送器、独立接收模型、统一时钟参数：四组合仿真、五个参数负例、隔离综合 |
-| [版本索引与文件地图](docs/版本索引与文件地图-20261014-v0.1.md) | 各类内容的存放位置、逐版本定位、过时交接包待清理清单 |
+`standard27` 是实体组装的正式入口：27MHz、46.875kHz、24 位标准 I2S 到 PCM5102A，CH9350L 直接接 USB 键盘，MCP3208 接 FSR/弯音。当前外设尚未整机接通；CH9350L 的 F6/音量控制、RGB 灯、彩屏、合唱和 32 声部是工作安排中的待办，不应按计划写成已实现。
 
-## 运行基线
+最新已烧录调试版记录为 Logic 10778、寄存器 3398、BSRAM 40/46、1×MULT18X18＋1×MULT9X9；27MHz 约束下 Fmax 31.386MHz、setup/hold 违规为零。位流 SHA256：`2F8DB574A2ECABE2E71A8B6A8DA32CDAF2EF993F9198AB120CAA15B35DFC8606`。这些是对应历史构建的结果，不是新增外设配置的实测指标。
 
-在仓库根目录执行以下 Windows PowerShell 命令，Icarus 安装路径可通过门禁的 -Iverilog/-Vvp 参数覆盖。v1.0.0 标签内是九台；10/14 工作区新增真实音频捕获，门禁为十台，全部通过才允许烧录。完整 S1 频谱验收还需运行上述音频验收入口。
+## 本周直接阅读
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\output\handoff_milestone2_20261008\source\sim\run_simulation.ps1'
-if ($LASTEXITCODE -ne 0) { throw 'Simulation gate failed' }
-```
+| 入口 | 内容 |
+|---|---|
+| [周末硬件清单与安装说明](docs/hardware/FPGA-周末硬件组装清单与安装说明-20261020-v0.1.md) | 10/24—25 装配、元件、约 100 元视觉配件预算、引脚、电源与操作 |
+| [周末前软件安排](docs/planning/FPGA-周末前软件工作安排-20261020-v0.1.md) | 两人四天分工、32 声部冲刺、效果/灯屏、AI 和计算资源安排 |
+| [工作区同步证据](docs/evidence/FPGA-工作区同步-20261020-v0.1/README.md) | 源码副本遍历、来源选择、构建绑定与本轮短检查 |
+| [最新烧录记录](docs/logs/FPGA_FLASH_20261020.md) | 10/20 连续改进及对应位流、资源与烧录边界 |
+| [电脑演奏界面](tools/serial_keyboard/README.md) | 当前串口操作、自检和键位 |
+| [吉他预览](docs/evidence/FPGA-吉他音色预览-20261020-v0.1/README.md) | 离线试听、真实采样比较及生成脚本，属于研究资料 |
+| [DDR3 独立实验](docs/evidence/FPGA-DDR3冒烟-20261020-v0.1/README.md) | 独立测试顶层与已有证据，未集成到乐器音频路径 |
 
-板上加载相应 SRAM 固件后，以实际枚举的 COM 口运行电脑界面。先关闭其它占用该串口的窗口；默认示例为 COM13。按 A/W/S/E/D/F/T/G/Y/H/U/J/K 演奏 C4-C5，A/D/G 为三音和弦，H 为 A4，最多四声部。
+## 复现与协作
+
+在仓库根目录构建当前调试档或正式档：
 
 ```powershell
-powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File '.\tools\serial_keyboard\keyboard.ps1' -Port COM13
+& '.\output\handoff_milestone2_20261008\source\build\build.ps1' -Profile debug8
+& '.\output\handoff_milestone2_20261008\source\build\build.ps1' -Profile standard27
 ```
 
-UART 使用 115200、8N1、CR/LF 结尾，支持 N1-N127、O1-O127、X、D0/D1、M0/M1。D0 进入手动等待，D1 从头演示；X 降低全部 gate，包络仍按 Release 衰减，M0 直接将数字输出置零。
+本机需 Gowin EDA 与 Icarus Verilog。当前生成 ROM 和 HEX 已入库，普通构建不必重新下载音色素材；音色再生成脚本仍可能依赖本地样本目录，其路径见脚本和来源说明。不要将 `tools/agent-runtime/`、语言环境或编译缓存加入 Git。
 
-## 版本与复现
+本轮按用户要求使用与改动相关的短检查，记录在同步证据目录；没有宣称全量门禁通过。`run_simulation.ps1` 与烧录脚本的历史默认仍是全量门禁，精简入口安排见软件计划。已知完整套件曾停在 GPIO/演示切换路径；实物长音、模拟输出、延迟和冷启动仍按实际验收记录报告。
 
-SRAM 配置掉电失效。10/13 发布时没有改写 Flash；10/14 已按用户要求把同一 v1.0.0 位流写入 Flash，经 GAO-Bridge 完整校验、重载读码与用户断电验收，冷启动为 0x5633。原 Flash 0xFCF0 已被替换。转运或换板后仍需核对实际配置，不能仅凭仓库版本推断板内程序。
+64 路计算/PLL 原型和 DDR3 实验均保留各自入口，不能直接替代完整 32/64 声部乐器。修改声部、效果、显示前重新核算 BSRAM、乘法器和每帧周期；32 声部不能只改顶层参数。
 
-源码 tag、历史 .fs 和本轮验证分别保存。原位流 SHA256 为 `2C7C7001DD3EABF24D2A4ABC2FC93BE1DD441D76812E248B3B84A235DBD22675`，历史已烧录/读码和串口证据见发布说明；新综合的字节、User Code 不保证相同。v1.0.0 是 Git 版本号，0x5633 是该历史位流的器件读码，两者不是同一编码体系。
+## 历史版本
 
-构建依赖 Gowin V1.9.11.03 Education（历史已验收版本）或经复验的兼容安装，仿真依赖 Icarus Verilog。声部扩展前重算 BSRAM/DSP，任何 Verilog 改动先过 RTL 门禁。当前混音可能削波，模拟底噪、正式外设和端到端延迟另行验收；不将仿真 PASS 当作这些项目通过。
+[v1.01](docs/releases/v1.01.md)、[v1.0.0](docs/releases/v1.0.0.md) 和 [源码导读](docs/releases/v1.0.0-code-guide.md) 保留四声部发布基线。历史 `0x5633` 是旧位流 User Code，不代表当前板内一定仍运行该版本。旧版资料及文件地图见 [版本索引](docs/版本索引与文件地图-20261014-v0.1.md)。

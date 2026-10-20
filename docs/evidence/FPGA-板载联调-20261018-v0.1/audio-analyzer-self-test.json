@@ -1,0 +1,46 @@
+{
+  "result": "PASS",
+  "synthetic_positive": "PASS",
+  "negative_controls": [
+    {
+      "case": "wrong_sample_rate",
+      "rejected": true,
+      "reason": "Manifest sample_rate: expected 46875"
+    },
+    {
+      "case": "channel_corruption",
+      "rejected": true,
+      "reason": "Channel mismatch in a4_steady"
+    },
+    {
+      "case": "pitch_error",
+      "rejected": true,
+      "reason": "A4 frequency error 3.000000 Hz > 1 Hz"
+    },
+    {
+      "case": "missing_held_voice",
+      "rejected": true,
+      "reason": "Missing held fundamental 60 in chord4"
+    },
+    {
+      "case": "off_ignored_in_audio",
+      "rejected": true,
+      "reason": "Released fundamental 60 remains in after_off60: 5999.990 LSB, ratio 1.000000"
+    },
+    {
+      "case": "nonzero_mute",
+      "rejected": true,
+      "reason": "Nonzero digital silence in muted_active"
+    },
+    {
+      "case": "missing_frame",
+      "rejected": true,
+      "reason": "Wrong sample count/columns in chord4"
+    },
+    {
+      "case": "instant_release_cutoff",
+      "rejected": true,
+      "reason": "Release tail was cut off immediately"
+    }
+  ]
+}

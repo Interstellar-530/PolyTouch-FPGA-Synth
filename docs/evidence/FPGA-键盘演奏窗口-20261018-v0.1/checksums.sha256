@@ -1,0 +1,6 @@
+4c094e4999e70b539e17bfa0d32145193e30b69165635cb8fc0eff4f83fdf6e3  tools/serial_keyboard/KeyboardCore.cs
+b3d441fd5eecb14db283c0ed7fef639d82c2f6521888995ef47e7a0be829d5a0  tools/serial_keyboard/KeyboardWindow.cs
+fd7269c6f952dbb58291e26e234401155704a35792442b3cfcd801db91924f9b  tools/serial_keyboard/README.md
+b76723bd54604214227c9dfd85840bbabd4d19ec4363acd8e1e8c92460ff13c9  docs/evidence/FPGA-键盘演奏窗口-20261018-v0.1/README.md
+3cb19b8ebd5bc84612f6f0323e57a7cad551488b02245be95186800a37f2b592  docs/evidence/FPGA-键盘演奏窗口-20261018-v0.1/keyboard-window.png
+f43e2b32a36853256026f024ed5b49dd8ba47d5fee0e29fa188ba8085d84e9a8  docs/evidence/FPGA-板载联调-20261018-v0.1/board_only.fs

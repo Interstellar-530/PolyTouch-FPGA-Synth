@@ -19,6 +19,7 @@ module shared_wavetable_engine #(
     parameter integer BANDLIMIT_ENABLE = 0,
     parameter integer GENERIC_BRIGHT_ENABLE = 0,
     parameter integer GUITAR_ENABLE = 0,
+    parameter integer KEY_GAIN_ENABLE = 0,
     parameter integer ZONE_LATCH_ENABLE = 0,
     parameter integer STAGE_TIME_ENABLE = 0,
     parameter integer STAGE_STEP_SAMPLES = 5859,
@@ -36,6 +37,8 @@ module shared_wavetable_engine #(
     input  wire [15:0]        env4, env5, env6, env7,
     input  wire [7:0]         vel0, vel1, vel2, vel3,
     input  wire [7:0]         vel4, vel5, vel6, vel7,
+    input  wire [6:0]         note0, note1, note2, note3,
+    input  wire [6:0]         note4, note5, note6, note7,
     input  wire               piano_enable,
     input  wire               guitar_enable,
     input  wire [2:0]         piano_tone,
@@ -84,7 +87,8 @@ module shared_wavetable_engine #(
                      ST_BANK_ADDR_A=6'd26, ST_BANK_LATCH_A=6'd27,
                      ST_BANK_ADDR_B=6'd28, ST_BANK_LATCH_B=6'd29,
                      ST_BANK_MUL=6'd30, ST_BANK_INTERP=6'd31,
-                     ST_BANK_MIX_MUL=6'd32, ST_BANK_MIX_APPLY=6'd33;
+                     ST_BANK_MIX_MUL=6'd32, ST_BANK_MIX_APPLY=6'd33,
+                     ST_GAIN_SET=6'd34, ST_GAIN_WAIT=6'd35, ST_GAIN_LATCH=6'd36;
 
     reg [5:0]  state = ST_IDLE;
 
@@ -187,6 +191,9 @@ module shared_wavetable_engine #(
     reg [7:0]  cur_vel;
     reg [255:0] inc_frame;
     reg [63:0] velocity_frame;
+    reg [55:0] note_frame;
+    reg [14:0] key_a = 15'd0;
+    reg [6:0]  cur_note;
     reg [16:0] ratio_frame, phase_low;
     reg [7:0]  retrig_frame;
     wire [31:0] cur_inc = inc_frame >> (vsel*32);
@@ -246,6 +253,40 @@ module shared_wavetable_engine #(
     wire [12:0] cur_frac = STAGE_TIME_ENABLE ?
                            (13'd8191 - cur_stage_timer[12:0]) : cur_env[12:0];
     // STAGE_TIME_ENABLE=1 时 stage_pos 已是绝对 0..5，tone 传 0；旧模式保留原语义。
+    // Shared 25-entry 0..-6 dB ramp. Guitar uses the first 21 entries and
+    // clamps at -5 dB; piano clamps at -6 dB. 256=1.0, 128=-6 dB.
+    function [8:0] key_coeff;
+        input [6:0] note;
+        input guitar;
+        input enable;
+        reg [5:0] idx;
+        begin
+            if (!enable) key_coeff = 9'd256;
+            else if (note <= 7'd60) key_coeff = 9'd256;
+            else begin
+                idx = note - 7'd60;
+                if (guitar && idx > 6'd20) idx = 6'd20;
+                if (!guitar && idx > 6'd24) idx = 6'd24;
+                case (idx)
+                    6'd0:  key_coeff = 9'd256; 6'd1:  key_coeff = 9'd249;
+                    6'd2:  key_coeff = 9'd242; 6'd3:  key_coeff = 9'd235;
+                    6'd4:  key_coeff = 9'd228; 6'd5:  key_coeff = 9'd222;
+                    6'd6:  key_coeff = 9'd215; 6'd7:  key_coeff = 9'd209;
+                    6'd8:  key_coeff = 9'd203; 6'd9:  key_coeff = 9'd198;
+                    6'd10: key_coeff = 9'd192; 6'd11: key_coeff = 9'd187;
+                    6'd12: key_coeff = 9'd181; 6'd13: key_coeff = 9'd176;
+                    6'd14: key_coeff = 9'd171; 6'd15: key_coeff = 9'd166;
+                    6'd16: key_coeff = 9'd162; 6'd17: key_coeff = 9'd157;
+                    6'd18: key_coeff = 9'd152; 6'd19: key_coeff = 9'd148;
+                    6'd20: key_coeff = 9'd144; 6'd21: key_coeff = 9'd140;
+                    6'd22: key_coeff = 9'd136; 6'd23: key_coeff = 9'd132;
+                    default: key_coeff = 9'd128;
+                endcase
+            end
+        end
+    endfunction
+
+    wire key_enable = KEY_GAIN_ENABLE && (piano_enable || guitar_enable);
     wire [22:0] guitar_band = guitar_band_config(piano_inc, cur_vel);
     wire [22:0] selected_band = (GUITAR_ENABLE && guitar_enable) ? guitar_band :
         piano_enable ?
@@ -280,6 +321,7 @@ module shared_wavetable_engine #(
         cur_phase = phase_v[vsel];
         cur_env   = env_v[vsel];
         cur_vel   = velocity_frame[vsel*8 +: 8];
+        cur_note  = note_frame[vsel*7 +: 7];
     end
 
     // ------------------------------------------------------------- 共享乘法器 ---
@@ -291,7 +333,7 @@ module shared_wavetable_engine #(
     reg  signed [17:0] mul_b = 18'sd0;
     reg signed [35:0] local_product = 0;
     wire signed [35:0] mul_p=SHARED_MULT_ENABLE?mult_result:local_product;
-    wire mul_enable = (state == ST_DIFF_B) || (state == ST_INTERP_S) ||
+    wire mul_enable = (state == ST_GAIN_WAIT) || (state == ST_DIFF_B) || (state == ST_INTERP_S) ||
                       (state == ST_W_ENV_S) || (state == ST_W_VEL_S) ||
                       (state == ST_W_ENV_B) || (state == ST_W_VEL_B) ||
                       (state == ST_BEND_HI) || (state == ST_BEND_WAIT) ||
@@ -323,8 +365,9 @@ module shared_wavetable_engine #(
     wire signed [18+EXTRA_FRACTION_BITS:0] scaled_s_ext = {{3{scaled_s[15+EXTRA_FRACTION_BITS]}}, scaled_s};
     wire signed [18+EXTRA_FRACTION_BITS:0] scaled_b_ext = {{3{scaled_b[15+EXTRA_FRACTION_BITS]}}, scaled_b};
     wire signed [17:0] envelope_result=(mul_p+(EXTRA_FRACTION_BITS>0?36'sd32768:36'sd0)) >>> 16;
-    wire signed [15+EXTRA_FRACTION_BITS:0] velocity_result=(mul_p+(EXTRA_FRACTION_BITS>0?36'sd64:36'sd0)) >>> 7;
-    wire signed [18+EXTRA_FRACTION_BITS:0] velocity_result_ext={{3{velocity_result[15+EXTRA_FRACTION_BITS]}},velocity_result};
+    // A = vel_raw * C (15 bit). C=256 makes this exactly the old *vel/128 path.
+    wire signed [15+EXTRA_FRACTION_BITS:0] amp_result=(mul_p+(EXTRA_FRACTION_BITS>0?36'sd16384:36'sd0)) >>> 15;
+    wire signed [18+EXTRA_FRACTION_BITS:0] amp_result_ext={{3{amp_result[15+EXTRA_FRACTION_BITS]}},amp_result};
 `ifdef SIMULATION
     initial if(EXTRA_FRACTION_BITS<0 || EXTRA_FRACTION_BITS>2)
         $fatal(1,"EXTRA_FRACTION_BITS must be 0..2 for the 18x18 datapath");
@@ -342,7 +385,7 @@ module shared_wavetable_engine #(
             phase_v[0]<=0;phase_v[1]<=0;phase_v[2]<=0;phase_v[3]<=0;
             phase_v[4]<=0;phase_v[5]<=0;phase_v[6]<=0;phase_v[7]<=0;
             inc_frame<=0;ratio_frame<=65536;retrig_frame<=0;phase_low<=0;
-            velocity_frame<=0;
+            velocity_frame<=0;note_frame<=0;key_a<=15'd0;
             rom_bank<=0;bank_low<=0;bank_weight<=0;bent_inc<=0;bank_a<=0;piano_sel_q<=1'b0;guitar_sel_q<=1'b0;
         end else begin
             sums_valid <= 1'b0;
@@ -360,8 +403,9 @@ module shared_wavetable_engine #(
                         inc_frame<={inc_v[7],inc_v[6],inc_v[5],inc_v[4],inc_v[3],inc_v[2],inc_v[1],inc_v[0]};
                         ratio_frame<=bend_ratio_q16;
                         velocity_frame<={vel_v[7],vel_v[6],vel_v[5],vel_v[4],vel_v[3],vel_v[2],vel_v[1],vel_v[0]};
+                        note_frame<={note7,note6,note5,note4,note3,note2,note1,note0};
                         retrig_frame<={retrig_v[7],retrig_v[6],retrig_v[5],retrig_v[4],retrig_v[3],retrig_v[2],retrig_v[1],retrig_v[0]};
-                        state <= BEND_SHARED_ENABLE ? ST_BEND_LO : ST_ADDR_A;
+                        state <= ST_GAIN_SET;
                     end
                 end
                 ST_BEND_LO: begin
@@ -379,6 +423,18 @@ module shared_wavetable_engine #(
                     // 8 声部时若在这里 for 全部相位，会把当前声部的增量加到别的声部上。
                     phase_v[vsel] <= retrig_frame[vsel] ? 32'd0 : phase_v[vsel] + shared_inc;
                     state<=ST_ADDR_A;
+                end
+                ST_GAIN_SET: begin
+                    mul_a <= $signed({8'd0, cur_vel});
+                    mul_b <= $signed({9'd0, key_coeff(cur_note, guitar_enable, key_enable)});
+                    state <= ST_GAIN_WAIT;
+                end
+                ST_GAIN_WAIT: begin
+                    state <= ST_GAIN_LATCH;
+                end
+                ST_GAIN_LATCH: begin
+                    key_a <= mul_p[14:0];
+                    state <= BEND_SHARED_ENABLE ? ST_BEND_LO : ST_ADDR_A;
                 end
                 ST_ADDR_A: begin
                     if(BANDLIMIT_ENABLE) begin
@@ -466,14 +522,14 @@ module shared_wavetable_engine #(
                 end
                 ST_VEL_S: begin
                     mul_a <= envelope_result;
-                    mul_b <= $signed({10'd0, vel_q});
+                    mul_b <= $signed({3'd0, key_a});
                     state <= ST_W_VEL_S;
                 end
                 ST_W_VEL_S: begin
                     state <= ST_FIN_S;
                 end
                 ST_FIN_S: begin
-                    scaled_s <= velocity_result;
+                    scaled_s <= amp_result;
                     mul_a <= $signed(interp_b);
                     mul_b <= $signed({2'd0,env_q});
                     state <= ST_W_ENV_B;
@@ -488,21 +544,21 @@ module shared_wavetable_engine #(
                 end
                 ST_VEL_B: begin
                     mul_a <= envelope_result;
-                    mul_b <= $signed({10'd0, vel_q});
+                    mul_b <= $signed({3'd0, key_a});
                     state <= ST_W_VEL_B;
                 end
                 ST_W_VEL_B: begin
                     state <= ST_FIN_B;
                 end
                 ST_FIN_B: begin
-                    scaled_b <= velocity_result;
+                    scaled_b <= amp_result;
                     sine_acc <= sine_acc + scaled_s_ext;
-                    bright_acc <= bright_acc + velocity_result_ext;
+                    bright_acc <= bright_acc + amp_result_ext;
                     if(vsel==NV-1) begin
                         sine_sum <= sine_acc + scaled_s_ext;
-                        bright_sum <= bright_acc + velocity_result_ext;
+                        bright_sum <= bright_acc + amp_result_ext;
                         sums_valid<=1'b1;state<=ST_IDLE;
-                    end else begin vsel<=vsel+1'b1;state<=BEND_SHARED_ENABLE?ST_BEND_LO:ST_ADDR_A;end
+                    end else begin vsel<=vsel+1'b1;state<=ST_GAIN_SET;end
                 end
                 default: begin
                     sine_acc   <= sine_acc + scaled_s_ext;
@@ -514,7 +570,7 @@ module shared_wavetable_engine #(
                         state      <= ST_IDLE;
                     end else begin
                         vsel  <= vsel + 3'd1;
-                        state <= ST_ADDR_A;
+                        state <= ST_GAIN_SET;
                     end
                 end
             endcase

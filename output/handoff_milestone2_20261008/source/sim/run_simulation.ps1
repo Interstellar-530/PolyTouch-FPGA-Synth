@@ -1,4 +1,4 @@
-<#
+﻿<#
     RTL 仿真门禁。
     [S3-AI | deepseek | 2026-10-14] S3 台与参数负例。
     [S3-REVIEW | Codex | 2026-10-14] 六个负例、原始诊断、ASCII路径及本次指标绑定。
@@ -124,6 +124,7 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\global_crossfade.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v') },
@@ -137,6 +138,7 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\global_crossfade.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v') },
@@ -150,6 +152,7 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\global_crossfade.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v') },
@@ -163,6 +166,7 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\global_crossfade.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v') },
@@ -190,6 +194,7 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\global_crossfade.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v') },
@@ -203,6 +208,7 @@ try {
                 'rtl\audio\pt8211_tx.v', 'rtl\audio\uart_ctrl.v',
                 'rtl\audio\gpio_keyboard.v', 'rtl\audio\mcp3208_spi.v',
                 'rtl\audio\pressure_bend.v', 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\global_crossfade.v', 'rtl\audio\i2s_tx.v',
                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
                 'sim\gowin_prom_model.v', 'sim\mcp3208_model.v') },
@@ -212,18 +218,26 @@ try {
                 'sim\gowin_prom_model.v') },
         @{ Name = 'tb_piano_bank'; Top = 'sim\tb_piano_bank.v'; Src = @(
                 'rtl\audio\gowin_prom_piano_bank.v', 'sim\gowin_prom_model.v') },
+        @{ Name = 'tb_key_gain'; Top = 'sim\tb_key_gain.v'; Src = @(
+                'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
+                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
+                'sim\gowin_prom_model.v') },
         @{ Name = 'tb_piano_engine'; Top = 'sim\tb_piano_engine.v'; Src = @(
                 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_piano_bank.v',
                 'sim\gowin_prom_model.v') },
         @{ Name = 'tb_piano_morph'; Top = 'sim\tb_piano_morph.v'; Src = @(
                 'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_piano_bank.v',
                 'sim\gowin_prom_model.v') },
         @{ Name = 'tb_piano_envelope'; Top = 'sim\tb_piano_envelope.v'; Src = @(
                 'rtl\audio\voice_transition.v', 'rtl\audio\adsr.v') },
         @{ Name = 'tb_shared_engine'; Top = 'sim\tb_shared_engine.v'; Src = @(
-                'rtl\audio\shared_wavetable_engine.v', 'rtl\audio\global_crossfade.v',
+                'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v', 'rtl\audio\global_crossfade.v',
                 'rtl\audio\wavetable_osc_dual_s6.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'rtl\audio\gowin_prom_piano_bank.v',
                 'sim\gowin_prom_model.v') }
@@ -240,7 +254,8 @@ try {
                 'rtl\audio\song_player.v', 'rtl\audio\pt8211_tx.v',
                 'rtl\audio\uart_ctrl.v', 'rtl\audio\gpio_keyboard.v',
                 'rtl\audio\mcp3208_spi.v', 'rtl\audio\pressure_bend.v',
-                'rtl\audio\shared_wavetable_engine.v', 'rtl\audio\global_crossfade.v',
+                'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v', 'rtl\audio\global_crossfade.v',
                 'rtl\audio\i2s_tx.v', 'rtl\audio\gowin_prom_wave_sine.v',
                 'rtl\audio\gowin_prom_wave_bright.v', 'sim\gowin_prom_model.v',
                 'sim\mcp3208_model.v', 'sim\i2s_rx_model.v') }
@@ -271,8 +286,10 @@ try {
     # 27 MHz 单时钟生产档（AUDIO_IF=2）：27e6/9/64 = 46875 Hz，BCK 3.000 MHz，24 位槽。
     $suite += @{ Name='tb_top_i2s_27m'; Top='sim\tb_top_i2s_27m.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
     # P0 选表语义、P1 音区/阶段、CH9350L HID 链路（2026-10-19）。
-    $suite += @{ Name='tb_generic_bright'; Top='sim\tb_generic_bright.v'; Src=@('rtl\audio\shared_wavetable_engine.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
-    $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
+    $suite += @{ Name='tb_generic_bright'; Top='sim\tb_generic_bright.v'; Src=@('rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
+    $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
     $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
     foreach($voices in @(8,32,64)) {
         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }

@@ -9,12 +9,12 @@ module voice_transition #(
     parameter [15:0] SUSTAIN_LEVEL=16'd45875,
     parameter [15:0] PIANO_ATTACK_STEP=16'd1024,
     parameter [15:0] PIANO_DECAY_STEP=16'd2,
-    parameter [15:0] PIANO_RELEASE_STEP=16'd24,
+    parameter [15:0] PIANO_RELEASE_STEP=16'd32,
     parameter [15:0] PIANO_SUSTAIN_LEVEL=16'd32768,
     parameter [15:0] GUITAR_ATTACK_STEP=16'd256,
-    parameter [15:0] GUITAR_DECAY_STEP=16'd3,
+    parameter [15:0] GUITAR_DECAY_STEP=16'd8,
     parameter [15:0] GUITAR_RELEASE_STEP=16'd8,
-    parameter [15:0] GUITAR_SUSTAIN_LEVEL=16'd45875
+    parameter [15:0] GUITAR_SUSTAIN_LEVEL=16'd16384
 )(
     input wire clk,rst,sample_tick,gate,retrigger,
     input wire piano_mode,

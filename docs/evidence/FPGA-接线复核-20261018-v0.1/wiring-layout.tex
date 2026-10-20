@@ -1,0 +1,14 @@
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.07}
+\AtBeginEnvironment{longtable}{\small}
+\pretocmd{\section}{\Needspace{5\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{4\baselineskip}}{}{}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small PolyTouch FPGA / 逐根接线手册}
+\fancyhead[R]{\small 2026-10-18 / v0.1}
+\fancyfoot[C]{\small\thepage}

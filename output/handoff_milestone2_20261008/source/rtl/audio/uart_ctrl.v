@@ -29,7 +29,9 @@ module uart_ctrl #(
     output reg        timbre_valid,
     output reg [7:0]  timbre_value,
     output reg        instr_valid,
-    output reg [1:0]  instr_id
+    output reg [1:0]  instr_id,
+    output reg        vol_valid,
+    output reg [6:0]  vol_value
 );
 
     // 整数四舍五入分频，默认 234 个 clk/位；RX 先在半位确认起始位，再逐位采样。
@@ -109,7 +111,7 @@ module uart_ctrl #(
 
     // ------------------------------------------------------------- parse ---
     localparam [2:0] CMD_NONE = 3'd0, CMD_NOTE = 3'd1,
-                     CMD_MUTE = 3'd2, CMD_DEMO = 3'd3, CMD_TIMBRE = 3'd4, CMD_INSTR = 3'd5;
+                     CMD_MUTE = 3'd2, CMD_DEMO = 3'd3, CMD_TIMBRE = 3'd4, CMD_INSTR = 3'd5, CMD_VOL = 3'd6;
 
     reg [2:0]  cmd;
     reg [11:0] note_acc;
@@ -142,6 +144,8 @@ module uart_ctrl #(
             timbre_value <= 8'd64;
             instr_valid <= 1'b0;
             instr_id <= 2'd0;
+            vol_valid <= 1'b0;
+            vol_value <= 7'd100;
             reply_ok   <= 1'b0;
             reply_err  <= 1'b0;
         end else begin
@@ -152,6 +156,7 @@ module uart_ctrl #(
             demo_off  <= 1'b0;
             timbre_valid <= 1'b0;
             instr_valid <= 1'b0;
+            vol_valid <= 1'b0;
             reply_ok  <= 1'b0;
             reply_err <= 1'b0;
 
@@ -183,6 +188,12 @@ module uart_ctrl #(
                                  (digit_cnt == 3'd1) && (note_acc <= 12'd1)) begin
                         instr_id <= note_acc[1:0];
                         instr_valid <= 1'b1;
+                        reply_ok <= 1'b1;
+                    end else if (!invalid && (cmd == CMD_VOL) &&
+                                 (digit_cnt >= 3'd1) && (digit_cnt <= 3'd3) &&
+                                 (note_acc <= 12'd100)) begin
+                        vol_value <= note_acc[6:0];
+                        vol_valid <= 1'b1;
                         reply_ok <= 1'b1;
                     end else if (!invalid && have_panic && (cmd == CMD_NONE)) begin
                         panic    <= 1'b1;
@@ -233,6 +244,10 @@ module uart_ctrl #(
                 end else if ((rx_byte == "I") || (rx_byte == "i")) begin
                     if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
                     cmd <= CMD_INSTR;
+                    have_digit <= 1'b0; note_acc <= 12'd0; digit_cnt <= 3'd0;
+                end else if ((rx_byte == "V") || (rx_byte == "v")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
+                    cmd <= CMD_VOL;
                     have_digit <= 1'b0; note_acc <= 12'd0; digit_cnt <= 3'd0;
                 end else if ((rx_byte >= "0") && (rx_byte <= "9")) begin
                     if (cmd != CMD_NONE) begin

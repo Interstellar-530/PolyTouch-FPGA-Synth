@@ -1,0 +1,2 @@
+tb_mcp3208_spi PASS
+E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\sim\tb_mcp3208_spi.v:292: $finish called at 5410190000 (1ps)

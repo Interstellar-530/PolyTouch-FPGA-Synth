@@ -124,6 +124,8 @@ module top #(
     wire [7:0] hid_timbre_value;
     wire       uart_instr_valid;
     wire [1:0] uart_instr_id;
+    wire       uart_vol_valid;
+    wire [6:0] uart_vol_value;
     wire       timbre_valid_mux = uart_timbre_valid | hid_timbre_valid;
     wire [7:0] timbre_value_mux = hid_timbre_valid ? hid_timbre_value : uart_timbre_value;
     // 乐器运行时切换：I0 钢琴，I1 吉他。切换拍清声部/事件，避免持音中途换表。
@@ -401,7 +403,8 @@ module top #(
         .demo_on  (uart_demo_on),
         .demo_off (uart_demo_off),
         .timbre_valid (uart_timbre_valid), .timbre_value (uart_timbre_value),
-        .instr_valid (uart_instr_valid), .instr_id (uart_instr_id)
+        .instr_valid (uart_instr_valid), .instr_id (uart_instr_id),
+        .vol_valid (uart_vol_valid), .vol_value (uart_vol_value)
     );
 
     // 模式切换、X 或演示重启先清 FIFO 并撤销旧声部 gate，走正常 Release。
@@ -619,18 +622,21 @@ module top #(
     // 4/8 声部共用同一套 ROM 与乘法器；VOICES8 只改变 FSM 轮询次数。
     wire [7:0] retrig8;
     wire [63:0] vel8;
+    wire [63:0] note8;
     assign retrig8[VOICES-1:0] = render_retrigger;
     assign vel8[VOICES*8-1:0] = render_velocity;
+    assign note8[VOICES*7-1:0] = render_note;
     generate
         if (VOICES < 8) begin : g_retrig_pad
             assign retrig8[7:VOICES] = 8'd0;
             assign vel8[63:VOICES*8] = 64'd0;
+            assign note8[63:VOICES*7] = 64'd0;
         end
     endgenerate
 
     shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.BANDLIMIT_ENABLE(1),.GENERIC_BRIGHT_ENABLE(1),
         .ZONE_LATCH_ENABLE(1),.STAGE_TIME_ENABLE(1),.STAGE_STEP_SAMPLES(8192),
-        .VOICES8((VOICES == 8) ? 1 : 0),.SHARED_MULT_ENABLE(1),.GUITAR_ENABLE(1),
+        .VOICES8((VOICES == 8) ? 1 : 0),.SHARED_MULT_ENABLE(1),.GUITAR_ENABLE(1),.KEY_GAIN_ENABLE(1),
         .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS)) u_engine (
         .clk (clk_audio), .rst (rst), .sample_tick (sample_tick),
         .inc0 (inc[0]), .inc1 (inc[1]), .inc2 (inc[2]), .inc3 (inc[3]),
@@ -647,11 +653,16 @@ module top #(
         .vel2 (vel8[23:16]), .vel3 (vel8[31:24]),
         .vel4 (vel8[39:32]), .vel5 (vel8[47:40]),
         .vel6 (vel8[55:48]), .vel7 (vel8[63:56]),
+        .note0 (note8[6:0]), .note1 (note8[13:7]),
+        .note2 (note8[20:14]), .note3 (note8[27:21]),
+        .note4 (note8[34:28]), .note5 (note8[41:35]),
+        .note6 (note8[48:42]), .note7 (note8[55:49]),
         .sine_sum (sine_sum), .bright_sum (bright_sum), .sums_valid (sums_valid)
     );
 
     wire signed [15:0] mixed_shared;
     wire signed [23:0] mixed_shared24;
+    wire xf_result_valid;
     wire [31:0] xf_clip_count;
     wire        xf_clip_event;
 
@@ -659,15 +670,16 @@ module top #(
         .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
-        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),
+        .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),.GUITAR_BOOST_ENABLE(1),
         .MASTER_VOLUME_SHIFT(MASTER_VOLUME_SHIFT), .MUTE_SLEW_ENABLE(1),
         .EXTRA_FRACTION_BITS(CORE_EXTRA_FRACTION_BITS),.REGISTER_MIX_INPUTS_ENABLE(1),.SOFT_LIMIT_ENABLE((VOICES==8)?1:0)
     ) u_xf (
         .clk (clk_audio), .rst (rst), .update (sums_valid), .clear_clip (1'b0),
         .mix_weight (timbre_mix_weight),
         .mult_request(xf_mult_req),.mult_operand_a(xf_mult_a),.mult_operand_b(xf_mult_b),.mult_result(audio_mult_result),
-        .sine_sum (sine_sum), .bright_sum (bright_sum), .sample_out (mixed_shared),
-        .sample_out24(mixed_shared24),
+        .sine_sum (sine_sum), .bright_sum (bright_sum),
+        .guitar_boost(guitar_mode), .sample_out (mixed_shared),
+        .sample_out24(mixed_shared24), .result_valid_o(xf_result_valid),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
         .pressure_enable (!demo_mode), .pressure_level (pressure_level), .mute(uart_muted)
     );
@@ -678,16 +690,166 @@ module top #(
     // 留在库里并由 tb_s6_audio 覆盖，产品顶层不再实例化：顶层再串一级只会多出
     // 一拍延迟和一份死逻辑。FIR 仍然旁路，启用会把 10 kHz 压到约 -8.5 dB，
     // 音频验收基线要重做。
-    // 高音区偏尖锐：主混合后加一级一阶低通，a=0.5 -> fc≈5.2 kHz（46.875 kHz）。
-    // 只用移位，不新增乘法器；低音区 3 kHz 以上能量很少，主要压高音。
-    reg signed [15:0] mix_lp_y;
-    wire signed [16:0] mix_lp_diff = mixed_shared - mix_lp_y;
-    wire signed [15:0] mixed_lpf = mix_lp_y + (mix_lp_diff >>> 1);
+    // 音量：0..100，平方律增益（0..256）。100=1.0，50≈-12 dB，0=静音。
+    function [8:0] volume_gain;
+        input [6:0] v;
+        begin
+            case (v)
+                7'd0: volume_gain = 9'd0;
+                7'd1: volume_gain = 9'd0;
+                7'd2: volume_gain = 9'd0;
+                7'd3: volume_gain = 9'd0;
+                7'd4: volume_gain = 9'd0;
+                7'd5: volume_gain = 9'd1;
+                7'd6: volume_gain = 9'd1;
+                7'd7: volume_gain = 9'd1;
+                7'd8: volume_gain = 9'd2;
+                7'd9: volume_gain = 9'd2;
+                7'd10: volume_gain = 9'd3;
+                7'd11: volume_gain = 9'd3;
+                7'd12: volume_gain = 9'd4;
+                7'd13: volume_gain = 9'd4;
+                7'd14: volume_gain = 9'd5;
+                7'd15: volume_gain = 9'd6;
+                7'd16: volume_gain = 9'd7;
+                7'd17: volume_gain = 9'd7;
+                7'd18: volume_gain = 9'd8;
+                7'd19: volume_gain = 9'd9;
+                7'd20: volume_gain = 9'd10;
+                7'd21: volume_gain = 9'd11;
+                7'd22: volume_gain = 9'd12;
+                7'd23: volume_gain = 9'd14;
+                7'd24: volume_gain = 9'd15;
+                7'd25: volume_gain = 9'd16;
+                7'd26: volume_gain = 9'd17;
+                7'd27: volume_gain = 9'd19;
+                7'd28: volume_gain = 9'd20;
+                7'd29: volume_gain = 9'd22;
+                7'd30: volume_gain = 9'd23;
+                7'd31: volume_gain = 9'd25;
+                7'd32: volume_gain = 9'd26;
+                7'd33: volume_gain = 9'd28;
+                7'd34: volume_gain = 9'd30;
+                7'd35: volume_gain = 9'd31;
+                7'd36: volume_gain = 9'd33;
+                7'd37: volume_gain = 9'd35;
+                7'd38: volume_gain = 9'd37;
+                7'd39: volume_gain = 9'd39;
+                7'd40: volume_gain = 9'd41;
+                7'd41: volume_gain = 9'd43;
+                7'd42: volume_gain = 9'd45;
+                7'd43: volume_gain = 9'd47;
+                7'd44: volume_gain = 9'd50;
+                7'd45: volume_gain = 9'd52;
+                7'd46: volume_gain = 9'd54;
+                7'd47: volume_gain = 9'd57;
+                7'd48: volume_gain = 9'd59;
+                7'd49: volume_gain = 9'd61;
+                7'd50: volume_gain = 9'd64;
+                7'd51: volume_gain = 9'd67;
+                7'd52: volume_gain = 9'd69;
+                7'd53: volume_gain = 9'd72;
+                7'd54: volume_gain = 9'd75;
+                7'd55: volume_gain = 9'd77;
+                7'd56: volume_gain = 9'd80;
+                7'd57: volume_gain = 9'd83;
+                7'd58: volume_gain = 9'd86;
+                7'd59: volume_gain = 9'd89;
+                7'd60: volume_gain = 9'd92;
+                7'd61: volume_gain = 9'd95;
+                7'd62: volume_gain = 9'd98;
+                7'd63: volume_gain = 9'd102;
+                7'd64: volume_gain = 9'd105;
+                7'd65: volume_gain = 9'd108;
+                7'd66: volume_gain = 9'd112;
+                7'd67: volume_gain = 9'd115;
+                7'd68: volume_gain = 9'd118;
+                7'd69: volume_gain = 9'd122;
+                7'd70: volume_gain = 9'd125;
+                7'd71: volume_gain = 9'd129;
+                7'd72: volume_gain = 9'd133;
+                7'd73: volume_gain = 9'd136;
+                7'd74: volume_gain = 9'd140;
+                7'd75: volume_gain = 9'd144;
+                7'd76: volume_gain = 9'd148;
+                7'd77: volume_gain = 9'd152;
+                7'd78: volume_gain = 9'd156;
+                7'd79: volume_gain = 9'd160;
+                7'd80: volume_gain = 9'd164;
+                7'd81: volume_gain = 9'd168;
+                7'd82: volume_gain = 9'd172;
+                7'd83: volume_gain = 9'd176;
+                7'd84: volume_gain = 9'd181;
+                7'd85: volume_gain = 9'd185;
+                7'd86: volume_gain = 9'd189;
+                7'd87: volume_gain = 9'd194;
+                7'd88: volume_gain = 9'd198;
+                7'd89: volume_gain = 9'd203;
+                7'd90: volume_gain = 9'd207;
+                7'd91: volume_gain = 9'd212;
+                7'd92: volume_gain = 9'd217;
+                7'd93: volume_gain = 9'd221;
+                7'd94: volume_gain = 9'd226;
+                7'd95: volume_gain = 9'd231;
+                7'd96: volume_gain = 9'd236;
+                7'd97: volume_gain = 9'd241;
+                7'd98: volume_gain = 9'd246;
+                7'd99: volume_gain = 9'd251;
+                7'd100: volume_gain = 9'd256;
+                default: volume_gain = 9'd0;
+            endcase
+        end
+    endfunction
+
+    reg [6:0] volume_target = 7'd100;
+    reg [6:0] volume = 7'd100;
     always @(posedge clk_audio) begin
-        if (rst) mix_lp_y <= 16'sd0;
-        else if (sums_valid) mix_lp_y <= mixed_lpf;
+        if (rst) begin
+            volume_target <= 7'd100;
+            volume <= 7'd100;
+        end else begin
+            if (uart_vol_valid) volume_target <= uart_vol_value;
+            if (sums_valid) begin
+                if (volume < volume_target) volume <= volume + 7'd1;
+                else if (volume > volume_target) volume <= volume - 7'd1;
+            end
+        end
     end
-    wire signed [15:0] mixed = mixed_lpf;
+
+    // 24 位公共一阶低通：a=0.5，46.875 kHz 下 -3 dB 约 5391.9 Hz。
+    // 26 位状态（24 位 + 2 保护位），半差分按幅值向远离零方向取整；
+    // 16 位由同一 24 位结果舍入并饱和，24 位 I2S 不再绕过。
+    reg  signed [25:0] mix_lp_y;
+    reg                xf_result_valid_d;
+    // 状态含 2 个保护位，输入必须同乘 4；否则稳态输出只有 1/4（-12 dB）。
+    wire signed [25:0] mix_lp_in = {mixed_shared24, 2'b00};
+    wire signed [26:0] mix_lp_diff = $signed(mix_lp_in) - mix_lp_y;
+    wire signed [27:0] mix_lp_diff_ext = {mix_lp_diff[26], mix_lp_diff};
+    wire [27:0] mix_lp_abs = mix_lp_diff_ext[27] ? (~mix_lp_diff_ext + 28'd1) : mix_lp_diff_ext;
+    wire [27:0] mix_lp_half = (mix_lp_abs + 28'd1) >> 1;
+    wire signed [27:0] mix_lp_delta = mix_lp_diff_ext[27] ?
+        -$signed({1'b0, mix_lp_half[26:0]}) : $signed({1'b0, mix_lp_half[26:0]});
+    wire signed [27:0] mix_lp_next = $signed(mix_lp_y) + mix_lp_delta;
+    wire signed [23:0] filtered24 = mix_lp_y[25:2];
+    reg  signed [32:0] vol_prod;
+    wire signed [33:0] vol_prod_comb = $signed(filtered24) * $signed({1'b0, volume_gain(volume)});
+    wire signed [23:0] vol24 = vol_prod[31:8];
+    wire signed [24:0] q16 = {vol24[23], vol24} + 25'sd128;
+    wire signed [15:0] sat16 = (q16 > 25'sd8388607) ? 16'sh7fff :
+                               (q16 < -25'sd8388608) ? -16'sh8000 : q16[23:8];
+    always @(posedge clk_audio) begin
+        if (rst) begin
+            mix_lp_y <= 26'sd0;
+            vol_prod <= 33'sd0;
+            xf_result_valid_d <= 1'b0;
+        end else begin
+            xf_result_valid_d <= xf_result_valid;
+            if (xf_result_valid_d) begin
+                mix_lp_y <= mix_lp_next[25:0];
+                vol_prod <= vol_prod_comb[32:0];
+            end
+        end
+    end
 
     // 把削波计数与压力/弯音观测值折成 4 位，避免综合把未接引脚的通路裁掉。
     wire [3:0] fold_clip = xf_clip_count[31:28] ^ xf_clip_count[27:24] ^ xf_clip_count[23:20] ^
@@ -701,8 +863,8 @@ module top #(
 
     // M0 通过现有全局VCA逐帧淡出，不切断 pa_en，也不停止声部/曲目计时。
     // 静音仍有噪声时应继续检查供电、接地、DAC/耳放模拟路径。
-    wire signed [15:0] final_sample = rst ? 16'sd0 : mixed;
-    wire signed [23:0] final_sample24 = rst ? 24'sd0 : mixed_shared24;
+    wire signed [15:0] final_sample = rst ? 16'sd0 : sat16;
+    wire signed [23:0] final_sample24 = rst ? 24'sd0 : vol24;
 
     // ------------------------------------------------------- audio output ---
     // AUDIO_IF 是编译期常数，两条接口互斥；未选中的那组输出固定为低电平，

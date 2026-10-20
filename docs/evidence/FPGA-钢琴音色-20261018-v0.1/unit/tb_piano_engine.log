@@ -1,0 +1,2 @@
+PASS tb_piano_engine: bank 5 selected, frames=8 differing=8
+sim\tb_piano_engine.v:61: $finish called at 14520000 (1ps)

@@ -1,0 +1,34 @@
+{
+  "script": "build/build.ps1 -> build_instrument.tcl",
+  "source_files": 13,
+  "elaboration_exit": 5,
+  "missing_modules": [
+    "global_crossfade",
+    "mcp3208_spi",
+    "pressure_bend",
+    "shared_wavetable_engine"
+  ],
+  "command": [
+    "C:\\iverilog\\bin\\iverilog.exe",
+    "-g2012",
+    "-I",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source",
+    "-s",
+    "top",
+    "-o",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\sim-build\\default-entry.vvp",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\top.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\dds_osc.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\adsr.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\poly_voice.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\note_phase_inc.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\event_fifo.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_alloc.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_player.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\mixer.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\pt8211_tx.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\uart_ctrl.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gpio_keyboard.v",
+    "E:\\Working Space\\FPGA\\tmp\\s4s6-review-20261016\\snapshot\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\i2s_tx.v"
+  ]
+}

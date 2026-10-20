@@ -241,7 +241,7 @@ module tb_gpio_top;
             $fatal(1, "manual FIFO did not fill with 12 On and 4 Off events");
         gpio_key_n[7:4] = 4'hF;
         wait_cycles(RELEASE + 40);
-        if (!dut.gp_ev_valid || dut.gp_ev_ready || dut.u_gpio.drop_count !== 8'd0)
+        if (!dut.gp_ev_valid || dut.gp_ev_ready || dut.g_gpio_keys.u_gpio.drop_count !== 8'd0)
             $fatal(1, "GPIO did not retain events behind the full manual FIFO");
         watch_manual = 1'b1;
         release dut.uart_ev_valid;
@@ -252,7 +252,7 @@ module tb_gpio_top;
         if (manual_reads != 20 || manual_ons != 12 || manual_offs != 8 ||
             manual_on_seen !== 12'hFFF || manual_off_seen !== 12'h0FF ||
             !saw_full_replace || !dut.man_empty || dut.gp_ev_valid ||
-            dut.u_gpio.drop_count !== 8'd0)
+            dut.g_gpio_keys.u_gpio.drop_count !== 8'd0)
             $fatal(1, "full manual FIFO lost, duplicated or blocked events: reads=%0d On=%0d Off=%0d",
                    manual_reads, manual_ons, manual_offs);
         $display("ok   full manual FIFO: 16 resident + 4 retained, 20 events delivered, full read/write");

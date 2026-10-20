@@ -31,6 +31,7 @@ namespace PolyTouchPc
         private bool timbreDirty;
         private bool manual = true;
         private bool guitarMode;
+        private int volume = 100;
         public KeyboardWindow(string defaultPort, string logFile)
         {
             logPath = logFile;
@@ -57,7 +58,7 @@ namespace PolyTouchPc
             instrumentButton.Width = 140;
             status.SetBounds(20, 60, 1160, 28); status.Text = "正在连接…"; Controls.Add(status);
             Label guide = new Label(); guide.SetBounds(20, 96, 1160, 52);
-            guide.Text = "两排钢琴键：低排 C3–B3，高排 C4–B4；A/F/K 保留为 C4/F4/C5 快捷别名。\r\nPageUp/PageDown 移调；F1–F5 切换钢琴硬度，F5 为最强击弦；F6 或“音色”按钮切换钢琴/吉他；空格全松键。";
+            guide.Text = "两排钢琴键：低排 C3–B3，高排 C4–B4；A/F/K 保留为 C4/F4/C5 快捷别名。\r\nPageUp/PageDown 移调；F1–F5 切换钢琴硬度，F5 为最强击弦；F6 或“音色”按钮切换钢琴/吉他；↑/↓ 调音量；空格全松键。";
             Controls.Add(guide);
 
             for (int i = 0; i < KeyboardLayout.LowerKeys.Length; i++)
@@ -282,6 +283,18 @@ namespace PolyTouchPc
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (ActiveControl == ports || e.Control || e.Alt) { base.OnKeyDown(e); return; }
+            if (e.KeyCode == Keys.Up) {
+                volume = Math.Min(100, volume + 5);
+                Send("V" + volume);
+                status.Text = "音量 " + volume + "%";
+                e.Handled = true; e.SuppressKeyPress = true; return;
+            }
+            if (e.KeyCode == Keys.Down) {
+                volume = Math.Max(0, volume - 5);
+                Send("V" + volume);
+                status.Text = "音量 " + volume + "%";
+                e.Handled = true; e.SuppressKeyPress = true; return;
+            }
             if (e.KeyCode == Keys.F6) {
                 ToggleInstrument();
                 e.Handled = true; e.SuppressKeyPress = true; return;
