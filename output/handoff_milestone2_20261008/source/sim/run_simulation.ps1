@@ -38,7 +38,8 @@ param(
     [string]$Vvp = '',
     [string]$AudioCaptureDir = '',
     [string]$MetricsDir = '',
-    [string]$BuildDir = ''
+    [string]$BuildDir = '',
+    [switch]$SkipAudioCapture
 )
 
 $ErrorActionPreference = 'Stop'
@@ -282,6 +283,11 @@ try {
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
+        if ($SkipAudioCapture -and $test.Name -eq 'tb_audio_capture') {
+            Write-Output '跳过 tb_audio_capture（已单独完成，使用 -SkipAudioCapture）'
+            $skipped++
+            continue
+        }
         if (-not (Test-Path -LiteralPath $test.Top -PathType Leaf)) {
             Write-Output ("跳过缺失测试台：{0}" -f $test.Top)
             $skipped++
@@ -297,7 +303,9 @@ try {
         $usesSharedEngine = @($test.Src | Where-Object { $_ -match '(shared_wavetable_engine\.v|top\.v)$' }).Count -gt 0
         if ($usesSharedEngine) {
             foreach ($rom in @('rtl\audio\gowin_prom_piano_bank.v','rtl\audio\gowin_prom_guitar_bank.v')) {
-                if ($test.Src -notcontains $rom) { $compileArgs += $rom }
+                $romName = Split-Path -Leaf $rom
+                $alreadyPresent = @($test.Src | Where-Object { (Split-Path -Leaf $_) -eq $romName }).Count -gt 0
+                if (-not $alreadyPresent) { $compileArgs += $rom }
             }
         }
         if($test.Name -eq 'tb_bandlimit_engine_wide') { $compileArgs=@('-Ptb_bandlimit_engine.EXTRA=2')+$compileArgs }

@@ -297,7 +297,7 @@ module tb_top_i2s;
         send_cmd3("N", "6", "3");
         send_cmd3("N", "6", "0");
         wait_frames(400);
-        inc_bus = {dut.inc3, dut.inc2, dut.inc1, dut.inc0};
+        inc_bus = {dut.inc[3], dut.inc[2], dut.inc[1], dut.inc[0]};
         for (i = 0; i < 4; i = i + 1) begin
             if (dut.v_gate[i]) begin
                 case (dut.v_note[7*i +: 7])
