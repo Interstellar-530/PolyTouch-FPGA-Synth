@@ -282,14 +282,19 @@ module top #(
 
     // GPIO 与 HID 共用一个手动 FIFO：GPIO 优先，HID 在 ready 前保持自己的事件。
     // 演示模式期间只接收 Note On；松键不进队列，避免挡住后面真正的按键。
-    wire gp_ok  = gp_ev_valid && !(demo_mode && !gp_ev_on);
-    wire hid_ok = hid_ev_valid && !(demo_mode && !hid_ev_on);
+    // In demo mode, Note Offs from a held manual key are intentionally dropped.
+    // They must still be acknowledged with ev_ready, otherwise the upstream
+    // GPIO/HID queue keeps the stale Note Off and blocks the next Note On.
+    wire gp_drop  = demo_mode && gp_ev_valid && !gp_ev_on;
+    wire hid_drop = demo_mode && hid_ev_valid && !hid_ev_on;
+    wire gp_ok  = gp_ev_valid && !gp_drop;
+    wire hid_ok = hid_ev_valid && !hid_drop;
     wire use_gpio = gp_ok;
     wire man_wr = man_ready && (gp_ok || hid_ok);
     wire [15:0] man_wr_data = use_gpio ? {gp_ev_on, gp_ev_note, gp_ev_vel}
                                        : {hid_ev_on, hid_ev_note, hid_ev_vel};
-    assign gp_ev_ready  = man_ready && use_gpio;
-    assign hid_ev_ready = man_ready && !use_gpio;
+    assign gp_ev_ready  = gp_drop || (man_ready && use_gpio);
+    assign hid_ev_ready = hid_drop || (man_ready && !use_gpio);
 
     event_fifo u_manual (
         .clk     (clk_audio),
@@ -311,6 +316,8 @@ module top #(
     // [S2-AI] 只有 GPIO 的 Note On 才触发退出演示；单纯松开一个键不应该把
     // 已经回到演示的设计再次拉进手动模式。
     wire        manual_transition = demo_mode && (uart_ev_valid || uart_panic ||
+                                                  (gp_ev_valid && gp_ev_on) ||
+                                                  (hid_ev_valid && hid_ev_on) ||
                                                   (man_ev_valid && man_ev_on));
     wire        clear_events = uart_demo_on || uart_demo_off ||
                                manual_transition || uart_panic || hid_panic ||
@@ -845,7 +852,10 @@ module top #(
         end else begin
             xf_result_valid_d <= xf_result_valid;
             if (xf_result_valid_d) begin
-                mix_lp_y <= mix_lp_next[25:0];
+                // 一阶低通状态在静音后可能停在 -1 LSB；共享 VCA 已精确到零时把
+                // 状态刷成 0，让静音是真正的数字静音（移植 1fd865a 的静音收敛修复）。
+                if (uart_muted && mixed_shared24 == 24'sd0) mix_lp_y <= 26'sd0;
+                else mix_lp_y <= mix_lp_next[25:0];
                 vol_prod <= vol_prod_comb[32:0];
             end
         end

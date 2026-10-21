@@ -56,7 +56,7 @@ module tb_pressure_top;
         if(a.mixed_shared24!==expected[23:0])
           $fatal(1,"top pressure sample mismatch: actual=%0d expected=%0d master=%0d gain=%0d",
                  a.mixed_shared,expected,master_before,gain_reference);
-        if(a.u_engine.phase0!==b.u_engine.phase0 || a.v_env0!==b.v_env0 ||
+        if(a.u_engine.phase_v[0]!==b.u_engine.phase_v[0] || a.v_env[0]!==b.v_env[0] ||
            a.bend_inc0!==b.bend_inc0 || a.v_gate!==b.v_gate)
           $fatal(1,"pressure changed phase, bend, ADSR or voice allocation");
         frames=frames+1;
@@ -82,7 +82,7 @@ module tb_pressure_top;
       rms_ratio=$sqrt(real'(high_energy)/real'(low_energy));
       $display("METRIC pressure_top decoded_frames=%0d checked_mix_frames=%0d rms_high_over_low=%.6f step_t90_us=%.3f",serial_frames,frames,rms_ratio,response_time/1000.0);
       held_check=0;keys[9]=1;repeat(1300)@(posedge a.sample_tick);#1;
-      if(a.v_gate!==0 || a.v_env0!==0 || a.final_sample!==0)$fatal(1,"pressure note release did not finish");
+      if(a.v_gate!==0 || a.v_env[0]!==0 || a.final_sample!==0)$fatal(1,"pressure note release did not finish");
       $display("PASS tb_pressure_top: GPIO/ADC/VCA/I2S, independent pitch/envelope, demo bypass and release");
       $finish;
     end

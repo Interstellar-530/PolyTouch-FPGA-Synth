@@ -64,7 +64,7 @@ module tb_top_s4s6;
             end
             // 声部 0 直接用 pressure_bend 的输出，其余声部为显式加宽乘法；
             // 这里按参考值核对声部 1 的弯音后增量。
-            exp_mul = {16'd0, dut.inc1} * {31'd0, want_ratio};
+            exp_mul = {16'd0, dut.inc[1]} * {31'd0, want_ratio};
             if (dut.bend_inc1 !== exp_mul[47:16]) begin
                 $display("FAIL bend adc=%0d: bend_inc1=%0d expect=%0d", adc, dut.bend_inc1, exp_mul[47:16]);
                 errors = errors + 1;

@@ -7,7 +7,7 @@ module tb_bandlimit_engine #(parameter integer EXTRA=0);
  genvar g;generate for(g=0;g<2;g=g+1)begin:lane
   wire request;wire signed[17:0]ma,mb;reg signed[35:0]product=0;
   always @(posedge clk)if(request)product<=ma*mb;
-  shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1),.EXTRA_FRACTION_BITS(EXTRA)) dut(
+  shared_wavetable_engine #(.BEND_SHARED_ENABLE(1),.SHARED_MULT_ENABLE(g),.BANDLIMIT_ENABLE(1),.GENERIC_BRIGHT_ENABLE(1),.GUITAR_ENABLE(0),.EXTRA_FRACTION_BITS(EXTRA)) dut(
    .clk(clk),.rst(rst),.sample_tick(tick),.inc0(incs[31:0]),.inc1(incs[63:32]),.inc2(incs[95:64]),.inc3(incs[127:96]),
    .piano_enable(1'b0), .piano_tone(3'd0),
    .env0(envs[15:0]),.env1(envs[31:16]),.env2(envs[47:32]),.env3(envs[63:48]),
@@ -34,13 +34,15 @@ module tb_bandlimit_engine #(parameter integer EXTRA=0);
     if(lane[1].request)products=products+1;
     @(negedge clk);cycles=cycles+1;
    end
-   if(valid!==3 || cycles!=108 || products!=40)$fatal(1,"deadline/valid/products %0d %0d %b",cycles,products,valid);
+   // 键控响度级（ST_GAIN_SET/WAIT/LATCH）给每个声部增加 3 拍与 1 次乘法：
+   // 4 声部的调度从 108 拍/40 次改为 120 拍/44 次（2026-10-21 v2.0.0 重新基准化）。
+   if(valid!==3 || cycles!=120 || products!=44)$fatal(1,"deadline/valid/products %0d %0d %b",cycles,products,valid);
    if(ss[0]!==expected_s || bs[0]!==expected_b || ss[0]!==ss[1] || bs[0]!==bs[1])
     $fatal(1,"frame %0d expected=%0d/%0d local=%0d/%0d shared=%0d/%0d",frames,expected_s,expected_b,ss[0],bs[0],ss[1],bs[1]);
    if(capture && n>=0)$fdisplay(capture,"%0d,%0d,%0d",n,ss[1],bs[1]);
    frames=frames+1;repeat(2)@(negedge clk);
   end
-  $fclose(fd);$display("PASS tb_bandlimit_engine: %0d independent-reference frames; 108 clocks, 40 products, local/shared exact",frames);$finish;
+  $fclose(fd);$display("PASS tb_bandlimit_engine: %0d independent-reference frames; 120 clocks, 44 products, local/shared exact",frames);$finish;
  end
  initial begin #1000000000;$fatal(1,"timeout");end
 endmodule

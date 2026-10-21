@@ -38,7 +38,8 @@ param(
     [string]$Vvp = '',
     [string]$AudioCaptureDir = '',
     [string]$MetricsDir = '',
-    [string]$BuildDir = ''
+    [string]$BuildDir = '',
+    [switch]$SkipAudioCapture
 )
 
 $ErrorActionPreference = 'Stop'
@@ -295,15 +296,35 @@ try {
         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
     }
     $failed = 0
+    $skipped = 0
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
+        if ($SkipAudioCapture -and $test.Name -eq 'tb_audio_capture') {
+            Write-Output '跳过 tb_audio_capture（已单独完成，使用 -SkipAudioCapture）'
+            $skipped++
+            continue
+        }
+        if (-not (Test-Path -LiteralPath $test.Top -PathType Leaf)) {
+            Write-Output ("跳过缺失测试台：{0}" -f $test.Top)
+            $skipped++
+            continue
+        }
 
         # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
         # Explicit root prevents uninstantiated library prototypes from being
         # elaborated as extra tops requiring unrelated primitive models.
         $testModule = [System.IO.Path]::GetFileNameWithoutExtension($test.Top)
         $compileArgs = @('-g2012', '-DSIMULATION', '-s', $testModule, '-I', '.', '-o', $out, $test.Top) + $test.Src
+        # The newer top/shared-engine tests need both generated pROM banks.
+        $usesSharedEngine = @($test.Src | Where-Object { $_ -match '(shared_wavetable_engine\.v|top\.v)$' }).Count -gt 0
+        if ($usesSharedEngine) {
+            foreach ($rom in @('rtl\audio\gowin_prom_piano_bank.v','rtl\audio\gowin_prom_guitar_bank.v')) {
+                $romName = Split-Path -Leaf $rom
+                $alreadyPresent = @($test.Src | Where-Object { (Split-Path -Leaf $_) -eq $romName }).Count -gt 0
+                if (-not $alreadyPresent) { $compileArgs += $rom }
+            }
+        }
         if($test.Name -eq 'tb_bandlimit_engine_wide') { $compileArgs=@('-Ptb_bandlimit_engine.EXTRA=2')+$compileArgs }
         if($test.ContainsKey('Voices')) { $compileArgs=@('-Ptb_ram_audio_datapath.VOICES='+$test.Voices)+$compileArgs }
         & $Iverilog @compileArgs
@@ -375,8 +396,8 @@ try {
         Write-Output ("仿真门禁未通过，{0} 个测试台失败，禁止烧录。" -f $failed)
         exit 1
     }
-    Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许烧录。" -f
-                  $suite.Count, $paramCases.Count)
+    Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许烧录；缺失测试台 {2} 台已跳过。" -f
+                  $suite.Count, $paramCases.Count, $skipped)
     exit 0
 }
 finally {

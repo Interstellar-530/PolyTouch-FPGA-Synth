@@ -196,6 +196,12 @@ module shared_wavetable_engine #(
     reg [6:0]  cur_note;
     reg [16:0] ratio_frame, phase_low;
     reg [7:0]  retrig_frame;
+    // The shared multiplier result is used by shared_inc below, so keep these
+    // declarations before the first continuous assignment that reads it.
+    reg  signed [17:0] mul_a = 18'sd0;
+    reg  signed [17:0] mul_b = 18'sd0;
+    reg signed [35:0] local_product = 0;
+    wire signed [35:0] mul_p = SHARED_MULT_ENABLE ? mult_result : local_product;
     wire [31:0] cur_inc = inc_frame >> (vsel*32);
     wire [31:0] shared_inc = mul_p[31:0] + {15'd0,phase_low};
     reg [31:0] bent_inc=0;
@@ -329,10 +335,6 @@ module shared_wavetable_engine #(
     // 由 FSM 在不同节拍装入不同操作数，因此综合后只有一组乘法器。
     // Differences need 17 signed bits, samples at most 18, unsigned envelopes
     // 17 and velocity 9. A single signed 18x18 operation covers every stage.
-    reg  signed [17:0] mul_a = 18'sd0;
-    reg  signed [17:0] mul_b = 18'sd0;
-    reg signed [35:0] local_product = 0;
-    wire signed [35:0] mul_p=SHARED_MULT_ENABLE?mult_result:local_product;
     wire mul_enable = (state == ST_GAIN_WAIT) || (state == ST_DIFF_B) || (state == ST_INTERP_S) ||
                       (state == ST_W_ENV_S) || (state == ST_W_VEL_S) ||
                       (state == ST_W_ENV_B) || (state == ST_W_VEL_B) ||

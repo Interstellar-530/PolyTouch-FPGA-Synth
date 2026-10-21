@@ -14,7 +14,7 @@ param(
     [string]$Programmer = '',
     [string]$Cable = '',
     [switch]$SkipSimulation,
-    [ValidateSet('debug','standard','standard27','debug8','debug8g')][string]$Profile = 'debug'
+    [ValidateSet('debug','standard','standard27','debug8','debug8g','debug8usb')][string]$Profile = 'debug'
 )
 
 $ErrorActionPreference = 'Stop'

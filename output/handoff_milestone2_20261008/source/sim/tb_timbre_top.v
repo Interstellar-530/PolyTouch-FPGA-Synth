@@ -33,18 +33,20 @@ module tb_timbre_top;
         if(dut.v_retrig || dut.v_gate!==4'b1111 || dut.restart || dut.demo_mode)
             $fatal(1,"timbre disturbed held chord/mode");
         if(dut.sample_tick)begin
-            e0=dut.u_engine.phase0+dut.bend_inc0;e1=dut.u_engine.phase1+dut.bend_inc1;
-            e2=dut.u_engine.phase2+dut.bend_inc2;e3=dut.u_engine.phase3+dut.bend_inc3;
+            e0=dut.u_engine.phase_v[0]+dut.bend_inc0;e1=dut.u_engine.phase_v[1]+dut.bend_inc1;
+            e2=dut.u_engine.phase_v[2]+dut.bend_inc2;e3=dut.u_engine.phase_v[3]+dut.bend_inc3;
         end
         if(dut.sums_valid) begin
             #1;
-            if(dut.u_engine.phase0!==e0 || dut.u_engine.phase1!==e1 || dut.u_engine.phase2!==e2 || dut.u_engine.phase3!==e3)
+            if(dut.u_engine.phase_v[0]!==e0 || dut.u_engine.phase_v[1]!==e1 || dut.u_engine.phase_v[2]!==e2 || dut.u_engine.phase_v[3]!==e3)
                 $fatal(1,"frame phase discontinuity");
             checked=checked+1;
         end
-        if(dut.u_xf.result_valid && (frame_cycle!=114 || product_requests!=42))
+        // 键控响度级每声部 +3 拍、+1 次乘法：114→126 拍、42→46 次
+        //（2026-10-21 v2.0.0 重新基准化）。
+        if(dut.u_xf.result_valid && (frame_cycle!=126 || product_requests!=46))
             $fatal(1,"frame deadline/products %d %d",frame_cycle,product_requests);
-        if(dut.u_engine.piano_enable && dut.u_engine.bank_low==7'd46)
+        if(dut.u_engine.piano_sel_q)
             saw_piano_bank=1;
       end
     end
@@ -80,7 +82,7 @@ module tb_timbre_top;
         if(dut.timbre_target!=0 || dut.chord_set!=0 || dut.tempo_sel!=1)$fatal(1,"long press changed other controls");
         #6000000;if(dut.show_timbre)$fatal(1,"top LED overlay stuck");
         if(frames<500 || audible<200)$fatal(1,"insufficient real I2S audio");
-        $display("METRIC top_timbre frames=%0d audible=%0d phase_checks=%0d full_sweep_ns=%0d full_pipeline_cycles=114 shared_products=42",frames,audible,checked,sweep_ns);
+        $display("METRIC top_timbre frames=%0d audible=%0d phase_checks=%0d full_sweep_ns=%0d full_pipeline_cycles=126 shared_products=46",frames,audible,checked,sweep_ns);
         $display("PASS tb_timbre_top: real UART, four held voices, continuous phases, real I2S, long press and overlay");$finish;
     end
     initial begin #60000000;$fatal(1,"timeout");end

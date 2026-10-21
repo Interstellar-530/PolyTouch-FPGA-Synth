@@ -103,6 +103,9 @@ module global_crossfade #(
     wire signed [27+E:0] after_pressure;
     wire signed [35:0] local_pressure_product;
     wire [12:0] gain_for_frame;
+    wire mute_silent;
+    reg  [12:0] shared_gain;
+    reg  shared_mute;
     generate
         if (PRESSURE_GAIN_ENABLE != 0 || MUTE_SLEW_ENABLE != 0) begin : g_pressure
             localparam integer ADC_SPAN = (PRESSURE_ADC_FULL > PRESSURE_ADC_LOW) ?
@@ -129,6 +132,11 @@ module global_crossfade #(
             reg  [12:0] gain_q12;
             reg  [12:0] gain_next;
             assign gain_for_frame=gain_next;
+            // The shared scheduler emits this frame several clocks later. Use the
+            // frame-latched mute/gain state there so a later input change cannot
+            // retroactively turn an already-computed frame into zero.
+            assign mute_silent = MUTE_SLEW_ENABLE && (SHARED_MULT_ENABLE ?
+                (shared_mute && (shared_gain == 13'd0)) : (mute && (gain_next == 13'd0)));
             always @* begin
                 gain_next = target_gain;
                 if ((target_gain > gain_q12) &&
@@ -167,6 +175,7 @@ module global_crossfade #(
         end else begin : g_pressure_bypass
             assign after_pressure = scaled;
             assign gain_for_frame=13'd4096;
+            assign mute_silent=1'b0;
             assign local_pressure_product=$signed(scaled) <<< 12;
         end
     endgenerate
@@ -175,7 +184,6 @@ module global_crossfade #(
     // Statistics describe the actual post-pressure master boundary once/frame.
     reg [2:0] shared_stage;
     reg signed [28+E:0] shared_base;
-    reg [12:0] shared_gain;
     reg signed [17:0] shared_a,shared_b;
     reg signed [2:0] shared_master_high;
     wire signed [28+E:0] shared_numerator=shared_base+$signed({{(2+E){mult_result[26]}},mult_result[26:0]});
@@ -187,11 +195,12 @@ module global_crossfade #(
     assign mult_operand_a=shared_a;
     assign mult_operand_b=shared_b;
     always @(posedge clk) begin
-        if(rst)begin shared_stage<=0;shared_base<=0;shared_gain<=4096;shared_a<=0;shared_b<=0;shared_master_high<=0;end
+        if(rst)begin shared_stage<=0;shared_base<=0;shared_gain<=4096;shared_mute<=0;shared_a<=0;shared_b<=0;shared_master_high<=0;end
         else if(SHARED_MULT_ENABLE)begin
             case(shared_stage)
                 0:if(update)begin
                     shared_gain<=gain_for_frame;
+                    shared_mute<=mute;
                     if(REGISTER_MIX_INPUTS_ENABLE)shared_stage<=5;
                     else begin
                         shared_base<=$signed({base_product[27+E],base_product})+$signed({high_shifted[27+E],high_shifted})+MIX_ROUND;
@@ -246,10 +255,12 @@ module global_crossfade #(
 
     wire raw_clip = E==0 ? ((output_value > 28'sd32767) || (output_value < -28'sd32768)) :
                           ((output_limited > 36'sd8388607) || (output_limited < -36'sd8388608));
-    wire signed [23:0] sat24=(output_limited > 36'sd8388607)?24'sh7fffff:
-                            (output_limited < -36'sd8388608)?24'sh800000:output_limited[23:0];
-    wire signed [15:0] sat = E>0 ? sat24[23:8] : (output_value > 28'sd32767) ? 16'sd32767 :
-                             (output_value < -28'sd32768) ? -16'sd32768 : output_value[15:0];
+    wire signed [23:0] sat24 = mute_silent ? 24'sd0 :
+        ((output_limited > 36'sd8388607)?24'sh7fffff:
+         (output_limited < -36'sd8388608)?24'sh800000:output_limited[23:0]);
+    wire signed [15:0] sat = mute_silent ? 16'sd0 :
+        (E>0 ? sat24[23:8] : (output_value > 28'sd32767) ? 16'sd32767 :
+         (output_value < -28'sd32768) ? -16'sd32768 : output_value[15:0]);
 
     always @(posedge clk) begin
         if (rst) begin

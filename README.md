@@ -1,6 +1,6 @@
-# PolyTouch FPGA Synth
+# PolyTouch FPGA Synth — v2.0.0
 
-当前工作入口是 `codex/s4-s6-pressure`。2026-10-20 的同步包含最新 8 声部电钢琴/吉他、键控响度、主音量、24 位公共低通定标修复，以及周末装配与软件安排。吉他试听和 DDR3 独立实验的 `16f9c32` 已快进纳入分支历史。
+当前工作入口是 `codex/s4-s6-pressure`。2026-10-21 的 v2.0.0 把 `codex/guitar-preview-ddr3-20261020` 的最新推送（`33d29af`、`754fc08`、`1fd865a`）并入本线：新增 `debug8usb`（CH9350L USB 键盘 + FSR 压力的 27 MHz 标准 I2S 调试档）、精确静音收敛、亮音色库表序修正，并保留本线的 8 声部电钢琴/吉他、键控响度、主音量与 24 位公共低通。增量、取舍与验证边界见 [v2.0.0 发布说明](docs/releases/v2.0.0.md)。
 
 ## 当前代码与验证范围
 
@@ -30,6 +30,7 @@
 
 ```powershell
 & '.\output\handoff_milestone2_20261008\source\build\build.ps1' -Profile debug8
+& '.\output\handoff_milestone2_20261008\source\build\build.ps1' -Profile debug8usb
 & '.\output\handoff_milestone2_20261008\source\build\build.ps1' -Profile standard27
 ```
 
@@ -41,4 +42,4 @@
 
 ## 历史版本
 
-[v1.01](docs/releases/v1.01.md)、[v1.0.0](docs/releases/v1.0.0.md) 和 [源码导读](docs/releases/v1.0.0-code-guide.md) 保留四声部发布基线。历史 `0x5633` 是旧位流 User Code，不代表当前板内一定仍运行该版本。旧版资料及文件地图见 [版本索引](docs/版本索引与文件地图-20261014-v0.1.md)。
+[v2.0.0](docs/releases/v2.0.0.md)、[v1.01](docs/releases/v1.01.md)、[v1.0.0](docs/releases/v1.0.0.md) 和 [源码导读](docs/releases/v1.0.0-code-guide.md) 依次保留发布基线：v2.0.0 是 USB 键盘调试档与 8 声部音频的合流，v1.01/v1.0.0 仍是四声部基线。历史 `0x5633` 是旧位流 User Code，不代表当前板内一定仍运行该版本。旧版资料及文件地图见 [版本索引](docs/版本索引与文件地图-20261014-v0.1.md)。
