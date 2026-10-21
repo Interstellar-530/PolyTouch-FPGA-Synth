@@ -1,11 +1,13 @@
 {
   "source": "AKWF_epiano_0001.wav",
   "license": "CC0",
-  "tables": 36,
+  "tables": 12,
   "depth": 512,
-  "bsram_blocks": 18,
-  "zones": [
+  "bsram_blocks": 6,
+  "bank_index": "group*6 + stage",
+  "groups": [
     {
+      "group": 0,
       "zone": 0,
       "midi_lo": 0,
       "midi_hi": 47,
@@ -13,34 +15,7 @@
       "harmonics": 170
     },
     {
-      "zone": 1,
-      "midi_lo": 48,
-      "midi_hi": 59,
-      "fmax_hz": 246.9,
-      "harmonics": 85
-    },
-    {
-      "zone": 2,
-      "midi_lo": 60,
-      "midi_hi": 66,
-      "fmax_hz": 370.0,
-      "harmonics": 57
-    },
-    {
-      "zone": 3,
-      "midi_lo": 67,
-      "midi_hi": 75,
-      "fmax_hz": 622.3,
-      "harmonics": 33
-    },
-    {
-      "zone": 4,
-      "midi_lo": 76,
-      "midi_hi": 83,
-      "fmax_hz": 987.8,
-      "harmonics": 21
-    },
-    {
+      "group": 1,
       "zone": 5,
       "midi_lo": 84,
       "midi_hi": 95,

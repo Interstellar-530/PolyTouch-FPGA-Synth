@@ -1,0 +1,141 @@
+--- a/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1
++++ b/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1
+@@ -299,6 +299,7 @@
+     $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
+     # HID 控制补齐：F6 乐器切换、Up/Down 主音量、Esc 清音，以及与 UART 命令共存。
+     $suite += @{ Name='tb_top_host_ctrl'; Top='sim\tb_top_host_ctrl.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
++    $suite += @{ Name='tb_event_prefetch'; Top='sim\tb_event_prefetch.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v')) }
+     # Product regressions for the eight-voice profiles must run at the same
+     # gate as the older four-voice benches.
+     foreach ($name in @('tb_engine8_pitch','tb_top_pitch8','tb_top_switch','tb_top_guitar','tb_guitar_bank')) {
+--- /dev/null
++++ b/output/handoff_milestone2_20261008/source/sim/tb_event_prefetch.v
+@@ -0,0 +1,128 @@
++`timescale 1ns/1ps
++// Short control-path test: inject at source boundaries, retain real FIFO,
++// arbitration, ownership, event register and voice allocator.
++module tb_event_prefetch;
++    reg clk=0; always #18.5185 clk=~clk;
++    reg key_rst=0;
++    top #(.VOICES(8),.GPIO_KEY_ENABLE(0),.HOST_KBD_ENABLE(0)) dut(
++        .clk_27m(clk),.clk_12m288(1'b0),.key_rst(key_rst),
++        .key_s1(1'b1),.key_s2(1'b1),.uart_rx(1'b1),
++        .kbd_uart_rx(1'b1),.gpio_key_n(12'hfff),.adc_miso(1'b0));
++
++    reg wr=0,uv=0,uo=0,panic=0,demo_on=0,demo_off=0;
++    reg [15:0] data=0;
++    reg [6:0] un=0;
++    reg [7:0] velocity=100;
++    reg watch=0;
++    reg [15:0] expected[0:127];
++    integer planned=0,received=0,starts=0,i,j,baseline;
++
++    task plan;
++        input on;
++        input [6:0] note;
++        input [7:0] vel;
++        begin expected[planned]={on,note,vel}; planned=planned+1; end
++    endtask
++    task tick; begin @(posedge clk); #1; @(negedge clk); end endtask
++    task settle;
++        begin repeat(5)tick();
++            if(received!=planned)$fatal(1,"lost events: received=%0d expected=%0d",received,planned);
++        end
++    endtask
++    task write_note;
++        input on;
++        input [6:0] note;
++        begin
++            data={on,note,8'd100};wr=1;
++            if(!dut.man_ready)$fatal(1,"test write unexpectedly blocked");
++            tick();wr=0;
++        end
++    endtask
++    task uart_note;
++        input on;
++        input [6:0] note;
++        begin uv=1;uo=on;un=note;tick();uv=0;end
++    endtask
++    task expect_held;
++        input [6:0] note;
++        input held;
++        reg found;
++        integer slot;
++        begin
++            found=0;
++            for(slot=0;slot<8;slot=slot+1)
++                if(dut.v_gate[slot] && dut.v_note[slot*7+:7]==note)found=1;
++            if(found!==held)$fatal(1,"note %0d held=%b expected=%b",note,found,held);
++        end
++    endtask
++    always @(posedge clk) if(watch) begin
++        if(dut.ev_deliver)begin
++            if(received>=planned)$fatal(1,"duplicate/unplanned event %h",dut.ev_q_word);
++            if(dut.ev_q_word!==expected[received])
++                $fatal(1,"event %0d got=%h expected=%h",received,dut.ev_q_word,expected[received]);
++            received=received+1;
++        end
++        #1;
++        for(i=0;i<8;i=i+1)if(dut.v_start[i])starts=starts+1;
++    end
++
++    initial begin
++        force dut.man_wr=wr;force dut.man_wr_data=data;
++        force dut.uart_ev_valid=uv;force dut.uart_ev_on=uo;
++        force dut.uart_ev_note=un;force dut.uart_ev_vel=velocity;
++        force dut.uart_panic=panic;
++        force dut.uart_demo_on=demo_on;force dut.uart_demo_off=demo_off;
++        repeat(10)@(negedge clk);key_rst=1;
++        wait(!dut.rst);@(negedge clk);watch=1;
++
++        // UART first key exits demo: preserve pending event exactly once.
++        plan(1,60,100);uart_note(1,60);settle();
++        if(dut.demo_mode || starts!=1)$fatal(1,"first key lost or duplicated");
++        expect_held(60,1);
++
++        // Overlapping source ownership: UART Off cannot release manual note.
++        plan(1,60,100);write_note(1,60);settle();
++        baseline=received;uart_note(0,60);settle();
++        if(received!=baseline)$fatal(1,"ownership forwarded masked Note Off");
++        expect_held(60,1);
++        plan(0,60,100);write_note(0,60);settle();expect_held(60,0);
++
++        // Fill the real 16-word FIFO, then replace at full while draining.
++        force dut.man_rd=1'b0;
++        force dut.ev_valid=1'b0;
++        for(j=0;j<16;j=j+1)begin data={1'b1,7'd60+j[6:0],8'd100};wr=1;tick();end
++        wr=0;
++        if(!dut.u_manual.full)$fatal(1,"manual FIFO not full");
++        for(j=0;j<17;j=j+1)plan(1,7'd60+j[6:0],100);
++        baseline=starts;
++        release dut.man_rd;
++        release dut.ev_valid;
++        data={1'b1,7'd76,8'd100};wr=1;#1;
++        if(!dut.man_ready || !dut.u_manual.full || !dut.man_rd)
++            $fatal(1,"full FIFO same-edge read/write not exercised");
++        tick();wr=0;
++        repeat(20)tick();settle();
++        if(starts-baseline!=17 || !dut.man_empty)$fatal(1,"burst lost or duplicated starts");
++        for(j=69;j<=76;j=j+1)expect_held(j[6:0],1);
++
++        // Back-to-back Note Offs must drain through the added register.
++        for(j=69;j<=76;j=j+1)begin plan(0,j[6:0],100);write_note(0,j[6:0]);end
++        settle();if(dut.v_gate!==0)$fatal(1,"Note Off burst left gated voices");
++
++        // A clear on the delivery edge cancels the staged event permanently.
++        baseline=starts;uart_note(1,81);
++        if(!dut.ev_q_valid)$fatal(1,"clear test did not stage an event");
++        panic=1;tick();panic=0;settle();
++        if(starts!=baseline || dut.v_gate!==0)$fatal(1,"panic replayed a staged event");
++
++        // Mode clear also discards a staged event; subsequent first key survives.
++        uart_note(1,82);demo_on=1;tick();demo_on=0;settle();
++        if(!dut.demo_mode || starts!=baseline)$fatal(1,"mode clear replayed event");
++        plan(1,65,100);uart_note(1,65);settle();expect_held(65,1);
++        plan(0,65,100);uart_note(0,65);settle();
++        if(dut.v_gate!==0)$fatal(1,"final Note Off failed");
++        $display("PASS tb_event_prefetch: %0d ordered events; first key, ownership, full replacement, burst, Note Off, panic/mode cancellation",received);
++        $finish;
++    end
++    initial begin #20000000;$fatal(1,"timeout");end
++endmodule

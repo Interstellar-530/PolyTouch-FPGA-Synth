@@ -1,0 +1,21 @@
+{
+  "phase": "after",
+  "checks": [
+    {
+      "check": "scheduler_compile",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "scheduler_gate_default",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "full_gate": false,
+  "hardware_programmed": false,
+  "scheduler_sha256": "67994ee961fdfda360285b4e09ac4732474b3119fc966fbbd7f5863e23b9481d"
+}

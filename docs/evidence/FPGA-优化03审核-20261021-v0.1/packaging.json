@@ -1,0 +1,10 @@
+{
+  "archive": "E:\\Working Space\\FPGA\\archive\\FPGA-20261021-v0.5",
+  "cleanup_targets": [
+    "E:\\Working Space\\FPGA\\tmp\\hid-review-20261021-v01\\tb_hid_repeat_review_after.vvp",
+    "E:\\Working Space\\FPGA\\tmp\\hid-review-20261021-v01\\tb_hid_repeat_review_before.vvp",
+    "E:\\Working Space\\FPGA\\tmp\\hid-review-20261021-v01\\tb_host_kbd_after.vvp",
+    "E:\\Working Space\\FPGA\\tmp\\hid-review-20261021-v01\\tb_top_host_ctrl_after.vvp"
+  ],
+  "cleanup_completed": true
+}

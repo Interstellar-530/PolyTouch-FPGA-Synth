@@ -1,0 +1,13 @@
+{
+  "removed": "E:/Working Space/FPGA/tmp/github-integration-20261021-v01",
+  "temporary_files_removed": 132,
+  "temporary_path_absent": true,
+  "preserved_local_file_count": 8,
+  "preserved_local_files_unchanged": true,
+  "retained": [
+    "evidence logs and derived short test source",
+    "official Gowin per-run project, bitstream and reports bound by receipt",
+    "Gowin/Icarus/Python/runtime dependencies",
+    "pre-existing user files and historical archives"
+  ]
+}

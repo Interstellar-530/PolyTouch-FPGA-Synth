@@ -13,6 +13,8 @@
 // 数值口径与逐声部版一致的地方：插值 (yb-ya)*frac + 256 >>> 9；包络缩放取
 // [31:16]、力度缩放取 [22:7]。唯一不同的是交叉混合的舍入位置，
 // 偏差界记录在集成复核记录里。
+// 力度输入定义为 0..127（MIDI 7 位）。8 位端口上的 128..255 在入口饱和到
+// 127，因为 15 位 key_a 只能装下 127*256；不饱和会截成 0 而不是最大声。
 module shared_wavetable_engine #(
     parameter integer BEND_SHARED_ENABLE = 0,
     parameter integer SHARED_MULT_ENABLE = 0,
@@ -35,6 +37,7 @@ module shared_wavetable_engine #(
     input  wire               retrig4, retrig5, retrig6, retrig7,
     input  wire [15:0]        env0, env1, env2, env3,
     input  wire [15:0]        env4, env5, env6, env7,
+    // 力度 0..127；8 位端口上的 128..255 在入口饱和到 127（见 cur_vel_gain）。
     input  wire [7:0]         vel0, vel1, vel2, vel3,
     input  wire [7:0]         vel4, vel5, vel6, vel7,
     input  wire [6:0]         note0, note1, note2, note3,
@@ -168,17 +171,21 @@ module shared_wavetable_engine #(
 
     // 36-table e-piano layout: bank = zone*6 + stage. stage 5 is the bright
     // attack; the engine walks toward stage 0 (body). A 0..5 stage is absolute.
+    // 六个音区只差带限，而入库表在 zone 0..4 之间只差浮点舍入（≤ -73 dB）、zone 5
+    // 才真正少两个谐波；ROM 因此只存两组表，bank = group*6 + stage（12 表 / 6 块 BSRAM）。
     function [22:0] piano_band_config;
         input [2:0] stage;
         input [2:0] zone;
         input [12:0] frac;
         reg [5:0] bank;
+        reg [2:0] group;
         begin
+            group = (zone == 3'd5) ? 3'd1 : 3'd0;
             if (stage >= 3'd5) begin
-                bank = {3'd0, zone} * 6'd6 + 6'd4;
+                bank = {3'd0, group} * 6'd6 + 6'd4;
                 piano_band_config = {1'b0, bank, 16'hffff};
             end else begin
-                bank = {3'd0, zone} * 6'd6 + {3'd0, stage};
+                bank = {3'd0, group} * 6'd6 + {3'd0, stage};
                 piano_band_config = {1'b0, bank, {frac, 3'b000}};
             end
         end
@@ -218,11 +225,14 @@ module shared_wavetable_engine #(
     // 36-table guitar layout: bank = band*6 + variant. Variant follows the
     // velocity top bits (0..5), so soft notes use green/p and hard notes
     // progress toward black/f. Six MIDI bands cover E2..E6.
+    // band 0 与 band 1 取自同一个采样，入库表逐位相同，因此共用一组；
+    // ROM 只存 5 组表，bank = group*6 + variant（30 表 / 15 块 BSRAM）。
     function [22:0] guitar_band_config;
         input [31:0] inc;
         input [7:0] vel;
         reg [2:0] band;
         reg [2:0] variant;
+        reg [2:0] group;
         reg [5:0] bank;
         begin
             if (inc < 32'd11985848) band = 3'd0;
@@ -242,7 +252,9 @@ module shared_wavetable_engine #(
                 else if (vel >= 8'd32) variant = 3'd1;
                 else variant = 3'd0;
             end
-            bank = {3'd0, band} * 6'd6 + {3'd0, variant};
+            if (band <= 3'd1) group = 3'd0;
+            else group = band - 3'd1;
+            bank = {3'd0, group} * 6'd6 + {3'd0, variant};
             guitar_band_config = {1'b0, bank, 16'h0000};
         end
     endfunction
@@ -329,6 +341,11 @@ module shared_wavetable_engine #(
         cur_vel   = velocity_frame[vsel*8 +: 8];
         cur_note  = note_frame[vsel*7 +: 7];
     end
+
+    // 力度按 MIDI 的 0..127 定义；8 位端口上多出来的 128..255 饱和到 127。
+    // key_a 是 15 位无符号，127*256=32512 恰好装下；128*256=32768 会截成 0，
+    // 表现为“越大越静音”。饱和只在入口做一次（7 个或门），不改动乘法位宽。
+    wire [7:0] cur_vel_gain = cur_vel[7] ? 8'd127 : cur_vel;
 
     // ------------------------------------------------------------- 共享乘法器 ---
     // 全模块只写这一条乘法表达式：插值、包络缩放、力度缩放共用同一对寄存器，
@@ -427,7 +444,7 @@ module shared_wavetable_engine #(
                     state<=ST_ADDR_A;
                 end
                 ST_GAIN_SET: begin
-                    mul_a <= $signed({8'd0, cur_vel});
+                    mul_a <= $signed({8'd0, cur_vel_gain});
                     mul_b <= $signed({9'd0, key_coeff(cur_note, guitar_enable, key_enable)});
                     state <= ST_GAIN_WAIT;
                 end

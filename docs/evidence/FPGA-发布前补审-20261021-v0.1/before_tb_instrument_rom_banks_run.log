@@ -1,0 +1,2 @@
+FATAL: E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_instrument_rom_banks.v:29: ROM_CE_hold_selected_wrong_group bank=0 addr=0
+       Time: 66000  Scope: tb_instrument_rom_banks

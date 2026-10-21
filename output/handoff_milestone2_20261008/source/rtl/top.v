@@ -120,8 +120,12 @@ module top #(
     wire uart_timbre_valid;
     wire [7:0] uart_timbre_value, timbre_target;
     // HID 键盘的 F1-F5 与 UART 的 T250-T254 共用音色入口；同一拍 HID 优先。
+    // F6 与串口 I0/I1 同义（钢琴/吉他切换），Up/Down 单步调节主音量。
     wire hid_timbre_valid;
     wire [7:0] hid_timbre_value;
+    wire hid_instr_toggle;
+    wire hid_vol_up;
+    wire hid_vol_down;
     wire       uart_instr_valid;
     wire [1:0] uart_instr_id;
     wire       uart_vol_valid;
@@ -139,6 +143,10 @@ module top #(
             instrument_change <= 1'b0;
             if (uart_instr_valid && (uart_instr_id != instrument_id)) begin
                 instrument_id <= uart_instr_id;
+                instrument_change <= 1'b1;
+            end else if (hid_instr_toggle) begin
+                // F6 等价 I0/I1 切换；切换拍清事件与按键，避免持音中途换表。
+                instrument_id <= instrument_id ^ 2'd1;
                 instrument_change <= 1'b1;
             end
         end
@@ -255,6 +263,7 @@ module top #(
                 .ev_ready(hid_ev_ready),
                 .panic(hid_panic), .timbre_valid(hid_timbre_valid),
                 .timbre_value(hid_timbre_value),
+                .instr_toggle(hid_instr_toggle), .vol_up(hid_vol_up), .vol_down(hid_vol_down),
                 .base_note(hid_base_note), .held_count(hid_held_count),
                 .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
                 .frame_valid()
@@ -267,6 +276,9 @@ module top #(
             assign hid_panic     = 1'b0;
             assign hid_timbre_valid = 1'b0;
             assign hid_timbre_value = 8'd0;
+            assign hid_instr_toggle = 1'b0;
+            assign hid_vol_up    = 1'b0;
+            assign hid_vol_down  = 1'b0;
             assign hid_base_note = 7'd60;
             assign hid_held_count = 4'd0;
             assign hid_overflow  = 1'b0;
@@ -444,13 +456,29 @@ module top #(
         .event_valid(ev_valid),.event_on(ev_word[15]),.note(ev_word[14:8]),
         .source_uart(pending_valid || uart_direct),.forward_valid(owned_ev_valid));
 
+    // 事件预取：仲裁结果先打一拍再进分配器，切断“FIFO 指针比较 -> 源选择 mux ->
+    // 分配器音符比较/优先级”的长组合链。分配器每拍都能接收，无需反压；清理拍
+    // 丢弃暂存事件（panic 本来就要清音），被清理拍不弹出源事件。
+    reg        ev_q_valid;
+    reg [15:0] ev_q_word;
+    always @(posedge clk_audio) begin
+        if (rst) begin
+            ev_q_valid <= 1'b0;
+            ev_q_word  <= 16'd0;
+        end else begin
+            ev_q_valid <= owned_ev_valid;
+            if (owned_ev_valid) ev_q_word <= ev_word;
+        end
+    end
+    wire ev_deliver = ev_q_valid && !clear_events;
+
     voice_alloc #(.VOICES(VOICES)) u_alloc (
         .clk        (clk_audio),
         .rst        (rst),
-        .ev_valid   (owned_ev_valid),
-        .ev_on      (ev_word[15]),
-        .ev_note    (ev_word[14:8]),
-        .ev_vel     (ev_word[7:0]),
+        .ev_valid   (ev_deliver),
+        .ev_on      (ev_q_word[15]),
+        .ev_note    (ev_q_word[14:8]),
+        .ev_vel     (ev_q_word[7:0]),
         .panic      (clear_events),
         .voice_idle (v_idle),
         .v_gate     (v_gate),
@@ -815,7 +843,13 @@ module top #(
             volume_target <= 7'd100;
             volume <= 7'd100;
         end else begin
+            // UART 的 V 命令设绝对值；HID 的 Up/Down 以 5 为步长单步调整并钳在 0..100。
+            // volume_gain 只定义到 100，越过上界会静音，因此必须先钳位再写 target。
             if (uart_vol_valid) volume_target <= uart_vol_value;
+            else if (hid_vol_up)
+                volume_target <= (volume_target >= 7'd96) ? 7'd100 : volume_target + 7'd5;
+            else if (hid_vol_down)
+                volume_target <= (volume_target <= 7'd5) ? 7'd0 : volume_target - 7'd5;
             if (sums_valid) begin
                 if (volume < volume_target) volume <= volume + 7'd1;
                 else if (volume > volume_target) volume <= volume - 7'd1;

@@ -1,0 +1,121 @@
+*** GOWIN Tcl Command Line Console  *** 
+current working directory: E:/Working Space/FPGA/tmp/prepublish-ram32-pnr-20261021-v02/ram32
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/prototypes/ram32_top.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/prototypes/voice_sched32.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_rom_banks.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_piano_bank.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_guitar_bank.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_ram_audio_datapath.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_ram_audio_compute.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_ram_wavetable_engine.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/voice_state_ram.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/note_phase_inc.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/wide_master.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/i2s_tx.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/split_audio_multiplier.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_wave_sine.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_bright_bank.v"
+add new file: "E:/Working Space/FPGA/output/handoff_milestone2_20261008/source/constraints/ram32_proto.sdc"
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\ram32_top.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_rom_banks.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_piano_bank.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_guitar_bank.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_audio_datapath.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_audio_compute.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\voice_state_ram.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\note_phase_inc.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\i2s_tx.v'
+Analyzing included file 'rtl\audio\clk_params.vh'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\i2s_tx.v":25)
+Back to file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\i2s_tx.v'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\i2s_tx.v":25)
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\split_audio_multiplier.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v'
+Analyzing Verilog file 'E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v'
+Compiling module 'ram32_top'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\ram32_top.v":5)
+Compiling module 'instrument_ram_audio_datapath(VOICES=32,CLK_HZ=49152000)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_audio_datapath.v":3)
+Compiling module 'instrument_ram_audio_compute(VOICES=32)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_audio_compute.v":2)
+Compiling module 'instrument_ram_wavetable_engine(VOICE_COUNT=32)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":5)
+Compiling module 'voice_state_ram'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\voice_state_ram.v":4)
+Compiling module 'gowin_prom_wave_sine'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v":5)
+Compiling module 'instrument_rom_banks'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_rom_banks.v":7)
+Compiling module 'gowin_prom_piano_bank'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_piano_bank.v":3)
+Compiling module 'gowin_prom_guitar_bank'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_guitar_bank.v":3)
+Compiling module 'gowin_prom_bright_bank'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v":3)
+Compiling module 'split_audio_multiplier'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\split_audio_multiplier.v":4)
+WARN  (EX3791) : Expression size 51 truncated to fit in target size 24("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":76)
+WARN  (EX3791) : Expression size 35 truncated to fit in target size 24("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":78)
+WARN  (EX3791) : Expression size 44 truncated to fit in target size 24("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":79)
+WARN  (EX3791) : Expression size 51 truncated to fit in target size 24("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":125)
+WARN  (EX3791) : Expression size 51 truncated to fit in target size 24("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":126)
+WARN  (EX3791) : Expression size 51 truncated to fit in target size 24("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\instrument_ram_wavetable_engine.v":146)
+Compiling module 'wide_master(VOICE_SHIFT=5)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v":3)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v":23)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 13("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v":30)
+WARN  (EX3791) : Expression size 14 truncated to fit in target size 13("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v":36)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 13("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v":37)
+WARN  (EX3791) : Expression size 51 truncated to fit in target size 33("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\wide_master.v":70)
+Compiling module 'i2s_tx(CLK_HZ=49152000,DATA_BITS=24)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\i2s_tx.v":26)
+Compiling module 'voice_sched32(ATTACK_STEP=16'b0000000010001100,DECAY_STEP=16'b0000000000010000,RELEASE_STEP=16'b0000000000110000,SUSTAIN_LEVEL=16'b1011001100110011)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":16)
+Extracting RAM for identifier 'note'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":49)
+Extracting RAM for identifier 'vel'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":50)
+Extracting RAM for identifier 'env'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":51)
+Extracting RAM for identifier 'est'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":52)
+Extracting RAM for identifier 'gate'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":53)
+Extracting RAM for identifier 'age'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":54)
+Extracting RAM for identifier 'retrig'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":55)
+Extracting RAM for identifier 'stage_q'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":57)
+Extracting RAM for identifier 'timer'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":58)
+Compiling module 'note_phase_inc(FS_HZ=48000)'("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\note_phase_inc.v":12)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 3("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":149)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 3("E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\prototypes\voice_sched32.v":153)
+NOTE  (EX0101) : Current top module is "ram32_top"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\gwsynthesis\ram32.vg" completed
+[100%] Generate report file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\gwsynthesis\ram32_syn.rpt.html" completed
+GowinSynthesis finish
+Reading netlist file: "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\gwsynthesis\ram32.vg"
+Parsing netlist file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\gwsynthesis\ram32.vg" completed
+Processing netlist completed
+Running placement......
+[10%] Placement Phase 0 completed
+[20%] Placement Phase 1 completed
+[30%] Placement Phase 2 completed
+[50%] Placement Phase 3 completed
+Running routing......
+[60%] Routing Phase 0 completed
+[70%] Routing Phase 1 completed
+[80%] Routing Phase 2 completed
+[90%] Routing Phase 3 completed
+Running timing analysis......
+[95%] Timing analysis completed
+Placement and routing completed
+Bitstream generation in progress......
+Bitstream generation completed
+Running power analysis......
+[100%] Power analysis completed
+Generate file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\pnr\ram32.power.html" completed
+Generate file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\pnr\ram32.pin.html" completed
+Generate file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\pnr\ram32.rpt.html" completed
+Generate file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\pnr\ram32.rpt.txt" completed
+Generate file "E:\Working Space\FPGA\tmp\prepublish-ram32-pnr-20261021-v02\ram32\impl\pnr\ram32.tr.html" completed
+Wed Oct 21 20:13:42 2026
+

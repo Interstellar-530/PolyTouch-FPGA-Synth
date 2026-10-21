@@ -38,8 +38,8 @@ module tb_piano_morph;
         .mult_request(), .mult_operand_a(), .mult_operand_b(), .mult_result(36'sd0));
 
     always @(posedge clk) begin
-        if (low_env.bank_low == 7'd42) saw_low_body <= 1'b1;
-        if (high_env.bank_low == 7'd46) saw_high_hammer <= 1'b1;
+        if (low_env.bank_low == 7'd0) saw_low_body <= 1'b1;
+        if (high_env.bank_low == 7'd4) saw_high_hammer <= 1'b1;
         if (low_valid && high_valid) begin
             frames = frames + 1;
             if (low_bright !== high_bright) differences = differences + 1;
@@ -54,8 +54,8 @@ module tb_piano_morph;
             repeat (180) @(negedge clk);
         end
         retrig = 1'b0;
-        if (!saw_low_body) $fatal(1, "low envelope never selected C4 loud body bank 42");
-        if (!saw_high_hammer) $fatal(1, "high envelope never selected C4 loud hammer bank 46");
+        if (!saw_low_body) $fatal(1, "low envelope never selected C4 loud body bank 0");
+        if (!saw_high_hammer) $fatal(1, "high envelope never selected C4 loud hammer bank 4");
         if (frames < 4 || differences == 0)
             $fatal(1, "morph frames=%0d differences=%0d", frames, differences);
         $display("PASS tb_piano_morph: low env uses body, high env uses hammer, frames=%0d differences=%0d",

@@ -1,0 +1,6 @@
+WARNING: E:\Working Space\FPGA\docs\evidence\FPGA-优化05审核-20 $fopen's file name argument contains non-printable characters.
+                                                                "E:\Working Space\FPGA\docs\evidence\FPGA-\377\377\377\37705\377\377\377\377-20261021-v0.1\cases.txt"
+WARNING: E:\Working Space\FPGA\docs\evidence\FPGA-优化05审核-20 $fopen's file name argument contains non-printable characters.
+                                                                "E:\Working Space\FPGA\docs\evidence\FPGA-\377\377\377\37705\377\377\377\377-20261021-v0.1\rtl_pairs.csv"
+FATAL: E:\Working Space\FPGA\docs\evidence\FPGA-优化05审核-20261021-v0.1\source\tb_bank_audio_ab.v:15: file open failed
+       Time: 0  Scope: tb_bank_audio_ab

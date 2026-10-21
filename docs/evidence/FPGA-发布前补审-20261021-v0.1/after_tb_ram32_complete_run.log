@@ -1,0 +1,11 @@
+INFO 32 voices allocated, increments and envelopes match
+INFO phase step per voice matches its own increment (no cross-talk)
+INFO steal took the oldest voice and kept the other 31 intact
+INFO retrigger reused voice 4 and restarted its envelope
+INFO release reached zero and freed voice 4
+INFO worst actual activity ends at cycle 992, limit 1016, max_cfg 32; decoded=151 low_bits=148
+INFO piano voice 4: bank=3 weight=65504
+INFO guitar voice 4: bank=29 weight=0 (band=3 group=2 variant=5)
+INFO final actual last activity=992 max_cfg=32
+PASS tb_ram32_complete: 32 voices, per-voice pitch, steal, retrigger, release, budget, piano/guitar banks
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_ram32_complete.v:248: $finish called at 3375116556 (1ps)

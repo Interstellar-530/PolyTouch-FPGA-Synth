@@ -1,0 +1,178 @@
+{
+  "scope": "10 RTL benches, two profile elaborations, missing-bench rejection, ROM reproduction",
+  "full_gate_completed": false,
+  "hardware_programmed": false,
+  "checks": [
+    {
+      "check": "tb_key_gain-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_key_gain",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_host_kbd-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_host_kbd",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_top_switch-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_top_switch",
+      "exit": 124,
+      "passed": false
+    },
+    {
+      "check": "tb_top_pitch8-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_top_pitch8",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_engine8_pitch-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_engine8_pitch",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_mute_slew-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_mute_slew",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_wide_master-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_wide_master",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_piano_bank-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_piano_bank",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_bright_banks-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_bright_banks",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_guitar_bank-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_guitar_bank",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "top_dbg8usb_build-elaboration",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "top_std27_build-elaboration",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "missing_bench_rejected",
+      "exit": 1,
+      "passed": true,
+      "expected_exit": 1
+    },
+    {
+      "check": "piano_regenerated_body",
+      "passed": true,
+      "words": 18432,
+      "comparison": "exclude first provenance comment only"
+    }
+  ],
+  "inputs_sha256": {
+    "output/handoff_milestone2_20261008/source/rtl/audio/adsr.v": "925f31e58ac94c5c7e4c8d91d2e5e1266fdf63cb752a52d84334b4c898f5b914",
+    "output/handoff_milestone2_20261008/source/rtl/audio/audio_frame_bridge.v": "5028cf840d571ea193cfa9096a9d34cb38aca330e196014a7108ddae4e6fc343",
+    "output/handoff_milestone2_20261008/source/rtl/audio/audio_pll_clock.v": "2856a10cdf3971714877a793020838da8bde566958db83195ee3f29106f05f64",
+    "output/handoff_milestone2_20261008/source/rtl/audio/bend_ratio_pipeline.v": "114fa15a5c7ce3d8a32886ff354d9a703b4ede9c344c0c11e7e1fc14fc0bb8f0",
+    "output/handoff_milestone2_20261008/source/rtl/audio/ch9350_rx.v": "767ec5ba50536248048669924fe0f22e6471b4ae6e707d83133a65539b992382",
+    "output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v": "c60abb48d44d8bc530c328789405bf24fd6579dcf598a4820e8db4f02c33af7f",
+    "output/handoff_milestone2_20261008/source/rtl/audio/event_fifo.v": "51c2fbf11416b6c78175b2665e07e7eba8be346e8c790470beb1ea26e27e9ea6",
+    "output/handoff_milestone2_20261008/source/rtl/audio/global_crossfade.v": "46b26389cfca15411b65549ef8918e4835c438a00d04a627ae01f57a852311c4",
+    "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_bright_bank.v": "0c0084fdc9f14768bd96a51fc16d0e1c9213de1ff96a778c6bb60b7a3dd2d993",
+    "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_guitar_bank.v": "05dad93c36357a592c5dca3c27033926a1782dcb1d6e9858bd02cb9c67dbe58a",
+    "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_piano_bank.v": "eab9e2bcee5e73f5c9f6803945a8448efda37677b3329c379c3e50018c23c58f",
+    "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_wave_bright.v": "367a760ceee08c7e57376f8411193e9eade9ec0365499072e033c25fc9476e5d",
+    "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_wave_sine.v": "55a6635a29ffdf5c0ef28d990d81809515c3480d025642d8c579aba1633d960d",
+    "output/handoff_milestone2_20261008/source/rtl/audio/gpio_keyboard.v": "8f2ff53a0c700d4e3093708044e3ce174eb04362eaec1066438f90bd9bcecf57",
+    "output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v": "d64e03872edb66c5d09b583a8e78703d6cec3b12417f76724f2f323185bb5502",
+    "output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v": "bbf358a2838872ad678ec461f561e452c717da4443db45fdf6621951d763a8ff",
+    "output/handoff_milestone2_20261008/source/rtl/audio/i2s_tx.v": "7ec0d6ed6d6254c0899f2ce87f7a0d8c3fd5f82e482b28f37d54509e62fde45f",
+    "output/handoff_milestone2_20261008/source/rtl/audio/instrument_controls.v": "cf2ee91b74e52a11b5361c262d206425321dd105fe5e85e9e13fcda52cc092d5",
+    "output/handoff_milestone2_20261008/source/rtl/audio/kbd_uart_rx.v": "e3e321d451a60bcc8713ef0f16a66dabe566337b852b1da5f25a87fe4378ad3a",
+    "output/handoff_milestone2_20261008/source/rtl/audio/mcp3208_spi.v": "730d8787d75d000f7f567dc3756203a626d98b53c49e99916a6e6b8fe1730103",
+    "output/handoff_milestone2_20261008/source/rtl/audio/mixer.v": "ec7ef60f9567625d66001e8b29a34b6fbdefbc9b50f3e16b8970069ac219f925",
+    "output/handoff_milestone2_20261008/source/rtl/audio/mixer_s6.v": "126fada0c39ba32a13c71c7650390937d05fd3c741c5f1050eac1d4ef9a93115",
+    "output/handoff_milestone2_20261008/source/rtl/audio/note_ownership.v": "207af34ff856e96cf62dd1d8370505de99b94cb1f4a4ca1f8dc1daa511cb9f2f",
+    "output/handoff_milestone2_20261008/source/rtl/audio/note_phase_inc.v": "d9cf887f9d6146b280befe4ca6ad763b90e5a709dd235c32c45e7c1914e76823",
+    "output/handoff_milestone2_20261008/source/rtl/audio/poly_voice.v": "56f6ef6b63a0873f8f4c8ca2779d0075dca6b00b9ac5e23056e66dc8d9e47898",
+    "output/handoff_milestone2_20261008/source/rtl/audio/poly_voice_s6.v": "abfd61206fe073a9dd1e374ade9d1b0bdb5b2f1563616b2b2c8a6edce59ae206",
+    "output/handoff_milestone2_20261008/source/rtl/audio/pressure_bend.v": "edf1a7740552487806aac4c3ee93e471e1210b9380512f5c5feef5fdf0f04655",
+    "output/handoff_milestone2_20261008/source/rtl/audio/pt8211_tx.v": "890b901343cfeefe50b9af9bc1bae4d55a67c938dbb4a1d369a908c8fbfffbc3",
+    "output/handoff_milestone2_20261008/source/rtl/audio/ram_audio_clocked.v": "deafa30d73445456fa3d55a727f5f80596ce4b956b11ede8f43dfbe7adc7a978",
+    "output/handoff_milestone2_20261008/source/rtl/audio/ram_audio_compute.v": "8cc36f0bbc827f4b60a6479fb55d340a59ea4edbc5588bb810c88e03e19915a1",
+    "output/handoff_milestone2_20261008/source/rtl/audio/ram_audio_datapath.v": "e3bd26c5e4194adb966cdf056a69034d975dae7c0d03d179b01593320e8ba5f2",
+    "output/handoff_milestone2_20261008/source/rtl/audio/ram_wavetable_engine.v": "8b506daee46e72e5678464e4fe9126a6267c5dafb001e649d79930d77e334ab8",
+    "output/handoff_milestone2_20261008/source/rtl/audio/shared_wavetable_engine.v": "40eb87de512f75599af72996b8e6baddaee3349d0ee29d95b88c1d90d802bfcd",
+    "output/handoff_milestone2_20261008/source/rtl/audio/song_player.v": "81a2bc7da113fc34d873e50137d4a5f60ba85cf9356f4426119b631415fdd5ac",
+    "output/handoff_milestone2_20261008/source/rtl/audio/split_audio_multiplier.v": "433d8c140f205225c01bb4f3ff9ad46f43d729c04157942b2f57eab07a6f73cc",
+    "output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v": "d9bd5bb20c4f93511b40cf043b129a4cefa6a37e5e73e66cb1159bcecfd4540f",
+    "output/handoff_milestone2_20261008/source/rtl/audio/voice_alloc.v": "1f73085c2238bed4ab98b85d2a90c04c1d0aa787e87a0606b34d263ae7a60c17",
+    "output/handoff_milestone2_20261008/source/rtl/audio/voice_state_ram.v": "8262b84d0dec31cda70cb30d53e57b8089ba20cdb991947dd37fb7e9fe1add68",
+    "output/handoff_milestone2_20261008/source/rtl/audio/voice_transition.v": "82bc9e7560edd81875ea67ab6682b5bdf805c4e45a2624ecfde101fba9e82e9b",
+    "output/handoff_milestone2_20261008/source/rtl/audio/wavetable_osc_dual_prom.v": "0583d25b3ecadcc96c626f2b521cae4d1efc0961310c989381254e1385ec2af3",
+    "output/handoff_milestone2_20261008/source/rtl/audio/wavetable_osc_dual_s6.v": "3c3c26b397eb04b6993e7c518819ea9a2381d3e7ab6b3a8465e6cc4cfa15dfa2",
+    "output/handoff_milestone2_20261008/source/rtl/audio/wavetable_rom_dual.v": "2609a4371c782784a2d2f19328a4a8ce071b84dfc378f90f3b231bbfed82af35",
+    "output/handoff_milestone2_20261008/source/rtl/audio/wide_master.v": "ef90d4dbd5a8803251cbd71ef374d0a656fcacd2406b719f496f1b4ac9c39caf",
+    "output/handoff_milestone2_20261008/source/rtl/top.v": "1bf55c7bfd7633f065e674cc381e1cee05497e1639ad664a076db2092a9fd255",
+    "output/handoff_milestone2_20261008/source/sim/gowin_prom_model.v": "4af0cca78d7353ab925ca8cf317612a5957b0aa68789fdf5ebf452d61c13517b",
+    "output/handoff_milestone2_20261008/source/sim/mcp3208_model.v": "3be1d6aa47ef0dafeb2299fa75cd3a5bc1d98fbd1e061e1bc8778929800c8599"
+  },
+  "passed": false
+}

@@ -224,6 +224,11 @@ try {
                 'rtl\audio\gowin_prom_guitar_bank.v',
                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
                 'sim\gowin_prom_model.v') },
+        # 力度定义为 0..127；128..255 在入口饱和。旧实现 128*256 截成 0（静音）。
+        @{ Name = 'tb_velocity_bounds'; Top = 'sim\tb_velocity_bounds.v'; Src = @(
+                'rtl\audio\shared_wavetable_engine.v',
+                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
+                'sim\gowin_prom_model.v') },
         @{ Name = 'tb_piano_engine'; Top = 'sim\tb_piano_engine.v'; Src = @(
                 'rtl\audio\shared_wavetable_engine.v',
                 'rtl\audio\gowin_prom_guitar_bank.v',
@@ -292,11 +297,34 @@ try {
     $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v',
                 'rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
     $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
+    # HID 控制补齐：F6 乐器切换、Up/Down 主音量、Esc 清音，以及与 UART 命令共存。
+    $suite += @{ Name='tb_top_host_ctrl'; Top='sim\tb_top_host_ctrl.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    $suite += @{ Name='tb_event_prefetch'; Top='sim\tb_event_prefetch.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v')) }
+    $suite += @{ Name='tb_ram32_complete'; Top='sim\tb_ram32_complete.v'; Src=($audioSources + @('rtl\prototypes\voice_sched32.v','rtl\prototypes\ram32_top.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_datapath.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
+    $suite += @{ Name='tb_instrument_rom_banks'; Top='sim\tb_instrument_rom_banks.v'; Src=@('rtl\prototypes\instrument_rom_banks.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_bright_bank.v','sim\gowin_prom_model.v') }
+    $suite += @{ Name='tb_voice_sched32_review'; Top='sim\tb_voice_sched32_review.v'; Src=@('rtl\prototypes\voice_sched32.v','rtl\audio\note_phase_inc.v') }
+    # Product regressions for the eight-voice profiles must run at the same
+    # gate as the older four-voice benches.
+    foreach ($name in @('tb_engine8_pitch','tb_top_pitch8','tb_top_switch','tb_top_guitar','tb_guitar_bank')) {
+        $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    }
     foreach($voices in @(8,32,64)) {
         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
     }
     $failed = 0
     $skipped = 0
+    # Fail before compilation if the checkout is incomplete. A missing bench
+    # is a broken gate, never evidence that the corresponding behavior passed.
+    $missing = @($suite | Where-Object { -not (Test-Path -LiteralPath $_.Top -PathType Leaf) })
+    if (-not (Test-Path -LiteralPath 'sim\tb_i2s_tx_params.v' -PathType Leaf)) {
+        Write-Output '缺失参数负例测试台：sim\tb_i2s_tx_params.v；禁止烧录。'
+        exit 1
+    }
+    if ($missing.Count -ne 0) {
+        foreach ($entry in $missing) { Write-Output ("缺失测试台：{0}" -f $entry.Top) }
+        Write-Output ("仿真门禁不完整，缺失 {0} 台，禁止烧录。" -f $missing.Count)
+        exit 1
+    }
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
@@ -305,12 +333,6 @@ try {
             $skipped++
             continue
         }
-        if (-not (Test-Path -LiteralPath $test.Top -PathType Leaf)) {
-            Write-Output ("跳过缺失测试台：{0}" -f $test.Top)
-            $skipped++
-            continue
-        }
-
         # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
         # Explicit root prevents uninstantiated library prototypes from being
         # elaborated as extra tops requiring unrelated primitive models.
@@ -396,8 +418,13 @@ try {
         Write-Output ("仿真门禁未通过，{0} 个测试台失败，禁止烧录。" -f $failed)
         exit 1
     }
-    Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许烧录；缺失测试台 {2} 台已跳过。" -f
-                  $suite.Count, $paramCases.Count, $skipped)
+    if ($skipped -ne 0) {
+        Write-Output ("本次 {0} 台正向测试台与 {1} 个参数负例通过，显式跳过 {2} 台；不构成完整烧录门禁。" -f
+                      ($suite.Count - $skipped), $paramCases.Count, $skipped)
+    } else {
+        Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许进入烧录流程。" -f
+                      $suite.Count, $paramCases.Count)
+    }
     exit 0
 }
 finally {

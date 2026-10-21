@@ -1,4 +1,4 @@
-﻿param(
+param(
     [string]$GwSh = '',
     [ValidateSet('debug','standard','standard27','debug8','debug8g','debug8usb')][string]$Profile = 'debug'
 )
@@ -57,14 +57,20 @@ try {
         throw "No bitstream produced by this build: $fs"
     }
     $after = @(Get-BuildInputs $configuration)
-    if (($inputs | ConvertTo-Json -Compress) -ne ($after | ConvertTo-Json -Compress)) {
+    if (-not (Test-BuildInputsUnchanged -Expected $inputs -Current $after)) {
         throw 'Build inputs changed during compilation; rebuild before programming.'
     }
     New-Item -ItemType Directory -Path (Split-Path -Parent $receipt) -Force | Out-Null
     $bitstream = Get-Item -LiteralPath $fs
+    # Bind the receipt to the exact tool version and bitstream content as well.
+    $toolVersion = Get-GowinToolVersion (Join-Path $runDir 'instrument/impl/pnr/instrument.rpt.txt')
+    if ($toolVersion) { $versionSource = 'pnr_report' } else { $versionSource = 'unavailable' }
     [ordered]@{ Profile=$Profile; Top=$configuration.Top; Bitstream=$fs;
         BitstreamLength=$bitstream.Length; BitstreamModifiedUtc=$bitstream.LastWriteTimeUtc.Ticks;
-        CompletedUtc=[DateTime]::UtcNow.ToString('o'); Inputs=$inputs } |
+        BitstreamSha256=(Get-FileHash -LiteralPath $fs -Algorithm SHA256).Hash.ToLower();
+        CompletedUtc=[DateTime]::UtcNow.ToString('o');
+        Tool=[ordered]@{ Name='gw_sh'; Path=$GwSh; Version=$toolVersion; VersionSource=$versionSource };
+        InputsDigest=(Get-BuildInputsDigest $inputs); Inputs=$inputs } |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $receipt -Encoding UTF8
     Write-Output "Bitstream   : $fs"
     Write-Output "Receipt     : $receipt"

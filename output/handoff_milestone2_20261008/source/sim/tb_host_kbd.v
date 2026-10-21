@@ -190,13 +190,19 @@ module tb_host_kbd;
         if (dut.u_map.count !== 5'd0)
             $fatal(1, "FIFO count after wrap=%0d", dut.u_map.count);
 
-        // flush 必须清空事件队列和按键状态
+        // flush 清空事件队列和音符归属；仍按住的键须松开后才能再次触发。
         send_report(8'h14, 0, 0, 0, 0, 0);
         expect_ev(1'b1, 7'd60);
         flush = 1'b1; repeat (3) @(posedge clk); flush = 1'b0;
         expect_quiet(200);
         if (dut.u_map.count !== 5'd0 || held_count !== 4'd0)
             $fatal(1, "flush left queue=%0d held=%0d prev_ok=%b seen=%b key=%h busy=%b phase=%d count=%0d", dut.u_map.count, held_count, dut.u_map.prev_ok[0], dut.u_map.prev_seen[0], dut.u_map.prev_key[0], dut.u_map.busy, dut.u_map.phase, dut.u_map.count);
+
+        send_report(8'h14, 0, 0, 0, 0, 0);
+        expect_quiet(200);
+        if (held_count !== 4'd0) $fatal(1, "held key retriggered after flush");
+        send_report(0, 0, 0, 0, 0, 0);
+        expect_quiet(100);
 
         // 0x86 拔出通知：清按键/队列，不残留事件
         send_report(8'h14, 0, 0, 0, 0, 0);

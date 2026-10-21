@@ -1,0 +1,2 @@
+﻿PASS tb_host_kbd: press/release, dedup, chord, transpose-held, Esc, F1, resync, rollover
+sim\tb_host_kbd.v:211: $finish called at 61646510175 (1ps)

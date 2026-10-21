@@ -1,0 +1,2 @@
+PASS tb_review_velocity_equivalence: frames=768 paired_results=2304 positive=2179 negative=164 midframe_changes=768; 4/8 voices, local/shared, extra 0/2, piano/guitar/generic/bypass
+E:\Working Space\FPGA\docs\evidence\FPGA-”≈ªØ01…Û∫À-20261021-v0.1\source\tb_review_velocity_equivalence.v:99: $finish called at 1858600000 (1ps)

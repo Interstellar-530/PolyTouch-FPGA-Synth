@@ -7,3 +7,9 @@ releases/v1.0.0/*.fs binary
 # core.autocrlf=true checkout rewrites the tables to CRLF and the recorded
 # hashes no longer match the files on disk.
 *.hex text eol=lf
+
+# FPGA bitstreams must preserve their receipt-bound bytes.
+*.fs binary
+releases/v2.1.0/*.json text eol=lf
+releases/v2.1.0/*.sha256 text eol=lf
+releases/v2.1.0/MANIFEST.md text eol=lf

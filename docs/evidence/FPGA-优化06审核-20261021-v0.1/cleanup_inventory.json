@@ -1,0 +1,43 @@
+[
+  {
+    "root": "E:\\Working Space\\FPGA\\tmp\\ram32-review-20261021-v01",
+    "files": [
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-20261021-v01\\complete_after.vvp",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-20261021-v01\\scheduler_after.vvp",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-20261021-v01\\scheduler_before.vvp"
+    ]
+  },
+  {
+    "root": "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01",
+    "files": [
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\ram32.gprj",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\ram32.gprj.user",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\ram32_process_config.json",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\gwsynthesis\\ram32.log",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\gwsynthesis\\ram32.prj",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\gwsynthesis\\ram32.vg",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\gwsynthesis\\ram32_syn.rpt.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\gwsynthesis\\ram32_syn_resource.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\gwsynthesis\\ram32_syn_rsc.xml",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\cmd.do",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\device.cfg",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.bin",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.binx",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.db",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.fs",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.log",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.pin.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.power.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.rpt.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.rpt.txt",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.timing_paths",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32.tr.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32_tr_cata.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\impl\\pnr\\ram32_tr_content.html",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\rtl\\audio\\bend_coefficients.vh",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\rtl\\audio\\clk_params.vh",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\rtl\\audio\\song_expect.vh",
+      "E:\\Working Space\\FPGA\\tmp\\ram32-review-pnr-20261021-v01\\ram32\\rtl\\audio\\song_roms.vh"
+    ]
+  }
+]

@@ -40,12 +40,17 @@ if (-not $FsFile) {
     $configuration = Get-BuildProfile $Profile
     $inputs = @(Get-BuildInputs $configuration)
     if ($receipt.Profile -ne $Profile -or $receipt.Top -ne $configuration.Top -or
-        ($receipt.Inputs | ConvertTo-Json -Compress) -ne ($inputs | ConvertTo-Json -Compress)) {
+        -not (Test-BuildInputsUnchanged -Expected $receipt.Inputs -Current $inputs)) {
         throw "Build inputs differ from the successful $Profile build; rebuild first."
     }
     $FsFile = $receipt.Bitstream
     $bitstream = Get-Item -LiteralPath $FsFile -ErrorAction Stop
-    if ($bitstream.Length -ne $receipt.BitstreamLength -or
+    if ($receipt.BitstreamSha256) {
+        if ((Get-FileHash -LiteralPath $FsFile -Algorithm SHA256).Hash.ToLower() -ne
+            $receipt.BitstreamSha256.ToLower()) {
+            throw 'Bitstream changed after the successful build; rebuild first or explicitly pass -FsFile.'
+        }
+    } elseif ($bitstream.Length -ne $receipt.BitstreamLength -or
         $bitstream.LastWriteTimeUtc.Ticks -ne $receipt.BitstreamModifiedUtc) {
         throw 'Bitstream changed after the successful build; rebuild first or explicitly pass -FsFile.'
     }

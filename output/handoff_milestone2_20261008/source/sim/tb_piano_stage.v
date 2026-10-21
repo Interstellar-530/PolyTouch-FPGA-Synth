@@ -61,14 +61,14 @@ module tb_piano_stage;
         if (dut.stage_q[0] !== 3'd0) $fatal(1, "initial stage=%0d expect 0", dut.stage_q[0]);
         retrigs = 4'b0000;   // 只在本帧起音，后续帧不再复位阶段
         bank0 = bank_cap;
-        if (bank0 !== 7'd9) $fatal(1, "start bank=%0d expect 9 (zone1 stage3)", bank0);
+        if (bank0 !== 7'd3) $fatal(1, "start bank=%0d expect 3 (group0 stage3)", bank0);
 
         // 包络恒为 FFFF，仍应按 8 个采样推进阶段
         for (i = 0; i < 8; i = i + 1) frame();
         if (dut.stage_q[0] !== 3'd1)
             $fatal(1, "after 8 ticks stage=%0d expect 1 (envelope must not control stage)", dut.stage_q[0]);
-        if (bank_cap !== 7'd8)
-            $fatal(1, "stage1 bank=%0d expect 8 (zone1 stage2)", bank_cap);
+        if (bank_cap !== 7'd2)
+            $fatal(1, "stage1 bank=%0d expect 2 (group0 stage2)", bank_cap);
 
         // 弯音改变 inc 但不 retrig：音区必须保持 zone 1
         incs = {4{32'h01800000}};   // zone 3（0x01000000..0x02000000）

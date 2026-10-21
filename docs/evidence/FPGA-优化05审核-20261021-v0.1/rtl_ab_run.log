@@ -1,0 +1,2 @@
+PASS tb_bank_audio_ab: 6656 paired frames, mapping/timing/sine unchanged, guitar exact, piano bounded
+E:\Working Space\FPGA\docs\evidence\FPGA-”≈ªØ05…Û∫À-20261021-v0.1\source\tb_bank_audio_ab.v:38: $finish called at 16110640000 (1ps)

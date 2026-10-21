@@ -1,0 +1,549 @@
+diff --git a/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v b/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v
+index 367ffc8..7fe0781 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v
++++ b/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v
+@@ -5,7 +5,8 @@
+ // 键位与电脑端 tools/serial_keyboard/KeyboardCore.cs 完全一致：
+ //   Z S X D C V G B H N J M  -> base-12 .. base-1
+ //   Q 2 W 3 E R 5 T 6 Y 7 U  -> base+0  .. base+11
+-//   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；Esc -> 全松键；PageUp/PageDown -> 八度。
++//   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；F6 -> 钢琴/吉他切换（同串口 I0/I1）；
++//   Up/Down -> 主音量 +/-5（同串口 V）；Esc -> 全松键；PageUp/PageDown -> 八度。
+ //
+ // 时序：报告每 ~87 us 才来一帧，而 27 MHz 有 2000+ 拍余量，所以键位差分用
+ // 12 拍状态机逐键处理，而不是一拍内做 6x6 查找。这样 event FIFO 的写使能只经过
+@@ -28,6 +29,10 @@ module hid_keymap (
+     output reg         panic,
+     output reg         timbre_valid,
+     output reg  [7:0]  timbre_value,
++    // F6 与串口 I0/I1 同义：切换钢琴/吉他；Up/Down 是主音量单步脉冲。
++    output reg         instr_toggle,
++    output reg         vol_up,
++    output reg         vol_down,
+     output reg  [6:0]  base_note,
+     output wire [3:0]  held_count,
+     output reg         overflow
+@@ -148,7 +153,7 @@ module hid_keymap (
+             for (i = 0; i < 6; i = i + 1)
+                 if (cur_key[i] == key) found = 1'b1;
+             if (!found) begin
+-                // 只有音符键才发 Note Off；控制键（PageUp/PageDown/Esc/F1-F5）
++                // 只有音符键才发 Note Off；控制键（PageUp/PageDown/Esc/F1-F6/方向键）
+                 // 的 prev_note 为 0，释放时不能产生 note=0 的假事件。
+                 if (prev_ok[idx]) begin
+                     push = 1'b1;
+@@ -179,6 +184,7 @@ module hid_keymap (
+         if (rst) begin
+             wptr <= 5'd0; rptr <= 5'd0; count <= 5'd0;
+             panic <= 1'b0; timbre_valid <= 1'b0; timbre_value <= 8'd0;
++            instr_toggle <= 1'b0; vol_up <= 1'b0; vol_down <= 1'b0;
+             base_note <= 7'd60; overflow <= 1'b0;
+             idx <= 3'd0; phase <= 1'b0; busy <= 1'b0; pending <= 1'b0;
+             for (m = 0; m < 6; m = m + 1) begin
+@@ -190,6 +196,9 @@ module hid_keymap (
+         end else begin
+             panic <= 1'b0;
+             timbre_valid <= 1'b0;
++            instr_toggle <= 1'b0;
++            vol_up <= 1'b0;
++            vol_down <= 1'b0;
+             c  = count;
+             wp = wptr;
+ 
+@@ -215,11 +224,25 @@ module hid_keymap (
+             end
+ 
+             if (flush || link_timeout || device_notify) begin
+-                // 顶层同时清声部；这里只清按键状态，避免粘音。
++                // 清除音符归属，但普通清音保留物理按键身份，持键须松开后再触发。
++                // F6 会在当前报告提交前触发 flush，因此需从正在扫描的报告取键。
+                 busy <= 1'b0; pending <= 1'b0; phase <= 1'b0; idx <= 3'd0;
+                 for (m = 0; m < 6; m = m + 1) begin
+-                    prev_key[m] <= 8'd0; prev_note[m] <= 7'd0;
+-                    prev_ok[m] <= 1'b0;  prev_seen[m] <= 1'b0;
++                    prev_note[m] <= 7'd0;
++                    prev_ok[m] <= 1'b0;
++                    if (link_timeout || device_notify) begin
++                        prev_key[m] <= 8'd0;
++                        prev_seen[m] <= 1'b0;
++                    end else if (report_valid) begin
++                        prev_key[m] <= report[16 + 8*m +: 8];
++                        prev_seen[m] <= (report[16 + 8*m +: 8] != 8'd0);
++                    end else if (pending) begin
++                        prev_key[m] <= pending_report[16 + 8*m +: 8];
++                        prev_seen[m] <= (pending_report[16 + 8*m +: 8] != 8'd0);
++                    end else if (busy) begin
++                        prev_key[m] <= cur_key[m];
++                        prev_seen[m] <= (cur_key[m] != 8'd0);
++                    end
+                 end
+             end else if (!busy) begin
+                 if (report_valid) begin
+@@ -261,6 +284,9 @@ module hid_keymap (
+                         8'h3C: begin timbre_valid <= 1'b1; timbre_value <= 8'd252; end
+                         8'h3D: begin timbre_valid <= 1'b1; timbre_value <= 8'd253; end
+                         8'h3E: begin timbre_valid <= 1'b1; timbre_value <= 8'd254; end
++                        8'h3F: instr_toggle <= 1'b1;   // F6：钢琴/吉他切换
++                        8'h51: vol_down <= 1'b1;      // Down：主音量 -
++                        8'h52: vol_up <= 1'b1;        // Up：主音量 +
+                         8'h4B: base_note <= clamp_note({1'b0, base_note} + 8'd12);
+                         8'h4E: base_note <= clamp_note({1'b0, base_note} - 8'd12);
+                         default: ;
+diff --git a/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v b/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v
+index 913ee1a..d99b921 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v
++++ b/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v
+@@ -17,6 +17,9 @@ module host_kbd_input #(
+     output wire        panic,
+     output wire        timbre_valid,
+     output wire [7:0]  timbre_value,
++    output wire        instr_toggle,
++    output wire        vol_up,
++    output wire        vol_down,
+     output wire [6:0]  base_note,
+     output wire [3:0]  held_count,
+     output wire        overflow,
+@@ -49,6 +52,7 @@ module host_kbd_input #(
+         .flush(flush), .link_timeout(link_timeout), .device_notify(device_notify),
+         .ev_valid(ev_valid), .ev_word(ev_word), .ev_ready(ev_ready),
+         .panic(panic), .timbre_valid(timbre_valid), .timbre_value(timbre_value),
++        .instr_toggle(instr_toggle), .vol_up(vol_up), .vol_down(vol_down),
+         .base_note(base_note), .held_count(held_count), .overflow(overflow)
+     );
+ 
+diff --git a/output/handoff_milestone2_20261008/source/rtl/top.v b/output/handoff_milestone2_20261008/source/rtl/top.v
+index b5b58bc..f2c9f11 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/top.v
++++ b/output/handoff_milestone2_20261008/source/rtl/top.v
+@@ -120,8 +120,12 @@ module top #(
+     wire uart_timbre_valid;
+     wire [7:0] uart_timbre_value, timbre_target;
+     // HID 键盘的 F1-F5 与 UART 的 T250-T254 共用音色入口；同一拍 HID 优先。
++    // F6 与串口 I0/I1 同义（钢琴/吉他切换），Up/Down 单步调节主音量。
+     wire hid_timbre_valid;
+     wire [7:0] hid_timbre_value;
++    wire hid_instr_toggle;
++    wire hid_vol_up;
++    wire hid_vol_down;
+     wire       uart_instr_valid;
+     wire [1:0] uart_instr_id;
+     wire       uart_vol_valid;
+@@ -140,6 +144,10 @@ module top #(
+             if (uart_instr_valid && (uart_instr_id != instrument_id)) begin
+                 instrument_id <= uart_instr_id;
+                 instrument_change <= 1'b1;
++            end else if (hid_instr_toggle) begin
++                // F6 等价 I0/I1 切换；切换拍清事件与按键，避免持音中途换表。
++                instrument_id <= instrument_id ^ 2'd1;
++                instrument_change <= 1'b1;
+             end
+         end
+     end
+@@ -255,6 +263,7 @@ module top #(
+                 .ev_ready(hid_ev_ready),
+                 .panic(hid_panic), .timbre_valid(hid_timbre_valid),
+                 .timbre_value(hid_timbre_value),
++                .instr_toggle(hid_instr_toggle), .vol_up(hid_vol_up), .vol_down(hid_vol_down),
+                 .base_note(hid_base_note), .held_count(hid_held_count),
+                 .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
+                 .frame_valid()
+@@ -267,6 +276,9 @@ module top #(
+             assign hid_panic     = 1'b0;
+             assign hid_timbre_valid = 1'b0;
+             assign hid_timbre_value = 8'd0;
++            assign hid_instr_toggle = 1'b0;
++            assign hid_vol_up    = 1'b0;
++            assign hid_vol_down  = 1'b0;
+             assign hid_base_note = 7'd60;
+             assign hid_held_count = 4'd0;
+             assign hid_overflow  = 1'b0;
+@@ -815,7 +827,13 @@ module top #(
+             volume_target <= 7'd100;
+             volume <= 7'd100;
+         end else begin
++            // UART 的 V 命令设绝对值；HID 的 Up/Down 以 5 为步长单步调整并钳在 0..100。
++            // volume_gain 只定义到 100，越过上界会静音，因此必须先钳位再写 target。
+             if (uart_vol_valid) volume_target <= uart_vol_value;
++            else if (hid_vol_up)
++                volume_target <= (volume_target >= 7'd96) ? 7'd100 : volume_target + 7'd5;
++            else if (hid_vol_down)
++                volume_target <= (volume_target <= 7'd5) ? 7'd0 : volume_target - 7'd5;
+             if (sums_valid) begin
+                 if (volume < volume_target) volume <= volume + 7'd1;
+                 else if (volume > volume_target) volume <= volume - 7'd1;
+diff --git a/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1 b/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1
+index 784aa7c..9241539 100644
+--- a/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1
++++ b/output/handoff_milestone2_20261008/source/sim/run_simulation.ps1
+@@ -224,6 +224,11 @@ try {
+                 'rtl\audio\gowin_prom_guitar_bank.v',
+                 'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
+                 'sim\gowin_prom_model.v') },
++        # 力度定义为 0..127；128..255 在入口饱和。旧实现 128*256 截成 0（静音）。
++        @{ Name = 'tb_velocity_bounds'; Top = 'sim\tb_velocity_bounds.v'; Src = @(
++                'rtl\audio\shared_wavetable_engine.v',
++                'rtl\audio\gowin_prom_wave_sine.v', 'rtl\audio\gowin_prom_wave_bright.v',
++                'sim\gowin_prom_model.v') },
+         @{ Name = 'tb_piano_engine'; Top = 'sim\tb_piano_engine.v'; Src = @(
+                 'rtl\audio\shared_wavetable_engine.v',
+                 'rtl\audio\gowin_prom_guitar_bank.v',
+@@ -292,11 +297,30 @@ try {
+     $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v',
+                 'rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
+     $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
++    # HID 控制补齐：F6 乐器切换、Up/Down 主音量、Esc 清音，以及与 UART 命令共存。
++    $suite += @{ Name='tb_top_host_ctrl'; Top='sim\tb_top_host_ctrl.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
++    # Product regressions for the eight-voice profiles must run at the same
++    # gate as the older four-voice benches.
++    foreach ($name in @('tb_engine8_pitch','tb_top_pitch8','tb_top_switch','tb_top_guitar','tb_guitar_bank')) {
++        $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
++    }
+     foreach($voices in @(8,32,64)) {
+         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
+     }
+     $failed = 0
+     $skipped = 0
++    # Fail before compilation if the checkout is incomplete. A missing bench
++    # is a broken gate, never evidence that the corresponding behavior passed.
++    $missing = @($suite | Where-Object { -not (Test-Path -LiteralPath $_.Top -PathType Leaf) })
++    if (-not (Test-Path -LiteralPath 'sim\tb_i2s_tx_params.v' -PathType Leaf)) {
++        Write-Output '缺失参数负例测试台：sim\tb_i2s_tx_params.v；禁止烧录。'
++        exit 1
++    }
++    if ($missing.Count -ne 0) {
++        foreach ($entry in $missing) { Write-Output ("缺失测试台：{0}" -f $entry.Top) }
++        Write-Output ("仿真门禁不完整，缺失 {0} 台，禁止烧录。" -f $missing.Count)
++        exit 1
++    }
+     foreach ($test in $suite) {
+         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
+         Write-Output ("=== {0} ===" -f $test.Name)
+@@ -305,12 +329,6 @@ try {
+             $skipped++
+             continue
+         }
+-        if (-not (Test-Path -LiteralPath $test.Top -PathType Leaf)) {
+-            Write-Output ("跳过缺失测试台：{0}" -f $test.Top)
+-            $skipped++
+-            continue
+-        }
+-
+         # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
+         # Explicit root prevents uninstantiated library prototypes from being
+         # elaborated as extra tops requiring unrelated primitive models.
+@@ -396,8 +414,13 @@ try {
+         Write-Output ("仿真门禁未通过，{0} 个测试台失败，禁止烧录。" -f $failed)
+         exit 1
+     }
+-    Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许烧录；缺失测试台 {2} 台已跳过。" -f
+-                  $suite.Count, $paramCases.Count, $skipped)
++    if ($skipped -ne 0) {
++        Write-Output ("本次 {0} 台正向测试台与 {1} 个参数负例通过，显式跳过 {2} 台；不构成完整烧录门禁。" -f
++                      ($suite.Count - $skipped), $paramCases.Count, $skipped)
++    } else {
++        Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许进入烧录流程。" -f
++                      $suite.Count, $paramCases.Count)
++    }
+     exit 0
+ }
+ finally {
+diff --git a/output/handoff_milestone2_20261008/source/sim/tb_host_kbd.v b/output/handoff_milestone2_20261008/source/sim/tb_host_kbd.v
+index 734636e..9439e75 100644
+--- a/output/handoff_milestone2_20261008/source/sim/tb_host_kbd.v
++++ b/output/handoff_milestone2_20261008/source/sim/tb_host_kbd.v
+@@ -190,7 +190,7 @@ module tb_host_kbd;
+         if (dut.u_map.count !== 5'd0)
+             $fatal(1, "FIFO count after wrap=%0d", dut.u_map.count);
+ 
+-        // flush 必须清空事件队列和按键状态
++        // flush 清空事件队列和音符归属；仍按住的键须松开后才能再次触发。
+         send_report(8'h14, 0, 0, 0, 0, 0);
+         expect_ev(1'b1, 7'd60);
+         flush = 1'b1; repeat (3) @(posedge clk); flush = 1'b0;
+@@ -198,6 +198,12 @@ module tb_host_kbd;
+         if (dut.u_map.count !== 5'd0 || held_count !== 4'd0)
+             $fatal(1, "flush left queue=%0d held=%0d prev_ok=%b seen=%b key=%h busy=%b phase=%d count=%0d", dut.u_map.count, held_count, dut.u_map.prev_ok[0], dut.u_map.prev_seen[0], dut.u_map.prev_key[0], dut.u_map.busy, dut.u_map.phase, dut.u_map.count);
+ 
++        send_report(8'h14, 0, 0, 0, 0, 0);
++        expect_quiet(200);
++        if (held_count !== 4'd0) $fatal(1, "held key retriggered after flush");
++        send_report(0, 0, 0, 0, 0, 0);
++        expect_quiet(100);
++
+         // 0x86 拔出通知：清按键/队列，不残留事件
+         send_report(8'h14, 0, 0, 0, 0, 0);
+         expect_ev(1'b1, 7'd60);
+--- /dev/null
++++ b/output/handoff_milestone2_20261008/source/sim/tb_top_host_ctrl.v
+@@ -0,0 +1,271 @@
++`timescale 1ns/1ps
++// 顶层 HID 控制补齐验收：CH9350L state-2 帧 -> top -> 统一音色/主音量状态。
++// 覆盖：UART 兼容（D0/X/N/V）、首键、和弦、F6 钢琴/吉他切换、Up/Down 音量上下界、
++// Esc 清音，以及切换乐器时清空旧声部、切换后重新按键能正常发声。
++module tb_top_host_ctrl;
++    reg clk27 = 0;
++    always #18.5185 clk27 = ~clk27;
++
++    reg key_rst = 0, s1 = 1, s2 = 1, uart_rx = 1, kbd_rx = 1;
++    wire uart_tx, kbd_tx;
++    wire hp_bck, hp_ws, hp_din, pa_en, led, led_chord, led_t0, led_t1;
++    wire adc_cs_n, adc_sck, adc_mosi, adc_miso;
++    wire [3:0] clip_fold;
++    wire i2s_bck, i2s_lrck, i2s_din, dac_xsmt;
++
++    mcp3208_model u_adc (
++        .cs_n(adc_cs_n), .sclk(adc_sck), .mosi(adc_mosi), .miso(adc_miso),
++        .ch0(12'd2048), .ch1(12'd2048), .ch2(12'd0), .ch3(12'd0),
++        .ch4(12'd0), .ch5(12'd0), .ch6(12'd0), .ch7(12'd0)
++    );
++
++    top #(.AUDIO_IF(0), .VOICES(8), .MASTER_VOLUME_SHIFT(3),
++          .GPIO_KEY_ENABLE(0), .HOST_KBD_ENABLE(1)) dut (
++        .clk_27m(clk27), .clk_12m288(1'b0),
++        .key_rst(key_rst), .key_s1(s1), .key_s2(s2),
++        .uart_rx(uart_rx), .gpio_key_n(12'hFFF),
++        .kbd_uart_rx(kbd_rx), .kbd_uart_tx(kbd_tx),
++        .adc_cs_n(adc_cs_n), .adc_sck(adc_sck), .adc_mosi(adc_mosi), .adc_miso(adc_miso),
++        .hp_bck(hp_bck), .hp_ws(hp_ws), .hp_din(hp_din), .pa_en(pa_en),
++        .led(led), .led_chord(led_chord), .led_t0(led_t0), .led_t1(led_t1),
++        .uart_tx(uart_tx), .clip_fold(clip_fold),
++        .i2s_bck(i2s_bck), .i2s_lrck(i2s_lrck), .i2s_din(i2s_din), .dac_xsmt(dac_xsmt)
++    );
++
++    // ------------------------------------------------------------- observers ---
++    integer gate_n, gi;
++    always @* begin
++        gate_n = 0;
++        for (gi = 0; gi < 8; gi = gi + 1)
++            if (dut.v_gate[gi]) gate_n = gate_n + 1;
++    end
++    always @(posedge clk27) begin
++        if (dut.volume_target > 7'd100)
++            $fatal(1, "volume target escaped range: %0d", dut.volume_target);
++    end
++
++    // ------------------------------------------------------------------ drivers ---
++    task uart_byte;
++        input [7:0] b;
++        integer i;
++        begin
++            @(negedge clk27); uart_rx = 1'b0; #8667;
++            for (i = 0; i < 8; i = i + 1) begin uart_rx = b[i]; #8667; end
++            uart_rx = 1'b1; #8667;
++        end
++    endtask
++
++    task uart_cmd2;
++        input [7:0] a, b;
++        begin uart_byte(a); uart_byte(b); uart_byte(8'h0D); end
++    endtask
++
++    task uart_cmd3;
++        input [7:0] a, b, c;
++        begin uart_byte(a); uart_byte(b); uart_byte(c); uart_byte(8'h0D); end
++    endtask
++
++    task kbd_byte;
++        input [7:0] b;
++        integer i;
++        begin
++            @(negedge clk27); kbd_rx = 1'b0; #8667;
++            for (i = 0; i < 8; i = i + 1) begin kbd_rx = b[i]; #8667; end
++            kbd_rx = 1'b1; #8667;
++        end
++    endtask
++
++    task kbd_report;
++        input [7:0] k0, k1, k2, k3, k4, k5;
++        begin
++            kbd_byte(8'h57); kbd_byte(8'hAB); kbd_byte(8'h01);
++            kbd_byte(8'h00); kbd_byte(8'h00);
++            kbd_byte(k0); kbd_byte(k1); kbd_byte(k2);
++            kbd_byte(k3); kbd_byte(k4); kbd_byte(k5);
++            repeat (20000) @(posedge clk27);
++        end
++    endtask
++
++    task release_all;
++        begin kbd_report(8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0); end
++    endtask
++
++    task tap_key;
++        input [7:0] k;
++        begin
++            kbd_report(k, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++            kbd_report(8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        end
++    endtask
++
++    // ------------------------------------------------------------------ checks ---
++    task wait_gates;
++        input integer want;
++        integer t;
++        begin
++            t = 0;
++            while (gate_n != want && t < 200000) begin @(posedge clk27); t = t + 1; end
++            if (gate_n != want)
++                $fatal(1, "gate count %0d, expect %0d", gate_n, want);
++        end
++    endtask
++
++    task expect_note;
++        input [6:0] n;
++        integer v;
++        reg hit;
++        begin
++            hit = 1'b0;
++            for (v = 0; v < 8; v = v + 1)
++                if (dut.v_gate[v] && (dut.v_note[v*7 +: 7] == n)) hit = 1'b1;
++            if (!hit) $fatal(1, "note %0d is not gated", n);
++        end
++    endtask
++
++    task wait_volume_target;
++        input [6:0] want;
++        integer t;
++        begin
++            t = 0;
++            while (dut.volume_target != want && t < 200000) begin @(posedge clk27); t = t + 1; end
++            if (dut.volume_target != want)
++                $fatal(1, "volume target %0d, expect %0d", dut.volume_target, want);
++        end
++    endtask
++
++    integer t, frames;
++
++    initial begin
++        repeat (20) @(posedge clk27);
++        key_rst = 1'b1;
++        while (dut.por) @(posedge clk27);
++        repeat (20) @(posedge clk27);
++
++        // 0) 用 UART 退出演示并清音，验证 HID 档下串口命令仍生效。
++        uart_cmd2("D", "0");
++        uart_cmd2("X", " ");
++        t = 0;
++        while (dut.demo_mode && t < 200000) begin @(posedge clk27); t = t + 1; end
++        if (dut.demo_mode) $fatal(1, "D0 did not leave demo mode");
++        wait_gates(0);
++        if (dut.timbre_target !== 8'd64) $fatal(1, "boot timbre %0d expect 64", dut.timbre_target);
++
++        // 1) CH9350L 接入。
++        kbd_byte(8'h57); kbd_byte(8'hAB); kbd_byte(8'h86);
++        kbd_byte(8'h57); kbd_byte(8'hAB); kbd_byte(8'h80); kbd_byte(8'hFF);
++        kbd_byte(8'h57); kbd_byte(8'hAB); kbd_byte(8'h89);
++        repeat (2000) @(posedge clk27);
++
++        // 2) 首键：只占一个声部，音高 60。
++        kbd_report(8'h14, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        wait_gates(1);
++        expect_note(7'd60);
++
++        // 3) 和弦：Q + W -> 两个声部，60/62。
++        kbd_report(8'h14, 8'h1A, 8'd0, 8'd0, 8'd0, 8'd0);
++        wait_gates(2);
++        expect_note(7'd60);
++        expect_note(7'd62);
++
++        // 4) F6：钢琴 -> 吉他，切换拍清声部与按键状态，不残留旧声部。
++        if (dut.instrument_id !== 2'd0) $fatal(1, "boot instrument %0d", dut.instrument_id);
++        kbd_report(8'h14, 8'h1A, 8'h3F, 8'd0, 8'd0, 8'd0);
++        if (dut.instrument_id !== 2'd1)
++            $fatal(1, "F6 instrument %0d expect 1", dut.instrument_id);
++        if (!dut.guitar_mode) $fatal(1, "F6 did not enter guitar mode");
++        wait_gates(0);
++        repeat (2000) @(posedge clk27);
++        if (dut.hid_held_count !== 4'd0)
++            $fatal(1, "F6 left %0d held keys", dut.hid_held_count);
++        if (dut.volume_target !== 7'd100)
++            $fatal(1, "F6 disturbed volume target: %0d", dut.volume_target);
++
++        // 持键重复上报及槽位重排不能再次切换，也不能重启已清除的音符。
++        repeat (2) begin
++            kbd_report(8'h14, 8'h1A, 8'h3F, 8'd0, 8'd0, 8'd0);
++            if (dut.instrument_id !== 2'd1 || gate_n != 0 || dut.hid_held_count !== 4'd0)
++                $fatal(1, "held F6 report retriggered instrument or notes");
++        end
++        kbd_report(8'h3F, 8'h1A, 8'h14, 8'd0, 8'd0, 8'd0);
++        if (dut.instrument_id !== 2'd1 || gate_n != 0 || dut.hid_held_count !== 4'd0)
++            $fatal(1, "reordered held F6 report retriggered instrument or notes");
++
++        // 切换后重新按键必须在新乐器上正常发声。
++        kbd_report(8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        kbd_report(8'h14, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        wait_gates(1);
++        expect_note(7'd60);
++
++        // F6 再切回钢琴，同样清声部。
++        kbd_report(8'h14, 8'h3F, 8'd0, 8'd0, 8'd0, 8'd0);
++        if (dut.instrument_id !== 2'd0)
++            $fatal(1, "F6 back to %0d expect 0", dut.instrument_id);
++        wait_gates(0);
++        kbd_report(8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        kbd_report(8'h14, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        wait_gates(1);
++        expect_note(7'd60);
++
++        // 5) 音量上界：UART 置 95，Up 两次 -> 100 并钳位。
++        uart_cmd3("V", "9", "5");
++        wait_volume_target(7'd95);
++        tap_key(8'h52);
++        wait_volume_target(7'd100);
++        tap_key(8'h52);
++        repeat (20000) @(posedge clk27);
++        if (dut.volume_target !== 7'd100)
++            $fatal(1, "Up upper clamp failed: %0d", dut.volume_target);
++
++        // 6) 音量下界：UART 置 5，Down 两次 -> 0 并钳位。
++        uart_cmd3("V", "5", " ");
++        wait_volume_target(7'd5);
++        tap_key(8'h51);
++        wait_volume_target(7'd0);
++        tap_key(8'h51);
++        repeat (20000) @(posedge clk27);
++        if (dut.volume_target !== 7'd0)
++            $fatal(1, "Down lower clamp failed: %0d", dut.volume_target);
++
++        // 7) 步长：Up 一次回到 5，Down 一次回 0。
++        tap_key(8'h52);
++        wait_volume_target(7'd5);
++        tap_key(8'h51);
++        wait_volume_target(7'd0);
++
++        // 8) 音量斜坡必须真正落到 0（volume_gain(0) 是数字静音）。
++        frames = 0;
++        while (dut.volume != 7'd0 && frames < 200000) begin
++            @(posedge clk27); frames = frames + 1;
++        end
++        if (dut.volume != 7'd0) $fatal(1, "volume slew stuck at %0d", dut.volume);
++
++        // 9) UART 兼容：先松开 HID，再用 N60 发声、X 清音。
++        release_all();
++        wait_gates(0);
++        uart_cmd3("N", "6", "0");
++        wait_gates(1);
++        expect_note(7'd60);
++        uart_cmd2("X", " ");
++        wait_gates(0);
++
++        // 10) Esc 清音：按住两键后 Esc 必须立即清空，且不留按键状态。
++        kbd_report(8'h14, 8'h1A, 8'd0, 8'd0, 8'd0, 8'd0);
++        wait_gates(2);
++        kbd_report(8'h29, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
++        wait_gates(0);
++        repeat (2000) @(posedge clk27);
++        if (dut.hid_held_count !== 4'd0)
++            $fatal(1, "Esc left %0d held keys", dut.hid_held_count);
++        release_all();
++        repeat (50000) @(posedge clk27);
++        if (gate_n != 0) $fatal(1, "residual voices after Esc: %b", dut.v_gate);
++
++        $display("PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear");
++        $finish;
++    end
++
++    initial begin
++        #300000000;
++        $fatal(1, "timeout");
++    end
++endmodule

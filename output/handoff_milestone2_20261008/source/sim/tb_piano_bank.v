@@ -8,7 +8,7 @@ module tb_piano_bank;
     reg [5:0] bank = 6'd0;
     reg [8:0] addr = 9'd0;
     wire [15:0] dout;
-    reg [15:0] expected [0:18431];
+    reg [15:0] expected [0:6143];
     integer i, b;
     integer differences = 0;
 
@@ -39,9 +39,9 @@ module tb_piano_bank;
         repeat (4) @(posedge clk);
         rst = 1'b0;
         ce = 1'b1;
-        for (b = 0; b < 36; b = b + 1) check_bank(b);
+        for (b = 0; b < 12; b = b + 1) check_bank(b);
         if (differences != 0) $fatal(1, "tb_piano_bank differences=%0d", differences);
-        $display("PASS tb_piano_bank: 36 AKWF e-piano tables x 512 addresses");
+        $display("PASS tb_piano_bank: 12 AKWF e-piano tables (2 groups x 6 stages) x 512 addresses");
         $finish;
     end
     initial begin #2000000; $fatal(1, "tb_piano_bank timeout"); end

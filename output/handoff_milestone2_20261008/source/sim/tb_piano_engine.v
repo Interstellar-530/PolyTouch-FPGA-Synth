@@ -39,7 +39,7 @@ module tb_piano_engine;
         .mult_operand_b(), .mult_result(36'sd0));
 
     always @(posedge clk) begin
-        if (piano.bank_low == 7'd46) saw_piano_bank <= 1'b1;
+        if (piano.bank_low == 7'd4) saw_piano_bank <= 1'b1;
         if (normal_valid && piano_valid) begin
             frames = frames + 1;
             if (normal_bright !== piano_bright) differences = differences + 1;
@@ -54,7 +54,7 @@ module tb_piano_engine;
             repeat (180) @(negedge clk);
         end
         retrig = 1'b0;
-        if (!saw_piano_bank) $fatal(1, "piano engine never selected C4 loud hammer bank 46");
+        if (!saw_piano_bank) $fatal(1, "piano engine never selected C4 loud hammer bank 4");
         if (frames < 4) $fatal(1, "not enough completed engine frames: %0d", frames);
         if (differences == 0) $fatal(1, "piano and normal bright sums are identical");
         $display("PASS tb_piano_engine: C4 loud hammer bank selected, frames=%0d differing=%0d", frames, differences);

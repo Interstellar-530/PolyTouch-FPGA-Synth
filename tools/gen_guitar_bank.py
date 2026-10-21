@@ -1,13 +1,23 @@
 """Generate the 6-band electric-guitar pROM bank (3 BSRAMs, 512x16 each table)."""
 from pathlib import Path
+import argparse
 import json
 import numpy as np
 
-ROOT = Path(r'E:\Working Space\FPGA')
-AUDIO = ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio'
+REPO = Path(__file__).resolve().parents[1]
 FS = 46875
 # MIDI band edges: 0-47, 48-59, 60-66, 67-75, 76-83, 84-95
 EDGES = [0, 48, 60, 67, 76, 84, 96]
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--repo-root', type=Path, default=REPO,
+                    help='repository root used to resolve the default paths')
+parser.add_argument('--out-dir', type=Path,
+                    help='generated output directory (default: <repo-root>/output/.../rtl/audio)')
+args = parser.parse_args()
+ROOT = args.repo_root.resolve()
+AUDIO = (args.out_dir or ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio').resolve()
+AUDIO.mkdir(parents=True, exist_ok=True)
 
 
 def midi_f(n):

@@ -5,7 +5,8 @@
 // 键位与电脑端 tools/serial_keyboard/KeyboardCore.cs 完全一致：
 //   Z S X D C V G B H N J M  -> base-12 .. base-1
 //   Q 2 W 3 E R 5 T 6 Y 7 U  -> base+0  .. base+11
-//   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；Esc -> 全松键；PageUp/PageDown -> 八度。
+//   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；F6 -> 钢琴/吉他切换（同串口 I0/I1）；
+//   Up/Down -> 主音量 +/-5（同串口 V）；Esc -> 全松键；PageUp/PageDown -> 八度。
 //
 // 时序：报告每 ~87 us 才来一帧，而 27 MHz 有 2000+ 拍余量，所以键位差分用
 // 12 拍状态机逐键处理，而不是一拍内做 6x6 查找。这样 event FIFO 的写使能只经过
@@ -28,6 +29,10 @@ module hid_keymap (
     output reg         panic,
     output reg         timbre_valid,
     output reg  [7:0]  timbre_value,
+    // F6 与串口 I0/I1 同义：切换钢琴/吉他；Up/Down 是主音量单步脉冲。
+    output reg         instr_toggle,
+    output reg         vol_up,
+    output reg         vol_down,
     output reg  [6:0]  base_note,
     output wire [3:0]  held_count,
     output reg         overflow
@@ -148,7 +153,7 @@ module hid_keymap (
             for (i = 0; i < 6; i = i + 1)
                 if (cur_key[i] == key) found = 1'b1;
             if (!found) begin
-                // 只有音符键才发 Note Off；控制键（PageUp/PageDown/Esc/F1-F5）
+                // 只有音符键才发 Note Off；控制键（PageUp/PageDown/Esc/F1-F6/方向键）
                 // 的 prev_note 为 0，释放时不能产生 note=0 的假事件。
                 if (prev_ok[idx]) begin
                     push = 1'b1;
@@ -179,6 +184,7 @@ module hid_keymap (
         if (rst) begin
             wptr <= 5'd0; rptr <= 5'd0; count <= 5'd0;
             panic <= 1'b0; timbre_valid <= 1'b0; timbre_value <= 8'd0;
+            instr_toggle <= 1'b0; vol_up <= 1'b0; vol_down <= 1'b0;
             base_note <= 7'd60; overflow <= 1'b0;
             idx <= 3'd0; phase <= 1'b0; busy <= 1'b0; pending <= 1'b0;
             for (m = 0; m < 6; m = m + 1) begin
@@ -190,6 +196,9 @@ module hid_keymap (
         end else begin
             panic <= 1'b0;
             timbre_valid <= 1'b0;
+            instr_toggle <= 1'b0;
+            vol_up <= 1'b0;
+            vol_down <= 1'b0;
             c  = count;
             wp = wptr;
 
@@ -215,11 +224,25 @@ module hid_keymap (
             end
 
             if (flush || link_timeout || device_notify) begin
-                // 顶层同时清声部；这里只清按键状态，避免粘音。
+                // 清除音符归属，但普通清音保留物理按键身份，持键须松开后再触发。
+                // F6 会在当前报告提交前触发 flush，因此需从正在扫描的报告取键。
                 busy <= 1'b0; pending <= 1'b0; phase <= 1'b0; idx <= 3'd0;
                 for (m = 0; m < 6; m = m + 1) begin
-                    prev_key[m] <= 8'd0; prev_note[m] <= 7'd0;
-                    prev_ok[m] <= 1'b0;  prev_seen[m] <= 1'b0;
+                    prev_note[m] <= 7'd0;
+                    prev_ok[m] <= 1'b0;
+                    if (link_timeout || device_notify) begin
+                        prev_key[m] <= 8'd0;
+                        prev_seen[m] <= 1'b0;
+                    end else if (report_valid) begin
+                        prev_key[m] <= report[16 + 8*m +: 8];
+                        prev_seen[m] <= (report[16 + 8*m +: 8] != 8'd0);
+                    end else if (pending) begin
+                        prev_key[m] <= pending_report[16 + 8*m +: 8];
+                        prev_seen[m] <= (pending_report[16 + 8*m +: 8] != 8'd0);
+                    end else if (busy) begin
+                        prev_key[m] <= cur_key[m];
+                        prev_seen[m] <= (cur_key[m] != 8'd0);
+                    end
                 end
             end else if (!busy) begin
                 if (report_valid) begin
@@ -261,6 +284,9 @@ module hid_keymap (
                         8'h3C: begin timbre_valid <= 1'b1; timbre_value <= 8'd252; end
                         8'h3D: begin timbre_valid <= 1'b1; timbre_value <= 8'd253; end
                         8'h3E: begin timbre_valid <= 1'b1; timbre_value <= 8'd254; end
+                        8'h3F: instr_toggle <= 1'b1;   // F6：钢琴/吉他切换
+                        8'h51: vol_down <= 1'b1;      // Down：主音量 -
+                        8'h52: vol_up <= 1'b1;        // Up：主音量 +
                         8'h4B: base_note <= clamp_note({1'b0, base_note} + 8'd12);
                         8'h4E: base_note <= clamp_note({1'b0, base_note} - 8'd12);
                         default: ;

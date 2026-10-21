@@ -1,0 +1,224 @@
+--- a/tools/render_bank_ab.py
++++ b/tools/render_bank_ab.py
+@@ -2,10 +2,11 @@
+ """Render an A/B audition clip for the wavetable bank compaction.
+ 
+ Reads the old (36-table) and new (12/30-table) banks and plays the same short
+-phrase through a table-playback model of shared_wavetable_engine: 9-bit address,
+-9-bit linear interpolation, stage cross-fade by bank_weight, ADSR envelope.
+-This is not a full FPGA render (no master low-pass/VCA), it isolates the only
+-thing the compaction changes: which table the engine reads.
++phrase through an approximate table-playback model: 9-bit address, integer
++linear interpolation, stage cross-fade by bank_weight and a synthetic envelope.
++This is not a bit-exact FPGA render (no production F=2 gain path or master
++low-pass/VCA). Use it to audition table mapping; do not infer audibility from
++a fixed difference threshold.
+ 
+ Outputs (48000 Hz, 16-bit mono): before.wav, after.wav, ab.wav, diff.wav and
+ null_test.txt with the measured difference in dB.
+@@ -52,7 +53,7 @@
+     frac = (phase >> 14) & 0x1FF
+     a = int(table[idx])
+     b = int(table[(idx + 1) & (DEPTH - 1)])
+-    return a + ((b - a) * frac + 256) / 512.0
++    return a + ((b - a) * frac + 256) // 512
+ 
+ 
+ def envelope(n: int, total: int, fs: int) -> float:
+@@ -69,20 +70,22 @@
+ 
+ 
+ def render_note(bank: np.ndarray, kind: str, note: int, vel: int, seconds: float,
+-                fs: int, tone: int, mapping: str) -> np.ndarray:
++                fs: int, tone: int, mapping: str, stage_step: int = 5859) -> np.ndarray:
+     total = int(seconds * fs)
+     inc = midi_inc(note, fs)
+     phase = 0
+     out = np.zeros(total)
+     start_stage = 4 if tone >= 3 else 3
+-    step = 8192
++    step = stage_step
++    if not 1 <= step <= 8192:
++        raise ValueError('stage_step must be in 1..8192')
+     for n in range(total):
+         if kind == 'piano':
+             zone = piano_zone(inc)
+             zone_q = min(n // step, start_stage)
+             timer = n - zone_q * step if zone_q < start_stage else step - 1
+             stage = start_stage - zone_q
+-            frac = (step - 1) - timer
++            frac = 8191 - timer
+             weight = frac * 8
+             if mapping == 'before':
+                 lo = zone * 6 + stage
+@@ -93,7 +96,9 @@
+                 hi = group * 6 + min(stage + 1, 5)
+         else:
+             band = guitar_band(inc)
+-            if vel >= 112:
++            if band <= 1:
++                variant = 5 if vel >= 112 else 2
++            elif vel >= 112:
+                 variant = 5
+             elif vel >= 96:
+                 variant = 4
+@@ -114,7 +119,7 @@
+             weight = 0
+         s0 = read_table(bank[lo], phase)
+         s1 = read_table(bank[hi], phase)
+-        mixed = s0 + ((s1 - s0) * weight + 32768) / 65536.0
++        mixed = s0 + ((s1 - s0) * weight + 32768) // 65536
+         out[n] = mixed * (vel / 128.0) * envelope(n, total, fs)
+         phase = (phase + inc) & 0xFFFFFFFF
+     return out
+@@ -148,6 +153,8 @@
+     parser.add_argument('--tone', type=int, default=0)
+     parser.add_argument('--fs', type=int, default=46875)
+     parser.add_argument('--fs-out', type=int, default=48000)
++    parser.add_argument('--stage-step', type=int, default=5859,
++                        help='stage sample count (production default: 5859)')
+     args = parser.parse_args()
+ 
+     notes = [int(n) for n in args.notes.split(',') if n.strip()]
+@@ -158,8 +165,8 @@
+     gap = int(0.05 * args.fs)
+     sig_before, sig_after = [], []
+     for note in notes:
+-        sig_before.append(render_note(before, args.kind, note, args.vel, args.seconds, args.fs, args.tone, 'before'))
+-        sig_after.append(render_note(after, args.kind, note, args.vel, args.seconds, args.fs, args.tone, 'after'))
++        sig_before.append(render_note(before, args.kind, note, args.vel, args.seconds, args.fs, args.tone, 'before', args.stage_step))
++        sig_after.append(render_note(after, args.kind, note, args.vel, args.seconds, args.fs, args.tone, 'after', args.stage_step))
+         sig_before.append(np.zeros(gap))
+         sig_after.append(np.zeros(gap))
+     b = np.concatenate(sig_before)
+@@ -188,9 +195,11 @@
+         f'after tables    : {after.shape[0]}',
+         f'diff RMS        : {diff_rms_db:8.2f} dB re before',
+         f'diff peak       : {peak_db:8.2f} dB re before peak',
+-        f'audible?        : {"yes" if diff_rms_db > -60 else "no (< -60 dB, below 16-bit LSB noise)"}',
++        'audibility      : not tested; relative dB is not a hearing threshold or dBFS',
++        'model           : approximate table playback, integer interpolation, synthetic envelope',
++        f'stage samples   : {args.stage_step}',
+         '',
+-        'ab.wav   : before (0.7 s x 6 notes) -> silence -> after, same phrase',
++        f'ab.wav   : before ({args.seconds:g} s x {len(notes)} notes) -> silence -> after, same phrase',
+         'diff.wav : (after - before) boosted +40 dB, same length as one phrase',
+         'before.wav / after.wav : individual phrases',
+     ]
+--- a/tools/gen_epiano_bank.py
++++ b/tools/gen_epiano_bank.py
+@@ -1,8 +1,10 @@
+ """Build the compacted AKWF electric-piano bank (2 zone groups x 6 stages = 12 tables, 6 BSRAM).
+ 
+ The six keyboard zones only differ in their band limit, but the source AKWF
+-e-piano keeps ~12 harmonics, so zones 0..4 produce the same tables up to float
+-rounding (-73 dB or lower). This script therefore emits two groups:
++e-piano has about 12 dominant harmonics, so zones 0..4 have only small
++differences (worst stage -60.7 dB relative RMS, including low-level
++harmonics removed by the original band limits). This is not lossless reuse.
++This script therefore emits two groups:
+   group 0 -> zones 0..4 (band limit of zone 0, 170 harmonics)
+   group 1 -> zone 5     (band limit of zone 5, 10 harmonics; needed so notes up
+                          to MIDI 95 stay below Nyquist)
+--- a/docs/evidence/FPGA-优化05-波表复用-20261021/commands/make_controls.py
++++ b/docs/evidence/FPGA-优化05-波表复用-20261021/commands/make_controls.py
+@@ -51,6 +51,6 @@
+ (OUT / 'controls.txt').write_text(
+     'null_control.wav      : digital silence (player/room noise reference)\n'
+     f'diff_control_stage.wav: real attack-timbre change, diff/signal {level:.1f} dB, +40 dB boost\n'
+-    'diff.wav              : compaction residual, diff/signal -77.6 dB, +40 dB boost\n',
++    'diff.wav              : compaction residual boosted +40 dB; see measured report for level\n',
+     encoding='utf-8')
+ print('wrote controls')
+--- a/README.md
++++ b/README.md
+@@ -10,7 +10,7 @@
+ 
+ `standard27` 是实体组装的正式入口：27MHz、46.875kHz、24 位标准 I2S 到 PCM5102A，CH9350L 直接接 USB 键盘，MCP3208 接 FSR/弯音。当前外设尚未整机接通；CH9350L 链路的 F6（钢琴/吉他切换）和 ↑/↓ 音量已在 RTL 与顶层仿真中补齐，实体键盘尚未实测；RGB 灯、彩屏、合唱和 32 声部仍是工作安排中的待办，不应按计划写成已实现。
+ 
+-`debug8usb` 最近一次构建（2026-10-21，波表复用后）为 Logic 11392、寄存器 3702、**BSRAM 25/46**；DSP 包括 1×MULT18X18、1×MULT9X9 和 1×MULTALU36X18。27MHz 约束下 Fmax 37.890MHz，最差 setup +10.645ns、hold +0.208ns，报告中负裕量端点均为零。钢琴表由 36 张复用为 12 张、吉他由 36 张复用为 30 张，试听对比的最差差分为 −60.7 dB。F6 持键重复报告与键位重排不会再次切换，松开后重新允许触发。位流 SHA256：`1D3A8849F67BD2BD25FF7F9A9DE4ED00E5C52AAB141D9F60B9FE932FAE7ABC5D`。这是本轮生成、尚未烧录的 PT8211 调试位流；`standard27` 本轮只做编译展开，未重做 PnR。历史已烧录版见烧录日志。
++`debug8usb` 最近一次构建（2026-10-21，波表复用后）为 Logic 11392、寄存器 3702、**BSRAM 25/46**；DSP 包括 1×MULT18X18、1×MULT9X9 和 1×MULTALU36X18。27MHz 约束下 Fmax 37.890MHz，最差 setup +10.645ns、hold +0.208ns，报告中负裕量端点均为零。钢琴表由 36 张近似复用为 12 张，最差单表误差约 −60.7dB，相对音频数据并非无损；吉他由 36 张逐位复用为 30 张。主要谐波与实际 RTL 输出差异的审核见 [第五项报告](docs/reviews/FPGA-波表复用音质审核-20261021-v0.1.md)，尚未做人耳盲听确认。F6 持键重复报告与键位重排不会再次切换，松开后重新允许触发。位流 SHA256：`1D3A8849F67BD2BD25FF7F9A9DE4ED00E5C52AAB141D9F60B9FE932FAE7ABC5D`。这是本轮生成、尚未烧录的 PT8211 调试位流；`standard27` 本轮只做编译展开，未重做 PnR。历史已烧录版见烧录日志。
+ 
+ ## 本周直接阅读
+ 
+--- a/docs/evidence/FPGA-优化05-波表复用-20261021/README.md
++++ b/docs/evidence/FPGA-优化05-波表复用-20261021/README.md
+@@ -15,7 +15,7 @@
+ 
+ ### 分析结果（脚本读数，见 `commands/analyze_banks.py`）
+ 
+-- **钢琴音区**：zone 0–4 的表只差浮点舍入。相对 zone 0 的逐阶段 waveform 误差（mean over stages）：
++- **钢琴音区**：zone 0–4 的表差异很小，但包含原带限处理去掉的低电平高次成分，不能全部解释为浮点舍入。相对 zone 0 的逐阶段 waveform 误差（mean over stages）：
+   zone1 −87.2 dB、zone2 −82.3 dB、zone3 −76.8 dB、zone4 −73.1 dB；**最差单个阶段 −60.7 dB**。
+   zone 5 因为真正被带限到 10 个谐波，与 zone 0 差 −52.0 dB。
+ - **钢琴阶段**：相邻阶段差 −34…−37 dB，属于真实音色演进，但比音区差异大 2–3 个数量级。
+@@ -48,37 +48,36 @@
+ | 空闲 BSRAM | 6 | **21** |
+ | 钢琴表 | 36 | **12**（2 组 × 6 阶段） |
+ | 吉他表 | 36 | **30**（5 组 × 6 变体） |
+-| 钢琴音色变化（含 zone 0–4 复用） | — | 最差单阶段 **−60.7 dB**（0.09% RMS，听不见） |
++| 钢琴数据变化（含 zone 0–4 复用） | — | 最差单阶段 **−60.7 dB**（约 0.092% 相对 RMS，非无损；可闻性未测试） |
+ | 吉他音色变化 | — | **0（逐位相同）** |
+ | ROM 逐地址校验 | — | `tb_piano_bank`（6144 地址）、`tb_guitar_bank`（15360 地址）全过 |
+ | 相关回归 | — | 10/11 通过；`tb_generic_bright` 仍是既有的旧调度期望（108/40 vs 现引擎 120/44），与本项无关 |
+ 
+ ## 试听文件（本次交付）
+ 
+-`audio/piano/` 与 `audio/guitar/` 各含：
++`audio/piano/` 与 `audio/guitar/` 各含旧模型输出（本轮审核保留为历史记录）：
+ 
+ - `ab.wav`：**前段=压缩前、后段=压缩后**，中间 0.6 s 静音；同一个乐句（6 个音，各 0.7 s）
+ - `before.wav` / `after.wav`：单独的前/后乐句
+ - `diff.wav`：`(after − before)` 放大 +40 dB（刻意放大；未放大时约比音乐低 78 dB）
+-- `null_control.wav`：数字静音（播放器/环境噪声参照）
+-- `diff_control_stage.wav`：真实起音音色变化（起始阶段 4 vs 3）同样 +40 dB，用于校准“可闻差异”的响度
+-- `null_test.txt`、`controls.txt`：差分与对照的电平记录
++- `null_test.txt`：旧模型的差分电平记录，其中自动生成的 `audible?` 判词无效，不能据此断言听不见
++
++仅钢琴目录另有 `null_control.wav` 数字静音、`diff_control_stage.wav` 起始阶段 4 vs 3 的 +40dB 差分，以及 `controls.txt`。这些对照有助比较残差电平，不构成人耳阈值或盲听证据。
+ 
+ 实测空测结果（48 kHz WAV，逐样本回读）：
+ 
+ | 乐器 | 差分 RMS（相对音乐） | 绝对差分 RMS | 绝对差分峰值 | 结论 |
+ |---|---:|---:|---:|---|
+-| 钢琴 | **−77.6 dB** | −88.3 dBFS（≈1.26 LSB RMS） | −63.5 dBFS（≈22 LSB） | 远低于正常回放的可闻阈值，约 1 LSB 量级的舍入噪声 |
++| 钢琴 | **−77.6 dB** | −88.3 dBFS（≈1.26 LSB RMS） | −63.5 dBFS（≈22 LSB） | 仅是该乐句的低电平残差，不代表所有音区/阶段，也不能自动推断不可闻 |
+ | 吉他 | **精确 0** | 精确 0 | 精确 0 | 数据逐位相同 |
+ 
+-补充：差分与信号相关性仅 0.128、能量在 0–24 kHz 平坦分布，属于表格各自量化取整的差异，不是增益或音色偏差；
+-6 个音里 C6（zone 5，保留独立表）差分为**精确 0**，差异全部来自 C2–C5（zone 0–4 复用 zone 0 表）。
++差分的低相关性不能证明它是白噪声，也不能排除音色变化。全表审核测得最差表 RMS 差约 14.79 LSB、峰值 79 LSB，主要谐波幅度变化最大约 0.0314dB，还存在低电平带外成分变化。旧乐句平均不能代替该上界。
++6 个音里 C6（zone 5，保留独立表）差分为**精确 0**，差异来自被近似复用的音区。
+ `diff_control_stage.wav` 是真实音色变化的对照，同增益下比 `diff.wav` 响约 42 dB，可用来判断“听到的内容”
+ 到底属于哪一档。
+ 
+ 试听用的“压缩前”bank 保留在 `banks_before/`；渲染脚本 `tools/render_bank_ab.py` 可重跑。
+-该 WAV 是“波表回放模型”（9 位地址、9 位线性插值、阶段交叉淡化、ADSR），不含主低通/VCA，
+-只隔离本项改变的“读哪张表”。
++该 WAV 来自旧近似回放模型，整数舍入、阶段长度和吉他低音区力度映射与生产实现存在差别，不含生产 F=2 增益路径、主低通/VCA，不能当作完整 FPGA 录音。审核已修正 `tools/render_bank_ab.py` 并在 `../FPGA-优化05审核-20261021-v0.1/audio/` 另存模型试听；同时用实际前后 RTL 做了 6656 帧配对比较。旧文件不覆盖。
+ 
+ ## 资源占用对比（debug8usb，GW2A-18，gw_sh V1.9.11.03）
+ 
+@@ -99,17 +98,17 @@
+ ## 复现命令
+ 
+ ```powershell
+-# 分析
+-tools\.venv-audio-analysis\Scripts\python.exe commands\analyze_banks.py
++# 在项目根目录运行分析
++tools\.venv-audio-analysis\Scripts\python.exe docs\evidence\FPGA-优化05-波表复用-20261021\commands\analyze_banks.py
+ # 再制表（源素材在 tmp/akwf、tmp/karoryfer）
+ tools\.venv-audio-analysis\Scripts\python.exe tools\gen_epiano_bank.py
+ tools\.venv-audio-analysis\Scripts\python.exe tools\gen_piano_prom.py
+ tools\.venv-audio-analysis\Scripts\python.exe tools\gen_guitar_samples_bank.py
+ # 试听
+ tools\.venv-audio-analysis\Scripts\python.exe tools\render_bank_ab.py `
+-  --before-hex banks_before\epiano_bank_all_36.hex `
+-  --after-hex ..\..\output\handoff_milestone2_20261008\source\rtl\audio\epiano_bank_all.hex `
+-  --kind piano --out-dir audio\piano
++  --before-hex docs\evidence\FPGA-优化05-波表复用-20261021\banks_before\epiano_bank_all_36.hex `
++  --after-hex output\handoff_milestone2_20261008\source\rtl\audio\epiano_bank_all.hex `
++  --kind piano --out-dir tmp\bank-audition
+ # 构建
+ cd output\handoff_milestone2_20261008\source\build
+ .\build.ps1 -Profile debug8usb -GwSh E:\Gowin\Gowin_V1.9.11.03_Education_x64\IDE\bin\gw_sh.exe
