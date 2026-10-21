@@ -1,0 +1,32 @@
+# RTL 门禁与构建状态（2026-10-21 v0.2）
+
+## 构建
+
+- 档位：debug8usb，顶层 	op_dbg8usb_build，器件 GW2A-LV18PG256C8/I7，版本 C。
+- 构建结果：PASS，已生成 instrument.fs。
+- 位流 SHA256：$hash。
+- 资源：Logic 11074/20736（54%），Register 3597/16173（23%），BSRAM 40/46（87%），DSP 0.75/24（4%）。
+- 时序：25 条 Setup 路径最差裕量 +6.967 ns，25 条 Hold 路径最差裕量 +0.317 ns，负裕量路径均为 0。
+- 引脚：CH9350L RX=L9、TX=N8；MCP3208 CS/SCK/MOSI/MISO=N6/D11/A11/B11；PT8211 BCK/WS/DIN=N15/P16/P15。
+
+## 完整门禁
+
+- 正向测试台：64 台 PASS。
+- 参数负例：6 个 PASS，均按预期拒绝非法配置。
+- 	b_gpio_top：PASS，覆盖 GPIO 模式切换、四键同拍、Panic 优先级和 UART 路径。
+- 	b_audio_capture：PASS，完整捕获 58,880 个原生 PT8211 帧，覆盖 UART、ADSR、四音和弦、松键、M0/M1 与数字静音。
+- 门禁退出码：0。
+
+## 明确跳过
+
+以下 5 个测试台文件当前不在仓库中，门禁脚本明确跳过而非静默忽略：
+
+- sim/tb_piano_engine.v
+- sim/tb_piano_morph.v
+- sim/tb_piano_envelope.v
+- sim/tb_top_i2s_27m.v
+- sim/tb_generic_bright.v
+
+## 结论
+
+最新 RTL 已通过现有完整仿真门禁并成功生成 debug8usb 位流，可以进入实体板卡 bring-up。尚未连接 Tang Primer 20K、CH9350L、普通 USB 键盘和 FSR，因此上板输入链路、模拟噪声、实际延迟及 FSR 标定仍需现场验证。
