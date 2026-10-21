@@ -19,7 +19,7 @@ module tb_piano_envelope;
         .PIANO_RELEASE_STEP(16'd4096), .PIANO_SUSTAIN_LEVEL(16'd0)
     ) dut(
         .clk(clk), .rst(rst), .sample_tick(tick), .gate(gate),
-        .retrigger(retrigger), .piano_mode(piano_mode), .note(note),
+        .retrigger(retrigger), .piano_mode(piano_mode), .guitar_mode(1'b0), .note(note),
         .velocity(velocity), .render_note(render_note),
         .render_velocity(render_velocity), .render_retrigger(restart),
         .env(env), .idle(idle));

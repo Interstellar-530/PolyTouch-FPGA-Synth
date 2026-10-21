@@ -20,7 +20,7 @@ module tb_piano_morph;
         .retrig0(retrig), .retrig1(1'b0), .retrig2(1'b0), .retrig3(1'b0),
         .env0(16'd0), .env1(16'd0), .env2(16'd0), .env3(16'd0),
         .vel0(8'd127), .vel1(8'd0), .vel2(8'd0), .vel3(8'd0),
-        .bend_ratio_q16(17'd65536), .piano_enable(1'b1), .piano_tone(3'd0),
+        .bend_ratio_q16(17'd65536), .piano_enable(1'b1), .guitar_enable(1'b0), .piano_tone(3'd0),
         .sine_sum(low_sine), .bright_sum(low_bright), .sums_valid(low_valid),
         .mult_request(), .mult_operand_a(), .mult_operand_b(), .mult_result(36'sd0));
 
@@ -33,13 +33,13 @@ module tb_piano_morph;
         .retrig0(retrig), .retrig1(1'b0), .retrig2(1'b0), .retrig3(1'b0),
         .env0(16'hffff), .env1(16'd0), .env2(16'd0), .env3(16'd0),
         .vel0(8'd127), .vel1(8'd0), .vel2(8'd0), .vel3(8'd0),
-        .bend_ratio_q16(17'd65536), .piano_enable(1'b1), .piano_tone(3'd0),
+        .bend_ratio_q16(17'd65536), .piano_enable(1'b1), .guitar_enable(1'b0), .piano_tone(3'd0),
         .sine_sum(high_sine), .bright_sum(high_bright), .sums_valid(high_valid),
         .mult_request(), .mult_operand_a(), .mult_operand_b(), .mult_result(36'sd0));
 
     always @(posedge clk) begin
-        if (low_env.bank_low == 7'd42) saw_low_body <= 1'b1;
-        if (high_env.bank_low == 7'd46) saw_high_hammer <= 1'b1;
+        if (low_env.bank_low == 7'd18) saw_low_body <= 1'b1;
+        if (high_env.bank_low == 7'd22) saw_high_hammer <= 1'b1;
         if (low_valid && high_valid) begin
             frames = frames + 1;
             if (low_bright !== high_bright) differences = differences + 1;
@@ -54,8 +54,8 @@ module tb_piano_morph;
             repeat (180) @(negedge clk);
         end
         retrig = 1'b0;
-        if (!saw_low_body) $fatal(1, "low envelope never selected C4 loud body bank 42");
-        if (!saw_high_hammer) $fatal(1, "high envelope never selected C4 loud hammer bank 46");
+        if (!saw_low_body) $fatal(1, "low envelope never selected C4 loud body bank 18");
+        if (!saw_high_hammer) $fatal(1, "high envelope never selected C4 loud hammer bank 22");
         if (frames < 4 || differences == 0)
             $fatal(1, "morph frames=%0d differences=%0d", frames, differences);
         $display("PASS tb_piano_morph: low env uses body, high env uses hammer, frames=%0d differences=%0d",
