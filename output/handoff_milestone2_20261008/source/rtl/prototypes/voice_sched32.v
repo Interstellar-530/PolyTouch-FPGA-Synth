@@ -141,7 +141,19 @@ module voice_sched32 #(
     reg [15:0] cfg_env_q;
     reg [6:0]  cfg_vel_q;
     reg        cfg_retrig_q;
-    
+
+    // Register one complete array snapshot before deriving the phase
+    // increment. This removes the 32-way note read mux from the long
+    // note_phase_inc path while the pending transaction provides backpressure.
+    reg        snap_valid;
+    reg [5:0]  snap_sel;
+    reg [6:0]  snap_note;
+    reg [7:0]  snap_vel;
+    reg [15:0] snap_env;
+    reg [2:0]  snap_stage;
+    reg [12:0] snap_timer;
+    reg        snap_retrig;
+    reg [2:0]  snap_mask;
 
     reg [5:0] dirty_sel;
     // Round-robin scan removes the combinational priority encoder ahead of
@@ -150,21 +162,21 @@ module voice_sched32 #(
     wire clean_any = dirty[dirty_sel] || dirty_inc[dirty_sel] || dirty_param[dirty_sel];
 
     wire [31:0] candidate_inc;
-    note_phase_inc #(.FS_HZ(FS_HZ)) u_inc(.note(note[dirty_sel]),.inc(candidate_inc));
+    note_phase_inc #(.FS_HZ(FS_HZ)) u_inc(.note(snap_note),.inc(candidate_inc));
     // Use note boundaries, preserving the production 46.875kHz musical mapping
     // when the prototype runs at 48kHz. Piano group 1 starts at MIDI 78.
-    wire [2:0] candidate_band=note[dirty_sel]<48?0:note[dirty_sel]<60?1:
-        note[dirty_sel]<67?2:note[dirty_sel]<76?3:note[dirty_sel]<84?4:5;
+    wire [2:0] candidate_band=snap_note<48?0:snap_note<60?1:
+        snap_note<67?2:snap_note<76?3:snap_note<84?4:5;
     wire [2:0] candidate_group=candidate_band<=1?0:candidate_band-1'b1;
     wire [2:0] candidate_variant=candidate_band<=1?
-        (vel[dirty_sel]>=112?5:2):vel[dirty_sel]>=112?5:vel[dirty_sel]>=96?4:
-        vel[dirty_sel]>=64?2:vel[dirty_sel]>=32?1:0;
-    wire [2:0] candidate_stage=stage_q[dirty_sel]<start_stage?start_stage-stage_q[dirty_sel]:0;
+        (snap_vel>=112?5:2):snap_vel>=112?5:snap_vel>=96?4:
+        snap_vel>=64?2:snap_vel>=32?1:0;
+    wire [2:0] candidate_stage=snap_stage<start_stage?start_stage-snap_stage:0;
     wire [5:0] candidate_bank=instrument_q?
         6'd12+candidate_group*6'd6+candidate_variant:
-        (note[dirty_sel]>=78?6'd6:6'd0)+candidate_stage;
+        (snap_note>=78?6'd6:6'd0)+candidate_stage;
     wire [15:0] candidate_weight=instrument_q?16'd0:
-        ((16'd8191-{3'd0,timer[dirty_sel]})<<3);
+        ((16'd8191-{3'd0,snap_timer})<<3);
 
     always @(posedge clk) begin
         if (rst) begin
@@ -178,6 +190,8 @@ module voice_sched32 #(
             env_lat <= 16'd0; est_lat <= 3'd0; gate_lat <= 1'b0; timer_lat <= 13'd0; stage_lat <= 3'd0;
             sel <= 6'd0; dirty_sel<=0;cfg_inc_q<=0;cfg_param_q<=0;cfg_mask_q<=3'b001;instrument_q<=0;tone_q<=0;
             cfg_env_q <= 16'd0; cfg_vel_q <= 7'd0; cfg_retrig_q <= 1'b0;
+            snap_valid<=1'b0;snap_sel<=0;snap_note<=0;snap_vel<=0;snap_env<=0;
+            snap_stage<=0;snap_timer<=0;snap_retrig<=0;snap_mask<=3'b001;
             ev_q_valid <= 1'b0; ev_q_on <= 1'b0; ev_q_note <= 7'd0; ev_q_vel <= 8'd0;
             ev_state <= EV_IDLE; scan_ptr <= 6'd0;
             ev_on_q <= 1'b0; note_q <= 7'd0; vel_q <= 8'd0;
@@ -188,6 +202,7 @@ module voice_sched32 #(
             // Latch global timbre at frame boundary and refresh every voice.
             if(sample_tick && ((instrument_q!=instrument)||(tone_q!=piano_tone)))begin
                 instrument_q<=instrument;tone_q<=piano_tone;dirty<={VOICES{1'b1}};dirty_inc<={VOICES{1'b1}};dirty_param<={VOICES{1'b1}};
+                dirty_sel<=0;
             end
             // Event capture: one entry.
             if (ev_valid && !ev_q_valid) begin
@@ -276,22 +291,29 @@ module voice_sched32 #(
                 default: ev_state <= EV_IDLE;
             endcase
 
-            // Snapshot a configuration and retain valid/data until accepted.
-            // Retire this retrigger at snapshot time; a later event may set a
-            // new retrigger/dirty bit while the old transaction is waiting.
-            // Do not clear dirty in the same cycle as a musical-state update.
-            // Prefetch the next stable snapshot while the core accepts the
-            // previous one, sustaining one three-word transaction per 4 clocks.
+            // Convert the registered snapshot, then retain valid/data until
+            // accepted. Clearing dirty at snapshot time lets a later musical
+            // update set it again while this transaction is waiting.
             if(!cfg_pend || cfg_ready)begin
-                if(!env_run && !sample_tick && ev_state!=EV_COMMIT)
-                    dirty_sel <= dirty_sel==VOICES-1 ? 6'd0 : dirty_sel+1'b1;
-                if(clean_any && !env_run && !sample_tick && ev_state!=EV_COMMIT)begin
-                    sel<=dirty_sel;cfg_inc_q<=candidate_inc;
-                    cfg_env_q<=env[dirty_sel];cfg_vel_q<=vel[dirty_sel][6:0];
-                    cfg_retrig_q<=retrig[dirty_sel];cfg_param_q<={2'd0,candidate_bank,candidate_weight};
-                    cfg_mask_q<={dirty_param[dirty_sel],dirty_inc[dirty_sel],1'b1};
-                    cfg_pend<=1;dirty[dirty_sel]<=0;dirty_inc[dirty_sel]<=0;dirty_param[dirty_sel]<=0;retrig[dirty_sel]<=0;
+                if(snap_valid)begin
+                    sel<=snap_sel;cfg_inc_q<=candidate_inc;
+                    cfg_env_q<=snap_env;cfg_vel_q<=snap_vel[6:0];
+                    cfg_retrig_q<=snap_retrig;cfg_param_q<={2'd0,candidate_bank,candidate_weight};
+                    cfg_mask_q<=snap_mask;cfg_pend<=1;snap_valid<=0;
                 end else cfg_pend<=0;
+            end
+            if((!cfg_pend || cfg_ready) &&
+               (!snap_valid || (snap_valid && (!cfg_pend || cfg_ready))) &&
+               !env_run && !sample_tick && ev_state!=EV_COMMIT)begin
+                dirty_sel <= dirty_sel==VOICES-1 ? 6'd0 : dirty_sel+1'b1;
+                if(clean_any)begin
+                    snap_valid<=1;snap_sel<=dirty_sel;snap_note<=note[dirty_sel];
+                    snap_vel<=vel[dirty_sel];snap_env<=env[dirty_sel];
+                    snap_stage<=stage_q[dirty_sel];snap_timer<=timer[dirty_sel];
+                    snap_retrig<=retrig[dirty_sel];
+                    snap_mask<={dirty_param[dirty_sel],dirty_inc[dirty_sel],1'b1};
+                    dirty[dirty_sel]<=0;dirty_inc[dirty_sel]<=0;dirty_param[dirty_sel]<=0;retrig[dirty_sel]<=0;
+                end
             end
         end
     end

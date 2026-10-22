@@ -12,12 +12,16 @@ module audio_frame_bridge_stereo(
  output reg  [7:0]  frame_id_audio
 );
  reg req_toggle=0;
- reg req_meta=0,req_sync=0,req_seen=0;
+ (* ASYNC_REG="TRUE" *) reg req_meta=0,req_sync=0;
+ reg req_seen=0;
  reg signed[23:0] left_hold=0,right_hold=0;
  reg [7:0] frame_hold=0,frame_count=0;
  reg res_toggle=0,pending=0;
- reg ack_toggle=0,ack_meta=0,ack_sync=0,ack_seen=0;
- reg res_meta=0,res_sync=0,res_seen=0;
+ reg ack_toggle=0;
+ (* ASYNC_REG="TRUE" *) reg ack_meta=0,ack_sync=0;
+ reg ack_seen=0;
+ (* ASYNC_REG="TRUE" *) reg res_meta=0,res_sync=0;
+ reg res_seen=0;
 
  // request: audio tick -> compute pulse
  always @(posedge clk_audio or posedge reset_audio)begin
@@ -60,4 +64,24 @@ module audio_frame_bridge_stereo(
    end
   end
  end
+
+`ifdef SIMULATION
+ reg request_outstanding=0;
+ always @(posedge clk_compute or posedge reset_compute)begin
+  if(reset_compute)request_outstanding<=0;
+  else begin
+   if(tick_compute && request_outstanding)
+    $fatal(1,"stereo frame bridge missed the previous compute deadline");
+   if(valid_compute && !request_outstanding)
+    $fatal(1,"stereo frame bridge received a result without a request");
+   if(valid_compute && pending)
+    $fatal(1,"stereo frame bridge result arrived before prior acknowledgement");
+   case({tick_compute,valid_compute})
+    2'b10:request_outstanding<=1;
+    2'b01:request_outstanding<=0;
+    default:request_outstanding<=request_outstanding;
+   endcase
+  end
+ end
+`endif
 endmodule

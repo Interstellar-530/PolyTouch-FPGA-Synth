@@ -7,10 +7,9 @@
 //     bank used for each read, see instrument_rom_banks),
 //   - the interpolation, bank-mix and amplitude multiplies are issued as soon
 //     as their operands are ready and consumed two clocks later,
-//   - envelope and velocity are folded into one 16-bit coefficient, so the sine
-//     and bright paths need one amplitude multiply each.
-// Net cost is 16 clocks per voice instead of 27. The folded coefficient is the
-// only arithmetic change (at most one LSB versus the sequential rounding).
+//   - independent multiplies overlap when their operands are ready, while the
+//     original envelope-then-velocity rounding order is preserved.
+// Net cost is 19 clocks per voice instead of 27 without changing the arithmetic.
 module instrument_ram_wavetable_engine #(
  parameter integer VOICE_COUNT=8,parameter integer FRAME_CYCLES=1024
 )(
@@ -29,12 +28,12 @@ module instrument_ram_wavetable_engine #(
  localparam [5:0] IDLE=0,
   F0=1,F1=2,F2=3,F3=4,
   A0=5,A1=6,B1=7,BA=8,BB=9,
-  M1=10,M2=11,M3=12,M4=13,M5=14,M6=15,ACC=16,
+  M1=10,M2=11,M3=12,M4=13,M5=14,M6=15,M7=16,M8=17,M9=18,ACC=19,
   CFG0=20,CFG1=21,CFG2=22;
  reg[5:0]state=IDLE;reg[4:0]voice=0,cfg_id=0;
  reg[31:0]cfg_word=0,cfg_inc=0,cfg_param_r=0,param_word=0,phase=0,increment=0;
  reg[2:0]cfg_mask_r=0;
- reg[15:0]envelope=0,env_vel=0;reg[6:0]velocity=0;
+ reg[15:0]envelope=0;reg[6:0]velocity=0;
  wire voice_audible=(envelope!=0 && velocity!=0);
  reg signed[31:0]sine_acc=0,bright_acc=0;
  localparam integer COUNT_BITS=$clog2(FRAME_CYCLES);
@@ -64,7 +63,7 @@ module instrument_ram_wavetable_engine #(
  end
 
  reg[8:0]rom_addr=0,frac=0;reg[5:0]rom_bank=0,bank_low=0;reg[15:0]bank_weight=0;
- wire rom_ce=voice_audible && (state==A0 || state==A1 || state==B1 || state==BA);
+ wire rom_ce=voice_audible && (state==A0 || state==A1 || state==B1 || state==BA || state==BB);
  wire bank_ce=voice_audible && rom_ce;
  wire[15:0]sine_data,bright_data;
  gowin_prom_wave_sine u_sine(clk,rom_ce,rst,rom_addr,sine_data);
@@ -73,8 +72,8 @@ module instrument_ram_wavetable_engine #(
  reg signed[23:0]interp_s=0,interp_b=0;
  reg signed[32:0]mul_a=0;reg signed[17:0]mul_b=0;
  wire signed[50:0]product;
- wire mul_issue=(state==BA || state==BB || state==M1 || state==M2 || state==M3 ||
-                 state==M4 || state==M5);
+  wire mul_issue=(state==BB || state==M1 || state==M2 || state==M3 || state==M4 ||
+                 state==M5 || state==M6 || state==M8);
  wire mul_enable=voice_audible && mul_issue;
  assign aux_ready=ram_ready && !sample_tick && (state==IDLE || state==CFG0 || state==CFG1 || state==CFG2);
  wire aux_enable=aux_ready && aux_request;
@@ -87,18 +86,18 @@ module instrument_ram_wavetable_engine #(
  wire signed[23:0]interp_delta=product[24:1]+{{23{1'b0}},product[0]};
  wire signed[23:0]bank_interpolated=($signed(bank_a) <<< 8)+interp_delta;
  wire signed[23:0]bank_delta=product[39:16]+{{23{1'b0}},product[15]};
- wire signed[15:0]env_vel_result=product[22:7]+{{15{1'b0}},product[6]};
- wire signed[23:0]amp_result=product[39:16]+{{23{1'b0}},product[15]};
+ wire signed[23:0]envelope_result=product[39:16]+{{23{1'b0}},product[15]};
+ wire signed[23:0]velocity_result=product[30:7]+{{23{1'b0}},product[6]};
  wire signed[23:0]interp_b_new=interp_b+bank_delta;
  reg signed[23:0]scaled_s=0;
- wire signed[23:0]bright_amp=voice_audible?amp_result:24'sd0;
+ wire signed[23:0]bright_amp=voice_audible?velocity_result:24'sd0;
  wire signed[31:0]sine_mix=sine_acc+{{8{scaled_s[23]}},scaled_s};
  wire signed[31:0]bright_mix=bright_acc+{{8{bright_amp[23]}},bright_amp};
 
  always @(posedge clk)begin
   if(rst)begin
    state<=IDLE;voice<=0;cfg_id<=0;cfg_word<=0;cfg_inc<=0;cfg_param_r<=0;param_word<=0;
-   phase<=0;increment<=0;envelope<=0;velocity<=0;env_vel<=0;sine_acc<=0;bright_acc<=0;
+   phase<=0;increment<=0;envelope<=0;velocity<=0;sine_acc<=0;bright_acc<=0;
    sine_sum<=0;bright_sum<=0;sums_valid<=0;rom_addr<=0;frac<=0;rom_bank<=0;
    bank_low<=0;bank_weight<=0;mul_a<=0;mul_b<=0;interp_s<=0;interp_b<=0;
    a_sine<=0;a_bright<=0;b_sine<=0;b_bright<=0;bank_a<=0;bank_b<=0;scaled_s<=0;
@@ -128,24 +127,24 @@ module instrument_ram_wavetable_engine #(
      state<=A1;
     end
     A1:begin
-     a_sine<=sine_data;a_bright<=bright_data;
      rom_addr<=phase[31:23]+9'd1;state<=B1;
     end
     B1:begin
-     b_sine<=sine_data;b_bright<=bright_data;
+     a_sine<=sine_data;a_bright<=bright_data;
      rom_bank<=(bank_low==6'd47)?6'd47:(bank_low+6'd1);
      rom_addr<=phase[31:23];state<=BA;
     end
     BA:begin
-     bank_a<=bright_data;rom_addr<=phase[31:23]+9'd1;
+     b_sine<=sine_data;b_bright<=bright_data;
+     rom_addr<=phase[31:23]+9'd1;
      if(voice_audible)begin
-      mul_a<=$signed({b_sine[15],b_sine})-$signed({a_sine[15],a_sine});
+      mul_a<=$signed({sine_data[15],sine_data})-$signed({a_sine[15],a_sine});
       mul_b<={9'd0,frac};
      end
      state<=BB;
     end
     BB:begin
-     bank_b<=bright_data;
+     bank_a<=bright_data;
      if(voice_audible)begin
       mul_a<=$signed({b_bright[15],b_bright})-$signed({a_bright[15],a_bright});
       mul_b<={9'd0,frac};
@@ -153,16 +152,17 @@ module instrument_ram_wavetable_engine #(
      state<=M1;
     end
     M1:begin
+     bank_b<=bright_data;
      interp_s<=($signed(a_sine) <<<8)+interp_delta;
      if(voice_audible)begin
-      mul_a<=$signed({bank_b[15],bank_b})-$signed({bank_a[15],bank_a});
+      mul_a<=$signed({bright_data[15],bright_data})-$signed({bank_a[15],bank_a});
       mul_b<={9'd0,frac};
      end
      state<=M2;
     end
     M2:begin
      interp_b<=($signed(a_bright) <<<8)+interp_delta;
-     if(voice_audible)begin mul_a<=$signed({17'd0,envelope});mul_b<={11'd0,velocity};end
+     if(voice_audible)begin mul_a<=interp_s;mul_b<=$signed({2'd0,envelope});end
      state<=M3;
     end
     M3:begin
@@ -173,21 +173,26 @@ module instrument_ram_wavetable_engine #(
      state<=M4;
     end
     M4:begin
-     env_vel<=env_vel_result[15:0];
-     if(voice_audible)begin mul_a<=interp_s;mul_b<={2'd0,env_vel_result[15:0]};end
+     if(voice_audible)begin mul_a<=envelope_result;mul_b<={11'd0,velocity};end
      state<=M5;
     end
     M5:begin
+     interp_b<=interp_b_new;
      if(voice_audible)begin
-      mul_a<=$signed({{9{interp_b_new[23]}},interp_b_new});mul_b<={2'd0,env_vel};
+      mul_a<=$signed({{9{interp_b_new[23]}},interp_b_new});mul_b<={2'd0,envelope};
      end
-     scaled_s<=voice_audible?amp_result:24'sd0;
      state<=M6;
     end
     M6:begin
-     interp_b<=interp_b_new;
-     state<=ACC;
+     scaled_s<=voice_audible?velocity_result:24'sd0;
+     state<=M7;
     end
+    M7:begin
+     if(voice_audible)begin mul_a<=envelope_result;mul_b<={11'd0,velocity};end
+     state<=M8;
+    end
+    M8:state<=M9;
+    M9:state<=ACC;
     ACC:begin
      sine_acc<=sine_mix;bright_acc<=bright_mix;
      if(voice==VOICE_COUNT-1)begin
@@ -199,7 +204,7 @@ module instrument_ram_wavetable_engine #(
   end
  end
 `ifdef SIMULATION
- initial if(VOICE_COUNT<1 || VOICE_COUNT>32 || FRAME_CYCLES<16*VOICE_COUNT+4)
+ initial if(VOICE_COUNT<1 || VOICE_COUNT>32 || FRAME_CYCLES<19*VOICE_COUNT+4)
   $fatal(1,"instrument_ram_wavetable_engine invalid voice/frame budget");
  always @(posedge clk)if(!rst)begin
   if(sample_tick && state!=IDLE)$fatal(1,"instrument_ram_wavetable_engine missed frame deadline");

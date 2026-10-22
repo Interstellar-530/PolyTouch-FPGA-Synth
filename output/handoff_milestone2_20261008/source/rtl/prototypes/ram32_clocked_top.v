@@ -47,18 +47,34 @@ module ram32_clocked_top #(
   .left_audio(left_audio),.right_audio(right_audio),.valid_audio(valid_audio),
   .frame_id_audio(frame_id));
 
- // ------------------------------------------------- slow controls (2FF) ---
- reg [2:0] ctrl_ref=0,ctrl_meta=0,ctrl_sync=0;
- always @(posedge clk_ref) ctrl_ref<={instrument,piano_tone};
- always @(posedge clk_compute) begin ctrl_meta<=ctrl_ref; ctrl_sync<=ctrl_meta; end
- wire instrument_c=ctrl_sync[2];
- wire [1:0] piano_tone_c=ctrl_sync[1:0];
+ // ----------------------------------------- coherent slow-control filter ---
+ // The source bundle is held for a 12.288 MHz reference cycle. Two compute-
+ // domain samples must then agree before the scheduler sees a new value, so a
+ // one-cycle torn/metastable sample cannot change the global timbre.
+ reg [2:0] ctrl_ref=0;
+ always @(posedge clk_ref or posedge reset_audio)begin
+  if(reset_audio)ctrl_ref<=0;
+  else ctrl_ref<={instrument,piano_tone};
+ end
+ (* ASYNC_REG="TRUE" *) reg [2:0] ctrl_meta=0,ctrl_sync=0;
+ reg [2:0] ctrl_previous=0,ctrl_filtered=0;
+ always @(posedge clk_compute or posedge reset_compute)begin
+  if(reset_compute)begin
+   ctrl_meta<=0;ctrl_sync<=0;ctrl_previous<=0;ctrl_filtered<=0;
+  end else begin
+   ctrl_meta<=ctrl_ref;ctrl_sync<=ctrl_meta;ctrl_previous<=ctrl_sync;
+   if(ctrl_sync==ctrl_previous)ctrl_filtered<=ctrl_sync;
+  end
+ end
+ wire instrument_c=ctrl_filtered[2];
+ wire [1:0] piano_tone_c=ctrl_filtered[1:0];
 
  // ------------------------------------------------- event handshake (4-phase) ---
  wire ev_ready_c;
  reg ev_req=0,ev_busy=0;
  reg [15:0] ev_hold=0;
- reg ev_ack_meta=0,ev_ack_sync=0,ev_ack_seen=0;
+ (* ASYNC_REG="TRUE" *) reg ev_ack_meta=0,ev_ack_sync=0;
+ reg ev_ack_seen=0;
  always @(posedge clk_ref or posedge reset_audio)begin
   if(reset_audio)begin
    ev_req<=0;ev_busy<=0;ev_hold<=0;ev_ack_meta<=0;ev_ack_sync<=0;ev_ack_seen<=0;
@@ -72,7 +88,8 @@ module ram32_clocked_top #(
  end
  assign ev_ready=!ev_busy;
 
- reg ev_req_meta=0,ev_req_sync=0,ev_req_seen=0;
+ (* ASYNC_REG="TRUE" *) reg ev_req_meta=0,ev_req_sync=0;
+ reg ev_req_seen=0;
  reg ev_ack=0,ev_pending=0;
  reg [15:0] ev_hold_c=0;
  always @(posedge clk_compute or posedge reset_compute)begin

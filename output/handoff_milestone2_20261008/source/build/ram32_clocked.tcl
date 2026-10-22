@@ -33,6 +33,11 @@ foreach src $sources { add_file [file join $root $src] }
 add_file [file join $root constraints ram32_clocked.sdc]
 set_option -top_module ram32_clocked_wrap
 set_option -output_base_name ram32c
+# The 73.728 MHz profile has little margin under the default speed-priority
+# placer. Use the vendor's timing-priority placement and routing algorithms so
+# small CDC-shell changes do not randomly displace the audio datapath.
+set_option -place_option 2
+set_option -route_option 1
 
 set project_work [file join $run_dir ram32c]
 file mkdir [file join $project_work rtl audio]

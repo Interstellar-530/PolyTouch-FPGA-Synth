@@ -19,7 +19,9 @@ module tb_ram32_clocked #(parameter integer MULT=4);
  wire sample_valid;
  wire signed [23:0] dl,dr;
  wire decoded;
- integer frames=0,i,ev_count=0;
+ integer frames=0,i,ev_count=0,request_count=0,result_count=0,capture_count=0;
+ reg frame_seen=0;
+ reg [7:0] previous_frame_id=0;
  realtime t_first,t_last,period;
  real expected_period;
 
@@ -40,6 +42,15 @@ module tb_ram32_clocked #(parameter integer MULT=4);
   #1;
   if(frames>3 && (dl!==dr || ^dl===1'bx)) $fatal(1,"stereo mismatch l=%h r=%h",dl,dr);
   frames=frames+1;
+ end
+ always @(posedge dut.clk_compute)begin
+  if(!dut.reset_compute && dut.tick_compute)request_count=request_count+1;
+  if(!dut.reset_compute && sample_valid)result_count=result_count+1;
+ end
+ always @(posedge dut.valid_audio)begin
+  if(frame_seen && frame_id!==previous_frame_id+1'b1)
+   $fatal(1,"non-contiguous frame id previous=%0d current=%0d",previous_frame_id,frame_id);
+  previous_frame_id=frame_id;frame_seen=1;capture_count=capture_count+1;
  end
 
  task send_event;
@@ -66,11 +77,29 @@ module tb_ram32_clocked #(parameter integer MULT=4);
   if(period<expected_period-0.05 || period>expected_period+0.05) $fatal(1,"compute period %f ns expect %f",period,expected_period);
   $display("METRIC compute_period_ns=%.4f",period);
 
+  // A bundled control update must cross as one coherent value.
+  instrument=1; piano_tone=2'b11;
+  i=0;
+  while((dut.instrument_c!==1'b1 || dut.piano_tone_c!==2'b11) && i<32)begin
+   @(posedge clk_ref);i=i+1;
+  end
+  if(i==32)$fatal(1,"coherent control update did not cross");
+  instrument=0; piano_tone=2'b00;
+  i=0;
+  while((dut.instrument_c!==1'b0 || dut.piano_tone_c!==2'b00) && i<32)begin
+   @(posedge clk_ref);i=i+1;
+  end
+  if(i==32)$fatal(1,"coherent control return did not cross");
+
   for(i=0;i<32;i=i+1) send_event(1'b1,7'd36+i[6:0]);
   repeat(120) @(posedge decoded);
   if(active!==6'd32) $fatal(1,"active=%0d expect 32 after %0d events",active,ev_count);
   if(clips!=0) $fatal(1,"clip counter moved");
   if(frame_id<8'd80) $fatal(1,"frame id too small: %0d",frame_id);
+  if(result_count>request_count || request_count-result_count>1)
+   $fatal(1,"request/result imbalance requests=%0d results=%0d",request_count,result_count);
+  if(capture_count>result_count || result_count-capture_count>1)
+   $fatal(1,"result/capture imbalance results=%0d captures=%0d",result_count,capture_count);
   $display("METRIC frames=%0d frame_id=%0d active=%0d",frames,frame_id,active);
 
   send_event(1'b0,7'd40);

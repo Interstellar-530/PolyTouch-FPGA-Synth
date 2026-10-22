@@ -7,6 +7,10 @@ module audio_pll_clock #(parameter integer MULT=4)(
  input wire clk_ref,reset,
  output wire clk_compute,locked,reset_compute,reset_audio
 );
+`ifdef SIMULATION
+ initial if(MULT!=4 && MULT!=6 && MULT!=8)
+  $fatal(1,"audio_pll_clock MULT must be 4, 6, or 8; got %0d",MULT);
+`endif
  localparam integer FB_SEL = MULT-1;                 // FBDIV = MULT
  localparam integer ODIV   = (MULT==4) ? 16 : 8;     // keep VCO in range
  reg[3:0]startup=0;
