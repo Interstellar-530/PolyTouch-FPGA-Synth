@@ -82,11 +82,13 @@ module instrument_ram_wavetable_engine #(
  wire signed[17:0]active_mul_b=aux_enable?aux_operand_b:mul_b;
  split_audio_multiplier #(33) u_multiplier(clk,rst,mul_enable || aux_enable,active_mul_a,active_mul_b,product);
  assign aux_product=product;
- wire signed[50:0]interp_delta=(product+51'sd1) >>> 1;
+ // Narrow rounding adds: (p+K)>>S keeps only the bits the audio path uses,
+ // which removes the 51-bit carry chain from the multiplier output path.
+ wire signed[23:0]interp_delta=product[24:1]+{{23{1'b0}},product[0]};
  wire signed[23:0]bank_interpolated=($signed(bank_a) <<< 8)+interp_delta;
- wire signed[50:0]bank_delta=(product+51'sd32768) >>>16;
- wire signed[23:0]env_vel_result=(product+51'sd64) >>>7;
- wire signed[23:0]amp_result=(product+51'sd32768) >>>16;
+ wire signed[23:0]bank_delta=product[39:16]+{{23{1'b0}},product[15]};
+ wire signed[15:0]env_vel_result=product[22:7]+{{15{1'b0}},product[6]};
+ wire signed[23:0]amp_result=product[39:16]+{{23{1'b0}},product[15]};
  wire signed[23:0]interp_b_new=interp_b+bank_delta;
  reg signed[23:0]scaled_s=0;
  wire signed[23:0]bright_amp=voice_audible?amp_result:24'sd0;

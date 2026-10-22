@@ -1,16 +1,21 @@
-// Existing12.288MHz reference ->49.152MHz compute clock. I2S stays on reference.
-// Static divisors: IDIV1,FBDIV4,ODIV16 ->VCO786.432MHz (GW2A-18C,C8/I7).
-module audio_pll_clock(
+// 12.288 MHz reference -> 4x/6x/8x compute clock. I2S stays on the reference.
+// Static divisors: IDIV=1, FBDIV=MULT, ODIV=16 (MULT=4) or 8 (MULT=6/8).
+//   MULT=4 -> 49.152 MHz, VCO 786.432 MHz
+//   MULT=6 -> 73.728 MHz, VCO 589.824 MHz
+//   MULT=8 -> 98.304 MHz, VCO 786.432 MHz
+module audio_pll_clock #(parameter integer MULT=4)(
  input wire clk_ref,reset,
  output wire clk_compute,locked,reset_compute,reset_audio
 );
+ localparam integer FB_SEL = MULT-1;                 // FBDIV = MULT
+ localparam integer ODIV   = (MULT==4) ? 16 : 8;     // keep VCO in range
  reg[3:0]startup=0;
  always @(posedge clk_ref or posedge reset)begin
   if(reset)startup<=0;else if(!startup[3])startup<=startup+4'd1;
  end
  wire pll_reset=reset || !startup[3];
  rPLL #(.FCLKIN("12.288"),.DYN_IDIV_SEL("false"),.IDIV_SEL(0),
-  .DYN_FBDIV_SEL("false"),.FBDIV_SEL(3),.DYN_ODIV_SEL("false"),.ODIV_SEL(16),
+  .DYN_FBDIV_SEL("false"),.FBDIV_SEL(FB_SEL),.DYN_ODIV_SEL("false"),.ODIV_SEL(ODIV),
   .PSDA_SEL("0000"),.DUTYDA_SEL("1000"),.DYN_DA_EN("false"),
   .CLKFB_SEL("internal"),.CLKOUT_BYPASS("false"),.DEVICE("GW2A-18C")) u_pll(
   .CLKIN(clk_ref),.CLKFB(1'b0),.RESET(pll_reset),.RESET_P(1'b0),
