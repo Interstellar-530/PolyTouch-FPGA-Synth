@@ -44,10 +44,10 @@
 powershell -File docs\evidence\FPGA-优化07-长按断线策略-20261022-v0.1\commands\reproduce.ps1
 ```
 
-需要重做两档 Gowin 构建时加 `-RunBuild`。脚本默认使用本机 Icarus 和 Gowin 路径，可通过参数覆盖；临时目录在运行结束后按明确路径清理。
+需要重做两档 Gowin 构建时加 `-RunBuild`。脚本默认使用本机 Icarus 和 Gowin 路径，可通过参数覆盖；临时目录在运行结束后按明确路径清理。本轮原始 Gowin run 目录在归档后已清理，保留在两档位流归档 `archive/FPGA-20261022-v0.1/artifacts/`、报告副本和 SHA256；运行 `-RunBuild` 可重新生成工程与位流。
 
 ## 边界与回退
 
 本次没有实体 CH9350L，无法完成文档要求的 10 秒实体长按、真实空闲和拔线帧验收，也不能确认 state 2 是否周期发送 `0x82`。如果实测没有心跳且拔出时也不发送 `0x86`，idle-only 在持键拔出场景仍可能留下粘音，这是当前最大剩余风险。正式烧录前仍需完整仿真门禁和实体外设测试。
 
-回退可设置 `HOST_KBD_TIMEOUT_POLICY=0` 恢复严格超时，或撤回三个生产 RTL 修改并重新构建。位流和构建凭据不能跨源码回退继续使用。Gowin 构建产物、报告和位流 SHA256 见 `results.json` 与 `build/`，临时 `.vvp` 不归档。
+回退可设置 `HOST_KBD_TIMEOUT_POLICY=0` 恢复严格超时，或撤回三个生产 RTL 修改并重新构建。位流和构建凭据不能跨源码回退继续使用。Gowin 构建报告、receipt 与位流 SHA256 见 `results.json` 和 `build/`；位流本体保存在归档 `archive/FPGA-20261022-v0.1/artifacts/`。临时 `.vvp` 和原始 Gowin run 目录不保留。
