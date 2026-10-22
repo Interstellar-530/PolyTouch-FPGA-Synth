@@ -34,12 +34,13 @@ module ram32_top #(
     wire [15:0] cfg_envelope;
     wire [6:0]  cfg_velocity;
     wire [23:0] cfg_param;
+    wire [2:0]  cfg_mask;
 
     instrument_ram_audio_datapath #(.VOICES(VOICES), .CLK_HZ(49152000), .FS_HZ(48000)) u_dp (
         .clk(clk), .rst(rst),
         .cfg_valid(cfg_valid), .cfg_ready(cfg_ready), .cfg_voice(cfg_voice),
         .cfg_increment(cfg_increment), .cfg_envelope(cfg_envelope),
-        .cfg_velocity(cfg_velocity), .cfg_retrigger(cfg_retrigger), .cfg_param(cfg_param),
+        .cfg_velocity(cfg_velocity), .cfg_retrigger(cfg_retrigger), .cfg_param(cfg_param), .cfg_mask(cfg_mask),
         .mix_weight(8'hff), .pressure_enable(1'b0), .pressure_level(12'd0), .mute(1'b0),
         .i2s_bck(i2s_bck), .i2s_lrck(i2s_lrck), .i2s_din(i2s_din),
         .sample_tick(tick), .audio_sample(audio_sample), .sample_valid(sample_valid),
@@ -55,7 +56,7 @@ module ram32_top #(
         .ev_ready(ev_ready),
         .cfg_voice(cfg_voice), .cfg_increment(cfg_increment),
         .cfg_envelope(cfg_envelope), .cfg_velocity(cfg_velocity),
-        .cfg_retrigger(cfg_retrigger), .cfg_param(cfg_param), .cfg_valid(cfg_valid), .cfg_ready(cfg_ready),
+        .cfg_retrigger(cfg_retrigger), .cfg_param(cfg_param), .cfg_mask(cfg_mask), .cfg_valid(cfg_valid), .cfg_ready(cfg_ready),
         .active_count(active_count)
     );
 endmodule

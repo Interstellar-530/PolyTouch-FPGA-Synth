@@ -63,6 +63,10 @@ module tb_ram32_complete;
     reg [23:0] sent_current=0,sent_previous=0;
     i2s_rx_model #(.DATA_BITS(24)) receiver(.bck(bck),.rst(rst),.lrck(lrck),.din(din),
         .left_word(decoded_l),.right_word(decoded_r),.frame_valid(decoded));
+    integer dump_fd = 0;
+    initial if ($test$plusargs("DUMP")) dump_fd = $fopen("ram32_dump.txt", "w");
+    always @(posedge clk) if (dump_fd != 0 && valid) $fwrite(dump_fd, "%0d\n", $signed(audio));
+
     always @(negedge lrck)begin sent_previous=sent_current;sent_current=audio;end
     always @(posedge decoded)begin
         #1;
@@ -88,9 +92,10 @@ module tb_ram32_complete;
             frame_cycle=frame_cycle+1;
             if (!got_valid) render_cycles = render_cycles + 1;
             if (valid)begin got_valid = 1;last_activity=frame_cycle;end
-            if (dut.u_dp.u_compute.lane[0].u_core.state==6'd40)last_activity=frame_cycle;
-            if (dut.u_dp.u_compute.cfg_ready && dut.u_dp.u_compute.cfg_valid)
+            if (dut.u_dp.u_compute.cfg_ready && dut.u_dp.u_compute.cfg_valid) begin
+                last_activity=frame_cycle;
                 cfg_count = cfg_count + 1;
+            end
             if (cfg_count > max_cfg) max_cfg = cfg_count;
         end
     end

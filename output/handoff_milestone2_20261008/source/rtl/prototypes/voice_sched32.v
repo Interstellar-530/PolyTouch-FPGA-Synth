@@ -38,6 +38,7 @@ module voice_sched32 #(
     output wire [6:0]  cfg_velocity,
     output wire        cfg_retrigger,
     output wire [23:0] cfg_param,
+    output wire [2:0]  cfg_mask,
     output wire        cfg_valid,
     input  wire        cfg_ready,
     output reg  [5:0]  active_count
@@ -53,7 +54,7 @@ module voice_sched32 #(
     (* syn_ramstyle = "registers" *) reg        gate  [0:VOICES-1];
     (* syn_ramstyle = "registers" *) reg [4:0]  age   [0:VOICES-1];
     (* syn_ramstyle = "registers" *) reg        retrig[0:VOICES-1];
-    (* syn_ramstyle = "registers" *) reg [VOICES-1:0] dirty;
+    (* syn_ramstyle = "registers" *) reg [VOICES-1:0] dirty, dirty_inc, dirty_param;
     reg [2:0] stage_q[0:VOICES-1];
     reg [12:0] timer[0:VOICES-1];
     reg instrument_q;
@@ -90,35 +91,42 @@ module voice_sched32 #(
                       rel_any   ? rel_idx   : held_idx;
 
     // ------------------------------------------------------- envelope engine ---
+    // Two clocks per voice: latch the voice state, then step and write it back.
+    // The array read mux and the ADSR arithmetic sit in different stages, which
+    // keeps the 49.152MHz path short.
     reg        env_run;
     reg [5:0]  env_ptr;
     reg [15:0] env_new;
     reg [2:0]  est_new;
-    wire [15:0] env_cur = env[env_ptr];
+    reg [15:0] env_lat;
+    reg [2:0]  est_lat;
+    reg        gate_lat;
+    reg [12:0] timer_lat;
+    reg [2:0]  stage_lat;
+    reg        env_phase;
 
     always @* begin
-        env_new = env_cur;
-        est_new = est[env_ptr];
-        if ((est[env_ptr] != ST_IDLE) && !gate[env_ptr] &&
-            (est[env_ptr] != ST_RELEASE))
+        env_new = env_lat;
+        est_new = est_lat;
+        if ((est_lat != ST_IDLE) && !gate_lat && (est_lat != ST_RELEASE))
             est_new = ST_RELEASE;
         case (est_new)
             ST_IDLE: env_new = 16'd0;
             ST_ATTACK: begin
-                if (env_cur >= (16'hFFFF - ATTACK_STEP)) begin
+                if (env_lat >= (16'hFFFF - ATTACK_STEP)) begin
                     env_new = 16'hFFFF; est_new = ST_DECAY;
-                end else env_new = env_cur + ATTACK_STEP;
+                end else env_new = env_lat + ATTACK_STEP;
             end
             ST_DECAY: begin
-                if (env_cur <= (SUSTAIN_LEVEL + DECAY_STEP)) begin
+                if (env_lat <= (SUSTAIN_LEVEL + DECAY_STEP)) begin
                     env_new = SUSTAIN_LEVEL; est_new = ST_SUSTAIN;
-                end else env_new = env_cur - DECAY_STEP;
+                end else env_new = env_lat - DECAY_STEP;
             end
             ST_SUSTAIN: env_new = SUSTAIN_LEVEL;
             ST_RELEASE: begin
-                if (env_cur <= RELEASE_STEP) begin
+                if (env_lat <= RELEASE_STEP) begin
                     env_new = 16'd0; est_new = ST_IDLE;
-                end else env_new = env_cur - RELEASE_STEP;
+                end else env_new = env_lat - RELEASE_STEP;
             end
             default: begin env_new = 16'd0; est_new = ST_IDLE; end
         endcase
@@ -127,6 +135,7 @@ module voice_sched32 #(
     // ---------------------------------------------------------- configuration ---
     reg        cfg_pend;
     reg [5:0]  sel;
+    reg [2:0]  cfg_mask_q;
     reg [31:0] cfg_inc_q;
     reg [23:0] cfg_param_q;
     reg [15:0] cfg_env_q;
@@ -138,7 +147,7 @@ module voice_sched32 #(
     // Round-robin scan removes the combinational priority encoder ahead of
     // the note lookup. A full refresh still submits one packet per 4 clocks;
     // a sparse update is visited within VOICES available snapshot slots.
-    wire dirty_any = dirty[dirty_sel];
+    wire clean_any = dirty[dirty_sel] || dirty_inc[dirty_sel] || dirty_param[dirty_sel];
 
     wire [31:0] candidate_inc;
     note_phase_inc #(.FS_HZ(FS_HZ)) u_inc(.note(note[dirty_sel]),.inc(candidate_inc));
@@ -164,9 +173,10 @@ module voice_sched32 #(
                 est[i] <= ST_IDLE; gate[i] <= 1'b0; age[i] <= i[4:0];
                 retrig[i] <= 1'b0; stage_q[i]<=0; timer[i]<=0;
             end
-            dirty <= {VOICES{1'b0}};
-            env_run <= 1'b0; env_ptr <= 6'd0; cfg_pend <= 1'b0;
-            sel <= 6'd0; dirty_sel<=0;cfg_inc_q<=0;cfg_param_q<=0;instrument_q<=0;tone_q<=0;
+            dirty <= {VOICES{1'b0}}; dirty_inc <= {VOICES{1'b0}}; dirty_param <= {VOICES{1'b0}};
+            env_run <= 1'b0; env_ptr <= 6'd0; cfg_pend <= 1'b0; env_phase <= 1'b0;
+            env_lat <= 16'd0; est_lat <= 3'd0; gate_lat <= 1'b0; timer_lat <= 13'd0; stage_lat <= 3'd0;
+            sel <= 6'd0; dirty_sel<=0;cfg_inc_q<=0;cfg_param_q<=0;cfg_mask_q<=3'b001;instrument_q<=0;tone_q<=0;
             cfg_env_q <= 16'd0; cfg_vel_q <= 7'd0; cfg_retrig_q <= 1'b0;
             ev_q_valid <= 1'b0; ev_q_on <= 1'b0; ev_q_note <= 7'd0; ev_q_vel <= 8'd0;
             ev_state <= EV_IDLE; scan_ptr <= 6'd0;
@@ -177,7 +187,7 @@ module voice_sched32 #(
         end else begin
             // Latch global timbre at frame boundary and refresh every voice.
             if(sample_tick && ((instrument_q!=instrument)||(tone_q!=piano_tone)))begin
-                instrument_q<=instrument;tone_q<=piano_tone;dirty<={VOICES{1'b1}};
+                instrument_q<=instrument;tone_q<=piano_tone;dirty<={VOICES{1'b1}};dirty_inc<={VOICES{1'b1}};dirty_param<={VOICES{1'b1}};
             end
             // Event capture: one entry.
             if (ev_valid && !ev_q_valid) begin
@@ -185,25 +195,32 @@ module voice_sched32 #(
                 ev_q_note <= ev_note; ev_q_vel <= ev_vel;
             end
 
-            // Envelope pass, one voice per clock.
+            // Envelope pass, two clocks per voice (latch, then step).
             if (sample_tick && !env_run) begin
-                env_run <= 1'b1; env_ptr <= 6'd0;
+                env_run <= 1'b1; env_ptr <= 6'd0; env_phase <= 1'b0;
             end
             if (env_run) begin
-                env[env_ptr] <= env_new;
-                est[env_ptr] <= est_new;
-                if ((env_new != env_cur) || (est_new != est[env_ptr]))
-                    dirty[env_ptr] <= 1'b1;
-                if(!instrument_q && est[env_ptr]!=ST_IDLE)begin
-                    if(stage_q[env_ptr]>=start_stage)begin
-                        if(timer[env_ptr]!=STAGE_STEP_SAMPLES-1)dirty[env_ptr]<=1;
-                        timer[env_ptr]<=STAGE_STEP_SAMPLES-1;
-                    end else if(timer[env_ptr]>=STAGE_STEP_SAMPLES-1)begin
-                        timer[env_ptr]<=0;stage_q[env_ptr]<=stage_q[env_ptr]+1'b1;dirty[env_ptr]<=1;
-                    end else begin timer[env_ptr]<=timer[env_ptr]+1'b1;dirty[env_ptr]<=1;end
+                if (!env_phase) begin
+                    env_lat <= env[env_ptr]; est_lat <= est[env_ptr]; gate_lat <= gate[env_ptr];
+                    timer_lat <= timer[env_ptr]; stage_lat <= stage_q[env_ptr];
+                    env_phase <= 1'b1;
+                end else begin
+                    env[env_ptr] <= env_new;
+                    est[env_ptr] <= est_new;
+                    if ((env_new != env_lat) || (est_new != est_lat))
+                        dirty[env_ptr] <= 1'b1;
+                    if(!instrument_q && est_lat!=ST_IDLE)begin
+                        if(stage_lat>=start_stage)begin
+                            if(timer_lat!=STAGE_STEP_SAMPLES-1)dirty_param[env_ptr]<=1;
+                            timer[env_ptr]<=STAGE_STEP_SAMPLES-1;
+                        end else if(timer_lat>=STAGE_STEP_SAMPLES-1)begin
+                            timer[env_ptr]<=0;stage_q[env_ptr]<=stage_lat+1'b1;dirty_param[env_ptr]<=1;
+                        end else begin timer[env_ptr]<=timer_lat+1'b1;dirty_param[env_ptr]<=1;end
+                    end
+                    env_phase <= 1'b0;
+                    if (env_ptr == VOICES - 1) env_run <= 1'b0;
+                    else env_ptr <= env_ptr + 1'b1;
                 end
-                if (env_ptr == VOICES - 1) env_run <= 1'b0;
-                else env_ptr <= env_ptr + 1'b1;
             end
 
             // Serial event search: one voice per clock, 5-bit compares only.
@@ -241,7 +258,7 @@ module voice_sched32 #(
                         est[pick]    <= ST_ATTACK;
                         gate[pick]   <= 1'b1;
                         retrig[pick] <= 1'b1;
-                        dirty[pick]  <= 1'b1; stage_q[pick]<=0;timer[pick]<=0;
+                        dirty[pick]  <= 1'b1; dirty_inc[pick]<=1'b1; dirty_param[pick]<=1'b1; stage_q[pick]<=0;timer[pick]<=0;
                         for (i = 0; i < VOICES; i = i + 1) begin
                             if (i == pick) age[i] <= 5'd0;
                             else if (age[i] < age[pick]) age[i] <= age[i] + 1'b1;
@@ -268,11 +285,12 @@ module voice_sched32 #(
             if(!cfg_pend || cfg_ready)begin
                 if(!env_run && !sample_tick && ev_state!=EV_COMMIT)
                     dirty_sel <= dirty_sel==VOICES-1 ? 6'd0 : dirty_sel+1'b1;
-                if(dirty_any && !env_run && !sample_tick && ev_state!=EV_COMMIT)begin
+                if(clean_any && !env_run && !sample_tick && ev_state!=EV_COMMIT)begin
                     sel<=dirty_sel;cfg_inc_q<=candidate_inc;
                     cfg_env_q<=env[dirty_sel];cfg_vel_q<=vel[dirty_sel][6:0];
                     cfg_retrig_q<=retrig[dirty_sel];cfg_param_q<={2'd0,candidate_bank,candidate_weight};
-                    cfg_pend<=1;dirty[dirty_sel]<=0;retrig[dirty_sel]<=0;
+                    cfg_mask_q<={dirty_param[dirty_sel],dirty_inc[dirty_sel],1'b1};
+                    cfg_pend<=1;dirty[dirty_sel]<=0;dirty_inc[dirty_sel]<=0;dirty_param[dirty_sel]<=0;retrig[dirty_sel]<=0;
                 end else cfg_pend<=0;
             end
         end
@@ -281,6 +299,7 @@ module voice_sched32 #(
     assign cfg_voice     = sel;
     assign cfg_increment = cfg_inc_q;
     assign cfg_param = cfg_param_q;
+    assign cfg_mask = cfg_mask_q;
     assign cfg_envelope  = cfg_env_q;
     assign cfg_velocity  = cfg_vel_q;
     assign cfg_retrigger = cfg_retrig_q;

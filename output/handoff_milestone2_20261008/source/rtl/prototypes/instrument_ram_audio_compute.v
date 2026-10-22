@@ -4,7 +4,7 @@ module instrument_ram_audio_compute #(
 )(
  input wire clk,rst,sample_tick,input wire cfg_valid,output wire cfg_ready,
  input wire[5:0]cfg_voice,input wire[31:0]cfg_increment,input wire[15:0]cfg_envelope,
- input wire[6:0]cfg_velocity,input wire cfg_retrigger,input wire[23:0]cfg_param,
+ input wire[6:0]cfg_velocity,input wire cfg_retrigger,input wire[23:0]cfg_param,input wire[2:0]cfg_mask,
  input wire[7:0]mix_weight,input wire pressure_enable,input wire[11:0]pressure_level,input wire mute,
  output wire signed[23:0]audio_sample,output wire sample_valid,
  output wire[31:0]clip_count,output wire initialized,
@@ -23,7 +23,7 @@ module instrument_ram_audio_compute #(
   instrument_ram_wavetable_engine #(.VOICE_COUNT(LANE_VOICES),.FRAME_CYCLES(FRAME_CYCLES)) u_core(
    .clk(clk),.rst(rst),.sample_tick(sample_tick),.cfg_valid(cfg_valid && (LANES==1 || selected_lane==g)),
    .cfg_ready(cfg_ready_v[g]),.cfg_voice(selected_voice),.cfg_increment(cfg_increment),
-   .cfg_envelope(cfg_envelope),.cfg_velocity(cfg_velocity),.cfg_retrigger(cfg_retrigger),.cfg_param(cfg_param),
+   .cfg_envelope(cfg_envelope),.cfg_velocity(cfg_velocity),.cfg_retrigger(cfg_retrigger),.cfg_param(cfg_param),.cfg_mask(cfg_mask),
    .sine_sum(sine_v[g]),.bright_sum(bright_v[g]),.sums_valid(valid_v[g]),.busy(busy_v[g]),.initialized(init_v[g]),
    .aux_request(g==0?master_req:1'b0),.aux_ready(aux_ready_v[g]),
    .aux_operand_a(g==0?master_a:33'sd0),.aux_operand_b(g==0?master_b:18'sd0),.aux_product(product_v[g]));
