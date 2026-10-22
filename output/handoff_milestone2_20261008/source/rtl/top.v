@@ -34,6 +34,8 @@ module top #(
     // profile 保持 GPIO=1、HOST=0，便于回归与回退。
     parameter integer GPIO_KEY_ENABLE = 1,
     parameter integer HOST_KBD_ENABLE = 0,
+    // 0 = strict；1 = idle-only（默认，持键静默不误清音）。
+    parameter integer HOST_KBD_TIMEOUT_POLICY = 1,
     // FSR controls one global VCA. Standard profiles (1 and 2) enabled, legacy
     // PT8211 profile bypassed. These are provisional ADC calibration values, not N.
     parameter integer PRESSURE_ENABLE = (AUDIO_IF != 0),
@@ -256,7 +258,7 @@ module top #(
     wire kbd_rx_i = (kbd_uart_rx === 1'b0) ? 1'b0 : 1'b1;
     generate
         if (HOST_KBD_ENABLE) begin : g_host_kbd
-            host_kbd_input #(.CLK_HZ(AUDIO_CLK_HZ)) u_host_kbd (
+            host_kbd_input #(.CLK_HZ(AUDIO_CLK_HZ), .TIMEOUT_POLICY(HOST_KBD_TIMEOUT_POLICY)) u_host_kbd (
                 .clk(clk_audio), .rst(rst), .kbd_rx(kbd_rx_i), .kbd_tx(kbd_uart_tx),
                 .flush(manual_flush),
                 .ev_valid(hid_ev_valid), .ev_word({hid_ev_on, hid_ev_note, hid_ev_vel}),

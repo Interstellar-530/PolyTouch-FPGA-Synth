@@ -1,0 +1,23 @@
+{
+  "profile": "debug8usb",
+  "top": "top_dbg8usb_build",
+  "tool": "V1.9.11.03 Education",
+  "completed_utc": "2026-10-22T03:52:27.0556052Z",
+  "inputs_digest": "73a2372bedab7c3ab5bb8126ba47c7f2308e72ffc1609101f892d2576de351a8",
+  "bitstream_sha256": "792722ded0eeaadc3f8d288fbf848e31b86bda438e17a2a9bd874dfbb29367d2",
+  "bitstream_length": 7264154,
+  "resources": {
+    "logic": 11378,
+    "register": 3702,
+    "bsram": "25/46",
+    "dsp": "1.75/24"
+  },
+  "timing": {
+    "constraint_mhz": 27.0,
+    "fmax_mhz": 35.885,
+    "setup_slack_ns": 9.171,
+    "hold_slack_ns": 0.319,
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0
+  }
+}

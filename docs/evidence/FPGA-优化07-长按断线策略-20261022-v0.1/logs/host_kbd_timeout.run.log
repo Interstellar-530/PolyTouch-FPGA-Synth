@@ -1,0 +1,2 @@
+PASS tb_host_kbd_timeout: idle-only 5s long hold, strict compatibility, heartbeat sustain, detach recovery
+sim\tb_host_kbd_timeout.v:226: $finish called at 5072271500000 (1ps)

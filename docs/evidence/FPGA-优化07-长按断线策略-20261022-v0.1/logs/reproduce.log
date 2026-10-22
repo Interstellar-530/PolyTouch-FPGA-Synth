@@ -1,0 +1,8 @@
+Cleaning prior temp directory: D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-optimization07-20261022\tmp\optimization07-repro
+PASS tb_host_kbd_timeout: idle-only 5s long hold, strict compatibility, heartbeat sustain, detach recovery
+sim\tb_host_kbd_timeout.v:226: $finish called at 5072271500000 (1ps)
+PASS tb_host_kbd: press/release, dedup, chord, transpose-held, Esc, F1, resync, rollover
+sim\tb_host_kbd.v:217: $finish called at 63565078575 (1ps)
+PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear
+sim\tb_top_host_ctrl.v:264: $finish called at 54422729769 (1ps)
+Cleaning temp directory: D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-optimization07-20261022\tmp\optimization07-repro

@@ -1,0 +1,978 @@
+{
+  "Profile": "standard27",
+  "Top": "top_std27_build",
+  "Bitstream": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\gowin_top_i2s_std27\\runs\\20261022T114821166-528202e9\\instrument\\impl\\pnr\\instrument.fs",
+  "BitstreamLength": 7264154,
+  "BitstreamModifiedUtc": 639282377674587180,
+  "BitstreamSha256": "66751cd5afb83a2a633fb722bb3e30d2f4dc5b9e80ebaa6b86b5982ed5bcf38a",
+  "CompletedUtc": "2026-10-22T03:49:28.1749461Z",
+  "Tool": {
+    "Name": "gw_sh",
+    "Path": "D:\\Gowin_V1.9.11.03_Education_x64_win\\Gowin\\Gowin_V1.9.11.03_Education_x64\\IDE\\bin\\gw_sh.exe",
+    "Version": "V1.9.11.03 Education",
+    "VersionSource": "pnr_report"
+  },
+  "InputsDigest": "b1776e882d4371cc367fc4b1a3363ed045992cf46c0acafc3371da807fd29e1f",
+  "Inputs": [
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\build_profile.tcl",
+      "Length": 1850,
+      "Sha256": "c84d0d090bcaf305113ad8c84d77f26df2b4d4954e515090fff90a51ddfba2e3"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\build.ps1",
+      "Length": 3987,
+      "Sha256": "42f6b6e1711feabc050e817ae8664a54e44bee26d88af80836571e024ee121a4"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\isolated\\top_std27_build.v",
+      "Length": 2950,
+      "Sha256": "371a48e99fa3dcf49458ae573d46f24ae284d446c6bc2b3f82f1024223245b5d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\profile_helpers.ps1",
+      "Length": 3751,
+      "Sha256": "f8ec9c3d29fc75bb5ed5ecc54c867c76673140c9cd375c562df689bb5d0933c6"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\profiles.tsv",
+      "Length": 496,
+      "Sha256": "69f1f56e1e290520b8fc38dbb4c827f7cb098b6576527ef127f997e21156a087"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\build\\sources.list",
+      "Length": 1241,
+      "Sha256": "d04d69538afeb1b5d1ec5967e5b60a9e0b5dc9efc4616268fc404f95270a72d0"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\constraints\\primer20k_i2s_27m.cst",
+      "Length": 3454,
+      "Sha256": "0aa973702a873dfc6849539f5db95a4dcf5c971511e6bb6e9b0c12073797a3f3"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\constraints\\primer20k_i2s_27m.sdc",
+      "Length": 623,
+      "Sha256": "0d269924e5fba99ae6cbd18059562937c59aeb50574f4c29979948f65bd75483"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\adsr.v",
+      "Length": 3531,
+      "Sha256": "925f31e58ac94c5c7e4c8d91d2e5e1266fdf63cb752a52d84334b4c898f5b914"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\audio_frame_bridge.v",
+      "Length": 1735,
+      "Sha256": "4c5870f55de082e1b567bb105d8712f6aa5b9a29a8ed3b7ed2adf21bcf47f2dc"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\audio_pll_clock.v",
+      "Length": 1497,
+      "Sha256": "8545bf24f93d8948bef4abd2b84be01ad3d0e19e7946116ec797b66700ea34d2"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\bend_coefficients.vh",
+      "Length": 2997,
+      "Sha256": "11ff7846cc9e11efd4e123f61699fe7639acab035757483bbc189caf1e1288e0"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\bend_ratio_pipeline.v",
+      "Length": 1292,
+      "Sha256": "383dc838b2676e15b43bc89248b450b879211c084a7a332b56b1cfdab9372c2b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ch9350_rx.v",
+      "Length": 5976,
+      "Sha256": "5c176ac23f5e6bb0025ea8565a0fef472407743cd9fdfb513e54d30b6a3dfbe5"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\clk_params.vh",
+      "Length": 2990,
+      "Sha256": "83d125bc36c9aaa3c3a0c1981be4c0d2ddc3b3fa582a49e54b27ccb040b91952"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\dds_osc.v",
+      "Length": 2690,
+      "Sha256": "c60abb48d44d8bc530c328789405bf24fd6579dcf598a4820e8db4f02c33af7f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\epiano_bank_all.hex",
+      "Length": 30720,
+      "Sha256": "3a72a9bab8ae446ac979967114e9fb8854c5d4d2723ccbfa5abbe04f805008dd"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\event_fifo.v",
+      "Length": 2032,
+      "Sha256": "fd4646dbe640469a94ebac2492a2358290197ee7f8c1e2ae63615ea2f25993b6"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\global_crossfade.v",
+      "Length": 16689,
+      "Sha256": "46b26389cfca15411b65549ef8918e4835c438a00d04a627ae01f57a852311c4"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_bright_bank.v",
+      "Length": 17737,
+      "Sha256": "0c0084fdc9f14768bd96a51fc16d0e1c9213de1ff96a778c6bb60b7a3dd2d993"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_guitar_bank.v",
+      "Length": 87185,
+      "Sha256": "df3429db4eb2a41cda6245a0f7029130b89fa7418e9605fc1f7be2c5942657c3"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_piano_bank.v",
+      "Length": 35121,
+      "Sha256": "4d968fff52acd629ab2d1a0c97f7cf20599c716ea467e0527405c23bafc73362"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_wave_bright.v",
+      "Length": 5180,
+      "Sha256": "367a760ceee08c7e57376f8411193e9eade9ec0365499072e033c25fc9476e5d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_wave_sine.v",
+      "Length": 5176,
+      "Sha256": "55a6635a29ffdf5c0ef28d990d81809515c3480d025642d8c579aba1633d960d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gpio_keyboard.v",
+      "Length": 8828,
+      "Sha256": "8f2ff53a0c700d4e3093708044e3ce174eb04362eaec1066438f90bd9bcecf57"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\guitar_bank_all.hex",
+      "Length": 76800,
+      "Sha256": "9ab68199fd8707449cc788456002582801e3b66715b43c4378193e20d2e6b475"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\hid_keymap.v",
+      "Length": 13792,
+      "Sha256": "cd0ccec67cd245b9977ac022be36a81f1d2df0c1d4ef003cc99a3b9117f0ad5b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\host_kbd_input.v",
+      "Length": 3182,
+      "Sha256": "592897a928e80d9d35c27aff3a115010b99b421f581a7d30745ab7ae3ca8e353"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\i2s_tx.v",
+      "Length": 9440,
+      "Sha256": "24c3f915105a6928a5b9c1abf99a095803ad7a6fd48f8b485a3bac0ae5f2409b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\instrument_controls.v",
+      "Length": 3935,
+      "Sha256": "2959d61b8109282178552a20bf32760f19685b9ec08c7c25634abd324e761227"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\kbd_uart_rx.v",
+      "Length": 2240,
+      "Sha256": "e3e321d451a60bcc8713ef0f16a66dabe566337b852b1da5f25a87fe4378ad3a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\mcp3208_spi.v",
+      "Length": 5654,
+      "Sha256": "730d8787d75d000f7f567dc3756203a626d98b53c49e99916a6e6b8fe1730103"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\mixer_s6.v",
+      "Length": 4439,
+      "Sha256": "126fada0c39ba32a13c71c7650390937d05fd3c741c5f1050eac1d4ef9a93115"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\note_ownership.v",
+      "Length": 1311,
+      "Sha256": "ccb2e75f72c671156604cda9e711cce79e2b438789139fd59228e16c678604bc"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\note_phase_inc.v",
+      "Length": 2301,
+      "Sha256": "d9cf887f9d6146b280befe4ca6ad763b90e5a709dd235c32c45e7c1914e76823"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\piano_bank_all.hex",
+      "Length": 184320,
+      "Sha256": "3afd08c136c0c15c02da5ca1021ce316b39a48577aebe1eadd79de7c335883c3"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\poly_voice_s6.v",
+      "Length": 3354,
+      "Sha256": "abfd61206fe073a9dd1e374ade9d1b0bdb5b2f1563616b2b2c8a6edce59ae206"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\poly_voice.v",
+      "Length": 2829,
+      "Sha256": "0713240f541a1502af401f8782498a6b090742bc1a27250fe57a7454281ba202"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\pressure_bend.v",
+      "Length": 8520,
+      "Sha256": "edf1a7740552487806aac4c3ee93e471e1210b9380512f5c5feef5fdf0f04655"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\pt8211_tx.v",
+      "Length": 3505,
+      "Sha256": "b6cd361c6cd7b61a33031ea956e672854b47d5098cd468eae986cec7bc666071"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_audio_clocked.v",
+      "Length": 1987,
+      "Sha256": "12555d8d36b62ae87e7ca0a3bd30800b0318b337a601cedc9da65f2042ec11ea"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_audio_compute.v",
+      "Length": 3146,
+      "Sha256": "01cb47fd7d034811b318b934845db4d58423f9703977d1f88b40fd592652cc1a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_audio_datapath.v",
+      "Length": 1801,
+      "Sha256": "0f2f86e480262f8005f07df6eb60dbcc0dc48cb77ef718177b4ca46d13584977"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_wavetable_engine.v",
+      "Length": 9314,
+      "Sha256": "4c8c75632418f8eaeab4b16b0dc4b1886dd61893d4c9bfd3d7f42376d0d5dbef"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\shared_wavetable_engine.v",
+      "Length": 30862,
+      "Sha256": "eafd720a3e93ff3990ce0bc4b519f3c850c5ef687b2859f1964705e6e9401b1e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_expect.vh",
+      "Length": 290,
+      "Sha256": "9fd3a4a3462ea28f362248fab636db42cd84d09525e2a53a3735d43f823417e4"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_player.v",
+      "Length": 10509,
+      "Sha256": "ea17243dd22382b6dbac2aa1e553a3d71dc06ec2ba56c225775e08f30aeaf9a9"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_roms.vh",
+      "Length": 3976,
+      "Sha256": "8c0f083c185fd21416c63d0d9415af390324268e3a0c5db7a1ec53ecf410b87b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\split_audio_multiplier.v",
+      "Length": 1881,
+      "Sha256": "b77333c8d600c0a39219d81ccffcdbe49cb094584e347ebbc7f67d2f1351a61e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\uart_ctrl.v",
+      "Length": 16645,
+      "Sha256": "d9bd5bb20c4f93511b40cf043b129a4cefa6a37e5e73e66cb1159bcecfd4540f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_alloc.v",
+      "Length": 5316,
+      "Sha256": "57557ab3f7c489a77a9b9c3b56b4fb8c61e86f477109d72b2908d6417fc2f2e6"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_state_ram.v",
+      "Length": 1784,
+      "Sha256": "1389c66a54a47d3445b85da132e30c5f06afe5d95bd62ab22c7e63ac591a8b54"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_transition.v",
+      "Length": 5080,
+      "Sha256": "82bc9e7560edd81875ea67ab6682b5bdf805c4e45a2624ecfde101fba9e82e9b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h1.hex",
+      "Length": 2560,
+      "Sha256": "128431d064a921414230ac6ff48d75ef40a47d7dfff535dc76e1192d587341b4"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h16.hex",
+      "Length": 2560,
+      "Sha256": "c16616d4149f6d142569b266d325b5e99e13eb2f476a93bf8e67fd73d4bcfd63"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h2.hex",
+      "Length": 2560,
+      "Sha256": "aa00a9a66e5cb0101fc88e39b2e995c0c854c69b27d7d13ce4b41ab17dd9b5fa"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h4.hex",
+      "Length": 2560,
+      "Sha256": "02d5bc09c096c235d6f5dc2dfc96563d108388b44ce985a521d08692aed8d5b8"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h8.hex",
+      "Length": 2560,
+      "Sha256": "8e144d409b61d8f61aaf665e1c0ecfd197350fff75eb99142a94197577437aa8"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright.hex",
+      "Length": 2560,
+      "Sha256": "c16616d4149f6d142569b266d325b5e99e13eb2f476a93bf8e67fd73d4bcfd63"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g0s0.hex",
+      "Length": 2560,
+      "Sha256": "ee4112dcf6161dac49a445425d9b87ce18f01da7c4c0e54f2102f487ffc3e58a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g0s1.hex",
+      "Length": 2560,
+      "Sha256": "020f65460b0a74339c451c98f95336a888626bcabf106d933991095e276a66e5"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g0s2.hex",
+      "Length": 2560,
+      "Sha256": "150f452346b987dedb2fe143b4e77afa6640527f6a0a53b1d126535579fb03e0"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g0s3.hex",
+      "Length": 2560,
+      "Sha256": "56e0b7ed45906e9c8052ea1fb3130988e5660d3d5af0370089723b09303afc1c"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g0s4.hex",
+      "Length": 2560,
+      "Sha256": "3f6759468caae5382947247cd9e7130f39bd1a990d95fa3105915a26a4293344"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g0s5.hex",
+      "Length": 2560,
+      "Sha256": "4bace32c404ac6eaa86ac32aa493d0d14094ed7bdcf7d7469754d97e7a82c10a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g1s0.hex",
+      "Length": 2560,
+      "Sha256": "ea941684090c3b5d6599fd2a46135a46dac1052361282a606ad0d4f7bca908c4"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g1s1.hex",
+      "Length": 2560,
+      "Sha256": "c922686feea5205e15ba51a4ff85011417f09f4bafe8418398c99ce5bcdee85f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g1s2.hex",
+      "Length": 2560,
+      "Sha256": "b3066c88ebeac20055a2225975c22de779ee32164b70beb732c78b0f15c68ba0"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g1s3.hex",
+      "Length": 2560,
+      "Sha256": "f9a3eef15db1fba393a4c492420f936066c0bd73e3d1d5f63d0c725f46993c3a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g1s4.hex",
+      "Length": 2560,
+      "Sha256": "653ab1dbd27c79b3014aad63107891a5c4e92e99753a3052064bcb9725af2356"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_epiano_g1s5.hex",
+      "Length": 2560,
+      "Sha256": "953f367c460c31278de686f27bddef6509244d427eb5891c3a0d701fa490e8c0"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_b0.hex",
+      "Length": 2560,
+      "Sha256": "8d1c137d0191cb47a124359ac1373a7246c1a8a2ce09a60e3a7d5aff7c49e6a1"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_b1.hex",
+      "Length": 2560,
+      "Sha256": "8d1c137d0191cb47a124359ac1373a7246c1a8a2ce09a60e3a7d5aff7c49e6a1"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_b2.hex",
+      "Length": 2560,
+      "Sha256": "8d1c137d0191cb47a124359ac1373a7246c1a8a2ce09a60e3a7d5aff7c49e6a1"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_b3.hex",
+      "Length": 2560,
+      "Sha256": "8d1c137d0191cb47a124359ac1373a7246c1a8a2ce09a60e3a7d5aff7c49e6a1"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_b4.hex",
+      "Length": 2560,
+      "Sha256": "f242f82ee31e31af7043cf234f38d799f78dfa64d7ec04bae27eac7e59763fed"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_b5.hex",
+      "Length": 2560,
+      "Sha256": "cadfe28f53d9177d9ed6f35d4c4c9a5e0ae5ec5774caaae710c51b383b8e0102"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g0v0.hex",
+      "Length": 2560,
+      "Sha256": "45b5b746d4e728498aad9b6770227c91668a1e8b7d76dacf87e837f9809eff74"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g0v1.hex",
+      "Length": 2560,
+      "Sha256": "f62c9e970feae399b48fcf91228eb5db8cb5dff4981772f593b315de912e4c3f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g0v2.hex",
+      "Length": 2560,
+      "Sha256": "1e534f4169127e1f8908a8e3d32eed6d39072e54271a36264cccf4515afd3615"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g0v3.hex",
+      "Length": 2560,
+      "Sha256": "99a469c6e6cff480b562b0ef79838447d18964900c6e73a29481aad335d10ab6"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g0v4.hex",
+      "Length": 2560,
+      "Sha256": "a3737bb26cdaff16c596f30527c04d3d95f1f76da8e8c9a8f921f7ca310d838b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g0v5.hex",
+      "Length": 2560,
+      "Sha256": "b1beecf8e447dedd8056ec8e2c0165d625f1376c06355835fbc933cf6f5077e1"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g1v0.hex",
+      "Length": 2560,
+      "Sha256": "1cc7118055a5d354d55afcf3c3b3db26a94fe0de78db830583c8ee1f0815be10"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g1v1.hex",
+      "Length": 2560,
+      "Sha256": "fa1e8bfe66e62d10dbbe107405f6835ba1987f41de73143683a7ab04ce926269"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g1v2.hex",
+      "Length": 2560,
+      "Sha256": "3f0e8b926efa227e068993008f5b33e7b26506a661fef48979704dd0cd38a128"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g1v3.hex",
+      "Length": 2560,
+      "Sha256": "3d6d807c77d3e33d4fa519d406f5da9ec4d23558188b9c3bcae1b96cf653bb89"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g1v4.hex",
+      "Length": 2560,
+      "Sha256": "0bd6e5d41c09652497033a04a6bc999b427499e04fda7ad4863e6956ecf08d8b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g1v5.hex",
+      "Length": 2560,
+      "Sha256": "a9481f6de76381e0ddb76a543c042c0dcee899898489d73e0332a83da3572e47"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g2v0.hex",
+      "Length": 2560,
+      "Sha256": "7d81e96feffb543766f21ab79b37c07a0fa521bebe3721ed423b56eb66bdc952"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g2v1.hex",
+      "Length": 2560,
+      "Sha256": "6434d7740cc87f9e250f52d2b29a7056a046f9ef70400702a2818906a2dd37e5"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g2v2.hex",
+      "Length": 2560,
+      "Sha256": "da44b9080179afb9f610312c6881086cbac12698d83e208d0a8a70a5195db9c5"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g2v3.hex",
+      "Length": 2560,
+      "Sha256": "045a5a9ceb07a5286eb0bbe1c9a084f7307b423ab21e971299605ace7e9181ba"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g2v4.hex",
+      "Length": 2560,
+      "Sha256": "3d473d73b76e76d769a2e1bc25c483f3e0dfaad73b7c4f61bb4be7b7b1d0ba4b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g2v5.hex",
+      "Length": 2560,
+      "Sha256": "849160b0a4862566454f18fa4bd4a408f45ec363370b1d0f753b371592718603"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g3v0.hex",
+      "Length": 2560,
+      "Sha256": "97f2fa9fecb8eafbe3b88973ec2b54d2357b1fa8aff4b70f8d0531229ced2c9b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g3v1.hex",
+      "Length": 2560,
+      "Sha256": "0a8afaae44eda00f212dc0111a4e8f610a5350f9e3d41916d5516da1e73cd74e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g3v2.hex",
+      "Length": 2560,
+      "Sha256": "1132777a6ea5b598e58f47128ccdef87af1dd6074f6c895142b92d641176e97a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g3v3.hex",
+      "Length": 2560,
+      "Sha256": "da7e6ae98a4fcde9e295f50e39dafc074fe173efd20eb6a9ec5397ce8631bebd"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g3v4.hex",
+      "Length": 2560,
+      "Sha256": "36a2a6a6e45ef21a8c2cad3b3d614b51f23820345911fec78421ae6cf568bdef"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g3v5.hex",
+      "Length": 2560,
+      "Sha256": "4890235cbedb02bedf101b444c4ac372761ef406af3c505894c46fdc5e106b36"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g4v0.hex",
+      "Length": 2560,
+      "Sha256": "96f37b0f52c7d30fd7bd5b2b1e70d06f0ecd9af468d508d1b57bfc61070eb004"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g4v1.hex",
+      "Length": 2560,
+      "Sha256": "fa29f9e524b25370203294bdb8a5fb3ec4e9a65b94492b51fb63bbd8cc63c464"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g4v2.hex",
+      "Length": 2560,
+      "Sha256": "41e6ee79640fd88ab32292181fdcbf91ee0a17a609274fe8d70a4f9c46a1ffbf"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g4v3.hex",
+      "Length": 2560,
+      "Sha256": "07961ca78fa31fae2737f8adcc4b3c4fc39c26d423af2f597fe46d8d0d6e3616"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g4v4.hex",
+      "Length": 2560,
+      "Sha256": "ed6442f3d04683d21b51771e547e6967d0efc877b7d19786485be8d3a094728c"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_guitar_g4v5.hex",
+      "Length": 2560,
+      "Sha256": "ccfc345521c1b37ef96345f9e0f5339966bd9c7ca67e7bd321d69924bd970e50"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_h8.hex",
+      "Length": 2560,
+      "Sha256": "3bfcb86594a83330930b1029a9b4594e59b9aed1d1706cdb8d57f39ba1e77e0d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_s0.hex",
+      "Length": 2560,
+      "Sha256": "6bb2af42c7aabfebe9cb6220fdde5695499ec93c41861695fff0911dfa04563b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_s1.hex",
+      "Length": 2560,
+      "Sha256": "9759322c40b267c7883e4608d0f8898aaf91f910c7e408002669eaa6569e4bf7"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_s2.hex",
+      "Length": 2560,
+      "Sha256": "373fdbaeb6a1a6bd34ec06ab0f65e98ee0b2765f747e0442ad3dbbbd2c93b914"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_s3.hex",
+      "Length": 2560,
+      "Sha256": "76de86c2f711b4eba39a34dbc0c0b0927b866140c64fa907725208b2ce83c540"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_s4.hex",
+      "Length": 2560,
+      "Sha256": "9e83ecf12a1e554f3f2b4015de6647af7e7ffcfa9838c36ffca99d315bfcbe5f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_s5.hex",
+      "Length": 2560,
+      "Sha256": "b5c667aa7fee3caa79293e0273ff93b578cd75d3b80edf1f6c27d267fd86e0b2"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v0s0.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v0s1.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v0s2.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v0s3.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v0s4.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v0s5.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v1s0.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v1s1.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v1s2.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v1s3.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v1s4.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z0v1s5.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v0s0.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v0s1.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v0s2.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v0s3.hex",
+      "Length": 2560,
+      "Sha256": "ed97a6a2d0f78f6e7d7010a4f594af889fb3a650b1f8762e1f2d9c8550583457"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v0s4.hex",
+      "Length": 2560,
+      "Sha256": "d1cadc1489976268a3b2a4ea92ca8a770725271e5f53d2e1d63693a4afb8bc2d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v0s5.hex",
+      "Length": 2560,
+      "Sha256": "aeb24583d37ab5d80748a7ae2a201657176bc23ab8056c0ed067a77d944ab244"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v1s0.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v1s1.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v1s2.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v1s3.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v1s4.hex",
+      "Length": 2560,
+      "Sha256": "30e77cb878094dd67c0c12ee6f0d372c5ba21158397141d4fb2ea46b6b8e5395"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z1v1s5.hex",
+      "Length": 2560,
+      "Sha256": "28b7dcd3658f2e48f5e0bad15844c9b91b57cb0bde9a99c41f8533e4001c0511"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v0s0.hex",
+      "Length": 2560,
+      "Sha256": "fb609938b6c16a5aa92fc94c20347158fe80f76876f798369daa150d869b94fd"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v0s1.hex",
+      "Length": 2560,
+      "Sha256": "b081854f26b3dbea81744c3dbfd6a9ea250de9066fe91710996c4847db3f5e7d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v0s2.hex",
+      "Length": 2560,
+      "Sha256": "480f71a39735e1ecbe3c41645239f40343334d46103f2f429b88086d58d26a23"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v0s3.hex",
+      "Length": 2560,
+      "Sha256": "01518b5742528842385d7edf03a26b7ac06d28db4de6b5446ffaa63c2282d5c7"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v0s4.hex",
+      "Length": 2560,
+      "Sha256": "4db7082436fdfdd552b3f8c3cd7ca8701201dc8afda04685af8a5fcdd06da83f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v0s5.hex",
+      "Length": 2560,
+      "Sha256": "d3585b6293ce8d1279504d36c9999ceffcb447eef79a57d2036a041186a69bdf"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v1s0.hex",
+      "Length": 2560,
+      "Sha256": "da829131db170d8add16dfd068ccc89c02a05b1981fbea8426db62ba42bfe40f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v1s1.hex",
+      "Length": 2560,
+      "Sha256": "ba7b355f15b1d97ffde4356400ce90734a9abecf1ccf178d8503144b29edde2b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v1s2.hex",
+      "Length": 2560,
+      "Sha256": "f395dae42bc107fa976f7a4dbeeb383fb785e2b221f4ff99e5fcee7b4ad04c7b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v1s3.hex",
+      "Length": 2560,
+      "Sha256": "0b2533a4586d82b66b78f3ec73ce802b2b8d310d63123935509f050655262657"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v1s4.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z2v1s5.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v0s0.hex",
+      "Length": 2560,
+      "Sha256": "a830de44fb4004098833bc16ed985641685c83912dbe9918a20ec7a00cd69df2"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v0s1.hex",
+      "Length": 2560,
+      "Sha256": "8e848e79beb93d0f02c04fc4ac21b5cedcdbd83f7c14296bee44650774fa0417"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v0s2.hex",
+      "Length": 2560,
+      "Sha256": "93269369379d08e8bce694df8f6253945a99af52285ee70a23b5dc5375698f1a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v0s3.hex",
+      "Length": 2560,
+      "Sha256": "1d5323552897a3e5ae94b69d5c03c0ef8cfc4886b63107d06433cdadb6e62e76"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v0s4.hex",
+      "Length": 2560,
+      "Sha256": "6b63bb0c4761ea16daffc7cfc2355bec2435a6b07bee917da6e24aba8e4c4548"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v0s5.hex",
+      "Length": 2560,
+      "Sha256": "4d17a4752391df05489698bc20a6e4fe09184859c5912a8e09530a0303340e9f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v1s0.hex",
+      "Length": 2560,
+      "Sha256": "9d2a4ad220cce09081021db53f36c47ab3cfd0da550375f68817835e7d29615d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v1s1.hex",
+      "Length": 2560,
+      "Sha256": "b024ce94c5aba386ac1ca0b0fd7926f83aad1a43a317b6ddb31e6c36e9d5d339"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v1s2.hex",
+      "Length": 2560,
+      "Sha256": "bf1d1e0d699cb843d4a067055ec3ae72a075b571a8e100b1d1aab0abcf96f52c"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v1s3.hex",
+      "Length": 2560,
+      "Sha256": "16a37fdea6b71f42680b921fffb55475fd953515256aa673374740007777cf30"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v1s4.hex",
+      "Length": 2560,
+      "Sha256": "06bdc0dfe615805bbaefabff52da19fbbd6a4e888edb0c5ddbe8ec0a7228025c"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z3v1s5.hex",
+      "Length": 2560,
+      "Sha256": "08ef9a546c0ae692d5ffe6866c56ce4246f80b8bc22b349998c343f708bb68ee"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v0s0.hex",
+      "Length": 2560,
+      "Sha256": "0d6f7e22bddb03f45e371724000c058cc081eb570a330190e264cbc4f947de00"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v0s1.hex",
+      "Length": 2560,
+      "Sha256": "8b9170784e9c65aaa2141381d9af015c3048ccbb3636f3145716b26616696f36"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v0s2.hex",
+      "Length": 2560,
+      "Sha256": "b8989df76a15dd8e21005c20cd521ab6050b9719f7233f2a4a95da18158c046b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v0s3.hex",
+      "Length": 2560,
+      "Sha256": "dbb64966aa19d64f792c8b0f75e90fdb772e64ba29b839384573e1f487256613"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v0s4.hex",
+      "Length": 2560,
+      "Sha256": "78917ef609f3516f7693aa62206bd2157fdb6d1e91b04591cbf8420f909c88a1"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v0s5.hex",
+      "Length": 2560,
+      "Sha256": "accf487d34cfae642fc11a32336256776aeb1a5954fd29efd6dc214d1a115c5f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v1s0.hex",
+      "Length": 2560,
+      "Sha256": "e3f9053000fe9605e9ef85a51d9ac1d8fa8bf2b6f5e47002bcd2e3d27aea1f59"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v1s1.hex",
+      "Length": 2560,
+      "Sha256": "c92b431828250bf8fd7d92750c3383373423999fe528a3f31805b45afb03063e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v1s2.hex",
+      "Length": 2560,
+      "Sha256": "c2911f7acc46eb1cd4ac7fe0599de8ca10bdcc9eab297f70fdadddac5eff0ed6"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v1s3.hex",
+      "Length": 2560,
+      "Sha256": "066c011ba48062f5a25c8d5db54c6fd07ded4bad6c9d5d4558298a03c5b86fda"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v1s4.hex",
+      "Length": 2560,
+      "Sha256": "5e92afb38a17fc0d04e6082450e5b90c31777bac50c1b39f2c62d8116f3eccdb"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z4v1s5.hex",
+      "Length": 2560,
+      "Sha256": "c9c4ca89c2f27a56748d428b3449853be6f3b8eba6a03e205010ff1f1ba41d84"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v0s0.hex",
+      "Length": 2560,
+      "Sha256": "17069ee9abece05057d5ac056107766b5254c560b63b9fc1cf1cb9e5df8ef61e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v0s1.hex",
+      "Length": 2560,
+      "Sha256": "e691e050005bf6322a086f2ca495d4d59b9da44f2dbb6ca00896970fdec4b07e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v0s2.hex",
+      "Length": 2560,
+      "Sha256": "ac384dd231ec20e5287a105c0dc333dc5ce03e557a07067ef84a7f3a4d0d8100"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v0s3.hex",
+      "Length": 2560,
+      "Sha256": "07655be85e28b696d7af3420e4242048385726ddadd736612a14ec430a8f79ae"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v0s4.hex",
+      "Length": 2560,
+      "Sha256": "f512543565977d9fbd61c62deecffffe5bbb8289b70abeb26896f1f59c90201e"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v0s5.hex",
+      "Length": 2560,
+      "Sha256": "b184a7ecff2cded67c6a77deb575ddd9a883af4eee3aadaa6808f07ad7536b4f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v1s0.hex",
+      "Length": 2560,
+      "Sha256": "048ce9af6b52f458dc3f040cfcc44dab4443e3aaa31d8e0b40bea895b1e2029f"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v1s1.hex",
+      "Length": 2560,
+      "Sha256": "9e8cea2d8e2e3c60ca9cd3bbba6478ace0cb14b289ffd48f51eb93610b98826b"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v1s2.hex",
+      "Length": 2560,
+      "Sha256": "da845898d24b211b1ef64ceaf5f5f6aa1b61a4a32f2a9b9d919c70515f73d09a"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v1s3.hex",
+      "Length": 2560,
+      "Sha256": "49d8139c22c376d77b0a92131326a42ee7832f1a59e93d19860aea26d4d99236"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v1s4.hex",
+      "Length": 2560,
+      "Sha256": "674ae171c2bec9c472dd843dddedbe0d48c8861598df46517bd68894854f3da5"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano_z5v1s5.hex",
+      "Length": 2560,
+      "Sha256": "307792449a9a5264d8b231f21ed8edc6e0aef7d4e9d493bd1a56dfd7afbadef2"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_piano.hex",
+      "Length": 2560,
+      "Sha256": "3bfcb86594a83330930b1029a9b4594e59b9aed1d1706cdb8d57f39ba1e77e0d"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_sine.hex",
+      "Length": 2560,
+      "Sha256": "b75030d2aee625d0628efc6e79d27ecbd52c747f1ba8deab5334064f3aa70ef9"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wavetable_osc_dual_s6.v",
+      "Length": 3745,
+      "Sha256": "3c3c26b397eb04b6993e7c518819ea9a2381d3e7ab6b3a8465e6cc4cfa15dfa2"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wavetable_rom_dual.v",
+      "Length": 3257,
+      "Sha256": "2609a4371c782784a2d2f19328a4a8ce071b84dfc378f90f3b231bbfed82af35"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wide_master.v",
+      "Length": 4025,
+      "Sha256": "48351dfc6332d27e6e56dc0e5cdc17fc4307d4ab3d05c5c9839f41d1adf55688"
+    },
+    {
+      "Path": "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth-optimization07-20261022\\output\\handoff_milestone2_20261008\\source\\rtl\\top.v",
+      "Length": 48736,
+      "Sha256": "224ba9fb790d809f68c1d5cbee11e4ae110671461056a0192411e64125498f5f"
+    }
+  ]
+}

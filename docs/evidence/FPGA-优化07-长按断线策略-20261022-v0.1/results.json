@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-22",
+  "item": "优化07：CH9350L 长按与断线策略",
+  "tests": [
+    {
+      "name": "tb_host_kbd_timeout",
+      "result": "PASS",
+      "coverage": "idle-only 5s no-heartbeat long hold, strict compatibility, heartbeat sustain, 0x86 detach recovery"
+    },
+    {
+      "name": "tb_host_kbd",
+      "result": "PASS",
+      "coverage": "original CH9350L key mapping and control regression"
+    },
+    {
+      "name": "tb_top_host_ctrl",
+      "result": "PASS",
+      "coverage": "top-level HID control path with HOST_KBD_ENABLE=1"
+    }
+  ],
+  "builds": [
+    {
+      "profile": "standard27",
+      "top": "top_std27_build",
+      "tool": "V1.9.11.03 Education",
+      "completed_utc": "2026-10-22T03:49:28.1749461Z",
+      "inputs_digest": "b1776e882d4371cc367fc4b1a3363ed045992cf46c0acafc3371da807fd29e1f",
+      "bitstream_sha256": "66751cd5afb83a2a633fb722bb3e30d2f4dc5b9e80ebaa6b86b5982ed5bcf38a",
+      "bitstream_length": 7264154,
+      "resources": {
+        "logic": 11406,
+        "register": 3674,
+        "bsram": "25/46",
+        "dsp": "1.75/24"
+      },
+      "timing": {
+        "constraint_mhz": 27.0,
+        "fmax_mhz": 38.557,
+        "setup_slack_ns": 11.102,
+        "hold_slack_ns": 0.211,
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0
+      }
+    },
+    {
+      "profile": "debug8usb",
+      "top": "top_dbg8usb_build",
+      "tool": "V1.9.11.03 Education",
+      "completed_utc": "2026-10-22T03:52:27.0556052Z",
+      "inputs_digest": "73a2372bedab7c3ab5bb8126ba47c7f2308e72ffc1609101f892d2576de351a8",
+      "bitstream_sha256": "792722ded0eeaadc3f8d288fbf848e31b86bda438e17a2a9bd874dfbb29367d2",
+      "bitstream_length": 7264154,
+      "resources": {
+        "logic": 11378,
+        "register": 3702,
+        "bsram": "25/46",
+        "dsp": "1.75/24"
+      },
+      "timing": {
+        "constraint_mhz": 27.0,
+        "fmax_mhz": 35.885,
+        "setup_slack_ns": 9.171,
+        "hold_slack_ns": 0.319,
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0
+      }
+    }
+  ],
+  "boundary": "No physical CH9350L capture, no 10s hardware long-press test, no flash, no full simulation gate."
+}
