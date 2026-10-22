@@ -2,8 +2,8 @@
 // P0 选表语义定向验收：
 //   BANDLIMIT_ENABLE=1、GENERIC_BRIGHT_ENABLE=1 时，
 //   piano_enable=0 必须选 gowin_prom_bright_bank（6 级通用表），
-//   piano_enable=1 必须选 gowin_prom_piano_bank（72 张钢琴表），
-//   且 108 拍/帧、40 次乘积的既有截止时间不变。
+//   piano_enable=1 必须选 gowin_prom_piano_bank（12 张钢琴表），
+//   且 120 拍/帧、44 次乘积的当前截止时间不变。
 module tb_generic_bright;
     reg clk = 0;
     always #5 clk = ~clk;
@@ -11,7 +11,7 @@ module tb_generic_bright;
     reg rst = 1, tick = 0;
     reg [127:0] incs = {4{32'h10000000}};
     reg [63:0]  envs = {4{16'h8000}};
-    reg [31:0]  vels = {4{8'h80}};
+    reg [31:0]  vels = {4{8'h7F}};
     reg [3:0]   retrigs = 4'hF;
     reg [16:0]  ratio = 17'd65536;
     reg         piano_enable = 1'b0;
@@ -33,7 +33,7 @@ module tb_generic_bright;
         .retrig0(retrigs[0]), .retrig1(retrigs[1]), .retrig2(retrigs[2]), .retrig3(retrigs[3]),
         .env0(envs[15:0]), .env1(envs[31:16]), .env2(envs[47:32]), .env3(envs[63:48]),
         .vel0(vels[7:0]), .vel1(vels[15:8]), .vel2(vels[23:16]), .vel3(vels[31:24]),
-        .piano_enable(piano_enable), .piano_tone(3'd2),
+        .piano_enable(piano_enable), .guitar_enable(1'b0), .piano_tone(3'd2),
         .sine_sum(ss), .bright_sum(bs), .sums_valid(valid),
         .bend_ratio_q16(ratio),
         .mult_request(req), .mult_operand_a(ma), .mult_operand_b(mb), .mult_result(product)
@@ -73,13 +73,16 @@ module tb_generic_bright;
         repeat (4) @(negedge clk);
         rst = 0;
         repeat (2) @(negedge clk);
+        // Bank selection is evaluated with a moving phase; holding retrig high
+        // would reset every frame to table address zero and make both sums zero.
+        retrigs = 4'h0;
 
         // 1) 非钢琴：必须走通用明亮表
         piano_enable = 1'b0;
         repeat (2) @(negedge clk);
         run_frame(cycles, products, generic_sum);
-        if (cycles != 108 || products != 40)
-            $fatal(1, "generic frame deadline cycles=%0d products=%0d expect 108/40", cycles, products);
+        if (cycles != 120 || products != 44)
+            $fatal(1, "generic frame deadline cycles=%0d products=%0d expect 120/44", cycles, products);
         if (dut.piano_sel_q !== 1'b0)
             $fatal(1, "generic frame latched piano_sel_q=%b", dut.piano_sel_q);
         if (generic_sum == 0)
@@ -89,8 +92,8 @@ module tb_generic_bright;
         piano_enable = 1'b1;
         repeat (2) @(negedge clk);
         run_frame(cycles, products, piano_sum);
-        if (cycles != 108 || products != 40)
-            $fatal(1, "piano frame deadline cycles=%0d products=%0d expect 108/40", cycles, products);
+        if (cycles != 120 || products != 44)
+            $fatal(1, "piano frame deadline cycles=%0d products=%0d expect 120/44", cycles, products);
         if (dut.piano_sel_q !== 1'b1)
             $fatal(1, "piano frame latched piano_sel_q=%b", dut.piano_sel_q);
         if (piano_sum == 0)
@@ -100,7 +103,7 @@ module tb_generic_bright;
 
         if (mux_errors != 0)
             $fatal(1, "rom mux mismatches=%0d", mux_errors);
-        $display("PASS tb_generic_bright: generic=%0d piano=%0d, 108 clocks/40 products, no mux mismatch",
+        $display("PASS tb_generic_bright: generic=%0d piano=%0d, 120 clocks/44 products, no mux mismatch",
                  generic_sum, piano_sum);
         $finish;
     end

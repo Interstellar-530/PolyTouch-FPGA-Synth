@@ -1,0 +1,14 @@
+{
+  "root": "E:\\Working Space\\FPGA\\tmp\\merge-review-20261022-v01",
+  "files": [
+    "after_tb_generic_bright.vvp",
+    "after_tb_piano_engine.vvp",
+    "after_tb_piano_envelope.vvp",
+    "after_tb_piano_morph.vvp",
+    "after_tb_velocity_bounds.vvp",
+    "before_tb_generic_bright.vvp",
+    "before_tb_piano_engine.vvp",
+    "before_tb_piano_envelope.vvp",
+    "before_tb_piano_morph.vvp"
+  ]
+}

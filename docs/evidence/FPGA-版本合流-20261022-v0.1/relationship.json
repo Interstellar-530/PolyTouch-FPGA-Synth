@@ -1,0 +1,29 @@
+{
+  "common_base": "2d3db6c1700e6628341965af5bdee70d8134c526",
+  "ours": "6751f6dc65c5a301af3aab8187ec3d4aaeb7d219",
+  "teammate": "f7052fbe951e56d9839e179d14682c28ce714b05",
+  "left_only_commits": 1,
+  "right_only_commits": 1,
+  "conflict_files": [
+    "tb_piano_engine.v",
+    "tb_piano_morph.v"
+  ],
+  "retained_tables": {
+    "piano": 12,
+    "guitar": 30
+  },
+  "production_rtl_changed": false,
+  "retained_ours": [
+    "all six audited optimizations",
+    "12/30 tables",
+    "bank 0/4 expectations",
+    "velocity boundary regression",
+    "32-voice prototype"
+  ],
+  "retained_teammate": [
+    "guitar ports tied low in piano tests",
+    "moving phase for generic comparison",
+    "120 cycles/44 products expectations",
+    "nominal velocity 127"
+  ]
+}

@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// Piano selection must read bank 5 and produce a different waveform sum from
+// Piano selection must read C4 hammer bank 4 and produce a different waveform sum from
 // the ordinary band-limited bright path under identical phase/velocity.
 module tb_piano_engine;
     reg clk = 1'b0;
@@ -19,7 +19,7 @@ module tb_piano_engine;
         .retrig0(retrig), .retrig1(1'b0), .retrig2(1'b0), .retrig3(1'b0),
         .env0(16'hffff), .env1(16'd0), .env2(16'd0), .env3(16'd0),
         .vel0(8'd127), .vel1(8'd0), .vel2(8'd0), .vel3(8'd0),
-        .bend_ratio_q16(17'd65536), .piano_enable(1'b0), .piano_tone(3'd0),
+        .bend_ratio_q16(17'd65536), .piano_enable(1'b0), .guitar_enable(1'b0), .piano_tone(3'd0),
         .sine_sum(normal_sine), .bright_sum(normal_bright),
         .sums_valid(normal_valid), .mult_request(), .mult_operand_a(),
         .mult_operand_b(), .mult_result(36'sd0));
@@ -33,13 +33,13 @@ module tb_piano_engine;
         .retrig0(retrig), .retrig1(1'b0), .retrig2(1'b0), .retrig3(1'b0),
         .env0(16'hffff), .env1(16'd0), .env2(16'd0), .env3(16'd0),
         .vel0(8'd127), .vel1(8'd0), .vel2(8'd0), .vel3(8'd0),
-        .bend_ratio_q16(17'd65536), .piano_enable(1'b1), .piano_tone(3'd0),
+        .bend_ratio_q16(17'd65536), .piano_enable(1'b1), .guitar_enable(1'b0), .piano_tone(3'd0),
         .sine_sum(piano_sine), .bright_sum(piano_bright),
         .sums_valid(piano_valid), .mult_request(), .mult_operand_a(),
         .mult_operand_b(), .mult_result(36'sd0));
 
     always @(posedge clk) begin
-        if (piano.bank_low == 7'd4) saw_piano_bank <= 1'b1;
+        if (!rst && piano.state == piano.ST_LATCH_A && piano.vsel == 0 && piano.bank_low == 7'd4) saw_piano_bank <= 1'b1;
         if (normal_valid && piano_valid) begin
             frames = frames + 1;
             if (normal_bright !== piano_bright) differences = differences + 1;
