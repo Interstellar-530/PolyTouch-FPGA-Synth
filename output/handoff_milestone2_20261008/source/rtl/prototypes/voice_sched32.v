@@ -26,7 +26,7 @@ module voice_sched32 #(
     input  wire        rst,
     input  wire        sample_tick,
     input  wire        instrument,
-    input  wire [1:0]  piano_tone,
+    input  wire [2:0]  piano_tone,
     input  wire        ev_valid,
     input  wire        ev_on,
     input  wire [6:0]  ev_note,
@@ -41,7 +41,10 @@ module voice_sched32 #(
     output wire [2:0]  cfg_mask,
     output wire        cfg_valid,
     input  wire        cfg_ready,
-    output reg  [5:0]  active_count
+    output reg  [5:0]  active_count,
+    // 全局弯音比率（Q16，65536=不弯）。施加在每次配置事务的增量上，
+    // 不重触发包络；只在比率变化时把活动声部标脏刷新。
+    input  wire [16:0] bend_ratio
 );
     localparam [2:0] ST_IDLE = 3'd0, ST_ATTACK = 3'd1, ST_DECAY = 3'd2,
                      ST_SUSTAIN = 3'd3, ST_RELEASE = 3'd4;
@@ -58,7 +61,8 @@ module voice_sched32 #(
     reg [2:0] stage_q[0:VOICES-1];
     reg [12:0] timer[0:VOICES-1];
     reg instrument_q;
-    reg [1:0] tone_q;
+    reg [2:0] tone_q;
+    reg [16:0] ratio_q = 17'd65536;
     wire [2:0] start_stage=(tone_q>=3)?3'd4:3'd3;
 
     integer i, k;
@@ -162,6 +166,12 @@ module voice_sched32 #(
     wire clean_any = dirty[dirty_sel] || dirty_inc[dirty_sel] || dirty_param[dirty_sel];
 
     wire [31:0] candidate_inc;
+    // 弯音：candidate_inc 是基础增量，bend_ratio 是全局 Q16 比率。
+    // 先乘后加半位再右移 16，最后饱和到 1..0xFFFFFFFF；比率下限 0.891 不会到 0。
+    wire [48:0] bent_inc_prod = {17'd0,candidate_inc} * {32'd0,bend_ratio};
+    wire [32:0] bent_inc_round = (bent_inc_prod + 49'd32768) >> 16;
+    wire [31:0] bent_inc = (bent_inc_round > 33'hFFFFFFFF) ? 32'hFFFFFFFF :
+                           (bent_inc_round == 0) ? 32'd1 : bent_inc_round[31:0];
     note_phase_inc #(.FS_HZ(FS_HZ)) u_inc(.note(snap_note),.inc(candidate_inc));
     // Use note boundaries, preserving the production 46.875kHz musical mapping
     // when the prototype runs at 48kHz. Piano group 1 starts at MIDI 78.
@@ -188,7 +198,7 @@ module voice_sched32 #(
             dirty <= {VOICES{1'b0}}; dirty_inc <= {VOICES{1'b0}}; dirty_param <= {VOICES{1'b0}};
             env_run <= 1'b0; env_ptr <= 6'd0; cfg_pend <= 1'b0; env_phase <= 1'b0;
             env_lat <= 16'd0; est_lat <= 3'd0; gate_lat <= 1'b0; timer_lat <= 13'd0; stage_lat <= 3'd0;
-            sel <= 6'd0; dirty_sel<=0;cfg_inc_q<=0;cfg_param_q<=0;cfg_mask_q<=3'b001;instrument_q<=0;tone_q<=0;
+            sel <= 6'd0; dirty_sel<=0;cfg_inc_q<=0;cfg_param_q<=0;cfg_mask_q<=3'b001;instrument_q<=0;tone_q<=3'd0;ratio_q<=17'd65536;
             cfg_env_q <= 16'd0; cfg_vel_q <= 7'd0; cfg_retrig_q <= 1'b0;
             snap_valid<=1'b0;snap_sel<=0;snap_note<=0;snap_vel<=0;snap_env<=0;
             snap_stage<=0;snap_timer<=0;snap_retrig<=0;snap_mask<=3'b001;
@@ -202,6 +212,10 @@ module voice_sched32 #(
             // Latch global timbre at frame boundary and refresh every voice.
             if(sample_tick && ((instrument_q!=instrument)||(tone_q!=piano_tone)))begin
                 instrument_q<=instrument;tone_q<=piano_tone;dirty<={VOICES{1'b1}};dirty_inc<={VOICES{1'b1}};dirty_param<={VOICES{1'b1}};
+                dirty_sel<=0;
+            end else if(sample_tick && (ratio_q!=bend_ratio))begin
+                // 弯音只刷新增量：不置 dirty_param、不重触发包络。
+                ratio_q<=bend_ratio;dirty_inc<={VOICES{1'b1}};
                 dirty_sel<=0;
             end
             // Event capture: one entry.
@@ -296,7 +310,7 @@ module voice_sched32 #(
             // update set it again while this transaction is waiting.
             if(!cfg_pend || cfg_ready)begin
                 if(snap_valid)begin
-                    sel<=snap_sel;cfg_inc_q<=candidate_inc;
+                    sel<=snap_sel;cfg_inc_q<=bent_inc;
                     cfg_env_q<=snap_env;cfg_vel_q<=snap_vel[6:0];
                     cfg_retrig_q<=snap_retrig;cfg_param_q<={2'd0,candidate_bank,candidate_weight};
                     cfg_mask_q<=snap_mask;cfg_pend<=1;snap_valid<=0;

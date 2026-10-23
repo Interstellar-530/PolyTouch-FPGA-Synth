@@ -9,6 +9,7 @@ module instrument_ram_audio_datapath #(
  input wire[5:0]cfg_voice,input wire[31:0]cfg_increment,input wire[15:0]cfg_envelope,
  input wire[6:0]cfg_velocity,input wire cfg_retrigger,input wire[23:0]cfg_param,input wire[2:0]cfg_mask,
  input wire[7:0]mix_weight,input wire pressure_enable,input wire[11:0]pressure_level,input wire mute,
+ input wire[8:0]volume_gain_q8,
  output wire i2s_bck,i2s_lrck,i2s_din,output wire sample_tick,
  output wire signed[23:0]audio_sample,output wire sample_valid,
  output wire[31:0]clip_count,output wire initialized
@@ -17,7 +18,7 @@ module instrument_ram_audio_datapath #(
  instrument_ram_audio_compute #(.VOICES(VOICES),.FRAME_CYCLES(CLK_HZ/FS_HZ)) u_compute(
   .clk(clk),.rst(rst),.sample_tick(sample_tick),.cfg_valid(cfg_valid),.cfg_ready(cfg_ready),
   .cfg_voice(cfg_voice),.cfg_increment(cfg_increment),.cfg_envelope(cfg_envelope),.cfg_velocity(cfg_velocity),.cfg_retrigger(cfg_retrigger),.cfg_param(cfg_param),.cfg_mask(cfg_mask),
-  .mix_weight(mix_weight),.pressure_enable(pressure_enable),.pressure_level(pressure_level),.mute(mute),
+  .mix_weight(mix_weight),.pressure_enable(pressure_enable),.pressure_level(pressure_level),.mute(mute),.volume_gain_q8(volume_gain_q8),
   .audio_sample(audio_sample),.sample_valid(sample_valid),.clip_count(clip_count),.initialized(initialized),
   .sine_total(sine_total),.bright_total(bright_total),.sums_valid(sums_valid),.master_req(master_req),.master_ready(aux_ready_v[0]));
  i2s_tx #(.CLK_HZ(CLK_HZ),.SAMPLE_RATE_HZ(FS_HZ),.DATA_BITS(24)) u_i2s(

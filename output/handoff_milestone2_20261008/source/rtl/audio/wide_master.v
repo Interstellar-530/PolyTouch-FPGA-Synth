@@ -7,6 +7,7 @@ module wide_master #(
 )(
  input wire clk,rst,update,input wire signed[31:0]sine_sum,bright_sum,
  input wire[7:0]mix_weight,input wire pressure_enable,input wire[11:0]pressure_level,input wire mute,
+ input wire[8:0]volume_gain_q8,
  output reg signed[23:0]sample_out,output reg result_valid,output wire busy,
  output reg[31:0]clip_count,output reg clip_event,
  output wire mult_request,input wire mult_ready,
@@ -30,11 +31,16 @@ module wide_master #(
  wire[12:0]calibrated_gain=pressure_level<=PRESSURE_ADC_LOW?PRESSURE_MIN_GAIN_Q12:
   pressure_level>=PRESSURE_ADC_FULL?13'd4096:PRESSURE_MIN_GAIN_Q12+mapped_delta;
  wire[12:0]target_gain=mute?13'd0:pressure_enable?calibrated_gain:13'd4096;
+ // 主音量(选项A)：与压力增益合成同一个 Q12 增益，13x9 乘每帧一次，不额外占 DSP。
+ // volume_gain_q8 是 top.v 的同一条曲线（256=单位增益），default 256 保持旧行为。
+ wire[21:0]combined_gain_prod={9'd0,target_gain}*{13'd0,volume_gain_q8};
+ wire[13:0]combined_gain_shift=combined_gain_prod>>8;
+ wire[12:0]combined_gain=combined_gain_shift>14'd4096?13'd4096:combined_gain_shift[12:0];
  reg[12:0]gain_next;
  always @*begin
-  gain_next=target_gain;
-  if(target_gain>gain_q12 && target_gain-gain_q12>PRESSURE_GAIN_STEP)gain_next=gain_q12+PRESSURE_GAIN_STEP;
-  else if(gain_q12>target_gain && gain_q12-target_gain>PRESSURE_GAIN_STEP)gain_next=gain_q12-PRESSURE_GAIN_STEP;
+  gain_next=combined_gain;
+  if(combined_gain>gain_q12 && combined_gain-gain_q12>PRESSURE_GAIN_STEP)gain_next=gain_q12+PRESSURE_GAIN_STEP;
+  else if(gain_q12>combined_gain && gain_q12-combined_gain>PRESSURE_GAIN_STEP)gain_next=gain_q12-PRESSURE_GAIN_STEP;
  end
  reg signed[31:0]saved_sine=0,saved_bright=0;
  reg signed[50:0]base=0;

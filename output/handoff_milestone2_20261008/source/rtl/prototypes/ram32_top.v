@@ -42,6 +42,8 @@ module ram32_top #(
         .cfg_increment(cfg_increment), .cfg_envelope(cfg_envelope),
         .cfg_velocity(cfg_velocity), .cfg_retrigger(cfg_retrigger), .cfg_param(cfg_param), .cfg_mask(cfg_mask),
         .mix_weight(8'hff), .pressure_enable(1'b0), .pressure_level(12'd0), .mute(1'b0),
+        // 旧原型保持原接线：主音量固定单位增益（Q8 256），控制能力只在 ram32_clocked_top。
+        .volume_gain_q8(9'd256),
         .i2s_bck(i2s_bck), .i2s_lrck(i2s_lrck), .i2s_din(i2s_din),
         .sample_tick(tick), .audio_sample(audio_sample), .sample_valid(sample_valid),
         .clip_count(clip_count), .initialized(initialized)
@@ -51,12 +53,12 @@ module ram32_top #(
                     .DECAY_STEP(DECAY_STEP), .RELEASE_STEP(RELEASE_STEP),
                     .SUSTAIN_LEVEL(SUSTAIN_LEVEL), .FS_HZ(48000)) u_sched (
         .clk(clk), .rst(rst), .sample_tick(tick),
-        .instrument(instrument), .piano_tone(piano_tone),
+        .instrument(instrument), .piano_tone({1'b0, piano_tone}),
         .ev_valid(ev_valid), .ev_on(ev_on), .ev_note(ev_note), .ev_vel(ev_vel),
         .ev_ready(ev_ready),
         .cfg_voice(cfg_voice), .cfg_increment(cfg_increment),
         .cfg_envelope(cfg_envelope), .cfg_velocity(cfg_velocity),
         .cfg_retrigger(cfg_retrigger), .cfg_param(cfg_param), .cfg_mask(cfg_mask), .cfg_valid(cfg_valid), .cfg_ready(cfg_ready),
-        .active_count(active_count)
+        .active_count(active_count), .bend_ratio(17'd65536)
     );
 endmodule
