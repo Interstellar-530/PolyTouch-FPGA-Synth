@@ -14,7 +14,7 @@
 //
 // 去重：同一报告连续重复 3-4 次（CH9350L 特性）不会重复触发。
 // 移调：按下时把实际 MIDI 音高存进 prev_note，松开用存下的音高。
-// 断线：2 s 无帧或收到 0x86 时清空按键；顶层同时清声部，避免粘音。
+// 断线：有效超时或收到 0x86 时清空按键；host_kbd_input 默认只在无持键时采用 2 s 静默超时。
 module hid_keymap (
     input  wire        clk,
     input  wire        rst,

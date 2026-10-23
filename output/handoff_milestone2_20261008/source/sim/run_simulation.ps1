@@ -297,6 +297,8 @@ try {
     $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v',
                 'rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
     $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
+    # 优化 07：持键静默不误清音，strict 模式保持旧行为。
+    $suite += @{ Name='tb_host_kbd_timeout'; Top='sim\tb_host_kbd_timeout.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
     # HID 控制补齐：F6 乐器切换、Up/Down 主音量、Esc 清音，以及与 UART 命令共存。
     $suite += @{ Name='tb_top_host_ctrl'; Top='sim\tb_top_host_ctrl.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
     $suite += @{ Name='tb_event_prefetch'; Top='sim\tb_event_prefetch.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v')) }
