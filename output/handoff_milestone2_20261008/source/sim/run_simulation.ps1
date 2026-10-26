@@ -284,6 +284,7 @@ try {
     $suite += @{ Name='tb_host_kbd_timeout'; Top='sim\tb_host_kbd_timeout.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
     # HID 控制补齐：F6 乐器切换、Up/Down 主音量、Esc 清音，以及与 UART 命令共存。
     $suite += @{ Name='tb_top_host_ctrl'; Top='sim\tb_top_host_ctrl.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    $suite += @{ Name='tb_top_host_pause'; Top='sim\tb_top_host_pause.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
     $suite += @{ Name='tb_event_prefetch'; Top='sim\tb_event_prefetch.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v')) }
     $suite += @{ Name='tb_ram32_complete'; Top='sim\tb_ram32_complete.v'; Src=($audioSources + @('rtl\prototypes\voice_sched32.v','rtl\prototypes\ram32_top.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_datapath.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
     $suite += @{ Name='tb_instrument_rom_banks'; Top='sim\tb_instrument_rom_banks.v'; Src=@('rtl\prototypes\instrument_rom_banks.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_bright_bank.v','sim\gowin_prom_model.v') }
@@ -312,8 +313,8 @@ try {
     $groups = @{
         Quick = @('tb_tick_rate','tb_adsr','tb_event_fifo','tb_i2s_tx','tb_mcp3208_spi','tb_fsr_mute',
                   'tb_pressure_bend','tb_pressure_gain','tb_velocity_bounds','tb_wide_master_pair',
-                  'tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl')
-        Host = @('tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl')
+                  'tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause')
+        Host = @('tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause')
         Ram32 = @('tb_voice_sched32_review','tb_instrument_rom_banks','tb_ram32_complete','tb_ram32_controls','tb_ram32_engine_audio')
         OptA = @('tb_opt_a_datapath','tb_opt_a_master','tb_opt_a_tables')
     }

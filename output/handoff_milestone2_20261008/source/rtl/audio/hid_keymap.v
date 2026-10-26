@@ -8,6 +8,7 @@
 //   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；F6 -> 钢琴/吉他切换（同串口 I0/I1）；
 //   Up/Down -> 主音量 +/-5（同串口 V）；Esc -> 全松键；PageUp/PageDown -> 八度。
 //   F7 -> 手动/自动切换；整份报告先检测，优先于同帧音符，松开后才可再切换。
+//   F8 -> 自动曲目暂停/继续；与 F7 相同，按下边沿只触发一次。
 //
 // 时序：报告每 ~87 us 才来一帧，而 27 MHz 有 2000+ 拍余量，所以键位差分用
 // 12 拍状态机逐键处理，而不是一拍内做 6x6 查找。这样 event FIFO 的写使能只经过
@@ -33,6 +34,7 @@ module hid_keymap (
     // F6 与串口 I0/I1 同义：切换钢琴/吉他；Up/Down 是主音量单步脉冲。
     output reg         instr_toggle,
     output reg         mode_toggle,
+    output reg         pause_toggle,
     output reg         vol_up,
     output reg         vol_down,
     output reg  [6:0]  base_note,
@@ -45,6 +47,10 @@ module hid_keymap (
                            (report[39:32] == 8'h40) || (report[47:40] == 8'h40) ||
                            (report[55:48] == 8'h40) || (report[63:56] == 8'h40);
     reg mode_key_held = 1'b0;
+    wire report_has_pause = (report[23:16] == 8'h41) || (report[31:24] == 8'h41) ||
+                            (report[39:32] == 8'h41) || (report[47:40] == 8'h41) ||
+                            (report[55:48] == 8'h41) || (report[63:56] == 8'h41);
+    reg pause_key_held = 1'b0;
 
     // Detect F7 before the per-key scan can enqueue notes from this report.
     // The resulting top-level flush cancels that scan and keeps the physical
@@ -54,11 +60,16 @@ module hid_keymap (
         if (rst || device_notify) begin
             mode_key_held <= 1'b0;
             mode_toggle <= 1'b0;
+            pause_key_held <= 1'b0;
+            pause_toggle <= 1'b0;
         end else begin
             mode_toggle <= 1'b0;
+            pause_toggle <= 1'b0;
             if (report_valid) begin
                 mode_key_held <= report_has_mode;
                 if (report_has_mode && !mode_key_held) mode_toggle <= 1'b1;
+                pause_key_held <= report_has_pause;
+                if (report_has_pause && !pause_key_held) pause_toggle <= 1'b1;
             end
         end
     end

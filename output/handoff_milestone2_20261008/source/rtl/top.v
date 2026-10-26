@@ -128,6 +128,7 @@ module top #(
     wire [7:0] hid_timbre_value;
     wire hid_instr_toggle;
     wire hid_mode_toggle;
+    wire hid_pause_toggle;
     wire hid_vol_up;
     wire hid_vol_down;
     wire       uart_instr_valid;
@@ -270,6 +271,7 @@ module top #(
                 .panic(hid_panic), .timbre_valid(hid_timbre_valid),
                 .timbre_value(hid_timbre_value),
                 .instr_toggle(hid_instr_toggle), .mode_toggle(hid_mode_toggle),
+                .pause_toggle(hid_pause_toggle),
                 .vol_up(hid_vol_up), .vol_down(hid_vol_down),
                 .base_note(hid_base_note), .held_count(hid_held_count),
                 .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
@@ -285,6 +287,7 @@ module top #(
             assign hid_timbre_value = 8'd0;
             assign hid_instr_toggle = 1'b0;
             assign hid_mode_toggle = 1'b0;
+            assign hid_pause_toggle = 1'b0;
             assign hid_vol_up    = 1'b0;
             assign hid_vol_down  = 1'b0;
             assign hid_base_note = 7'd60;
@@ -297,6 +300,8 @@ module top #(
     endgenerate
 
     reg         demo_mode;
+    reg         demo_paused;
+    wire demo_transport_paused = demo_mode && demo_paused;
     // Explicit UART D0/D1 wins if both interfaces request a mode on this clock.
     wire hid_mode_request = hid_mode_toggle && !uart_demo_on && !uart_demo_off;
     assign demo_on_request  = uart_demo_on  || (hid_mode_request && !demo_mode);
@@ -350,6 +355,7 @@ module top #(
     always @(posedge clk_audio) begin
         if (rst) begin
             demo_mode     <= 1'b1; // preserve power-on song demonstration
+            demo_paused   <= 1'b0;
             pending_valid <= 1'b0;
             pending_word  <= 16'd0;
         end else begin
@@ -358,6 +364,10 @@ module top #(
                 demo_mode <= 1'b1;
             else if (demo_off_request || manual_transition)
                 demo_mode <= 1'b0;
+            if (demo_on_request || demo_off_request || manual_transition)
+                demo_paused <= 1'b0;
+            else if (hid_pause_toggle && demo_mode)
+                demo_paused <= !demo_paused;
             // 退出演示这一拍先清队列并松开旧声部，把首个 N/O 事件暂存一拍，
             // 下一拍再送分配器，避免同拍 panic 吞掉它；并非等 Release 完成。
             // pending_valid 没有 ready 握手且只保留一拍。UART 命令相隔多个字节
@@ -372,11 +382,11 @@ module top #(
     song_player #(.UNIT_SAMPLES(SONG_UNIT_SAMPLES)) u_song (
         .clk          (clk_audio),
         .rst          (rst | ~demo_mode),
-        .sample_tick  (sample_tick),
+        .sample_tick  (sample_tick && !demo_transport_paused),
         .restart      (restart | demo_on_request),
         .chord_set    (chord_set),
         .tempo_sel    (tempo_sel),
-        .ev_ready     (fifo_ready),
+        .ev_ready     (fifo_ready && !demo_transport_paused),
         .ev_wr        (sp_ev_wr),
         .ev_data      (sp_ev_data),
         .mel_idx_dbg  (mel_idx_dbg),
@@ -411,7 +421,7 @@ module top #(
     event_fifo u_fifo (
         .clk     (clk_audio),
         .rst     (rst | clear_events),
-        .wr_en   (sp_ev_wr & demo_mode),
+        .wr_en   (sp_ev_wr & demo_mode & !demo_transport_paused),
         .wr_data (sp_ev_data),
         .rd_en   (fifo_rd),
         .rd_data (fifo_data),
@@ -444,7 +454,7 @@ module top #(
     wire        uart_direct  = uart_ev_valid && !manual_transition;
     // [S2-AI] 手动 FIFO 只在非演示模式送出；演示期间的 GPIO 松键已在 man_wr 处过滤。
     wire        man_deliver  = man_ev_valid && !demo_mode;
-    wire        demo_deliver = demo_mode && !fifo_empty;
+    wire        demo_deliver = demo_mode && !demo_transport_paused && !fifo_empty;
     wire        ev_valid = !clear_events &&
                            (pending_valid || uart_direct || man_deliver || demo_deliver);
     wire [15:0] ev_word  = pending_valid ? pending_word :
@@ -606,7 +616,7 @@ module top #(
     );
 
     wire fsr_muted;
-    wire audio_muted = uart_muted | fsr_muted;
+    wire audio_muted = uart_muted | fsr_muted | demo_transport_paused;
     fsr_mute u_fsr_mute (
         .clk(clk_audio), .rst(rst), .enable(PRESSURE_ENABLE != 0),
         .update(control_sample_tick), .pressure(pressure_filtered), .muted(fsr_muted)

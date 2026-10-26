@@ -25,6 +25,7 @@ module host_kbd_input #(
     output wire [7:0]  timbre_value,
     output wire        instr_toggle,
     output wire        mode_toggle,
+    output wire        pause_toggle,
     output wire        vol_up,
     output wire        vol_down,
     output wire [6:0]  base_note,
@@ -68,6 +69,7 @@ module host_kbd_input #(
         .ev_valid(ev_valid), .ev_word(ev_word), .ev_ready(ev_ready),
         .panic(panic), .timbre_valid(timbre_valid), .timbre_value(timbre_value),
         .instr_toggle(instr_toggle), .mode_toggle(mode_toggle),
+        .pause_toggle(pause_toggle),
         .vol_up(vol_up), .vol_down(vol_down),
         .base_note(base_note), .held_count(held_count), .overflow(overflow)
     );
