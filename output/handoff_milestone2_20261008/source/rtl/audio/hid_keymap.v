@@ -7,6 +7,7 @@
 //   Q 2 W 3 E R 5 T 6 Y 7 U  -> base+0  .. base+11
 //   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；F6 -> 钢琴/吉他切换（同串口 I0/I1）；
 //   Up/Down -> 主音量 +/-5（同串口 V）；Esc -> 全松键；PageUp/PageDown -> 八度。
+//   F7 -> 手动/自动切换；整份报告先检测，优先于同帧音符，松开后才可再切换。
 //
 // 时序：报告每 ~87 us 才来一帧，而 27 MHz 有 2000+ 拍余量，所以键位差分用
 // 12 拍状态机逐键处理，而不是一拍内做 6x6 查找。这样 event FIFO 的写使能只经过
@@ -31,6 +32,7 @@ module hid_keymap (
     output reg  [7:0]  timbre_value,
     // F6 与串口 I0/I1 同义：切换钢琴/吉他；Up/Down 是主音量单步脉冲。
     output reg         instr_toggle,
+    output reg         mode_toggle,
     output reg         vol_up,
     output reg         vol_down,
     output reg  [6:0]  base_note,
@@ -39,6 +41,27 @@ module hid_keymap (
 );
     localparam [7:0] VELOCITY = 8'd100;
     wire clear_all = flush || link_timeout || device_notify;
+    wire report_has_mode = (report[23:16] == 8'h40) || (report[31:24] == 8'h40) ||
+                           (report[39:32] == 8'h40) || (report[47:40] == 8'h40) ||
+                           (report[55:48] == 8'h40) || (report[63:56] == 8'h40);
+    reg mode_key_held = 1'b0;
+
+    // Detect F7 before the per-key scan can enqueue notes from this report.
+    // The resulting top-level flush cancels that scan and keeps the physical
+    // key identities. Do not rearm F7 on a mode flush or a silent timeout:
+    // repeated/slot-reordered reports still represent the same held key.
+    always @(posedge clk) begin
+        if (rst || device_notify) begin
+            mode_key_held <= 1'b0;
+            mode_toggle <= 1'b0;
+        end else begin
+            mode_toggle <= 1'b0;
+            if (report_valid) begin
+                mode_key_held <= report_has_mode;
+                if (report_has_mode && !mode_key_held) mode_toggle <= 1'b1;
+            end
+        end
+    end
     reg [4:0] count = 5'd0;
     // 满队列时若本拍同时出队，仍允许入队；否则会静默丢掉 Note Off。
     wire room = (count < 5'd16) || (ev_valid && ev_ready);

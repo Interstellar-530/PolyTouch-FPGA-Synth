@@ -1,0 +1,1502 @@
+{
+  "Suite": "Custom",
+  "Passed": true,
+  "CompleteRegression": false,
+  "Selected": [
+    "tb_mode_uart",
+    "tb_gpio_top",
+    "tb_host_kbd",
+    "tb_host_kbd_timeout",
+    "tb_top_host_ctrl"
+  ],
+  "NotSelected": [
+    "tb_tick_rate",
+    "tb_song_timing",
+    "tb_adsr",
+    "tb_voice_retrigger",
+    "tb_voice_order",
+    "tb_event_fifo",
+    "tb_song_backpressure",
+    "tb_gpio_keyboard",
+    "tb_poly",
+    "tb_audio_capture",
+    "tb_i2s_tx",
+    "tb_mcp3208_spi",
+    "tb_mcp3208_i2s_coexist",
+    "tb_mcp3208_params",
+    "tb_pressure_bend",
+    "tb_s6_audio",
+    "tb_top_s4s6",
+    "tb_top_i2s",
+    "tb_s6_rom_prim",
+    "tb_piano_bank",
+    "tb_key_gain",
+    "tb_velocity_bounds",
+    "tb_piano_engine",
+    "tb_piano_morph",
+    "tb_piano_envelope",
+    "tb_shared_engine",
+    "tb_pressure_gain",
+    "tb_pressure_top",
+    "tb_fsr_mute",
+    "tb_timbre_controls",
+    "tb_timbre_audio",
+    "tb_timbre_uart",
+    "tb_timbre_top",
+    "tb_architecture_equivalence",
+    "tb_shared_bend_equivalence",
+    "tb_bend_equivalence",
+    "tb_shared_master",
+    "tb_frame_velocity",
+    "tb_headroom",
+    "tb_bend_precision",
+    "tb_adc_reset_top",
+    "tb_control_sampling",
+    "tb_mute_slew",
+    "tb_voice_transition",
+    "tb_voice_transition_audio",
+    "tb_voice_transition_top",
+    "tb_note_ownership",
+    "tb_note_ownership_top",
+    "tb_bright_banks",
+    "tb_bandlimit_engine",
+    "tb_wide_master",
+    "tb_precision_audio",
+    "tb_bandlimit_engine_wide",
+    "tb_bend_ratio_pipeline",
+    "tb_split_audio_multiplier",
+    "tb_voice_state_ram",
+    "tb_ram_wavetable_engine",
+    "tb_wide_master_pair",
+    "tb_top_i2s_27m",
+    "tb_generic_bright",
+    "tb_piano_stage",
+    "tb_event_prefetch",
+    "tb_ram32_complete",
+    "tb_instrument_rom_banks",
+    "tb_ram32_controls",
+    "tb_ram32_engine_audio",
+    "tb_voice_sched32_review",
+    "tb_engine8_pitch",
+    "tb_top_pitch8",
+    "tb_top_switch",
+    "tb_top_guitar",
+    "tb_guitar_bank",
+    "tb_ram_audio_datapath_8",
+    "tb_ram_audio_datapath_32",
+    "tb_ram_audio_datapath_64",
+    "tb_opt_a_datapath",
+    "tb_opt_a_master",
+    "tb_opt_a_tables"
+  ],
+  "ElapsedSeconds": 137.4734277,
+  "Results": [
+    {
+      "Name": "tb_mode_uart",
+      "CompileExit": 0,
+      "RunExit": 0,
+      "Seconds": 7.3999355,
+      "Passed": true
+    },
+    {
+      "Name": "tb_gpio_top",
+      "CompileExit": 0,
+      "RunExit": 0,
+      "Seconds": 50.8295798,
+      "Passed": true
+    },
+    {
+      "Name": "tb_host_kbd",
+      "CompileExit": 0,
+      "RunExit": 0,
+      "Seconds": 6.1016561000000005,
+      "Passed": true
+    },
+    {
+      "Name": "tb_host_kbd_timeout",
+      "CompileExit": 0,
+      "RunExit": 0,
+      "Seconds": 1.1089635,
+      "Passed": true
+    },
+    {
+      "Name": "tb_top_host_ctrl",
+      "CompileExit": 0,
+      "RunExit": 0,
+      "Seconds": 71.5767216,
+      "Passed": true
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "rtl\\audio\\adsr.v",
+      "SHA256": "925F31E58AC94C5C7E4C8D91D2E5E1266FDF63CB752A52D84334B4C898F5B914"
+    },
+    {
+      "Path": "rtl\\audio\\audio_frame_bridge_stereo.v",
+      "SHA256": "313F4B8805DF0ABDDBF64DA5C37B9A832CF1471A289DAC9F82C249AC4178BC16"
+    },
+    {
+      "Path": "rtl\\audio\\audio_frame_bridge.v",
+      "SHA256": "4C5870F55DE082E1B567BB105D8712F6AA5B9A29A8ED3B7ED2ADF21BCF47F2DC"
+    },
+    {
+      "Path": "rtl\\audio\\audio_pll_clock.v",
+      "SHA256": "6D8FCA41D1EA562712BA88453CE9116B91C97ECCB4BD1D9B407C9D587B319590"
+    },
+    {
+      "Path": "rtl\\audio\\bend_coefficients.vh",
+      "SHA256": "11FF7846CC9E11EFD4E123F61699FE7639ACAB035757483BBC189CAF1E1288E0"
+    },
+    {
+      "Path": "rtl\\audio\\bend_ratio_pipeline.v",
+      "SHA256": "383DC838B2676E15B43BC89248B450B879211C084A7A332B56B1CFDAB9372C2B"
+    },
+    {
+      "Path": "rtl\\audio\\ch9350_rx.v",
+      "SHA256": "5C176AC23F5E6BB0025EA8565A0FEF472407743CD9FDFB513E54D30B6A3DFBE5"
+    },
+    {
+      "Path": "rtl\\audio\\clk_params.vh",
+      "SHA256": "83D125BC36C9AAA3C3A0C1981BE4C0D2DDC3B3FA582A49E54B27CCB040B91952"
+    },
+    {
+      "Path": "rtl\\audio\\dds_osc.v",
+      "SHA256": "C60ABB48D44D8BC530C328789405BF24FD6579DCF598A4820E8DB4F02C33AF7F"
+    },
+    {
+      "Path": "rtl\\audio\\epiano_bank_all.hex",
+      "SHA256": "6ABD2E89B8627B7E024ED29AE7B2A043612BC12199A1C10ADEAA6162C7C657E4"
+    },
+    {
+      "Path": "rtl\\audio\\event_fifo.v",
+      "SHA256": "FD4646DBE640469A94EBAC2492A2358290197EE7F8C1E2AE63615EA2F25993B6"
+    },
+    {
+      "Path": "rtl\\audio\\fsr_mute.v",
+      "SHA256": "11DF10018FA6FE2DC760EC2C3A47B169A4C009F977A48D38FDA90C261C3B1AC5"
+    },
+    {
+      "Path": "rtl\\audio\\global_crossfade.v",
+      "SHA256": "46B26389CFCA15411B65549EF8918E4835C438A00D04A627AE01F57A852311C4"
+    },
+    {
+      "Path": "rtl\\audio\\gowin_prom_bright_bank.v",
+      "SHA256": "0C0084FDC9F14768BD96A51FC16D0E1C9213DE1FF96A778C6BB60B7A3DD2D993"
+    },
+    {
+      "Path": "rtl\\audio\\gowin_prom_guitar_bank.v",
+      "SHA256": "55FCB38EBBF2136C0BE600FDF891810D3F8330CBA90955D10B0745A0BA89F3D5"
+    },
+    {
+      "Path": "rtl\\audio\\gowin_prom_piano_bank.v",
+      "SHA256": "547D498C602D41E1ECB854F8A068AB441B48293BA4009EEBB63B5C7ECA965114"
+    },
+    {
+      "Path": "rtl\\audio\\gowin_prom_wave_bright.v",
+      "SHA256": "367A760CEEE08C7E57376F8411193E9EADE9EC0365499072E033C25FC9476E5D"
+    },
+    {
+      "Path": "rtl\\audio\\gowin_prom_wave_sine.v",
+      "SHA256": "55A6635A29FFDF5C0EF28D990D81809515C3480D025642D8C579ABA1633D960D"
+    },
+    {
+      "Path": "rtl\\audio\\gpio_keyboard.v",
+      "SHA256": "8F2FF53A0C700D4E3093708044E3CE174EB04362EAEC1066438F90BD9BCECF57"
+    },
+    {
+      "Path": "rtl\\audio\\guitar_bank_all.hex",
+      "SHA256": "721DA6759240BFBBDF472F58121E4D255DBEA4B3D8D906EF20E9D4F479A01155"
+    },
+    {
+      "Path": "rtl\\audio\\hid_keymap.v",
+      "SHA256": "09F7D5D68B9D5B23DBFE1D55EE680430F3C14C9075D399FFD53A6E0EC31F4643"
+    },
+    {
+      "Path": "rtl\\audio\\host_kbd_input.v",
+      "SHA256": "EA2AD9E3E550937A8740351A833992716D54DD51FD1F0292DBFA705BDC5DA4B5"
+    },
+    {
+      "Path": "rtl\\audio\\i2s_tx.v",
+      "SHA256": "24C3F915105A6928A5B9C1ABF99A095803AD7A6FD48F8B485A3BAC0AE5F2409B"
+    },
+    {
+      "Path": "rtl\\audio\\instrument_controls.v",
+      "SHA256": "2959D61B8109282178552A20BF32760F19685B9EC08C7C25634ABD324E761227"
+    },
+    {
+      "Path": "rtl\\audio\\kbd_uart_rx.v",
+      "SHA256": "E3E321D451A60BCC8713EF0F16A66DABE566337B852B1DA5F25A87FE4378AD3A"
+    },
+    {
+      "Path": "rtl\\audio\\mcp3208_spi.v",
+      "SHA256": "730D8787D75D000F7F567DC3756203A626D98B53C49E99916A6E6B8FE1730103"
+    },
+    {
+      "Path": "rtl\\audio\\mixer_s6.v",
+      "SHA256": "126FADA0C39BA32A13C71C7650390937D05FD3C741C5F1050EAC1D4EF9A93115"
+    },
+    {
+      "Path": "rtl\\audio\\mixer.v",
+      "SHA256": "E9202D1316F06DE94F04D82AB598C19F32A1FF00F90B68005D029C4787660B0C"
+    },
+    {
+      "Path": "rtl\\audio\\note_ownership.v",
+      "SHA256": "CCB2E75F72C671156604CDA9E711CCE79E2B438789139FD59228E16C678604BC"
+    },
+    {
+      "Path": "rtl\\audio\\note_phase_inc.v",
+      "SHA256": "D9CF887F9D6146B280BEFE4CA6AD763B90E5A709DD235C32C45E7C1914E76823"
+    },
+    {
+      "Path": "rtl\\audio\\piano_bank_all.hex",
+      "SHA256": "3AFD08C136C0C15C02DA5CA1021CE316B39A48577AEBE1EADD79DE7C335883C3"
+    },
+    {
+      "Path": "rtl\\audio\\poly_voice_s6.v",
+      "SHA256": "ABFD61206FE073A9DD1E374ADE9D1B0BDB5B2F1563616B2B2C8A6EDCE59AE206"
+    },
+    {
+      "Path": "rtl\\audio\\poly_voice.v",
+      "SHA256": "0713240F541A1502AF401F8782498A6B090742BC1A27250FE57A7454281BA202"
+    },
+    {
+      "Path": "rtl\\audio\\pressure_bend.v",
+      "SHA256": "EDF1A7740552487806AAC4C3EE93E471E1210B9380512F5C5FEEF5FDF0F04655"
+    },
+    {
+      "Path": "rtl\\audio\\pt8211_tx.v",
+      "SHA256": "B6CD361C6CD7B61A33031EA956E672854B47D5098CD468EAE986CEC7BC666071"
+    },
+    {
+      "Path": "rtl\\audio\\ram_audio_clocked.v",
+      "SHA256": "12555D8D36B62AE87E7CA0A3BD30800B0318B337A601CEDC9DA65F2042EC11EA"
+    },
+    {
+      "Path": "rtl\\audio\\ram_audio_compute.v",
+      "SHA256": "63C3DDFBD6C9D54BC96E922205F7776509F1E74D507A664CBE83316ED613F981"
+    },
+    {
+      "Path": "rtl\\audio\\ram_audio_datapath.v",
+      "SHA256": "0F2F86E480262F8005F07DF6EB60DBCC0DC48CB77EF718177B4CA46D13584977"
+    },
+    {
+      "Path": "rtl\\audio\\ram_wavetable_engine.v",
+      "SHA256": "4C8C75632418F8EAEAB4B16B0DC4B1886DD61893D4C9BFD3D7F42376D0D5DBEF"
+    },
+    {
+      "Path": "rtl\\audio\\shared_wavetable_engine.v",
+      "SHA256": "EAFD720A3E93FF3990CE0BC4B519F3C850C5EF687B2859F1964705E6E9401B1E"
+    },
+    {
+      "Path": "rtl\\audio\\song_expect.vh",
+      "SHA256": "CD1DB2E3A450E2E77F740AFC443445108E6135B50E80458664D8DCBADF9A4A8F"
+    },
+    {
+      "Path": "rtl\\audio\\song_player.v",
+      "SHA256": "53B4C24D6B59025C4B81E1433554ED8C076925958E401AB340CE150292E4475F"
+    },
+    {
+      "Path": "rtl\\audio\\song_roms.vh",
+      "SHA256": "E51262C772CA08B66317BD44F2904B8E1C326E10EB283B259AFD809665D7243B"
+    },
+    {
+      "Path": "rtl\\audio\\split_audio_multiplier.v",
+      "SHA256": "B77333C8D600C0A39219D81CCFFCDBE49CB094584E347EBBC7F67D2F1351A61E"
+    },
+    {
+      "Path": "rtl\\audio\\uart_ctrl.v",
+      "SHA256": "D9BD5BB20C4F93511B40CF043B129A4CEFA6A37E5E73E66CB1159BCECFD4540F"
+    },
+    {
+      "Path": "rtl\\audio\\voice_alloc.v",
+      "SHA256": "57557AB3F7C489A77A9B9C3B56B4FB8C61E86F477109D72B2908D6417FC2F2E6"
+    },
+    {
+      "Path": "rtl\\audio\\voice_state_ram.v",
+      "SHA256": "1389C66A54A47D3445B85DA132E30C5F06AFE5D95BD62AB22C7E63AC591A8B54"
+    },
+    {
+      "Path": "rtl\\audio\\voice_transition.v",
+      "SHA256": "82BC9E7560EDD81875EA67AB6682B5BDF805C4E45A2624ECFDE101FBA9E82E9B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_bright_h1.hex",
+      "SHA256": "128431D064A921414230AC6FF48D75EF40A47D7DFFF535DC76E1192D587341B4"
+    },
+    {
+      "Path": "rtl\\audio\\wave_bright_h16.hex",
+      "SHA256": "C16616D4149F6D142569B266D325B5E99E13EB2F476A93BF8E67FD73D4BCFD63"
+    },
+    {
+      "Path": "rtl\\audio\\wave_bright_h2.hex",
+      "SHA256": "AA00A9A66E5CB0101FC88E39B2E995C0C854C69B27D7D13CE4B41AB17DD9B5FA"
+    },
+    {
+      "Path": "rtl\\audio\\wave_bright_h4.hex",
+      "SHA256": "02D5BC09C096C235D6F5DC2DFC96563D108388B44CE985A521D08692AED8D5B8"
+    },
+    {
+      "Path": "rtl\\audio\\wave_bright_h8.hex",
+      "SHA256": "8E144D409B61D8F61AAF665E1C0ECFD197350FFF75EB99142A94197577437AA8"
+    },
+    {
+      "Path": "rtl\\audio\\wave_bright.hex",
+      "SHA256": "C16616D4149F6D142569B266D325B5E99E13EB2F476A93BF8E67FD73D4BCFD63"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g0s0.hex",
+      "SHA256": "EE4112DCF6161DAC49A445425D9B87CE18F01DA7C4C0E54F2102F487FFC3E58A"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g0s1.hex",
+      "SHA256": "020F65460B0A74339C451C98F95336A888626BCABF106D933991095E276A66E5"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g0s2.hex",
+      "SHA256": "150F452346B987DEDB2FE143B4E77AFA6640527F6A0A53B1D126535579FB03E0"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g0s3.hex",
+      "SHA256": "56E0B7ED45906E9C8052EA1FB3130988E5660D3D5AF0370089723B09303AFC1C"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g0s4.hex",
+      "SHA256": "3F6759468CAAE5382947247CD9E7130F39BD1A990D95FA3105915A26A4293344"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g0s5.hex",
+      "SHA256": "4BACE32C404AC6EAA86AC32AA493D0D14094ED7BDCF7D7469754D97E7A82C10A"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g1s0.hex",
+      "SHA256": "EA941684090C3B5D6599FD2A46135A46DAC1052361282A606AD0D4F7BCA908C4"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g1s1.hex",
+      "SHA256": "C922686FEEA5205E15BA51A4FF85011417F09F4BAFE8418398C99CE5BCDEE85F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g1s2.hex",
+      "SHA256": "B3066C88EBEAC20055A2225975C22DE779EE32164B70BEB732C78B0F15C68BA0"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g1s3.hex",
+      "SHA256": "F9A3EEF15DB1FBA393A4C492420F936066C0BD73E3D1D5F63D0C725F46993C3A"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g1s4.hex",
+      "SHA256": "653AB1DBD27C79B3014AAD63107891A5C4E92E99753A3052064BCB9725AF2356"
+    },
+    {
+      "Path": "rtl\\audio\\wave_epiano_g1s5.hex",
+      "SHA256": "953F367C460C31278DE686F27BDDEF6509244D427EB5891C3A0D701FA490E8C0"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_b0.hex",
+      "SHA256": "8D1C137D0191CB47A124359AC1373A7246C1A8A2CE09A60E3A7D5AFF7C49E6A1"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_b1.hex",
+      "SHA256": "8D1C137D0191CB47A124359AC1373A7246C1A8A2CE09A60E3A7D5AFF7C49E6A1"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_b2.hex",
+      "SHA256": "8D1C137D0191CB47A124359AC1373A7246C1A8A2CE09A60E3A7D5AFF7C49E6A1"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_b3.hex",
+      "SHA256": "8D1C137D0191CB47A124359AC1373A7246C1A8A2CE09A60E3A7D5AFF7C49E6A1"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_b4.hex",
+      "SHA256": "F242F82EE31E31AF7043CF234F38D799F78DFA64D7EC04BAE27EAC7E59763FED"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_b5.hex",
+      "SHA256": "CADFE28F53D9177D9ED6F35D4C4C9A5E0AE5EC5774CAAAE710C51B383B8E0102"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g0v0.hex",
+      "SHA256": "45B5B746D4E728498AAD9B6770227C91668A1E8B7D76DACF87E837F9809EFF74"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g0v1.hex",
+      "SHA256": "F62C9E970FEAE399B48FCF91228EB5DB8CB5DFF4981772F593B315DE912E4C3F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g0v2.hex",
+      "SHA256": "1E534F4169127E1F8908A8E3D32EED6D39072E54271A36264CCCF4515AFD3615"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g0v3.hex",
+      "SHA256": "99A469C6E6CFF480B562B0EF79838447D18964900C6E73A29481AAD335D10AB6"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g0v4.hex",
+      "SHA256": "A3737BB26CDAFF16C596F30527C04D3D95F1F76DA8E8C9A8F921F7CA310D838B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g0v5.hex",
+      "SHA256": "B1BEECF8E447DEDD8056EC8E2C0165D625F1376C06355835FBC933CF6F5077E1"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g1v0.hex",
+      "SHA256": "1CC7118055A5D354D55AFCF3C3B3DB26A94FE0DE78DB830583C8EE1F0815BE10"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g1v1.hex",
+      "SHA256": "FA1E8BFE66E62D10DBBE107405F6835BA1987F41DE73143683A7AB04CE926269"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g1v2.hex",
+      "SHA256": "3F0E8B926EFA227E068993008F5B33E7B26506A661FEF48979704DD0CD38A128"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g1v3.hex",
+      "SHA256": "3D6D807C77D3E33D4FA519D406F5DA9EC4D23558188B9C3BCAE1B96CF653BB89"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g1v4.hex",
+      "SHA256": "0BD6E5D41C09652497033A04A6BC999B427499E04FDA7AD4863E6956ECF08D8B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g1v5.hex",
+      "SHA256": "A9481F6DE76381E0DDB76A543C042C0DCEE899898489D73E0332A83DA3572E47"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g2v0.hex",
+      "SHA256": "7D81E96FEFFB543766F21AB79B37C07A0FA521BEBE3721ED423B56EB66BDC952"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g2v1.hex",
+      "SHA256": "6434D7740CC87F9E250F52D2B29A7056A046F9EF70400702A2818906A2DD37E5"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g2v2.hex",
+      "SHA256": "DA44B9080179AFB9F610312C6881086CBAC12698D83E208D0A8A70A5195DB9C5"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g2v3.hex",
+      "SHA256": "045A5A9CEB07A5286EB0BBE1C9A084F7307B423AB21E971299605ACE7E9181BA"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g2v4.hex",
+      "SHA256": "3D473D73B76E76D769A2E1BC25C483F3E0DFAAD73B7C4F61BB4BE7B7B1D0BA4B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g2v5.hex",
+      "SHA256": "849160B0A4862566454F18FA4BD4A408F45EC363370B1D0F753B371592718603"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g3v0.hex",
+      "SHA256": "97F2FA9FECB8EAFBE3B88973EC2B54D2357B1FA8AFF4B70F8D0531229CED2C9B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g3v1.hex",
+      "SHA256": "0A8AFAAE44EDA00F212DC0111A4E8F610A5350F9E3D41916D5516DA1E73CD74E"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g3v2.hex",
+      "SHA256": "1132777A6EA5B598E58F47128CCDEF87AF1DD6074F6C895142B92D641176E97A"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g3v3.hex",
+      "SHA256": "DA7E6AE98A4FCDE9E295F50E39DAFC074FE173EFD20EB6A9EC5397CE8631BEBD"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g3v4.hex",
+      "SHA256": "36A2A6A6E45EF21A8C2CAD3B3D614B51F23820345911FEC78421AE6CF568BDEF"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g3v5.hex",
+      "SHA256": "4890235CBEDB02BEDF101B444C4AC372761EF406AF3C505894C46FDC5E106B36"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g4v0.hex",
+      "SHA256": "96F37B0F52C7D30FD7BD5B2B1E70D06F0ECD9AF468D508D1B57BFC61070EB004"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g4v1.hex",
+      "SHA256": "FA29F9E524B25370203294BDB8A5FB3EC4E9A65B94492B51FB63BBD8CC63C464"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g4v2.hex",
+      "SHA256": "41E6EE79640FD88AB32292181FDCBF91EE0A17A609274FE8D70A4F9C46A1FFBF"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g4v3.hex",
+      "SHA256": "07961CA78FA31FAE2737F8ADCC4B3C4FC39C26D423AF2F597FE46D8D0D6E3616"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g4v4.hex",
+      "SHA256": "ED6442F3D04683D21B51771E547E6967D0EFC877B7D19786485BE8D3A094728C"
+    },
+    {
+      "Path": "rtl\\audio\\wave_guitar_g4v5.hex",
+      "SHA256": "CCFC345521C1B37EF96345F9E0F5339966BD9C7CA67E7BD321D69924BD970E50"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_h8.hex",
+      "SHA256": "3BFCB86594A83330930B1029A9B4594E59B9AED1D1706CDB8D57F39BA1E77E0D"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_s0.hex",
+      "SHA256": "6BB2AF42C7AABFEBE9CB6220FDDE5695499EC93C41861695FFF0911DFA04563B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_s1.hex",
+      "SHA256": "9759322C40B267C7883E4608D0F8898AAF91F910C7E408002669EAA6569E4BF7"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_s2.hex",
+      "SHA256": "373FDBAEB6A1A6BD34EC06AB0F65E98EE0B2765F747E0442AD3DBBBD2C93B914"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_s3.hex",
+      "SHA256": "76DE86C2F711B4EBA39A34DBC0C0B0927B866140C64FA907725208B2CE83C540"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_s4.hex",
+      "SHA256": "9E83ECF12A1E554F3F2B4015DE6647AF7E7FFCFA9838C36FFCA99D315BFCBE5F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_s5.hex",
+      "SHA256": "B5C667AA7FEE3CAA79293E0273FF93B578CD75D3B80EDF1F6C27D267FD86E0B2"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v0s0.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v0s1.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v0s2.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v0s3.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v0s4.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v0s5.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v1s0.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v1s1.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v1s2.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v1s3.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v1s4.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z0v1s5.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v0s0.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v0s1.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v0s2.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v0s3.hex",
+      "SHA256": "ED97A6A2D0F78F6E7D7010A4F594AF889FB3A650B1F8762E1F2D9C8550583457"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v0s4.hex",
+      "SHA256": "D1CADC1489976268A3B2A4EA92CA8A770725271E5F53D2E1D63693A4AFB8BC2D"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v0s5.hex",
+      "SHA256": "AEB24583D37AB5D80748A7AE2A201657176BC23AB8056C0ED067A77D944AB244"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v1s0.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v1s1.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v1s2.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v1s3.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v1s4.hex",
+      "SHA256": "30E77CB878094DD67C0C12EE6F0D372C5BA21158397141D4FB2EA46B6B8E5395"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z1v1s5.hex",
+      "SHA256": "28B7DCD3658F2E48F5E0BAD15844C9B91B57CB0BDE9A99C41F8533E4001C0511"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v0s0.hex",
+      "SHA256": "FB609938B6C16A5AA92FC94C20347158FE80F76876F798369DAA150D869B94FD"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v0s1.hex",
+      "SHA256": "B081854F26B3DBEA81744C3DBFD6A9EA250DE9066FE91710996C4847DB3F5E7D"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v0s2.hex",
+      "SHA256": "480F71A39735E1ECBE3C41645239F40343334D46103F2F429B88086D58D26A23"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v0s3.hex",
+      "SHA256": "01518B5742528842385D7EDF03A26B7AC06D28DB4DE6B5446FFAA63C2282D5C7"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v0s4.hex",
+      "SHA256": "4DB7082436FDFDD552B3F8C3CD7CA8701201DC8AFDA04685AF8A5FCDD06DA83F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v0s5.hex",
+      "SHA256": "D3585B6293CE8D1279504D36C9999CEFFCB447EEF79A57D2036A041186A69BDF"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v1s0.hex",
+      "SHA256": "DA829131DB170D8ADD16DFD068CCC89C02A05B1981FBEA8426DB62BA42BFE40F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v1s1.hex",
+      "SHA256": "BA7B355F15B1D97FFDE4356400CE90734A9ABECF1CCF178D8503144B29EDDE2B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v1s2.hex",
+      "SHA256": "F395DAE42BC107FA976F7A4DBEEB383FB785E2B221F4FF99E5FCEE7B4AD04C7B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v1s3.hex",
+      "SHA256": "0B2533A4586D82B66B78F3EC73CE802B2B8D310D63123935509F050655262657"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v1s4.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z2v1s5.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v0s0.hex",
+      "SHA256": "A830DE44FB4004098833BC16ED985641685C83912DBE9918A20EC7A00CD69DF2"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v0s1.hex",
+      "SHA256": "8E848E79BEB93D0F02C04FC4AC21B5CEDCDBD83F7C14296BEE44650774FA0417"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v0s2.hex",
+      "SHA256": "93269369379D08E8BCE694DF8F6253945A99AF52285EE70A23B5DC5375698F1A"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v0s3.hex",
+      "SHA256": "1D5323552897A3E5AE94B69D5C03C0EF8CFC4886B63107D06433CDADB6E62E76"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v0s4.hex",
+      "SHA256": "6B63BB0C4761EA16DAFFC7CFC2355BEC2435A6B07BEE917DA6E24ABA8E4C4548"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v0s5.hex",
+      "SHA256": "4D17A4752391DF05489698BC20A6E4FE09184859C5912A8E09530A0303340E9F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v1s0.hex",
+      "SHA256": "9D2A4AD220CCE09081021DB53F36C47AB3CFD0DA550375F68817835E7D29615D"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v1s1.hex",
+      "SHA256": "B024CE94C5ABA386AC1CA0B0FD7926F83AAD1A43A317B6DDB31E6C36E9D5D339"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v1s2.hex",
+      "SHA256": "BF1D1E0D699CB843D4A067055EC3AE72A075B571A8E100B1D1AAB0ABCF96F52C"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v1s3.hex",
+      "SHA256": "16A37FDEA6B71F42680B921FFFB55475FD953515256AA673374740007777CF30"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v1s4.hex",
+      "SHA256": "06BDC0DFE615805BBAEFABFF52DA19FBBD6A4E888EDB0C5DDBE8EC0A7228025C"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z3v1s5.hex",
+      "SHA256": "08EF9A546C0AE692D5FFE6866C56CE4246F80B8BC22B349998C343F708BB68EE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v0s0.hex",
+      "SHA256": "0D6F7E22BDDB03F45E371724000C058CC081EB570A330190E264CBC4F947DE00"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v0s1.hex",
+      "SHA256": "8B9170784E9C65AAA2141381D9AF015C3048CCBB3636F3145716B26616696F36"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v0s2.hex",
+      "SHA256": "B8989DF76A15DD8E21005C20CD521AB6050B9719F7233F2A4A95DA18158C046B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v0s3.hex",
+      "SHA256": "DBB64966AA19D64F792C8B0F75E90FDB772E64BA29B839384573E1F487256613"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v0s4.hex",
+      "SHA256": "78917EF609F3516F7693AA62206BD2157FDB6D1E91B04591CBF8420F909C88A1"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v0s5.hex",
+      "SHA256": "ACCF487D34CFAE642FC11A32336256776AEB1A5954FD29EFD6DC214D1A115C5F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v1s0.hex",
+      "SHA256": "E3F9053000FE9605E9EF85A51D9AC1D8FA8BF2B6F5E47002BCD2E3D27AEA1F59"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v1s1.hex",
+      "SHA256": "C92B431828250BF8FD7D92750C3383373423999FE528A3F31805B45AFB03063E"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v1s2.hex",
+      "SHA256": "C2911F7ACC46EB1CD4AC7FE0599DE8CA10BDCC9EAB297F70FDADDDAC5EFF0ED6"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v1s3.hex",
+      "SHA256": "066C011BA48062F5A25C8D5DB54C6FD07DED4BAD6C9D5D4558298A03C5B86FDA"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v1s4.hex",
+      "SHA256": "5E92AFB38A17FC0D04E6082450E5B90C31777BAC50C1B39F2C62D8116F3ECCDB"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z4v1s5.hex",
+      "SHA256": "C9C4CA89C2F27A56748D428B3449853BE6F3B8EBA6A03E205010FF1F1BA41D84"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v0s0.hex",
+      "SHA256": "17069EE9ABECE05057D5AC056107766B5254C560B63B9FC1CF1CB9E5DF8EF61E"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v0s1.hex",
+      "SHA256": "E691E050005BF6322A086F2CA495D4D59B9DA44F2DBB6CA00896970FDEC4B07E"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v0s2.hex",
+      "SHA256": "AC384DD231EC20E5287A105C0DC333DC5CE03E557A07067EF84A7F3A4D0D8100"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v0s3.hex",
+      "SHA256": "07655BE85E28B696D7AF3420E4242048385726DDADD736612A14EC430A8F79AE"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v0s4.hex",
+      "SHA256": "F512543565977D9FBD61C62DEECFFFFE5BBB8289B70ABEB26896F1F59C90201E"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v0s5.hex",
+      "SHA256": "B184A7ECFF2CDED67C6A77DEB575DDD9A883AF4EEE3AADAA6808F07AD7536B4F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v1s0.hex",
+      "SHA256": "048CE9AF6B52F458DC3F040CFCC44DAB4443E3AAA31D8E0B40BEA895B1E2029F"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v1s1.hex",
+      "SHA256": "9E8CEA2D8E2E3C60CA9CD3BBBA6478ACE0CB14B289FFD48F51EB93610B98826B"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v1s2.hex",
+      "SHA256": "DA845898D24B211B1EF64CEAF5F5F6AA1B61A4A32F2A9B9D919C70515F73D09A"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v1s3.hex",
+      "SHA256": "49D8139C22C376D77B0A92131326A42EE7832F1A59E93D19860AEA26D4D99236"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v1s4.hex",
+      "SHA256": "674AE171C2BEC9C472DD843DDDEDBE0D48C8861598DF46517BD68894854F3DA5"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano_z5v1s5.hex",
+      "SHA256": "307792449A9A5264D8B231F21ED8EDC6E0AEF7D4E9D493BD1A56DFD7AFBADEF2"
+    },
+    {
+      "Path": "rtl\\audio\\wave_piano.hex",
+      "SHA256": "3BFCB86594A83330930B1029A9B4594E59B9AED1D1706CDB8D57F39BA1E77E0D"
+    },
+    {
+      "Path": "rtl\\audio\\wave_sine.hex",
+      "SHA256": "B75030D2AEE625D0628EFC6E79D27ECBD52C747F1BA8DEAB5334064F3AA70EF9"
+    },
+    {
+      "Path": "rtl\\audio\\wavetable_osc_dual_prom.v",
+      "SHA256": "0583D25B3ECADCC96C626F2B521CAE4D1EFC0961310C989381254E1385EC2AF3"
+    },
+    {
+      "Path": "rtl\\audio\\wavetable_osc_dual_s6.v",
+      "SHA256": "3C3C26B397EB04B6993E7C518819EA9A2381D3E7AB6B3A8465E6CC4CFA15DFA2"
+    },
+    {
+      "Path": "rtl\\audio\\wavetable_rom_dual.v",
+      "SHA256": "2609A4371C782784A2D2F19328A4A8CE071B84DFC378F90F3B231BBFED82AF35"
+    },
+    {
+      "Path": "rtl\\audio\\wide_master.v",
+      "SHA256": "0313AFBF642C80835ACAF8CA400DEE4798CD5F83D6A42B6DCFC5562C1773B3A9"
+    },
+    {
+      "Path": "rtl\\prototypes\\instrument_ram_audio_compute.v",
+      "SHA256": "68847F5D8052908903689FBE0359897CB25534A6480DF93179E6A6D38C142F74"
+    },
+    {
+      "Path": "rtl\\prototypes\\instrument_ram_audio_datapath.v",
+      "SHA256": "89382127C9FC506E8A7C3230C2569C4ECCE47F365200089D3830B201DF60CE9E"
+    },
+    {
+      "Path": "rtl\\prototypes\\instrument_ram_wavetable_engine.v",
+      "SHA256": "ECF141F34A9D96754EBA7BFF35B2D726ED6BB388D339618A99697F5987B9FA52"
+    },
+    {
+      "Path": "rtl\\prototypes\\instrument_rom_banks.v",
+      "SHA256": "7A82D6DBFAFEA8A1CA4E09F5F491888442068A1EF27464078D18742E4887B23B"
+    },
+    {
+      "Path": "rtl\\prototypes\\ram_audio_pll_probe.v",
+      "SHA256": "A97FCF5C74C3649F90BAC2F7252002DA596CF8DF894A66D9A0294C3F65060363"
+    },
+    {
+      "Path": "rtl\\prototypes\\ram32_clocked_top.v",
+      "SHA256": "47D40BADF3485E41C1DA1673044DD22B064655030B7FDEE4182D040F748614CA"
+    },
+    {
+      "Path": "rtl\\prototypes\\ram32_clocked_wrap.v",
+      "SHA256": "9DBDFB0462BA00AD85A9D202594D691FCFF912B1A51303F610A037D5A1BDEC30"
+    },
+    {
+      "Path": "rtl\\prototypes\\ram32_control_front.v",
+      "SHA256": "87104FEB12C73359CB3DC0927E04D4F0DC175353E7FEEA61EF8BBE1CC5F2F831"
+    },
+    {
+      "Path": "rtl\\prototypes\\ram32_top.v",
+      "SHA256": "D6FA30E2A202E6152BCC5E779524CD464A7CB2205963757AD76A07C3D36FE481"
+    },
+    {
+      "Path": "rtl\\prototypes\\ram32_volume_curve.vh",
+      "SHA256": "F745CC07F3831CC036CD4E0C9B703052708465226B7DC0D5ADBEB6F77CAEDB27"
+    },
+    {
+      "Path": "rtl\\prototypes\\voice_sched32.v",
+      "SHA256": "243A7D30C8CB2A1628A92A0F18C52CD428A8560B1FCB173465083A7D52AB9157"
+    },
+    {
+      "Path": "rtl\\synth_s4s6_harness.v",
+      "SHA256": "8E76610A22C4F19F1E26EFC1518C7F961B2BAB26DFE6E60A72189F3DCC9F5242"
+    },
+    {
+      "Path": "rtl\\synth_s6_prom_harness.v",
+      "SHA256": "058AB0FF268999D044607EF61B598DEF71BE63D53539B30DA56907F86259032E"
+    },
+    {
+      "Path": "rtl\\synth_voices_per_voice_harness.v",
+      "SHA256": "E738ABAD6274350C7672BD263CEEC1185281959FDC06E6CE8F7612DC4A3644C6"
+    },
+    {
+      "Path": "rtl\\synth_voices_shared_harness.v",
+      "SHA256": "C17BE2792E6FD6E4BBE35643D7E064CA1F80E8907C6E2A1821DFBEADE587894A"
+    },
+    {
+      "Path": "rtl\\top.v",
+      "SHA256": "429404AAF31C32564AB657A993685868B6DA5B278699FFD3F4B03F12C223D590"
+    },
+    {
+      "Path": "sim\\dbg_shared_engine.v",
+      "SHA256": "0D880A41593F490BA686A62343DCBFAD0112DB49CE58CD0D312E1E5FE45B1D01"
+    },
+    {
+      "Path": "sim\\gate_process.ps1",
+      "SHA256": "C28CA495CF8BFBF534F4F4DDEB64B47B7887B07B7029BBB72D3F1202FED1BFBD"
+    },
+    {
+      "Path": "sim\\gowin_prom_model.v",
+      "SHA256": "4AF0CCA78D7353AB925CA8CF317612A5957B0AA68789FDF5EBF452D61C13517B"
+    },
+    {
+      "Path": "sim\\gowin_rpll_model.v",
+      "SHA256": "2BDC28C13D9CB7D13AE0E11992FC0BBF89D24F3FC75AED36A81EEB40787F7FD1"
+    },
+    {
+      "Path": "sim\\i2s_rx_model.v",
+      "SHA256": "D67D2351963CFD7B0CE9463F68F14553377D67FE04B97F804496D9CDB8757081"
+    },
+    {
+      "Path": "sim\\i2s_tx_checker.v",
+      "SHA256": "2FD4E3680037355E7DDBC7EC83359DF2DE687A04309A1186873A3A09A330408E"
+    },
+    {
+      "Path": "sim\\mcp3208_model.v",
+      "SHA256": "3BE1D6AA47EF0DAFEB2299FA75CD3A5BC1D98FBD1E061E1BC8778929800C8599"
+    },
+    {
+      "Path": "sim\\opt_a\\run_opt_a.ps1",
+      "SHA256": "C293F46B900C0F87A52348E92836EEE6B900A74E4755DAE49274966A50C084FC"
+    },
+    {
+      "Path": "sim\\opt_a\\table_expect.vh",
+      "SHA256": "DFFD910634A3E08D0771A6389EFB9DBBD9C39A03DABA4E57EBAA0D3F5214A4E9"
+    },
+    {
+      "Path": "sim\\opt_a\\tb_opt_a_datapath.v",
+      "SHA256": "E194E5B48617271D541D3072CA60DED9092A3BA085DC7B2A2D93E67B24C23B0A"
+    },
+    {
+      "Path": "sim\\opt_a\\tb_opt_a_master.v",
+      "SHA256": "70D9FCCB44EC4EE48629C4306B72BEFCEAF7A271342AC5A06C25A107486AEEEF"
+    },
+    {
+      "Path": "sim\\opt_a\\tb_opt_a_tables.v",
+      "SHA256": "2DDA0D416361E4070911243DAC5AB8B4FDA819BE784F83F135EC1680955C641A"
+    },
+    {
+      "Path": "sim\\opt_a\\vectors_datapath_legacy.vh",
+      "SHA256": "3B2B65243F810963FBF7D864F944198DA94923CFFDB483C20E59B11A1AFB76E4"
+    },
+    {
+      "Path": "sim\\opt_a\\vectors_datapath.vh",
+      "SHA256": "7F414479B792612536CB6995BE751BBDAE96C1B3119BF6FD8F50EED1DAD477A4"
+    },
+    {
+      "Path": "sim\\opt_a\\vectors_master_legacy.vh",
+      "SHA256": "3273CBEB87D894CBB6EF4F167992E4136739F60354D26D2DF75B069FCDDDB8F9"
+    },
+    {
+      "Path": "sim\\opt_a\\vectors_master.vh",
+      "SHA256": "3273CBEB87D894CBB6EF4F167992E4136739F60354D26D2DF75B069FCDDDB8F9"
+    },
+    {
+      "Path": "sim\\opt_a\\vectors_silence_legacy.vh",
+      "SHA256": "02684E6919D20111852CD8D38BC0F693391759D88A446B9E7253929EC16E9C18"
+    },
+    {
+      "Path": "sim\\opt_a\\vectors_silence.vh",
+      "SHA256": "02684E6919D20111852CD8D38BC0F693391759D88A446B9E7253929EC16E9C18"
+    },
+    {
+      "Path": "sim\\reference\\baseline_global_crossfade.v",
+      "SHA256": "6830F7C6362B1BEAF7AB01DDF79D9986347A144DFE5AEA9AA5AF2F35CB0ECB51"
+    },
+    {
+      "Path": "sim\\reference\\baseline_pressure_bend.v",
+      "SHA256": "0C465D505394FABA4C6015B1B09D0A273FBAD53683030F68AB563B1BAFC94C0B"
+    },
+    {
+      "Path": "sim\\reference\\baseline_shared_wavetable_engine.v",
+      "SHA256": "C759B90033A68284AB23ED8E3688EA34480F99D707D022DC3738D12AE802E085"
+    },
+    {
+      "Path": "sim\\reference\\baseline_top.v",
+      "SHA256": "D15A7D8373CD59E2E6AA106ED3C5B0984B06AFA989063DA54B821FEE9AF35581"
+    },
+    {
+      "Path": "sim\\run_simulation.ps1",
+      "SHA256": "7742D695C58EC60E5B00B705B891E00C4BC0D9F4E04CADA754E6F9DAC4461D40"
+    },
+    {
+      "Path": "sim\\tb_adc_reset_top.v",
+      "SHA256": "0D9120940D0B720CCF13BAB016472E0826A3A19617510DCE3B6BD754E0A7BE7A"
+    },
+    {
+      "Path": "sim\\tb_adsr.v",
+      "SHA256": "E94C59FBBA0887B33D2DC2F1CFB447BEC4B23944077DC2D7DEE27484CD396CA8"
+    },
+    {
+      "Path": "sim\\tb_architecture_equivalence.v",
+      "SHA256": "132D22562A4D517B27A9C758FE548082B58FAB217B24F05E801C35CFFD4762DB"
+    },
+    {
+      "Path": "sim\\tb_audio_capture.v",
+      "SHA256": "DC70197D44C45158A1EBD0BA9DD30E3D2CCB36A92BAFD7F95AA2EA374CC660D2"
+    },
+    {
+      "Path": "sim\\tb_audio_frame_bridge.v",
+      "SHA256": "3A878E053A9C58BBC7EC7E4503C9779C34E196CBA8133150860AE5ADB8743D11"
+    },
+    {
+      "Path": "sim\\tb_audio_pll_clock.v",
+      "SHA256": "D747270E9174350B6B1A3371F98C865215306410131660CADE90DE96FC95EAFC"
+    },
+    {
+      "Path": "sim\\tb_audio_pll_mult.v",
+      "SHA256": "78FB0FFC0DBF4EC938F7273065C3E3748BE52F467DDD54A243A94A40A8CD5540"
+    },
+    {
+      "Path": "sim\\tb_bandlimit_engine.v",
+      "SHA256": "C651F9C0D1136F6227AE778037CE39EBE53064AF01DAB4BD61B412102394E0C5"
+    },
+    {
+      "Path": "sim\\tb_bend_equivalence.v",
+      "SHA256": "C5B9D00AE187297EBA79DC71E4D15622F35D1AB2A8D97C5BEDD02B0E9569B55A"
+    },
+    {
+      "Path": "sim\\tb_bend_precision.v",
+      "SHA256": "E7A060F6C5EDE32165117373F24C325293A9FD8C356D4162AF775314ED9A76A7"
+    },
+    {
+      "Path": "sim\\tb_bend_ratio_pipeline.v",
+      "SHA256": "6D13AA8F5E9D704100EBAC7BF19799E368C3D2EF54E8113DA00752BD4CEF3C78"
+    },
+    {
+      "Path": "sim\\tb_bright_banks.v",
+      "SHA256": "B80BBD83F33C7F3962A198029BD4F60A7C08446DBFD2AE5C26E3EC6C53D2A4F3"
+    },
+    {
+      "Path": "sim\\tb_control_sampling.v",
+      "SHA256": "12E2937A599F666C7CCDCC808AB3B9D4DEF506A482072AA9771FF1289BE5AB03"
+    },
+    {
+      "Path": "sim\\tb_engine8_pitch.v",
+      "SHA256": "5040611F8EC91E23D4CE65CA9A36636956EF9C53DE13C6793C8FEE48C04FB09C"
+    },
+    {
+      "Path": "sim\\tb_event_fifo.v",
+      "SHA256": "01A7386F261F8330000C0C6C5A8112A69D024B2CF75360793883BBFE85A3A6B8"
+    },
+    {
+      "Path": "sim\\tb_event_prefetch.v",
+      "SHA256": "8E41BCE5BFC4DC7763AFFC7FE80AE47FB3AECA18AA9ABCE0FB033E56BC0970B8"
+    },
+    {
+      "Path": "sim\\tb_frame_velocity.v",
+      "SHA256": "A6DF3C3CA5E9DE50329212826A175DAB76FB81F09FC027DC5D29DDE6E4A4E3D9"
+    },
+    {
+      "Path": "sim\\tb_fsr_mute.v",
+      "SHA256": "61A06B3B49F7F5CFCA4D22589D45C5419C1E8B86E2909502D4374DE6FDB111C3"
+    },
+    {
+      "Path": "sim\\tb_generic_bright.v",
+      "SHA256": "6FB8518DF2D3AC4889C08B9D9637FAE115EA671AA5BDFCE139C89E1D0214FC5F"
+    },
+    {
+      "Path": "sim\\tb_gpio_keyboard.v",
+      "SHA256": "ED89E559D93D8E1C5E134A5E75BAF2E8F8E51DBA700DFDA0194FA89D8A7A9787"
+    },
+    {
+      "Path": "sim\\tb_gpio_top.v",
+      "SHA256": "A09651CA931E38D1863E27DBCD27FD8D8E7EED7499E8E72AD95813792E4D6F6E"
+    },
+    {
+      "Path": "sim\\tb_guitar_bank.v",
+      "SHA256": "C054BE6A1627B4EC9F36EABA5F8B95A937D573A7B2158D5008873F216071A76B"
+    },
+    {
+      "Path": "sim\\tb_headroom.v",
+      "SHA256": "890985625B7FC0D604BB0889668C5C98768B0931D24AB9152DCF90F1E0F2FE8D"
+    },
+    {
+      "Path": "sim\\tb_host_kbd_timeout.v",
+      "SHA256": "80482FCD57DC12537E80B081487CF6AAF0EFEBAF264127D28ADF6FF980F4B6DA"
+    },
+    {
+      "Path": "sim\\tb_host_kbd.v",
+      "SHA256": "E8121370AC539B8CFC04689B408DB88A123440EBF23181B723FB8F73D6869852"
+    },
+    {
+      "Path": "sim\\tb_i2s_tx_params.v",
+      "SHA256": "31B151CB5DFCC1B9F86BE70493BDB6E79B5B12EDE8C3439F5F57DBCAC4346D50"
+    },
+    {
+      "Path": "sim\\tb_i2s_tx.v",
+      "SHA256": "81BE4CBFB8CC4F95537B860CACF288F169B615B12DBAC3F60AE9384B1F3DADA8"
+    },
+    {
+      "Path": "sim\\tb_instrument_rom_banks.v",
+      "SHA256": "0363F7B67EF3B475FD8F7EFF21E0A99808500048D0F73C477C7D4ECAA8E8F72C"
+    },
+    {
+      "Path": "sim\\tb_key_gain.v",
+      "SHA256": "C79153C87ED31D50C3ACA0E916B4C47BF3179B7B029A86A4B889C3FAA70A1A92"
+    },
+    {
+      "Path": "sim\\tb_mcp3208_i2s_coexist.v",
+      "SHA256": "CFB9AE136DD3EFF49C4FC9DDB12DD361163DA29CFF4A5E79AAB5BFE6A25781C9"
+    },
+    {
+      "Path": "sim\\tb_mcp3208_params.v",
+      "SHA256": "766EA2C60582F1769D18FC6B840C748667D00CF77E59C8A0786C66DD87243802"
+    },
+    {
+      "Path": "sim\\tb_mcp3208_spi.v",
+      "SHA256": "12D1F51D79FD76CDBCDC73A72C96A82029F6AB73DC20F5DC930A9BA5E0CEC888"
+    },
+    {
+      "Path": "sim\\tb_mode_uart.v",
+      "SHA256": "8FCBE05B89F6EAFF3008124D163DE1D63A9020EADE9846DBE8590F182306712E"
+    },
+    {
+      "Path": "sim\\tb_mute_slew.v",
+      "SHA256": "E78810784C4AC264B390D361C924E1A4BEB31DF5C1A4705172455FE7D8F1AA21"
+    },
+    {
+      "Path": "sim\\tb_note_ownership_top.v",
+      "SHA256": "000095EAC74256D9B67F404123EC91B42AC91093E673B80216C2D761AA1615A4"
+    },
+    {
+      "Path": "sim\\tb_note_ownership.v",
+      "SHA256": "571BF858A1A3221A64957DBEA9832EBDF6DC2AFAE7F01FDD9DEB8CFC7D0B8776"
+    },
+    {
+      "Path": "sim\\tb_piano_bank.v",
+      "SHA256": "9975B89CA9658F5DF40B5EA7AC8CCEF697F3D9D2627782DA476B56691624DF11"
+    },
+    {
+      "Path": "sim\\tb_piano_engine.v",
+      "SHA256": "9AE6DCD2DA4AEBE92C6BDDBCC42F40862E26266783E35CCACF21E98399821549"
+    },
+    {
+      "Path": "sim\\tb_piano_envelope.v",
+      "SHA256": "FF7FEEB1D4F4CDEC691C65B4A450ABE79309BFF59463BC2959461D5EFD23B411"
+    },
+    {
+      "Path": "sim\\tb_piano_morph.v",
+      "SHA256": "3073655423FF381B1CAC0278B07B794165C5DAB06C1A13C5FFBFC29B28BD5ECC"
+    },
+    {
+      "Path": "sim\\tb_piano_stage.v",
+      "SHA256": "FCEDB7299CCA74A6CC843F977236D9DAF62F1B2FAED9A88C7EDD38B68B01CDB7"
+    },
+    {
+      "Path": "sim\\tb_poly.v",
+      "SHA256": "C2C409ACF710837315358997AE4E0D8D4BB1FE8E5259D796850E5445078DCF99"
+    },
+    {
+      "Path": "sim\\tb_precision_audio.v",
+      "SHA256": "FE959243D558F7EC2ACA5903040E815FBC97FA290D530EAA13C7B678317235D2"
+    },
+    {
+      "Path": "sim\\tb_pressure_bend.v",
+      "SHA256": "AD26591E5BA1B0A90FC1B268F59C93EBB4F8C269310F4D2710B1746676E8A70F"
+    },
+    {
+      "Path": "sim\\tb_pressure_gain.v",
+      "SHA256": "7342F9CA5C633865A5881CC164B9F3D750BDBB850F50B39B9779A12DF7BE85B8"
+    },
+    {
+      "Path": "sim\\tb_pressure_top.v",
+      "SHA256": "723E7030EC9E5BCCDD6407B0E99A5695C8DA30BB19410B667673666B4C7F720C"
+    },
+    {
+      "Path": "sim\\tb_pt8211_tx.v",
+      "SHA256": "C95E1C183B7CA761CCC544DC227C2BDDF2C5D8CB079B13C737EE00FB57DF25D5"
+    },
+    {
+      "Path": "sim\\tb_ram_audio_datapath.v",
+      "SHA256": "F501846331F2C4602220488A8B272BDD8C645AAC9735E8847215A7483C11D592"
+    },
+    {
+      "Path": "sim\\tb_ram_audio_pll_probe.v",
+      "SHA256": "C5AD0FE5312BB1546101276299C1586FCDBBE98308C837B27D50903B95EE8FAE"
+    },
+    {
+      "Path": "sim\\tb_ram_wavetable_engine.v",
+      "SHA256": "F3C825A6B0C27198639B3B5A6128B53753DE900510CEB9C44804043938F2122A"
+    },
+    {
+      "Path": "sim\\tb_ram32_clocked.v",
+      "SHA256": "A4690F298751754E14C2B718D6B5B84721B2FEC7EA3B2010CB4F4BD75948B5DE"
+    },
+    {
+      "Path": "sim\\tb_ram32_complete.v",
+      "SHA256": "B5A203BA19704ADE0EF1A04E475C43D087C89C7FB63DE3AB672E8046C177D695"
+    },
+    {
+      "Path": "sim\\tb_ram32_controls.v",
+      "SHA256": "0FE93817A591B3E896304CC080EE38E8A806C06EE4206194C4D7ED3D39BEDB7B"
+    },
+    {
+      "Path": "sim\\tb_ram32_engine_audio.v",
+      "SHA256": "2C3F3FBD98ABC341C78D4CC642AA791F29A4E027D96EBBD292C438E4636186C6"
+    },
+    {
+      "Path": "sim\\tb_s6_audio.v",
+      "SHA256": "149BBF8BF4F9D5B938E738C65C981AAFA32BC9984E730B531FEC00DD3F959350"
+    },
+    {
+      "Path": "sim\\tb_s6_rom_prim.v",
+      "SHA256": "070CE35CF8E3828CF774B7E36BB14F5CE2FCD8BA53F89543826AC39BB1ABF816"
+    },
+    {
+      "Path": "sim\\tb_shared_bend_equivalence.v",
+      "SHA256": "2F8967579525DADAE2D5048EAD5BD18824CD4AD2B3A7D555D242EBC4A7DC1BA6"
+    },
+    {
+      "Path": "sim\\tb_shared_engine.v",
+      "SHA256": "7B93FA4B67C45E0FCD3AF369F02706696C949AD5928F7E0FF6DC5B36AAC110AF"
+    },
+    {
+      "Path": "sim\\tb_shared_master.v",
+      "SHA256": "06E330586ED105B80B7C683AE731AD91ED1724982508027744D92C7EC1A24A30"
+    },
+    {
+      "Path": "sim\\tb_song_backpressure.v",
+      "SHA256": "232DBF5E6B0743C92D4C1749DE174D3E91C8385344833A6F6FFC1AAC1F90F42B"
+    },
+    {
+      "Path": "sim\\tb_song_timing.v",
+      "SHA256": "8AE302CD084120A9263492CE4A3AE3787019C4C668ECB5311A7AB7D53757BE1A"
+    },
+    {
+      "Path": "sim\\tb_split_audio_multiplier.v",
+      "SHA256": "9AA5770D3AD498D32A65753ADE48558A9469C922EFE60D20FA96728AAFF3951C"
+    },
+    {
+      "Path": "sim\\tb_tick_rate.v",
+      "SHA256": "B68346F92CC1F679E9318C52C16A06EDA7CAE0277DACC1797AC36959E90EC7F2"
+    },
+    {
+      "Path": "sim\\tb_timbre_audio.v",
+      "SHA256": "FDB0AD69830CAF316A4940788AF45FC04335F63182FE29E3079E69BD86EEDC44"
+    },
+    {
+      "Path": "sim\\tb_timbre_controls.v",
+      "SHA256": "F07F94D799F7AB28DE8CB09A1037BE7987260C0C22B869072303738BAB2DC628"
+    },
+    {
+      "Path": "sim\\tb_timbre_top.v",
+      "SHA256": "0B23F97BF12F3A4759DA4D65D52E193D73A0024D254141FE06F31E7CD1A8728F"
+    },
+    {
+      "Path": "sim\\tb_timbre_uart.v",
+      "SHA256": "EF81FFC18351A6588744BF4E8F9F141D083278B29C8F32F9A32D94BE43914CAE"
+    },
+    {
+      "Path": "sim\\tb_top_guitar.v",
+      "SHA256": "EBF773CF1E54DE99209EA8040884ED18265C52506F86D015D417184678F166D6"
+    },
+    {
+      "Path": "sim\\tb_top_host_ctrl.v",
+      "SHA256": "93D19FE9E2B12345274BDA7BC747D3A5DF779A6D17E4CB446E456A959B0FF6C8"
+    },
+    {
+      "Path": "sim\\tb_top_i2s_27m.v",
+      "SHA256": "BB8B80DFBD5FA8F92EF7331EA9E9DBC1FA957B8F9E9CAB5355E8E83D36FC2A19"
+    },
+    {
+      "Path": "sim\\tb_top_i2s.v",
+      "SHA256": "3C4E9A819A10361AFA3DA2B0B4313B894924F0C1C16A297249745FA5FC0F8A35"
+    },
+    {
+      "Path": "sim\\tb_top_pitch8.v",
+      "SHA256": "46CFD03063F035F73B2D3749374D89C6BCDA4CFE2355985B9673D44778F0DB19"
+    },
+    {
+      "Path": "sim\\tb_top_s4s6.v",
+      "SHA256": "533162EBE1109AC953067929C20DB9A9D4988E4CF683F787896F11EAF63A9135"
+    },
+    {
+      "Path": "sim\\tb_top_switch.v",
+      "SHA256": "8CA313E582AEF3D083F197159F0F7520F51E2C8076B2F214BE24A69ED952BA0E"
+    },
+    {
+      "Path": "sim\\tb_velocity_bounds.v",
+      "SHA256": "FB53262F8EC921F00B99751B4CD7D08FD12D9485728FB02DA510F1810D96EE4D"
+    },
+    {
+      "Path": "sim\\tb_voice_order.v",
+      "SHA256": "4B4E20F6D8377BC24B46BE8E2A3EF58E92D4130D986CC498FD01E9E1385BF85F"
+    },
+    {
+      "Path": "sim\\tb_voice_retrigger.v",
+      "SHA256": "E4DDC444F61C484241A4AFF634C5AFCA9B0E169E4426A1017C667D3BF35A8464"
+    },
+    {
+      "Path": "sim\\tb_voice_sched32_review.v",
+      "SHA256": "634FC81DE765E65131669DADD0FFE8BE9A1E1914D33DAEAB50766E712DFC2451"
+    },
+    {
+      "Path": "sim\\tb_voice_state_ram.v",
+      "SHA256": "A76A9CAF2364A164BD830A2C0805C9EF51823C7C6E2573D25893A2C26C8453BD"
+    },
+    {
+      "Path": "sim\\tb_voice_transition_audio.v",
+      "SHA256": "3D8A37F6E682917E617C0F6F1094F24F092E4F82CF7BFF8C2C19492A1800DD3F"
+    },
+    {
+      "Path": "sim\\tb_voice_transition_top.v",
+      "SHA256": "53C2E86CED926BB2A3F794958E4DD095E32477CABA71BA9527ACD2672793A83D"
+    },
+    {
+      "Path": "sim\\tb_voice_transition.v",
+      "SHA256": "BDE193C8591C77915394003910EEFA892A9A98BD36637C3D5AEC5A7962515FB9"
+    },
+    {
+      "Path": "sim\\tb_wide_master_pair.v",
+      "SHA256": "BB3C38370C642BA6FB62551E51847FD68E5A27C4A60AD80272F56B2538A35552"
+    },
+    {
+      "Path": "sim\\tb_wide_master.v",
+      "SHA256": "99888AC83C1ED7427302A6174A685E78FD4009095370DA47EDDB3A7506269B3C"
+    },
+    {
+      "Path": "sim\\vectors\\bend_phase_expected.hex",
+      "SHA256": "758079DFE74DB0A99B169781574094BAE5CD395B23B0176A8C6E387B8C796B30"
+    },
+    {
+      "Path": "sim\\vectors\\bend_q8_expected.hex",
+      "SHA256": "87706E33E0C1F64BAE0BC9B9B6FEE781C8C4F8CECFD2A6D2B85E7AFCECCA1008"
+    },
+    {
+      "Path": "sim\\vectors\\bend_ratio_expected.hex",
+      "SHA256": "3E096A026D2132F566414AAC59813A0F45ADE3693BF05D871DF1D22E7B92E337"
+    },
+    {
+      "Path": "sim\\vectors\\bend_ratio_reference.hex",
+      "SHA256": "3E096A026D2132F566414AAC59813A0F45ADE3693BF05D871DF1D22E7B92E337"
+    },
+    {
+      "Path": "sim\\vectors\\blend_a.hex",
+      "SHA256": "F67D45443851B8DDB994626CD812BF9C32F9343EB498C7AD3C840E407374035A"
+    },
+    {
+      "Path": "sim\\vectors\\blend_b.hex",
+      "SHA256": "9435370DA82AB7BE9F737EAD42DC31D7F1AC2F232D66EB3EFCA05D2D9A964956"
+    },
+    {
+      "Path": "sim\\vectors\\blend_expected.hex",
+      "SHA256": "EAFBAF6B64053B4972E5B76ED0E83DD766F15D55E992EBF60437F7B29DBBFF73"
+    },
+    {
+      "Path": "sim\\vectors\\blend_weight.hex",
+      "SHA256": "54762269FA59D0BB1BC3E6652A4994FA12D7C81FA153375DF4FF1A37F272DE5C"
+    },
+    {
+      "Path": "sim\\vectors\\fir_expected.hex",
+      "SHA256": "F2ABA4706A5613EE5840CF8A40BB587D71DB05714726478C718EAF09354B2195"
+    },
+    {
+      "Path": "sim\\vectors\\fir_input.hex",
+      "SHA256": "72A1474705C8E53164AEFC43C668C6014B3F11C1CF4BA93E4B9AF543C8C4D5F6"
+    },
+    {
+      "Path": "sim\\vectors\\mix_count.hex",
+      "SHA256": "B7492B7DF499975E145490188A816F519A7847F2CD557B56AD224E7684D8D731"
+    },
+    {
+      "Path": "sim\\vectors\\mix_expected.hex",
+      "SHA256": "D818B044A6EC871CA863D3A4A09852F9D4ACAEE62BE1FAB7439A7EFBC3613E10"
+    },
+    {
+      "Path": "sim\\vectors\\mix_fir.hex",
+      "SHA256": "955BF481C58056336FF4A7424E5A3EF73B796CBE7FB203E3B69169929080F97B"
+    },
+    {
+      "Path": "sim\\vectors\\mix_firclip.hex",
+      "SHA256": "662158B5B70D603BD4DBD3E14CAFA2CE6DA69B26C4AE393EF62234E1F3AE6BB4"
+    },
+    {
+      "Path": "sim\\vectors\\mix_rawclip.hex",
+      "SHA256": "F534A6B78FE0470AE611CFF66062A401B024159692E7A0287CCCEE1962C18C70"
+    },
+    {
+      "Path": "sim\\vectors\\mix_shift.hex",
+      "SHA256": "AC41B914A64DCBAB762D0C12B3628B23E5E043B9A4CDFDBB76317EAE0DCEBC8F"
+    },
+    {
+      "Path": "sim\\vectors\\mix_v0.hex",
+      "SHA256": "FA8389A7BE94E3809C66574F2AF2AC76CD9B5A8251968268B8D14C4F9C7AAB10"
+    },
+    {
+      "Path": "sim\\vectors\\mix_v1.hex",
+      "SHA256": "D356001960A92170EF7288FD398B313D94F14509C219B26636B8B34952FCB2F1"
+    },
+    {
+      "Path": "sim\\vectors\\mix_v2.hex",
+      "SHA256": "66ABCEAB2AE653F7F33EF74AB2CACE304A3F0589B3A5319A517C09F77351DA32"
+    },
+    {
+      "Path": "sim\\vectors\\mix_v3.hex",
+      "SHA256": "5375776D9C57A13BEC112AC10D7AC65CFA815806497B3E695FB589708234400A"
+    },
+    {
+      "Path": "sim\\vectors\\osc_blend_expected.hex",
+      "SHA256": "3FFBA8830BE10DEABE767BD4C032067E9C4D47C7146A481C818EB844D630291A"
+    },
+    {
+      "Path": "sim\\vectors\\osc_blend_phase.hex",
+      "SHA256": "75A8BD313DF8D4D958BC80FC6F013FFA8D12A04DB7FA8D593C4DC3D3123EBB26"
+    },
+    {
+      "Path": "sim\\vectors\\osc_blend_weight.hex",
+      "SHA256": "3BAA06FE60AEAFA4921E08EFA3F1D21B49CF899209EE2810A766A80A1FFACE9A"
+    },
+    {
+      "Path": "sim\\vectors\\osc_bright_expected.hex",
+      "SHA256": "3E1BD3A215AC62763C632C52EA7528391B7FD23B8597D185A6FB93D51D1EE1B5"
+    },
+    {
+      "Path": "sim\\vectors\\osc_phase.hex",
+      "SHA256": "46A3001A37222D61E80B17297AA34F728CAD380DBFF516AA0A316D882A5E4493"
+    },
+    {
+      "Path": "sim\\vectors\\osc_sine_expected.hex",
+      "SHA256": "60355C9868F521E629682446DE4942A3D9E45263631BAB894BF3E89C01B83595"
+    },
+    {
+      "Path": "sim\\vectors\\pressure_expected.hex",
+      "SHA256": "D7A64D75A2E3F92BF6EB927BC2433B8A62CD02314DA3F79D6FD530B441549602"
+    },
+    {
+      "Path": "sim\\vectors\\pressure_inputs.hex",
+      "SHA256": "27CD1BB8EF3E9956C76BAA0AE06394822BF299E4070C5FC2F2B529D52487F6A9"
+    },
+    {
+      "Path": "sim\\vectors\\rom_blend_addr.hex",
+      "SHA256": "D022E1705517B793BB83A3E65628712BC3300D1837EAB22E20883A993365DD24"
+    },
+    {
+      "Path": "sim\\vectors\\rom_blend_expected.hex",
+      "SHA256": "6F47C1F374602AA6695D30F780EECD6A7970EF2D7FD312672D9399E71B27B6EF"
+    },
+    {
+      "Path": "sim\\vectors\\rom_blend_weight.hex",
+      "SHA256": "98371960F2B1594E79D66ABC65D171792F6C24501383462385C74C6FE4FE140D"
+    }
+  ],
+  "ChangedDuringRun": [
+    null
+  ],
+  "Iverilog": "C:\\iverilog\\bin\\iverilog.exe",
+  "Vvp": "C:\\iverilog\\bin\\vvp.exe",
+  "LongHoldMs": 100
+}

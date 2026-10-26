@@ -1,0 +1,3 @@
+PASS tb_top_host_ctrl: standard27 F7 mode toggle/dedup/simultaneous-note/takeover, UART compat, first key, chord, F6 switch, volume clamps, Esc, detach recovery
+sim\tb_top_host_ctrl.v:324: $finish called at 86952168105 (1ps)
+

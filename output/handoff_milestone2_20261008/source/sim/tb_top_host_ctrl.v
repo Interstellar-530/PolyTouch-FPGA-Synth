@@ -20,7 +20,9 @@ module tb_top_host_ctrl;
         .ch4(12'd0), .ch5(12'd0), .ch6(12'd0), .ch7(12'd0)
     );
 
-    top #(.AUDIO_IF(0), .VOICES(8), .MASTER_VOLUME_SHIFT(3),
+    // Production standard27 audio/control path; shorten only the test tune.
+    top #(.AUDIO_IF(2), .VOICES(8), .MASTER_VOLUME_SHIFT(3),
+          .SONG_UNIT_SAMPLES(32),
           .GPIO_KEY_ENABLE(0), .HOST_KBD_ENABLE(1)) dut (
         .clk_27m(clk27), .clk_12m288(1'b0),
         .key_rst(key_rst), .key_s1(s1), .key_s2(s2),
@@ -141,6 +143,47 @@ module tb_top_host_ctrl;
         key_rst = 1'b1;
         while (dut.por) @(posedge clk27);
         repeat (20) @(posedge clk27);
+
+        // F7 switches modes once per physical press. A simultaneous note must
+        // not consume/reverse the switch, regardless of its report slot.
+        if (!dut.demo_mode) $fatal(1, "boot did not select automatic mode");
+        kbd_report(8'h40, 0, 0, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "F7 did not enter manual mode");
+        wait_gates(0);
+        kbd_report(8'h40, 0, 0, 0, 0, 0);
+        kbd_report(0, 0, 8'h40, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "held/reordered F7 toggled repeatedly");
+        release_all();
+
+        kbd_report(8'h14, 8'h40, 0, 0, 0, 0);
+        if (!dut.demo_mode) $fatal(1, "F7 with Q did not enter automatic mode");
+        if (dut.hid_held_count != 0) $fatal(1, "mode switch retained manual note ownership");
+        kbd_report(8'h40, 8'h14, 0, 0, 0, 0);
+        if (!dut.demo_mode) $fatal(1, "reordered held note/F7 interrupted automatic mode");
+        release_all();
+        t = 0;
+        while (gate_n == 0 && t < 200000) begin @(posedge clk27); t = t + 1; end
+        if (gate_n == 0) $fatal(1, "automatic mode produced no note events");
+
+        kbd_report(8'h40, 0, 0, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "second F7 did not stop automatic mode");
+        wait_gates(0);
+        kbd_report(8'h14, 8'h40, 0, 0, 0, 0);
+        wait_gates(1);
+        expect_note(7'd60);
+        kbd_report(8'h14, 0, 0, 0, 0, 0); // release F7, keep Q held
+        kbd_report(8'h14, 0, 0, 0, 0, 8'h40);
+        if (!dut.demo_mode) $fatal(1, "F7 in last slot did not start automatic mode");
+        if (dut.hid_held_count != 0) $fatal(1, "held Q survived mode change");
+        kbd_report(8'h14, 8'h40, 0, 0, 0, 0);
+        if (!dut.demo_mode) $fatal(1, "held Q retriggered after mode flush");
+        release_all();
+        kbd_report(8'h14, 0, 0, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "fresh note did not retain automatic-to-manual takeover");
+        wait_gates(1);
+        expect_note(7'd60);
+        release_all();
+        wait_gates(0);
 
         // 0) 用 UART 退出演示并清音，验证 HID 档下串口命令仍生效。
         uart_cmd2("D", "0");
@@ -277,7 +320,7 @@ module tb_top_host_ctrl;
         wait_gates(1);
         expect_note(7'd60);
 
-        $display("PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear, 0x86 detach recovery");
+        $display("PASS tb_top_host_ctrl: standard27 F7 mode toggle/dedup/simultaneous-note/takeover, UART compat, first key, chord, F6 switch, volume clamps, Esc, detach recovery");
         $finish;
     end
 

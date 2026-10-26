@@ -1,0 +1,10 @@
+{
+  "baseline": "b15ff7c",
+  "frozen_checks": 5,
+  "passed": true,
+  "feature_files_match": true,
+  "full_regression": false,
+  "new_firmware": false,
+  "hardware_programmed": false,
+  "testing_stopped_per_user_request": true
+}

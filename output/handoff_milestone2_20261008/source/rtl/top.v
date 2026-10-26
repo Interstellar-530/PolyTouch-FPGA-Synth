@@ -127,6 +127,7 @@ module top #(
     wire hid_timbre_valid;
     wire [7:0] hid_timbre_value;
     wire hid_instr_toggle;
+    wire hid_mode_toggle;
     wire hid_vol_up;
     wire hid_vol_down;
     wire       uart_instr_valid;
@@ -205,6 +206,7 @@ module top #(
     wire        fifo_rd;
     wire        uart_ev_valid, uart_ev_on, uart_panic, uart_muted;
     wire        uart_demo_on, uart_demo_off;
+    wire        demo_on_request, demo_off_request;
     wire [6:0]  uart_ev_note;
     wire [7:0]  uart_ev_vel;
 
@@ -230,7 +232,7 @@ module top #(
     // 否则由输入触发的那次“退出演示”会把首个按键事件一起清掉。
     wire manual_flush = uart_panic || hid_panic || hid_link_timeout || hid_device_notify ||
                         instrument_change ||
-                        uart_demo_on || uart_demo_off;
+                        demo_on_request || demo_off_request;
 
     // 标准 27 MHz 档不再使用 12 路 GPIO 演奏键；旧 debug/standard 档保留以便回退。
     generate
@@ -267,7 +269,8 @@ module top #(
                 .ev_ready(hid_ev_ready),
                 .panic(hid_panic), .timbre_valid(hid_timbre_valid),
                 .timbre_value(hid_timbre_value),
-                .instr_toggle(hid_instr_toggle), .vol_up(hid_vol_up), .vol_down(hid_vol_down),
+                .instr_toggle(hid_instr_toggle), .mode_toggle(hid_mode_toggle),
+                .vol_up(hid_vol_up), .vol_down(hid_vol_down),
                 .base_note(hid_base_note), .held_count(hid_held_count),
                 .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
                 .frame_valid()
@@ -281,6 +284,7 @@ module top #(
             assign hid_timbre_valid = 1'b0;
             assign hid_timbre_value = 8'd0;
             assign hid_instr_toggle = 1'b0;
+            assign hid_mode_toggle = 1'b0;
             assign hid_vol_up    = 1'b0;
             assign hid_vol_down  = 1'b0;
             assign hid_base_note = 7'd60;
@@ -293,6 +297,10 @@ module top #(
     endgenerate
 
     reg         demo_mode;
+    // Explicit UART D0/D1 wins if both interfaces request a mode on this clock.
+    wire hid_mode_request = hid_mode_toggle && !uart_demo_on && !uart_demo_off;
+    assign demo_on_request  = uart_demo_on  || (hid_mode_request && !demo_mode);
+    assign demo_off_request = uart_demo_off || (hid_mode_request &&  demo_mode);
     reg         pending_valid;
     reg [15:0]  pending_word;
 
@@ -335,7 +343,7 @@ module top #(
                                                   (gp_ev_valid && gp_ev_on) ||
                                                   (hid_ev_valid && hid_ev_on) ||
                                                   (man_ev_valid && man_ev_on));
-    wire        clear_events = uart_demo_on || uart_demo_off ||
+    wire        clear_events = demo_on_request || demo_off_request ||
                                manual_transition || uart_panic || hid_panic ||
                                hid_link_timeout || hid_device_notify || instrument_change || (restart && demo_mode);
 
@@ -346,9 +354,9 @@ module top #(
             pending_word  <= 16'd0;
         end else begin
             pending_valid <= 1'b0;
-            if (uart_demo_on)
+            if (demo_on_request)
                 demo_mode <= 1'b1;
-            else if (uart_demo_off || manual_transition)
+            else if (demo_off_request || manual_transition)
                 demo_mode <= 1'b0;
             // 退出演示这一拍先清队列并松开旧声部，把首个 N/O 事件暂存一拍，
             // 下一拍再送分配器，避免同拍 panic 吞掉它；并非等 Release 完成。
@@ -365,7 +373,7 @@ module top #(
         .clk          (clk_audio),
         .rst          (rst | ~demo_mode),
         .sample_tick  (sample_tick),
-        .restart      (restart | uart_demo_on),
+        .restart      (restart | demo_on_request),
         .chord_set    (chord_set),
         .tempo_sel    (tempo_sel),
         .ev_ready     (fifo_ready),
