@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "reference_mhz": 12.288,
+  "compute_mhz": 73.728,
+  "sample_rate_hz": 48000,
+  "attack_step_per_frame": 140,
+  "phase_samples_per_configuration": 4,
+  "comparison_8_is_same_ram_architecture_not_board_production_engine": true,
+  "rows": {
+    "8": {
+      "voices": 8,
+      "single_min_us": 67.668,
+      "single_max_us": 83.293,
+      "full_load_change_us": 62.46,
+      "burst_allocate_us": 2.582,
+      "all_rendered_us": 43.64,
+      "uart_start_to_i2s_us": 1020.71,
+      "env10_us": 979.119,
+      "env90_us": 8791.603,
+      "max_tail_cycles": 161.0,
+      "frame_cycles": 1536.0,
+      "queue_min_us": 0.042,
+      "queue_max_us": 0.049,
+      "compute_tail_us": 2.1837022569444446,
+      "frame_headroom_percent": 89.51822916666666
+    },
+    "32": {
+      "voices": 32,
+      "single_min_us": 67.668,
+      "single_max_us": 83.293,
+      "full_load_change_us": 62.46,
+      "burst_allocate_us": 15.536,
+      "all_rendered_us": 49.825,
+      "uart_start_to_i2s_us": 1020.71,
+      "env10_us": 979.119,
+      "env90_us": 8791.603,
+      "max_tail_cycles": 617.0,
+      "frame_cycles": 1536.0,
+      "queue_min_us": 0.042,
+      "queue_max_us": 0.358,
+      "compute_tail_us": 8.368598090277779,
+      "frame_headroom_percent": 59.83072916666667
+    }
+  },
+  "delta_32_minus_8_us": {
+    "single_max": 0.0,
+    "full_load_first_output_change": 0.0,
+    "compute_tail": 6.184895833333334
+  },
+  "limits": [
+    "RTL simulation and behavioral ROM/PLL models; no board programming",
+    "Full-load shadow measures first output difference, not isolated new-note acoustic onset",
+    "UART timing starts at first serial frame bit; excludes physical key scan and USB polling",
+    "Envelope 10/90 percent times describe envelope state, not measured sound pressure",
+    "ADC/DAC analog delay, loudness threshold, and 27-to-54 MHz board adaptation not verified",
+    "Four sampled event phases are measured observations, not an exhaustive worst-case proof"
+  ]
+}

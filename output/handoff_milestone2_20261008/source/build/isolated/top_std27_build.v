@@ -38,7 +38,8 @@ module top_std27_build #(
 
     top #(
         .AUDIO_IF(2), .I2S_DATA_BITS(24),
-        .VOICES(8), .MASTER_VOLUME_SHIFT(3),
+        // +6.02 dB over the previous /8 mix; retain soft limiting and V0..V100.
+        .VOICES(8), .MASTER_VOLUME_SHIFT(2),
         .GPIO_KEY_ENABLE(0), .HOST_KBD_TIMEOUT_POLICY(HOST_KBD_TIMEOUT_POLICY), .HOST_KBD_ENABLE(1)
     ) u_top (
         .clk_27m(clk_27m), .clk_12m288(1'b0),

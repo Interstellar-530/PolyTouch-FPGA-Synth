@@ -1,0 +1,13 @@
+{
+  "baseline": "b656b0d23cc91fbb6c7ff09a23eb7a691f0756f5",
+  "passed": true,
+  "verified_source_inputs": 346,
+  "tests": [
+    "tb_hid_full_keyboard",
+    "tb_top_host_eight",
+    "tb_ram32_latency"
+  ],
+  "elapsed_seconds": 79.947008,
+  "source_scope": "Baseline plus this conversation owned changes only; unrelated tune work excluded",
+  "no_programming": true
+}

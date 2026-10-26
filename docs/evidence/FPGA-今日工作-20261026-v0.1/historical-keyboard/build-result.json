@@ -1,0 +1,22 @@
+{
+  "programmed": false,
+  "board_last_confirmed_user_code": "0x0000C452",
+  "board_voices": 8,
+  "candidate_user_code_header": "//UserCode: 0x00001FF0",
+  "candidate_voices": 8,
+  "note_keys": 88,
+  "report_note_sources": 14,
+  "candidate_sha256": "bc3b310154decea73136dd0b5ccbed999ee1ed92cac814bb63dc266f9753d160",
+  "logic": 12255,
+  "registers": 3992,
+  "bsram": 27,
+  "mult18x18": 1,
+  "mult9x9": 1,
+  "multalu36x18": 1,
+  "fmax_mhz": 39.381,
+  "constraint_mhz": 27,
+  "setup_violations": 0,
+  "hold_violations": 0,
+  "gate_tests": 5,
+  "external_dependencies_added": false
+}

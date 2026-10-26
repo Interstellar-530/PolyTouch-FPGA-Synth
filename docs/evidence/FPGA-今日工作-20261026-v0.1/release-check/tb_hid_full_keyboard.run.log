@@ -1,0 +1,3 @@
+PASS tb_hid_full_keyboard: 88 unique notes A0-C8, 14 report identities, dedup, transpose, backpressure/wrap
+sim\tb_hid_full_keyboard.v:110: $finish called at 120090000 (1ps)
+

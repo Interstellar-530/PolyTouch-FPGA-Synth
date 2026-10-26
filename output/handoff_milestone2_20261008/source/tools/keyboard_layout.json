@@ -1,0 +1,530 @@
+[
+  {
+    "group": "Original lower",
+    "key": "Z",
+    "usage": 29,
+    "midi": 48
+  },
+  {
+    "group": "Original lower",
+    "key": "S",
+    "usage": 22,
+    "midi": 49
+  },
+  {
+    "group": "Original lower",
+    "key": "X",
+    "usage": 27,
+    "midi": 50
+  },
+  {
+    "group": "Original lower",
+    "key": "D",
+    "usage": 7,
+    "midi": 51
+  },
+  {
+    "group": "Original lower",
+    "key": "C",
+    "usage": 6,
+    "midi": 52
+  },
+  {
+    "group": "Original lower",
+    "key": "V",
+    "usage": 25,
+    "midi": 53
+  },
+  {
+    "group": "Original lower",
+    "key": "G",
+    "usage": 10,
+    "midi": 54
+  },
+  {
+    "group": "Original lower",
+    "key": "B",
+    "usage": 5,
+    "midi": 55
+  },
+  {
+    "group": "Original lower",
+    "key": "H",
+    "usage": 11,
+    "midi": 56
+  },
+  {
+    "group": "Original lower",
+    "key": "N",
+    "usage": 17,
+    "midi": 57
+  },
+  {
+    "group": "Original lower",
+    "key": "J",
+    "usage": 13,
+    "midi": 58
+  },
+  {
+    "group": "Original lower",
+    "key": "M",
+    "usage": 16,
+    "midi": 59
+  },
+  {
+    "group": "Original upper",
+    "key": "Q",
+    "usage": 20,
+    "midi": 60
+  },
+  {
+    "group": "Original upper",
+    "key": "2",
+    "usage": 31,
+    "midi": 61
+  },
+  {
+    "group": "Original upper",
+    "key": "W",
+    "usage": 26,
+    "midi": 62
+  },
+  {
+    "group": "Original upper",
+    "key": "3",
+    "usage": 32,
+    "midi": 63
+  },
+  {
+    "group": "Original upper",
+    "key": "E",
+    "usage": 8,
+    "midi": 64
+  },
+  {
+    "group": "Original upper",
+    "key": "R",
+    "usage": 21,
+    "midi": 65
+  },
+  {
+    "group": "Original upper",
+    "key": "5",
+    "usage": 34,
+    "midi": 66
+  },
+  {
+    "group": "Original upper",
+    "key": "T",
+    "usage": 23,
+    "midi": 67
+  },
+  {
+    "group": "Original upper",
+    "key": "6",
+    "usage": 35,
+    "midi": 68
+  },
+  {
+    "group": "Original upper",
+    "key": "Y",
+    "usage": 28,
+    "midi": 69
+  },
+  {
+    "group": "Original upper",
+    "key": "7",
+    "usage": 36,
+    "midi": 70
+  },
+  {
+    "group": "Original upper",
+    "key": "U",
+    "usage": 24,
+    "midi": 71
+  },
+  {
+    "group": "Upper extension",
+    "key": "I",
+    "usage": 12,
+    "midi": 72
+  },
+  {
+    "group": "Upper extension",
+    "key": "9",
+    "usage": 38,
+    "midi": 73
+  },
+  {
+    "group": "Upper extension",
+    "key": "O",
+    "usage": 18,
+    "midi": 74
+  },
+  {
+    "group": "Upper extension",
+    "key": "0",
+    "usage": 39,
+    "midi": 75
+  },
+  {
+    "group": "Upper extension",
+    "key": "P",
+    "usage": 19,
+    "midi": 76
+  },
+  {
+    "group": "Upper extension",
+    "key": "[",
+    "usage": 47,
+    "midi": 77
+  },
+  {
+    "group": "Upper extension",
+    "key": "=",
+    "usage": 46,
+    "midi": 78
+  },
+  {
+    "group": "Upper extension",
+    "key": "]",
+    "usage": 48,
+    "midi": 79
+  },
+  {
+    "group": "Upper extension",
+    "key": "\\",
+    "usage": 49,
+    "midi": 80
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "LCtrl",
+    "usage": 224,
+    "midi": 40
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "LShift",
+    "usage": 225,
+    "midi": 41
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "LAlt",
+    "usage": 226,
+    "midi": 42
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "LWin",
+    "usage": 227,
+    "midi": 43
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "RCtrl",
+    "usage": 228,
+    "midi": 44
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "RShift",
+    "usage": 229,
+    "midi": 45
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "RAlt",
+    "usage": 230,
+    "midi": 46
+  },
+  {
+    "group": "Independent bass modifiers",
+    "key": "RWin",
+    "usage": 231,
+    "midi": 47
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP0",
+    "usage": 98,
+    "midi": 24
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP1",
+    "usage": 89,
+    "midi": 25
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP2",
+    "usage": 90,
+    "midi": 26
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP3",
+    "usage": 91,
+    "midi": 27
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP4",
+    "usage": 92,
+    "midi": 28
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP5",
+    "usage": 93,
+    "midi": 29
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP6",
+    "usage": 94,
+    "midi": 30
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP7",
+    "usage": 95,
+    "midi": 31
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP8",
+    "usage": 96,
+    "midi": 32
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP9",
+    "usage": 97,
+    "midi": 33
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP.",
+    "usage": 99,
+    "midi": 34
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP+",
+    "usage": 87,
+    "midi": 35
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP-",
+    "usage": 86,
+    "midi": 36
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP*",
+    "usage": 85,
+    "midi": 37
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KP/",
+    "usage": 84,
+    "midi": 38
+  },
+  {
+    "group": "Numpad bass",
+    "key": "KPEnter",
+    "usage": 88,
+    "midi": 39
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "A",
+    "usage": 4,
+    "midi": 81
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "F",
+    "usage": 9,
+    "midi": 82
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "K",
+    "usage": 14,
+    "midi": 83
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "L",
+    "usage": 15,
+    "midi": 84
+  },
+  {
+    "group": "Additional typing keys",
+    "key": ";",
+    "usage": 51,
+    "midi": 85
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "'",
+    "usage": 52,
+    "midi": 86
+  },
+  {
+    "group": "Additional typing keys",
+    "key": ",",
+    "usage": 54,
+    "midi": 87
+  },
+  {
+    "group": "Additional typing keys",
+    "key": ".",
+    "usage": 55,
+    "midi": 88
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "/",
+    "usage": 56,
+    "midi": 89
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "`",
+    "usage": 53,
+    "midi": 90
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "1",
+    "usage": 30,
+    "midi": 91
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "4",
+    "usage": 33,
+    "midi": 92
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "8",
+    "usage": 37,
+    "midi": 93
+  },
+  {
+    "group": "Additional typing keys",
+    "key": "-",
+    "usage": 45,
+    "midi": 94
+  },
+  {
+    "group": "Navigation high",
+    "key": "Insert",
+    "usage": 73,
+    "midi": 95
+  },
+  {
+    "group": "Navigation high",
+    "key": "Home",
+    "usage": 74,
+    "midi": 96
+  },
+  {
+    "group": "Navigation high",
+    "key": "Delete",
+    "usage": 76,
+    "midi": 97
+  },
+  {
+    "group": "Navigation high",
+    "key": "End",
+    "usage": 77,
+    "midi": 98
+  },
+  {
+    "group": "Navigation high",
+    "key": "Left",
+    "usage": 80,
+    "midi": 99
+  },
+  {
+    "group": "Navigation high",
+    "key": "Right",
+    "usage": 79,
+    "midi": 100
+  },
+  {
+    "group": "Auxiliary high",
+    "key": "Tab",
+    "usage": 43,
+    "midi": 101
+  },
+  {
+    "group": "Auxiliary high",
+    "key": "CapsLock",
+    "usage": 57,
+    "midi": 102
+  },
+  {
+    "group": "Auxiliary high",
+    "key": "Backspace",
+    "usage": 42,
+    "midi": 103
+  },
+  {
+    "group": "Auxiliary high",
+    "key": "Enter",
+    "usage": 40,
+    "midi": 104
+  },
+  {
+    "group": "Function high",
+    "key": "F9",
+    "usage": 66,
+    "midi": 105
+  },
+  {
+    "group": "Function high",
+    "key": "F10",
+    "usage": 67,
+    "midi": 106
+  },
+  {
+    "group": "Function high",
+    "key": "F11",
+    "usage": 68,
+    "midi": 107
+  },
+  {
+    "group": "Function high",
+    "key": "F12",
+    "usage": 69,
+    "midi": 108
+  },
+  {
+    "group": "Lowest auxiliary",
+    "key": "PrintScreen",
+    "usage": 70,
+    "midi": 21
+  },
+  {
+    "group": "Lowest auxiliary",
+    "key": "ScrollLock",
+    "usage": 71,
+    "midi": 22
+  },
+  {
+    "group": "Lowest auxiliary",
+    "key": "Pause",
+    "usage": 72,
+    "midi": 23
+  }
+]
