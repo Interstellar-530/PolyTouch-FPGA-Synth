@@ -141,7 +141,7 @@ module baseline_top #(
     // ------------------------------------------------------- note events ---
     wire        sp_ev_wr;
     wire [15:0] sp_ev_data;
-    wire [5:0]  mel_idx_dbg;
+    wire [7:0]  mel_idx_dbg;
     wire        fifo_empty;
     wire        fifo_full;
     wire        fifo_ready;
@@ -251,18 +251,18 @@ module baseline_top #(
     // ------------------------------------------------------- loop marker ---
     // 旋律索引返回 0 时亮灯约 111 ms，便于测量循环间隔。
     // 周期随 tempo_sel + 1 成比例变化；切换模式/重启也可能触发索引回零。
-    reg [5:0]  mel_idx_d;
+    reg [7:0]  mel_idx_d;
     reg [21:0] loop_blink_cnt;
     reg        loop_blink;
 
     always @(posedge clk_audio) begin
         if (por) begin
-            mel_idx_d      <= 6'd0;
+            mel_idx_d      <= 8'd0;
             loop_blink_cnt <= 22'd0;
             loop_blink     <= 1'b0;
         end else begin
             mel_idx_d <= mel_idx_dbg;
-            if ((mel_idx_dbg == 6'd0) && (mel_idx_d != 6'd0)) begin
+            if ((mel_idx_dbg == 8'd0) && (mel_idx_d != 8'd0)) begin
                 loop_blink_cnt <= BLINK_CYCLES[21:0];   // about 111 ms
                 loop_blink     <= 1'b1;
             end else if (loop_blink_cnt != 22'd0) begin

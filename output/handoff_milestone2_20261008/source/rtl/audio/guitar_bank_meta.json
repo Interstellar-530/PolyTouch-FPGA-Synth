@@ -1,11 +1,11 @@
 {
   "source": "Karoryfer Black And Green Guitars",
   "license": "CC0",
-  "method": "exact-f0 harmonic decomposition + 6.5 kHz rolloff",
+  "generator": "tools/offline_opt/a/gen_bandlimit.py",
   "tables": 30,
   "depth": 512,
   "bsram_blocks": 15,
-  "bands": [
+  "band_index": [
     40,
     48,
     56,
@@ -22,480 +22,947 @@
     "black/mf",
     "black/f"
   ],
-  "groups": [
-    [
-      0,
-      1
+  "band_limit": {
+    "rule": "H = min(255, floor(margin*Fs/f_max))",
+    "margin": 0.45,
+    "fs_hz": 48000.0,
+    "play_range_midi": [
+      36,
+      96
     ],
-    [
-      2
-    ],
-    [
-      3
-    ],
-    [
-      4
-    ],
-    [
-      5
-    ]
-  ],
-  "entries": [
+    "bend_max_ratio": 1.122467,
+    "note": "f_max includes the exact worst-case bend ratio; DC removed; each group scaled to its quietest member's RMS"
+  },
+  "banks": [
     {
+      "bank": 12,
+      "kind": "guitar",
       "group": 0,
-      "bands": [
-        0,
-        1
-      ],
-      "variant": 0,
-      "guitar": "green",
-      "dynamic": "p",
-      "source_note": 52,
-      "file": "twang_e3_p_rr1.flac",
-      "f0_est": 164.8,
-      "harmonics_used": 6,
-      "highest_hz": 988.8,
-      "seam": 77
+      "table_index": 0,
+      "note_hi": 59,
+      "f_max_hz": 277.18,
+      "h_limit": 77,
+      "before": {
+        "rms_dbfs": -5.696,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.01,
+        "significant_harmonics": 6,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 782
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.009765625,
+      "group_rms_target_dbfs": -6.879,
+      "gain_db": -1.183,
+      "after": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -1.183,
+        "dc_lsb": 0.002,
+        "significant_harmonics": 6,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 683
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -94.7
     },
     {
+      "bank": 13,
+      "kind": "guitar",
       "group": 0,
-      "bands": [
-        0,
-        1
-      ],
-      "variant": 1,
-      "guitar": "green",
-      "dynamic": "mf",
-      "source_note": 52,
-      "file": "twang_e3_mf_rr1.flac",
-      "f0_est": 164.87,
-      "harmonics_used": 7,
-      "highest_hz": 1154.1,
-      "seam": 493
+      "table_index": 1,
+      "note_hi": 59,
+      "f_max_hz": 277.18,
+      "h_limit": 77,
+      "before": {
+        "rms_dbfs": -4.806,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 7,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 977
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -6.879,
+      "gain_db": -2.073,
+      "after": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -2.074,
+        "dc_lsb": 0.012,
+        "significant_harmonics": 7,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 769
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.47
     },
     {
+      "bank": 14,
+      "kind": "guitar",
       "group": 0,
-      "bands": [
-        0,
-        1
-      ],
-      "variant": 2,
-      "guitar": "green",
-      "dynamic": "f",
-      "source_note": 52,
-      "file": "twang_e3_f_rr1.flac",
-      "f0_est": 165.69,
-      "harmonics_used": 9,
-      "highest_hz": 1491.2,
-      "seam": 268
+      "table_index": 2,
+      "note_hi": 59,
+      "f_max_hz": 277.18,
+      "h_limit": 77,
+      "before": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.004,
+        "significant_harmonics": 8,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 1152
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.00390625,
+      "group_rms_target_dbfs": -6.879,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.008,
+        "significant_harmonics": 8,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 1152
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -100.52
     },
     {
+      "bank": 15,
+      "kind": "guitar",
       "group": 0,
-      "bands": [
-        0,
-        1
-      ],
-      "variant": 3,
-      "guitar": "black",
-      "dynamic": "p",
-      "source_note": 52,
-      "file": "twang_e3_p_rr1.flac",
-      "f0_est": 164.18,
-      "harmonics_used": 6,
-      "highest_hz": 985.1,
-      "seam": 406
+      "table_index": 3,
+      "note_hi": 59,
+      "f_max_hz": 277.18,
+      "h_limit": 77,
+      "before": {
+        "rms_dbfs": -4.291,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 6,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 685
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.879,
+      "gain_db": -2.588,
+      "after": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -2.588,
+        "dc_lsb": 0.012,
+        "significant_harmonics": 6,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 508
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.55
     },
     {
+      "bank": 16,
+      "kind": "guitar",
       "group": 0,
-      "bands": [
-        0,
-        1
-      ],
-      "variant": 4,
-      "guitar": "black",
-      "dynamic": "mf",
-      "source_note": 52,
-      "file": "twang_e3_mf_rr1.flac",
-      "f0_est": 164.35,
-      "harmonics_used": 6,
-      "highest_hz": 986.1,
-      "seam": 87
+      "table_index": 4,
+      "note_hi": 59,
+      "f_max_hz": 277.18,
+      "h_limit": 77,
+      "before": {
+        "rms_dbfs": -4.196,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.02,
+        "significant_harmonics": 6,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 587
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01953125,
+      "group_rms_target_dbfs": -6.879,
+      "gain_db": -2.683,
+      "after": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -2.683,
+        "dc_lsb": 0.002,
+        "significant_harmonics": 6,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 431
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.06
     },
     {
+      "bank": 17,
+      "kind": "guitar",
       "group": 0,
-      "bands": [
-        0,
-        1
-      ],
-      "variant": 5,
-      "guitar": "black",
-      "dynamic": "f",
-      "source_note": 52,
-      "file": "twang_e3_f_rr1.flac",
-      "f0_est": 165.6,
-      "harmonics_used": 14,
-      "highest_hz": 2318.4,
-      "seam": 21
+      "table_index": 5,
+      "note_hi": 59,
+      "f_max_hz": 277.18,
+      "h_limit": 77,
+      "before": {
+        "rms_dbfs": -4.587,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.012,
+        "significant_harmonics": 14,
+        "highest_harmonic": 14,
+        "max_adjacent_step_lsb": 820
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01171875,
+      "group_rms_target_dbfs": -6.879,
+      "gain_db": -2.292,
+      "after": {
+        "rms_dbfs": -6.879,
+        "peak_dbfs": -2.292,
+        "dc_lsb": 0.004,
+        "significant_harmonics": 14,
+        "highest_harmonic": 14,
+        "max_adjacent_step_lsb": 630
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.77
     },
     {
+      "bank": 18,
+      "kind": "guitar",
       "group": 1,
-      "bands": [
-        2
-      ],
-      "variant": 0,
-      "guitar": "green",
-      "dynamic": "p",
-      "source_note": 59,
-      "file": "twang_b3_p_rr1.flac",
-      "f0_est": 248.11,
-      "harmonics_used": 5,
-      "highest_hz": 1240.5,
-      "seam": 151
+      "table_index": 6,
+      "note_hi": 66,
+      "f_max_hz": 415.31,
+      "h_limit": 52,
+      "before": {
+        "rms_dbfs": -4.177,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.012,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 698
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01171875,
+      "group_rms_target_dbfs": -5.382,
+      "gain_db": -1.205,
+      "after": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -1.205,
+        "dc_lsb": 0.018,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 608
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.15
     },
     {
+      "bank": 19,
+      "kind": "guitar",
       "group": 1,
-      "bands": [
-        2
-      ],
-      "variant": 1,
-      "guitar": "green",
-      "dynamic": "mf",
-      "source_note": 59,
-      "file": "twang_b3_mf_rr1.flac",
-      "f0_est": 247.97,
-      "harmonics_used": 7,
-      "highest_hz": 1735.8,
-      "seam": 326
+      "table_index": 7,
+      "note_hi": 66,
+      "f_max_hz": 415.31,
+      "h_limit": 52,
+      "before": {
+        "rms_dbfs": -4.409,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 7,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 800
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -5.382,
+      "gain_db": -0.973,
+      "after": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -0.973,
+        "dc_lsb": 0.023,
+        "significant_harmonics": 7,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 715
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.57
     },
     {
+      "bank": 20,
+      "kind": "guitar",
       "group": 1,
-      "bands": [
-        2
-      ],
-      "variant": 2,
-      "guitar": "green",
-      "dynamic": "f",
-      "source_note": 59,
-      "file": "twang_b3_f_rr1.flac",
-      "f0_est": 248.61,
-      "harmonics_used": 9,
-      "highest_hz": 2237.5,
-      "seam": 12
+      "table_index": 8,
+      "note_hi": 66,
+      "f_max_hz": 415.31,
+      "h_limit": 52,
+      "before": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.006,
+        "significant_harmonics": 7,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 916
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.005859375,
+      "group_rms_target_dbfs": -5.382,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 7,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 916
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -102.48
     },
     {
+      "bank": 21,
+      "kind": "guitar",
       "group": 1,
-      "bands": [
-        2
-      ],
-      "variant": 3,
-      "guitar": "black",
-      "dynamic": "p",
-      "source_note": 59,
-      "file": "twang_b3_p_rr1.flac",
-      "f0_est": 246.25,
-      "harmonics_used": 8,
-      "highest_hz": 1970.0,
-      "seam": 17
+      "table_index": 9,
+      "note_hi": 66,
+      "f_max_hz": 415.31,
+      "h_limit": 52,
+      "before": {
+        "rms_dbfs": -3.086,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.012,
+        "significant_harmonics": 8,
+        "highest_harmonic": 8,
+        "max_adjacent_step_lsb": 585
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01171875,
+      "group_rms_target_dbfs": -5.382,
+      "gain_db": -2.295,
+      "after": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -2.296,
+        "dc_lsb": 0.025,
+        "significant_harmonics": 8,
+        "highest_harmonic": 8,
+        "max_adjacent_step_lsb": 449
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.9
     },
     {
+      "bank": 22,
+      "kind": "guitar",
       "group": 1,
-      "bands": [
-        2
-      ],
-      "variant": 4,
-      "guitar": "black",
-      "dynamic": "mf",
-      "source_note": 59,
-      "file": "twang_b3_mf_rr1.flac",
-      "f0_est": 246.48,
-      "harmonics_used": 8,
-      "highest_hz": 1971.8,
-      "seam": 22
+      "table_index": 10,
+      "note_hi": 66,
+      "f_max_hz": 415.31,
+      "h_limit": 52,
+      "before": {
+        "rms_dbfs": -3.8,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 8,
+        "highest_harmonic": 8,
+        "max_adjacent_step_lsb": 592
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -5.382,
+      "gain_db": -1.582,
+      "after": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -1.582,
+        "dc_lsb": -0.031,
+        "significant_harmonics": 8,
+        "highest_harmonic": 8,
+        "max_adjacent_step_lsb": 494
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.28
     },
     {
+      "bank": 23,
+      "kind": "guitar",
       "group": 1,
-      "bands": [
-        2
-      ],
-      "variant": 5,
-      "guitar": "black",
-      "dynamic": "f",
-      "source_note": 59,
-      "file": "twang_b3_f_rr1.flac",
-      "f0_est": 247.74,
-      "harmonics_used": 16,
-      "highest_hz": 3963.9,
-      "seam": 323
+      "table_index": 11,
+      "note_hi": 66,
+      "f_max_hz": 415.31,
+      "h_limit": 52,
+      "before": {
+        "rms_dbfs": -3.45,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.0,
+        "significant_harmonics": 14,
+        "highest_harmonic": 16,
+        "max_adjacent_step_lsb": 860
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0,
+      "group_rms_target_dbfs": -5.382,
+      "gain_db": -1.932,
+      "after": {
+        "rms_dbfs": -5.382,
+        "peak_dbfs": -1.932,
+        "dc_lsb": 0.006,
+        "significant_harmonics": 14,
+        "highest_harmonic": 16,
+        "max_adjacent_step_lsb": 689
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.74
     },
     {
+      "bank": 24,
+      "kind": "guitar",
       "group": 2,
-      "bands": [
-        3
-      ],
-      "variant": 0,
-      "guitar": "green",
-      "dynamic": "p",
-      "source_note": 67,
-      "file": "twang_g4_p_rr1.flac",
-      "f0_est": 393.75,
-      "harmonics_used": 6,
-      "highest_hz": 2362.5,
-      "seam": 380
+      "table_index": 12,
+      "note_hi": 75,
+      "f_max_hz": 698.46,
+      "h_limit": 30,
+      "before": {
+        "rms_dbfs": -4.378,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 4,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 751
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.829,
+      "gain_db": -2.45,
+      "after": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -2.45,
+        "dc_lsb": 0.023,
+        "significant_harmonics": 4,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 566
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.91
     },
     {
+      "bank": 25,
+      "kind": "guitar",
       "group": 2,
-      "bands": [
-        3
-      ],
-      "variant": 1,
-      "guitar": "green",
-      "dynamic": "mf",
-      "source_note": 67,
-      "file": "twang_g4_mf_rr1.flac",
-      "f0_est": 393.98,
-      "harmonics_used": 7,
-      "highest_hz": 2757.9,
-      "seam": 148
+      "table_index": 13,
+      "note_hi": 75,
+      "f_max_hz": 698.46,
+      "h_limit": 30,
+      "before": {
+        "rms_dbfs": -5.229,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.016,
+        "significant_harmonics": 7,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 833
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.015625,
+      "group_rms_target_dbfs": -6.829,
+      "gain_db": -1.6,
+      "after": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -1.6,
+        "dc_lsb": 0.002,
+        "significant_harmonics": 7,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 693
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.33
     },
     {
+      "bank": 26,
+      "kind": "guitar",
       "group": 2,
-      "bands": [
-        3
-      ],
-      "variant": 2,
-      "guitar": "green",
-      "dynamic": "f",
-      "source_note": 67,
-      "file": "twang_g4_f_rr1.flac",
-      "f0_est": 394.84,
-      "harmonics_used": 13,
-      "highest_hz": 5133.0,
-      "seam": 541
+      "table_index": 14,
+      "note_hi": 75,
+      "f_max_hz": 698.46,
+      "h_limit": 30,
+      "before": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 10,
+        "highest_harmonic": 13,
+        "max_adjacent_step_lsb": 771
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.829,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.006,
+        "significant_harmonics": 10,
+        "highest_harmonic": 13,
+        "max_adjacent_step_lsb": 771
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -99.11
     },
     {
+      "bank": 27,
+      "kind": "guitar",
       "group": 2,
-      "bands": [
-        3
-      ],
-      "variant": 3,
-      "guitar": "black",
-      "dynamic": "p",
-      "source_note": 67,
-      "file": "twang_g4_p_rr1.flac",
-      "f0_est": 392.43,
-      "harmonics_used": 5,
-      "highest_hz": 1962.1,
-      "seam": 309
+      "table_index": 15,
+      "note_hi": 75,
+      "f_max_hz": 698.46,
+      "h_limit": 30,
+      "before": {
+        "rms_dbfs": -3.902,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.008,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 498
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -6.829,
+      "gain_db": -2.927,
+      "after": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -2.927,
+        "dc_lsb": -0.01,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 356
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.06
     },
     {
+      "bank": 28,
+      "kind": "guitar",
       "group": 2,
-      "bands": [
-        3
-      ],
-      "variant": 4,
-      "guitar": "black",
-      "dynamic": "mf",
-      "source_note": 67,
-      "file": "twang_g4_mf_rr1.flac",
-      "f0_est": 393.1,
-      "harmonics_used": 5,
-      "highest_hz": 1965.5,
-      "seam": 495
+      "table_index": 16,
+      "note_hi": 75,
+      "f_max_hz": 698.46,
+      "h_limit": 30,
+      "before": {
+        "rms_dbfs": -4.611,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.021,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 511
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.021484375,
+      "group_rms_target_dbfs": -6.829,
+      "gain_db": -2.218,
+      "after": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -2.218,
+        "dc_lsb": -0.012,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 396
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.59
     },
     {
+      "bank": 29,
+      "kind": "guitar",
       "group": 2,
-      "bands": [
-        3
-      ],
-      "variant": 5,
-      "guitar": "black",
-      "dynamic": "f",
-      "source_note": 67,
-      "file": "twang_g4_f_rr1.flac",
-      "f0_est": 395.29,
-      "harmonics_used": 20,
-      "highest_hz": 7905.7,
-      "seam": 388
+      "table_index": 17,
+      "note_hi": 75,
+      "f_max_hz": 698.46,
+      "h_limit": 30,
+      "before": {
+        "rms_dbfs": -5.314,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.004,
+        "significant_harmonics": 13,
+        "highest_harmonic": 20,
+        "max_adjacent_step_lsb": 594
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.00390625,
+      "group_rms_target_dbfs": -6.829,
+      "gain_db": -1.515,
+      "after": {
+        "rms_dbfs": -6.829,
+        "peak_dbfs": -1.515,
+        "dc_lsb": 0.02,
+        "significant_harmonics": 13,
+        "highest_harmonic": 20,
+        "max_adjacent_step_lsb": 499
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -94.83
     },
     {
+      "bank": 30,
+      "kind": "guitar",
       "group": 3,
-      "bands": [
-        4
-      ],
-      "variant": 0,
-      "guitar": "green",
-      "dynamic": "p",
-      "source_note": 75,
-      "file": "twang_eb5_p_rr1.flac",
-      "f0_est": 624.74,
-      "harmonics_used": 13,
-      "highest_hz": 8121.7,
-      "seam": 198
+      "table_index": 18,
+      "note_hi": 83,
+      "f_max_hz": 1108.74,
+      "h_limit": 19,
+      "before": {
+        "rms_dbfs": -2.859,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.02,
+        "significant_harmonics": 7,
+        "highest_harmonic": 13,
+        "max_adjacent_step_lsb": 584
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01953125,
+      "group_rms_target_dbfs": -6.482,
+      "gain_db": -3.624,
+      "after": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -3.624,
+        "dc_lsb": -0.004,
+        "significant_harmonics": 7,
+        "highest_harmonic": 13,
+        "max_adjacent_step_lsb": 385
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -97.89
     },
     {
+      "bank": 31,
+      "kind": "guitar",
       "group": 3,
-      "bands": [
-        4
-      ],
-      "variant": 1,
-      "guitar": "green",
-      "dynamic": "mf",
-      "source_note": 75,
-      "file": "twang_eb5_mf_rr1.flac",
-      "f0_est": 624.98,
-      "harmonics_used": 5,
-      "highest_hz": 3124.9,
-      "seam": 48
+      "table_index": 19,
+      "note_hi": 83,
+      "f_max_hz": 1108.74,
+      "h_limit": 19,
+      "before": {
+        "rms_dbfs": -4.627,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.02,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 651
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01953125,
+      "group_rms_target_dbfs": -6.482,
+      "gain_db": -1.855,
+      "after": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -1.855,
+        "dc_lsb": 0.012,
+        "significant_harmonics": 5,
+        "highest_harmonic": 5,
+        "max_adjacent_step_lsb": 526
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.03
     },
     {
+      "bank": 32,
+      "kind": "guitar",
       "group": 3,
-      "bands": [
-        4
-      ],
-      "variant": 2,
-      "guitar": "green",
-      "dynamic": "f",
-      "source_note": 75,
-      "file": "twang_eb5_f_rr1.flac",
-      "f0_est": 625.62,
-      "harmonics_used": 8,
-      "highest_hz": 5005.0,
-      "seam": 128
+      "table_index": 20,
+      "note_hi": 83,
+      "f_max_hz": 1108.74,
+      "h_limit": 19,
+      "before": {
+        "rms_dbfs": -5.353,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 6,
+        "highest_harmonic": 8,
+        "max_adjacent_step_lsb": 667
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -6.482,
+      "gain_db": -1.129,
+      "after": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -1.129,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 6,
+        "highest_harmonic": 8,
+        "max_adjacent_step_lsb": 586
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -94.55
     },
     {
+      "bank": 33,
+      "kind": "guitar",
       "group": 3,
-      "bands": [
-        4
-      ],
-      "variant": 3,
-      "guitar": "black",
-      "dynamic": "p",
-      "source_note": 75,
-      "file": "twang_eb5_p_rr1.flac",
-      "f0_est": 623.21,
-      "harmonics_used": 4,
-      "highest_hz": 2492.9,
-      "seam": 373
+      "table_index": 21,
+      "note_hi": 83,
+      "f_max_hz": 1108.74,
+      "h_limit": 19,
+      "before": {
+        "rms_dbfs": -3.263,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.021,
+        "significant_harmonics": 4,
+        "highest_harmonic": 4,
+        "max_adjacent_step_lsb": 478
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.021484375,
+      "group_rms_target_dbfs": -6.482,
+      "gain_db": -3.219,
+      "after": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -3.219,
+        "dc_lsb": 0.014,
+        "significant_harmonics": 4,
+        "highest_harmonic": 4,
+        "max_adjacent_step_lsb": 330
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.97
     },
     {
+      "bank": 34,
+      "kind": "guitar",
       "group": 3,
-      "bands": [
-        4
-      ],
-      "variant": 4,
-      "guitar": "black",
-      "dynamic": "mf",
-      "source_note": 75,
-      "file": "twang_eb5_mf_rr1.flac",
-      "f0_est": 623.25,
-      "harmonics_used": 6,
-      "highest_hz": 3739.5,
-      "seam": 112
+      "table_index": 22,
+      "note_hi": 83,
+      "f_max_hz": 1108.74,
+      "h_limit": 19,
+      "before": {
+        "rms_dbfs": -3.378,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 5,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 508
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -6.482,
+      "gain_db": -3.104,
+      "after": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -3.104,
+        "dc_lsb": -0.006,
+        "significant_harmonics": 5,
+        "highest_harmonic": 6,
+        "max_adjacent_step_lsb": 356
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.96
     },
     {
+      "bank": 35,
+      "kind": "guitar",
       "group": 3,
-      "bands": [
-        4
-      ],
-      "variant": 5,
-      "guitar": "black",
-      "dynamic": "f",
-      "source_note": 75,
-      "file": "twang_eb5_f_rr1.flac",
-      "f0_est": 623.64,
-      "harmonics_used": 9,
-      "highest_hz": 5612.8,
-      "seam": 406
+      "table_index": 23,
+      "note_hi": 83,
+      "f_max_hz": 1108.74,
+      "h_limit": 19,
+      "before": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.012,
+        "significant_harmonics": 9,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 700
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01171875,
+      "group_rms_target_dbfs": -6.482,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -6.482,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.008,
+        "significant_harmonics": 9,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 700
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -97.5
     },
     {
+      "bank": 36,
+      "kind": "guitar",
       "group": 4,
-      "bands": [
-        5
-      ],
-      "variant": 0,
-      "guitar": "green",
-      "dynamic": "p",
-      "source_note": 84,
-      "file": "twang_c6_p_rr1.flac",
-      "f0_est": 1046.47,
-      "harmonics_used": 19,
-      "highest_hz": 19882.8,
-      "seam": 53
+      "table_index": 24,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -3.894,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.006,
+        "significant_harmonics": 7,
+        "highest_harmonic": 19,
+        "max_adjacent_step_lsb": 519
+      },
+      "before_alias_db": -62.8,
+      "dc_dc_removed_lsb": 0.005859375,
+      "group_rms_target_dbfs": -5.637,
+      "gain_db": -1.744,
+      "after": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -1.749,
+        "dc_lsb": 0.01,
+        "significant_harmonics": 7,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 426
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -61.19
     },
     {
+      "bank": 37,
+      "kind": "guitar",
       "group": 4,
-      "bands": [
-        5
-      ],
-      "variant": 1,
-      "guitar": "green",
-      "dynamic": "mf",
-      "source_note": 84,
-      "file": "twang_c6_mf_rr1.flac",
-      "f0_est": 1046.28,
-      "harmonics_used": 10,
-      "highest_hz": 10462.8,
-      "seam": 46
+      "table_index": 25,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -4.6,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.01,
+        "significant_harmonics": 5,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 547
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.009765625,
+      "group_rms_target_dbfs": -5.637,
+      "gain_db": -1.037,
+      "after": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -1.038,
+        "dc_lsb": 0.031,
+        "significant_harmonics": 5,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 487
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -73.13
     },
     {
+      "bank": 38,
+      "kind": "guitar",
       "group": 4,
-      "bands": [
-        5
-      ],
-      "variant": 2,
-      "guitar": "green",
-      "dynamic": "f",
-      "source_note": 84,
-      "file": "twang_c6_f_rr1.flac",
-      "f0_est": 1045.3,
-      "harmonics_used": 7,
-      "highest_hz": 7317.1,
-      "seam": 110
+      "table_index": 26,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -5.384,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.006,
+        "significant_harmonics": 6,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 722
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.005859375,
+      "group_rms_target_dbfs": -5.637,
+      "gain_db": -0.253,
+      "after": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -0.254,
+        "dc_lsb": -0.006,
+        "significant_harmonics": 6,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 702
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -94.95
     },
     {
+      "bank": 39,
+      "kind": "guitar",
       "group": 4,
-      "bands": [
-        5
-      ],
-      "variant": 3,
-      "guitar": "black",
-      "dynamic": "p",
-      "source_note": 84,
-      "file": "twang_c6_p_rr1.flac",
-      "f0_est": 1045.76,
-      "harmonics_used": 4,
-      "highest_hz": 4183.0,
-      "seam": 71
+      "table_index": 27,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -4.401,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 4,
+        "highest_harmonic": 4,
+        "max_adjacent_step_lsb": 682
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -5.637,
+      "gain_db": -1.236,
+      "after": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -1.236,
+        "dc_lsb": 0.02,
+        "significant_harmonics": 4,
+        "highest_harmonic": 4,
+        "max_adjacent_step_lsb": 592
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -95.87
     },
     {
+      "bank": 40,
+      "kind": "guitar",
       "group": 4,
-      "bands": [
-        5
-      ],
-      "variant": 4,
-      "guitar": "black",
-      "dynamic": "mf",
-      "source_note": 84,
-      "file": "twang_c6_mf_rr1.flac",
-      "f0_est": 1045.77,
-      "harmonics_used": 7,
-      "highest_hz": 7320.4,
-      "seam": 89
+      "table_index": 28,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -3.542,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.021,
+        "significant_harmonics": 5,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 598
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.021484375,
+      "group_rms_target_dbfs": -5.637,
+      "gain_db": -2.095,
+      "after": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -2.096,
+        "dc_lsb": 0.027,
+        "significant_harmonics": 5,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 470
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -96.86
     },
     {
+      "bank": 41,
+      "kind": "guitar",
       "group": 4,
-      "bands": [
-        5
-      ],
-      "variant": 5,
-      "guitar": "black",
-      "dynamic": "f",
-      "source_note": 84,
-      "file": "twang_c6_f_rr1.flac",
-      "f0_est": 1046.01,
-      "harmonics_used": 7,
-      "highest_hz": 7322.1,
-      "seam": 474
+      "table_index": 29,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.004,
+        "significant_harmonics": 6,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 505
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.00390625,
+      "group_rms_target_dbfs": -5.637,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -5.637,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.01,
+        "significant_harmonics": 6,
+        "highest_harmonic": 7,
+        "max_adjacent_step_lsb": 505
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -99.46
     }
   ]
 }

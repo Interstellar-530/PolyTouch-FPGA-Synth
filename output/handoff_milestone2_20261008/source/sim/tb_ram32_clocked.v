@@ -28,7 +28,9 @@ module tb_ram32_clocked #(parameter integer MULT=4);
  ram32_clocked_top #(.MULT(MULT),.ATTACK_STEP(16'd8192),.DECAY_STEP(16'd4096),
                      .RELEASE_STEP(16'd4096),.SUSTAIN_LEVEL(16'd32768)) dut(
   .clk_ref(clk_ref),.reset(reset),
-  .instrument(instrument),.piano_tone(piano_tone),
+  .instrument(instrument),.piano_tone({1'b0,piano_tone}),
+  .volume_target(7'd100),.mute(1'b0),.pressure_enable(1'b0),
+  .pressure_adc(12'd3200),.bend_adc(12'd2048),
   .ev_valid(ev_valid),.ev_on(ev_on),.ev_note(ev_note),.ev_vel(ev_vel),
   .ev_ready(ev_ready),
   .i2s_bck(bck),.i2s_lrck(lrck),.i2s_din(din),

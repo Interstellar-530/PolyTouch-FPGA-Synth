@@ -5,7 +5,7 @@
 //   2. 持键静默只让 strict 清键，idle-only 保持长音；
 //   3. 0x82 心跳允许两档持续长按；
 //   4. 0x86 拔出通知两档都立即清键，之后可重新起音。
-module tb_host_kbd_timeout;
+module tb_host_kbd_timeout #(parameter integer LONG_HOLD_MS = 5000);
     localparam integer CLK_HZ = 1000000;
     localparam integer BAUD = 100000;
     localparam integer WATCHDOG_MS = 20;
@@ -180,7 +180,8 @@ module tb_host_kbd_timeout;
         expect_strict_held(4'd1);
         safe_ev_mark = safe_ev; strict_ev_mark = strict_ev;
         safe_to_mark = safe_to; strict_to_mark = strict_to;
-        wait_ms(5000);
+        if (LONG_HOLD_MS < 3 * WATCHDOG_MS) $fatal(1, "hold must span at least three watchdog windows");
+        wait_ms(LONG_HOLD_MS);
         wait_cycles(100);
         check_both_held(4'd1, 4'd0);
         if (safe_ev != safe_ev_mark || strict_ev != strict_ev_mark)
@@ -222,7 +223,7 @@ module tb_host_kbd_timeout;
         expect_safe_held(4'd1);
         expect_strict_held(4'd1);
 
-        $display("PASS tb_host_kbd_timeout: idle-only 5s long hold, strict compatibility, heartbeat sustain, detach recovery");
+        $display("PASS tb_host_kbd_timeout: idle-only long hold (%0d ms), strict compatibility, heartbeat sustain, detach recovery", LONG_HOLD_MS);
         $finish;
     end
 

@@ -68,7 +68,8 @@ module tb_voice_sched32_review;
                 $fatal(1,"pending_config_payload_changed");
             ready=1;step();
             cycles=0;
-            while(!cv)begin step();cycles=cycles+1;if(cycles>33)$fatal(1,"new dirty update lost after a complete scan");end
+            // One 32-voice scan plus note/product/round pipeline and handoff.
+            while(!cv)begin step();cycles=cycles+1;if(cycles>40)$fatal(1,"new dirty update lost after a complete scan plus pipeline");end
             if(vel!=63 || !retrigger)$fatal(1,"new retrigger lost while old config waited");
             step();
         end

@@ -1,0 +1,37 @@
+[
+  {
+    "path": "rtl/audio/kbd_uart_rx.v",
+    "sha256": "e3e321d451a60bcc8713ef0f16a66dabe566337b852b1da5f25a87fe4378ad3a",
+    "matches_flashed_source": true
+  },
+  {
+    "path": "rtl/audio/ch9350_rx.v",
+    "sha256": "767ec5ba50536248048669924fe0f22e6471b4ae6e707d83133a65539b992382",
+    "matches_flashed_source": true
+  },
+  {
+    "path": "rtl/audio/hid_keymap.v",
+    "sha256": "cd0ccec67cd245b9977ac022be36a81f1d2df0c1d4ef003cc99a3b9117f0ad5b",
+    "matches_flashed_source": true
+  },
+  {
+    "path": "rtl/audio/host_kbd_input.v",
+    "sha256": "2193b56df1e547399dc606afbac91b3f84a8fb78ec8c6e8c0e58bd959e90f71f",
+    "matches_flashed_source": true
+  },
+  {
+    "path": "rtl/top.v",
+    "sha256": "e64ad3ac696db78947bc4e3a72bce5c38225e2944c943d552cfccc1307c278af",
+    "matches_flashed_source": true
+  },
+  {
+    "path": "build/isolated/top_std27_build.v",
+    "sha256": "fbd070444599cceaa59c35aed798cd99c7c0140e3ea40784b07bd1aa78c62032",
+    "matches_flashed_source": true
+  },
+  {
+    "path": "constraints/primer20k_i2s_27m.cst",
+    "sha256": "0aa973702a873dfc6849539f5db95a4dcf5c971511e6bb6e9b0c12073797a3f3",
+    "matches_flashed_source": true
+  }
+]

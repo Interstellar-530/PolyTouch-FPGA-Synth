@@ -1,36 +1,38 @@
-// 《兰花草》演示事件播放器：旋律与三音伴奏共用节拍，各自维护剩余时长。
-// 曲目 ROM 保存音高、力度码和时长，不是 PCM 录音，也不是振荡器波表。
+// 测试曲事件播放器：旋律与三音伴奏共用节拍，各自维护剩余时长。
+// 曲目 ROM 保存音高、力度码和时值槽，不是 PCM 录音，也不是振荡器波表。
 // ev_wr/ev_ready 在 clk 上升沿同时为 1 才接受当前事件；外设模式仲裁位于 top。
 //
 // Table contents come from tools/gen_song_rom.py:
-//   melody : {velocity_code[2:0], note[6:0], sounding_units[5:0]}, note 0 = rest
-//   chords : {root[7:0], slot_units[5:0], quality[1:0]}, quality 0 = major
+//   melody : {velocity_code[2:0], note[6:0], slot[5:0]}, note 0 = rest
+//   chords : {root[7:0], slot[5:0], quality[1:0]}, quality 0 = major
 //
-// One unit is a sixteenth note, four units to the beat.  The melody ROM stores
-// how long each note SOUNDS; the player adds the articulation gap (a quarter of
-// the note, at least one unit) itself, so a short note still gets heard.
+// One unit is a sixteenth note, four units to the beat.  The stored number is
+// the whole SLOT the note owns and the voice is released exactly on the slot
+// edge, in the same burst as the next note-on.  There is no per-note gap any
+// more: a held note rings for its full written value, and only an explicit
+// rest entry is silent.  sum(slots) is exactly the musical length, so the
+// sixteenth grid cannot drift.
 //
-// tempo_sel stretches every unit by 1x .. 4x.  That lets the same bitstream be
-// played at the written tempo or several times slower without a rebuild, which
-// is how the listening tempo gets settled.
+// tempo_sel stretches every unit by 1x .. 4x.  The power-on index is 0 (1x,
+// the score tempo), so the burned bitstream plays the tune at 81 BPM.
 module song_player #(
-    parameter integer UNIT_SAMPLES = 9766,
+    parameter integer UNIT_SAMPLES = 8681,
     parameter [7:0]   CHORD_VEL_A  = 8'd30,
     parameter [7:0]   CHORD_VEL_B  = 8'd46,
-    parameter [5:0]   MELODY_LAST  = 6'd40,
-    parameter [4:0]   CHORD_LAST   = 5'd17
+    parameter [7:0]   MELODY_LAST  = 8'd139,
+    parameter [5:0]   CHORD_LAST   = 6'd39
 )(
-    input  wire       clk,
-    input  wire       rst,
-    input  wire       sample_tick,
-    input  wire       restart,
-    input  wire       chord_set,        // 0 = set A, 1 = set B
-    input  wire [1:0] tempo_sel,        // 0..3 -> every unit stretched 1x..4x
-    input  wire       ev_ready,         // FIFO accepts current event this clock
-    output wire       ev_wr,
+    input  wire        clk,
+    input  wire        rst,
+    input  wire        sample_tick,
+    input  wire        restart,
+    input  wire        chord_set,        // 0 = set A, 1 = set B
+    input  wire [1:0]  tempo_sel,        // 0..3 -> every unit stretched 1x..4x
+    input  wire        ev_ready,         // FIFO accepts current event this clock
+    output wire        ev_wr,
     output wire [15:0] ev_data,
-    output wire [5:0] mel_idx_dbg,
-    output wire [4:0] chord_idx_dbg
+    output wire [7:0]  mel_idx_dbg,
+    output wire [5:0]  chord_idx_dbg
 );
 
     // ----------------------------------------------------------- tables ---
@@ -40,8 +42,8 @@ module song_player #(
 
     // ----------------------------------------------------------- tick base --
     reg [15:0] tick_cnt;
-    // UNIT_SAMPLES * 4 is 39064, still inside 16 bits, so the slice below is
-    // exact; slicing keeps the 32 bit parameter arithmetic explicit.
+    // UNIT_SAMPLES * 4 is 34724 here, still inside 16 bits, so the slice below
+    // is exact; slicing keeps the 32 bit parameter arithmetic explicit.
     wire [31:0] tick_period = UNIT_SAMPLES * (tempo_sel + 1);
     wire [15:0] tick_top    = tick_period[15:0] - 16'd1;
 
@@ -58,8 +60,8 @@ module song_player #(
     end
 
     // ------------------------------------------------------------ pointers --
-    reg [5:0]  mel_idx;
-    reg [4:0]  chord_idx;
+    reg [7:0]  mel_idx;
+    reg [5:0]  chord_idx;
     reg [7:0]  mel_left;
     reg [7:0]  chord_left;
     reg [7:0]  mel_gap_len;      // gap of the note that is currently sounding
@@ -68,20 +70,22 @@ module song_player #(
     // what was switched on even if the chord set changes in between.
     reg [6:0]  cnote0, cnote1, cnote2;
 
-    wire [5:0] mel_nxt       = (mel_idx == MELODY_LAST) ? 6'd0 : mel_idx + 6'd1;
+    wire [7:0] mel_nxt       = (mel_idx == MELODY_LAST) ? 8'd0 : mel_idx + 8'd1;
     wire [15:0] mel_cur_word = mel_word(mel_idx);
     wire [15:0] mel_nxt_word = mel_word(mel_nxt);
     wire [6:0] mel_cur_note  = mel_cur_word[12:6];
     wire [6:0] mel_nxt_note  = mel_nxt_word[12:6];
     wire [2:0] mel_nxt_code  = mel_nxt_word[15:13];
-    wire [5:0] mel_nxt_on    = mel_nxt_word[5:0];
+    wire [5:0] mel_nxt_slot  = mel_nxt_word[5:0];
 
-    // gap = max(1, sounding / 4), exactly what song_data.gap_units() computes.
-    wire [5:0] mel_nxt_gap   = (mel_nxt_on < 6'd4) ? 6'd1 : (mel_nxt_on >> 2);
-    wire [6:0] mel_nxt_slot  = {1'b0, mel_nxt_on} + {1'b0, mel_nxt_gap};
+    // Legato: the voice is released on the slot edge, not before it.  The
+    // gap path stays wired (a zero gap never fires) so the burst structure and
+    // its timing are unchanged; the audible difference is that a note now
+    // rings for its full slot instead of losing a sixteenth to silence.
+    wire [5:0] mel_nxt_gap   = 6'd0;
 
     // Velocity code to actual velocity.  The accent lands on the first note of
-    // every phrase so the metre is audible even when only one note is heard.
+    // every bar so the metre is audible even when only one note is heard.
     function [7:0] vel_of;
         input [2:0] code;
         begin
@@ -98,7 +102,7 @@ module song_player #(
         end
     endfunction
 
-    wire [4:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 5'd0 : chord_idx + 5'd1;
+    wire [5:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 6'd0 : chord_idx + 6'd1;
     wire [15:0] ch_nxt_entry = chord_set ? chord_b_word(chord_nxt)
                                          : chord_a_word(chord_nxt);
     // The two harmonisations also differ in level, which makes the S1 switch
@@ -182,8 +186,8 @@ module song_player #(
 
                     if (mel_expire) begin
                         mel_idx     <= mel_nxt;
-                        mel_left    <= {1'b0, mel_nxt_slot};
-                        mel_gap_len <= {1'b0, mel_nxt_gap};
+                        mel_left    <= {2'b00, mel_nxt_slot};
+                        mel_gap_len <= {2'b00, mel_nxt_gap};
                     end else begin
                         mel_left <= mel_left - 8'd1;
                     end

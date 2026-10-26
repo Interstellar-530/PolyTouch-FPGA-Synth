@@ -26,9 +26,9 @@ module top #(
     parameter integer AUDIO_CLK_HZ  = (AUDIO_IF == 1) ? `FPGA_AUDIO_STD_CLK_HZ : `FPGA_AUDIO_DBG_CLK_HZ,
     parameter integer AUDIO_FS_HZ   = (AUDIO_IF == 1) ? `FPGA_AUDIO_STD_FS_HZ  : `FPGA_AUDIO_DBG_FS_HZ,
     parameter integer I2S_DATA_BITS = 24,                     // AUDIO_IF=1/2 时每声道槽宽
-    // 曲目单位时长：调试档 9766 采样 @46.875 kHz = 208.34 ms；48 kHz 档按同一时长
-    // 换算得 10000.4，取 10000（208.33 ms，偏差 0.004%）。
-    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 1) ? 10000 : 9766,
+    // 曲目单位时长：81 BPM 的十六分音符。48 kHz 档为 8889 采样（185.19 ms），
+    // 调试档 46875 Hz 为 8681 采样（185.17 ms），偏差都在 0.01% 以内。
+    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 1) ? 8889 : 8681,
     // 演奏输入选择：标准 27 MHz 生产档停用 12 路 GPIO 键（GPIO_KEY_ENABLE=0），
     // 由 USB 电脑键盘经 CH9350L 串口输入（HOST_KBD_ENABLE=1）。旧 debug/standard
     // profile 保持 GPIO=1、HOST=0，便于回归与回退。
@@ -36,9 +36,10 @@ module top #(
     parameter integer HOST_KBD_ENABLE = 0,
     // 0 = strict；1 = idle-only（默认，持键静默不误清音）。
     parameter integer HOST_KBD_TIMEOUT_POLICY = 1,
-    // FSR controls one global VCA. Standard profiles (1 and 2) enabled, legacy
-    // PT8211 profile bypassed. These are provisional ADC calibration values, not N.
+    // FSR is a momentary mute in demo and manual modes. Standard profiles
+    // enabled; legacy PT8211 bypassed unless explicitly enabled by its wrapper.
     parameter integer PRESSURE_ENABLE = (AUDIO_IF != 0),
+    // Retained legacy pressure-gain parameters for source compatibility.
     parameter integer PRESSURE_ADC_LOW = 128,
     parameter integer PRESSURE_ADC_FULL = 3200,
     parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
@@ -178,11 +179,12 @@ module top #(
         if (por) begin
             chord_set <= 1'b0;
             restart   <= 1'b0;
-            // Preset index 1 (2x) is the state that was reported as the right
-            // playback speed: L14 lit, L16 dark.  The LEDs are active low and
-            // driven as ~tempo_sel[bit], so a lit LED means that bit is one.
-            // S2 steps through all four presets.
-            tempo_sel <= 2'd1;
+            // Preset index 0 (1x) is the score tempo of the new test tune:
+            // quarter = 81, exactly as written, so a cold boot is already the
+            // strict-tempo run.  The LEDs are active low and driven as
+            // ~tempo_sel[bit], so a lit LED means that bit is one.  S2 steps
+            // through all four presets for slow-motion listening.
+            tempo_sel <= 2'd0;
         end else begin
             if (s1_press)
                 chord_set <= ~chord_set;
@@ -195,7 +197,7 @@ module top #(
     // ------------------------------------------------------- note events ---
     wire        sp_ev_wr;
     wire [15:0] sp_ev_data;
-    wire [5:0]  mel_idx_dbg;
+    wire [7:0]  mel_idx_dbg;
     wire        fifo_empty;
     wire        fifo_full;
     wire        fifo_ready;
@@ -376,18 +378,18 @@ module top #(
     // ------------------------------------------------------- loop marker ---
     // 旋律索引返回 0 时亮灯约 111 ms，便于测量循环间隔。
     // 周期随 tempo_sel + 1 成比例变化；切换模式/重启也可能触发索引回零。
-    reg [5:0]  mel_idx_d;
+    reg [7:0]  mel_idx_d;
     reg [21:0] loop_blink_cnt;
     reg        loop_blink;
 
     always @(posedge clk_audio) begin
         if (por) begin
-            mel_idx_d      <= 6'd0;
+            mel_idx_d      <= 8'd0;
             loop_blink_cnt <= 22'd0;
             loop_blink     <= 1'b0;
         end else begin
             mel_idx_d <= mel_idx_dbg;
-            if ((mel_idx_dbg == 6'd0) && (mel_idx_d != 6'd0)) begin
+            if ((mel_idx_dbg == 8'd0) && (mel_idx_d != 8'd0)) begin
                 loop_blink_cnt <= BLINK_CYCLES[21:0];   // about 111 ms
                 loop_blink     <= 1'b1;
             end else if (loop_blink_cnt != 22'd0) begin
@@ -595,6 +597,13 @@ module top #(
         .phase_inc_out (bend_inc0)
     );
 
+    wire fsr_muted;
+    wire audio_muted = uart_muted | fsr_muted;
+    fsr_mute u_fsr_mute (
+        .clk(clk_audio), .rst(rst), .enable(PRESSURE_ENABLE != 0),
+        .update(control_sample_tick), .pressure(pressure_filtered), .muted(fsr_muted)
+    );
+
     // ----------------------------------------------------------- voices ---
     // Reference bend increments remain observable for simulation. The audio
     // engine uses base increments and shares its multiplier for all four;
@@ -704,7 +713,7 @@ module top #(
     wire        xf_clip_event;
 
     global_crossfade #(
-        .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
+        .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(0),
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
         .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),.GUITAR_BOOST_ENABLE(1),
@@ -718,7 +727,7 @@ module top #(
         .guitar_boost(guitar_mode), .sample_out (mixed_shared),
         .sample_out24(mixed_shared24), .result_valid_o(xf_result_valid),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
-        .pressure_enable (!demo_mode), .pressure_level (pressure_level), .mute(uart_muted)
+        .pressure_enable (1'b0), .pressure_level (pressure_level), .mute(audio_muted)
     );
 
     // ------------------------------------------------------------ mixer ---
@@ -890,7 +899,7 @@ module top #(
             if (xf_result_valid_d) begin
                 // 一阶低通状态在静音后可能停在 -1 LSB；共享 VCA 已精确到零时把
                 // 状态刷成 0，让静音是真正的数字静音（移植 1fd865a 的静音收敛修复）。
-                if (uart_muted && mixed_shared24 == 24'sd0) mix_lp_y <= 26'sd0;
+                if (audio_muted && mixed_shared24 == 24'sd0) mix_lp_y <= 26'sd0;
                 else mix_lp_y <= mix_lp_next[25:0];
                 vol_prod <= vol_prod_comb[32:0];
             end
@@ -967,7 +976,7 @@ module top #(
     // about 110 ms at the start of every pass through the tune, and stays lit
     // while the output is muted.  Timing the gap between flashes measures the
     // loop directly.  N14 shows the chord set, L14/L16 the tempo preset.
-    assign led       = uart_muted ? 1'b0 : ~loop_blink;
+    assign led       = audio_muted ? 1'b0 : ~loop_blink;
     assign led_chord = ~chord_set;
     assign led_t0    = ~(show_timbre ? timbre_preset[0] : tempo_sel[0]);
     assign led_t1    = ~(show_timbre ? timbre_preset[1] : tempo_sel[1]);

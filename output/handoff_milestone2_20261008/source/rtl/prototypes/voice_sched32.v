@@ -150,6 +150,12 @@ module voice_sched32 #(
     // increment. This removes the 32-way note read mux from the long
     // note_phase_inc path while the pending transaction provides backpressure.
     reg        snap_valid;
+    reg [1:0]  snap_phase;
+    reg [31:0] snap_base_inc;
+    reg [16:0] snap_ratio;
+    reg [48:0] bent_inc_prod;
+    reg env_mark_pending,env_mark_changed;
+    reg [5:0] env_mark_voice;
     reg [5:0]  snap_sel;
     reg [6:0]  snap_note;
     reg [7:0]  snap_vel;
@@ -168,7 +174,6 @@ module voice_sched32 #(
     wire [31:0] candidate_inc;
     // 弯音：candidate_inc 是基础增量，bend_ratio 是全局 Q16 比率。
     // 先乘后加半位再右移 16，最后饱和到 1..0xFFFFFFFF；比率下限 0.891 不会到 0。
-    wire [48:0] bent_inc_prod = {17'd0,candidate_inc} * {32'd0,bend_ratio};
     wire [32:0] bent_inc_round = (bent_inc_prod + 49'd32768) >> 16;
     wire [31:0] bent_inc = (bent_inc_round > 33'hFFFFFFFF) ? 32'hFFFFFFFF :
                            (bent_inc_round == 0) ? 32'd1 : bent_inc_round[31:0];
@@ -200,7 +205,9 @@ module voice_sched32 #(
             env_lat <= 16'd0; est_lat <= 3'd0; gate_lat <= 1'b0; timer_lat <= 13'd0; stage_lat <= 3'd0;
             sel <= 6'd0; dirty_sel<=0;cfg_inc_q<=0;cfg_param_q<=0;cfg_mask_q<=3'b001;instrument_q<=0;tone_q<=3'd0;ratio_q<=17'd65536;
             cfg_env_q <= 16'd0; cfg_vel_q <= 7'd0; cfg_retrig_q <= 1'b0;
-            snap_valid<=1'b0;snap_sel<=0;snap_note<=0;snap_vel<=0;snap_env<=0;
+            snap_valid<=1'b0;snap_phase<=0;snap_base_inc<=0;snap_ratio<=17'd65536;bent_inc_prod<=0;
+            env_mark_pending<=0;env_mark_changed<=0;env_mark_voice<=0;
+            snap_sel<=0;snap_note<=0;snap_vel<=0;snap_env<=0;
             snap_stage<=0;snap_timer<=0;snap_retrig<=0;snap_mask<=3'b001;
             ev_q_valid <= 1'b0; ev_q_on <= 1'b0; ev_q_note <= 7'd0; ev_q_vel <= 8'd0;
             ev_state <= EV_IDLE; scan_ptr <= 6'd0;
@@ -209,6 +216,10 @@ module voice_sched32 #(
             rel_age <= 5'd0; held_age <= 5'd0;
             match_any <= 1'b0; free_any <= 1'b0; rel_any <= 1'b0; held_any <= 1'b0;
         end else begin
+            // Register the envelope change comparison before the 32-way dirty
+            // write enables. Drain it before taking another config snapshot.
+            env_mark_pending<=0;
+            if(env_mark_pending && env_mark_changed)dirty[env_mark_voice]<=1'b1;
             // Latch global timbre at frame boundary and refresh every voice.
             if(sample_tick && ((instrument_q!=instrument)||(tone_q!=piano_tone)))begin
                 instrument_q<=instrument;tone_q<=piano_tone;dirty<={VOICES{1'b1}};dirty_inc<={VOICES{1'b1}};dirty_param<={VOICES{1'b1}};
@@ -236,8 +247,8 @@ module voice_sched32 #(
                 end else begin
                     env[env_ptr] <= env_new;
                     est[env_ptr] <= est_new;
-                    if ((env_new != env_lat) || (est_new != est_lat))
-                        dirty[env_ptr] <= 1'b1;
+                    env_mark_pending<=1;env_mark_voice<=env_ptr;
+                    env_mark_changed<=((env_new != env_lat) || (est_new != est_lat));
                     if(!instrument_q && est_lat!=ST_IDLE)begin
                         if(stage_lat>=start_stage)begin
                             if(timer_lat!=STAGE_STEP_SAMPLES-1)dirty_param[env_ptr]<=1;
@@ -308,8 +319,15 @@ module voice_sched32 #(
             // Convert the registered snapshot, then retain valid/data until
             // accepted. Clearing dirty at snapshot time lets a later musical
             // update set it again while this transaction is waiting.
+            // Separate note LUT, multiplier and rounded saturation. The entire
+            // snapshot remains stable through backpressure; no partial packet.
+            if(snap_valid && snap_phase==0)begin
+                snap_base_inc<=candidate_inc;snap_ratio<=ratio_q;snap_phase<=1;
+            end else if(snap_valid && snap_phase==1)begin
+                bent_inc_prod<=snap_base_inc*snap_ratio;snap_phase<=2;
+            end
             if(!cfg_pend || cfg_ready)begin
-                if(snap_valid)begin
+                if(snap_valid && snap_phase==2)begin
                     sel<=snap_sel;cfg_inc_q<=bent_inc;
                     cfg_env_q<=snap_env;cfg_vel_q<=snap_vel[6:0];
                     cfg_retrig_q<=snap_retrig;cfg_param_q<={2'd0,candidate_bank,candidate_weight};
@@ -317,11 +335,11 @@ module voice_sched32 #(
                 end else cfg_pend<=0;
             end
             if((!cfg_pend || cfg_ready) &&
-               (!snap_valid || (snap_valid && (!cfg_pend || cfg_ready))) &&
-               !env_run && !sample_tick && ev_state!=EV_COMMIT)begin
+               !snap_valid &&
+               !env_run && !env_mark_pending && !sample_tick && ev_state!=EV_COMMIT)begin
                 dirty_sel <= dirty_sel==VOICES-1 ? 6'd0 : dirty_sel+1'b1;
                 if(clean_any)begin
-                    snap_valid<=1;snap_sel<=dirty_sel;snap_note<=note[dirty_sel];
+                    snap_valid<=1;snap_phase<=0;snap_sel<=dirty_sel;snap_note<=note[dirty_sel];
                     snap_vel<=vel[dirty_sel];snap_env<=env[dirty_sel];
                     snap_stage<=stage_q[dirty_sel];snap_timer<=timer[dirty_sel];
                     snap_retrig<=retrig[dirty_sel];

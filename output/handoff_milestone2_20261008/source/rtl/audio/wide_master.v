@@ -33,15 +33,12 @@ module wide_master #(
  wire[12:0]target_gain=mute?13'd0:pressure_enable?calibrated_gain:13'd4096;
  // 主音量(选项A)：与压力增益合成同一个 Q12 增益，13x9 乘每帧一次，不额外占 DSP。
  // volume_gain_q8 是 top.v 的同一条曲线（256=单位增益），default 256 保持旧行为。
- wire[21:0]combined_gain_prod={9'd0,target_gain}*{13'd0,volume_gain_q8};
+ reg[21:0]combined_gain_prod=0;
  wire[13:0]combined_gain_shift=combined_gain_prod>>8;
- wire[12:0]combined_gain=combined_gain_shift>14'd4096?13'd4096:combined_gain_shift[12:0];
- reg[12:0]gain_next;
- always @*begin
-  gain_next=combined_gain;
-  if(combined_gain>gain_q12 && combined_gain-gain_q12>PRESSURE_GAIN_STEP)gain_next=gain_q12+PRESSURE_GAIN_STEP;
-  else if(gain_q12>combined_gain && gain_q12-combined_gain>PRESSURE_GAIN_STEP)gain_next=gain_q12-PRESSURE_GAIN_STEP;
- end
+ reg[12:0]combined_gain=0;
+ wire[12:0]gain_next =
+  (combined_gain>gain_q12 && combined_gain-gain_q12>PRESSURE_GAIN_STEP) ? gain_q12+PRESSURE_GAIN_STEP :
+  (gain_q12>combined_gain && gain_q12-combined_gain>PRESSURE_GAIN_STEP) ? gain_q12-PRESSURE_GAIN_STEP : combined_gain;
  reg signed[31:0]saved_sine=0,saved_bright=0;
  reg signed[50:0]base=0;
  wire signed[50:0]sine_extended=saved_sine;
@@ -58,14 +55,20 @@ module wide_master #(
    state<=0;weight_state<=64;frame_weight<=64;gain_q12<=4096;frame_gain<=4096;
    saved_sine<=0;saved_bright<=0;base<=0;mult_operand_a<=0;mult_operand_b<=0;
    sample_out<=0;result_valid<=0;clip_count<=0;clip_event<=0;
+   combined_gain_prod<=0;combined_gain<=0;
   end else begin
    result_valid<=0;clip_event<=0;
    case(state)
     0:if(update)begin
      saved_sine<=sine_sum;saved_bright<=bright_sum;
      frame_weight<=active_weight;weight_state<=active_weight;
-     frame_gain<=gain_next;gain_q12<=gain_next;state<=1;
+     combined_gain_prod<=target_gain*volume_gain_q8;state<=6;
     end
+    6:begin
+     combined_gain<=(combined_gain_shift > 14'd4096) ? 13'd4096 : combined_gain_shift[12:0];
+     state<=7;
+    end
+    7:begin frame_gain<=gain_next;gain_q12<=gain_next;state<=1;end
     1:begin
      mult_operand_a<=$signed({saved_bright[31],saved_bright})-$signed({saved_sine[31],saved_sine});
      mult_operand_b<={10'd0,frame_weight};

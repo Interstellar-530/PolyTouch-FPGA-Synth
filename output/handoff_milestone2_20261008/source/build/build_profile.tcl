@@ -19,7 +19,11 @@ if {[info exists ::env(FPGA_BUILD_RUN_DIR)]} {
 }
 file mkdir $run_dir
 create_project -name instrument -dir $run_dir -pn GW2A-LV18PG256C8/I7 -device_version C
-add_file [file join $script_dir isolated ${top_module}.v]
+set wrapper [file join $script_dir isolated ${top_module}.v]
+if {[info exists ::env(FPGA_BUILD_WRAPPER)] && $::env(FPGA_BUILD_WRAPPER) ne ""} {
+    set wrapper [file normalize $::env(FPGA_BUILD_WRAPPER)]
+}
+add_file $wrapper
 set handle [open [file join $script_dir sources.list] r]
 set sources [split [string trim [read $handle]] \n]
 close $handle

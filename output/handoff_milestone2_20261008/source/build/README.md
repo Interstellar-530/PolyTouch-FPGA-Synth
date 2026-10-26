@@ -1,10 +1,28 @@
-# 构建与 SRAM 烧录
+﻿# 构建与 SRAM 烧录
 
-在本目录运行脚本。两档由 profiles.tsv 绑定封装、约束与输出目录，共用 sources.list，已包含 S4–S6 模块。默认 debug 对应板载 PT8211；standard 对应外置 PCM5102A 和 12.288 MHz 时钟。
+## standard27 键盘超时策略
+
+`standard27` 与 `debug8usb` 现在由构建入口显式选择 CH9350L 长按超时策略。默认 `IdleOnly` 只在接收状态机空闲时恢复卡死链路，适合正常演奏；`Strict` 保留旧的全状态超时行为，供兼容性复核。两种策略分别写入 `receipts/standard27.json` 和 `receipts/standard27.strict.json`，不会互相覆盖。构建脚本会生成本次专用顶层包装器并记录其 SHA256，烧录脚本同时核对策略、包装器、全部输入和位流哈希。
 
 ```powershell
-.\build.ps1 -Profile debug
-.\build.ps1 -Profile standard
+.\build.ps1 -Profile standard27 -HostTimeoutPolicy IdleOnly
+.\build.ps1 -Profile standard27 -HostTimeoutPolicy Strict
+
+.\program_sram.ps1 -Profile standard27 -HostTimeoutPolicy IdleOnly
+# 只有需要旧行为时才选 Strict：
+.\program_sram.ps1 -Profile standard27 -HostTimeoutPolicy Strict
+```
+
+顶层参数属于包装模块，不能用 `-Ptop.HOST_KBD_TIMEOUT_POLICY=...` 改写子实例。仿真可对实际根模块使用 `-Ptop_std27_build.HOST_KBD_TIMEOUT_POLICY=...`；生产构建应使用上面的 PowerShell 参数。烧录仍默认先执行 Quick 门禁，完整回归显式使用 `-SimulationSuite Full`。
+
+## 通用入口
+
+在本目录运行脚本。各档由 profiles.tsv 绑定封装、约束与输出目录，共用 sources.list。当前板载入口为 `debug8`/`debug8usb`，实体外设入口为 27MHz 的 `standard27`；旧 `debug`/`standard` 名称仅用于历史版本。
+
+```powershell
+.\build.ps1 -Profile debug8
+.\build.ps1 -Profile debug8usb
+.\build.ps1 -Profile standard27
 ```
 
 工具自动从 C/D/E 盘顶层 Gowin 目录查找，也可指定 -GwSh、-Programmer 或设置 GOWIN_GW_SH、GOWIN_PROGRAMMER。
@@ -19,7 +37,7 @@
 .\program_sram.ps1 -Profile debug
 ```
 
-烧录默认先执行全部 RTL 仿真门禁。通过后，只读取所选档位的成功记录；输入文件的 SHA256 或位流 SHA256 对不上时要求重建，大小和时间不再作为判定依据。工具版本记录用于追溯本次构建，当前不把工具版本变化作为烧录拒绝条件。不会自动选旧 source/impl/pnr/instrument.fs 或交接包 artifacts/instrument.fs。等长且保留时间戳的源码改动同样会被识别为不同输入，构建期间输入被改动则本次构建直接作废、不写成功记录。
+烧录默认先执行 Quick 短门禁（12 项正向检查和 6 个参数负例），完整回归用 -SimulationSuite Full。专项选择、日志和覆盖边界见 ../sim/README.md。通过后，只读取所选档位的成功记录；输入文件的 SHA256 或位流 SHA256 对不上时要求重建，大小和时间不再作为判定依据。工具版本记录用于追溯本次构建，当前不把工具版本变化作为烧录拒绝条件。不会自动选旧 source/impl/pnr/instrument.fs 或交接包 artifacts/instrument.fs。等长且保留时间戳的源码改动同样会被识别为不同输入，构建期间输入被改动则本次构建直接作废、不写成功记录。
 
 需要有意使用历史版本时，显式传入 -FsFile，并核对其接线档位；该用法仍执行仿真门禁：
 

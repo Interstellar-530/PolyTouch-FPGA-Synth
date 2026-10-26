@@ -1,0 +1,71 @@
+{
+  "generated_by": "manual aggregation of docs/evidence/offline-opt/A at 2026-10-24",
+  "task": "A1 fixed-point and mixing consolidation",
+  "scope": "Offline arithmetic proof and self-checking simulation; no board, no meter, no audio device.",
+  "clocks": {
+    "compute_hz": 73728000,
+    "sample_rate_hz": 48000,
+    "frame_cycles": 1536
+  },
+  "width_proof": {
+    "source": "A1-bounds.json (tools/offline_opt/a/a1_bounds.py, exhaustive over 48 tables x 512 phases x 512 fractions)",
+    "slices": 7,
+    "slices_with_negative_margin_reachable": 0,
+    "tightest_slice": "interp value (table<<8)+delta",
+    "tightest_margin_lsb": 256,
+    "second_tightest": "envelope_result (interp*env)>>16",
+    "second_tightest_margin_lsb": 383,
+    "structural_but_unreachable": {
+      "slice": "mix delta (bank+1 - bank)*weight >>16",
+      "worst": 14018091,
+      "limit": 8388607,
+      "reason": "guitar candidate_weight is constant 0, so the product is identically zero"
+    }
+  },
+  "rounding": {
+    "rule": "arithmetic shift right plus half-LSB bit, i.e. floor(p/2^s) + bit(s-1)",
+    "negative_odd_behaviour": "rounds towards +infinity, not towards zero",
+    "max_error_per_stage_lsb": 0.5,
+    "max_full_chain_error_lsb_24bit": 1
+  },
+  "saturation": {
+    "point": "wide_master output only",
+    "positive_rail": 8388607,
+    "negative_rail": -8388608,
+    "clip_counter_increments_only_on_real_clip": true,
+    "voices_32_structurally_cannot_clip": true,
+    "max_32_voice_output": 8355584
+  },
+  "exact_zero": {
+    "zero_input_zero_envelope": "output is exactly 0 for every frame (192 warm-up frames verified)",
+    "mute": "exactly 0 after the 32/frame gain ramp settles",
+    "volume_zero": "exactly 0 after the ramp",
+    "verified_by": "tb_opt_a_datapath, tb_opt_a_master"
+  },
+  "simulation": {
+    "tb_opt_a_datapath": {"bit_exact_frames": 208, "voices": 32, "reference": "ref_engine.py (64-bit)", "exit": "pass"},
+    "tb_opt_a_master": {"bit_exact_frames": 10, "clipped_frames": 4, "reference": "ref_engine.py (64-bit)", "exit": "pass"},
+    "tb_opt_a_tables": {"banks": 48, "samples": 24576, "exit": "pass"},
+    "gate_optA": {"checks": 3, "seconds": 5.19, "exit": "pass"},
+    "gate_quick": {"checks": 18, "seconds": 80.02, "exit": "pass"},
+    "gate_ram32": {"checks": 5, "seconds": 97.66, "exit": "pass"}
+  },
+  "frame_budget": {
+    "max_frame_tail_cycles": 617,
+    "frame_cycles": 1536,
+    "headroom_percent": 59.8,
+    "source": "tb_ram32_engine_audio METRIC max_frame_tail=617/1536 (Ram32 gate, new tables)"
+  },
+  "rtl_changes": {
+    "instrument_ram_wavetable_engine.v": "none (widths proven sufficient; see A1-arithmetic.md section 4)",
+    "instrument_ram_audio_compute.v": "none",
+    "wide_master.v": "none",
+    "reason_not_changed": "every reachable slice has positive margin, so widening would only add carry-chain delay on a design with 0.330 ns setup slack"
+  },
+  "unverified": [
+    "analogue audio quality and noise floor",
+    "physical FSR/bend calibration",
+    "total latency from a physical key to sound",
+    "board-level power-up and clock stability"
+  ]
+}

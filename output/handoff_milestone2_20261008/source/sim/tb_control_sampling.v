@@ -41,7 +41,7 @@ module tb_control_sampling;
     initial begin
         repeat(8)@(negedge clk);kr=1;wait(!dut.rst);keys[0]=0;
         repeat(12)@(posedge dut.control_sample_tick);@(negedge clk);
-        if(dut.demo_mode || dut.u_xf.g_pressure.gain_q12!=1024)$fatal(1,"manual pressure setup");
+        if(dut.demo_mode || dut.fsr_muted || dut.u_xf.g_pressure.gain_q12!=4096)$fatal(1,"manual FSR released setup");
         observe=1;
         @(negedge cs);while(dut.adc_sel)@(negedge cs);
         pressure=4095;@(posedge cs);pressure=0;
@@ -49,14 +49,14 @@ module tb_control_sampling;
         if(spikes!=1 || peak!=0)$fatal(1,"single conversion spike not rejected: count=%0d peak=%0d",spikes,peak);
         for(k=0;k<8;k=k+1)begin
             pressure=0;repeat(20)@(posedge dut.control_sample_tick);@(negedge clk);
-            if(dut.u_xf.g_pressure.gain_q12!=1024)$fatal(1,"step did not settle low");
+            if(dut.fsr_muted || dut.u_xf.g_pressure.gain_q12!=4096)$fatal(1,"FSR release did not restore gain");
             @(posedge dut.control_tick);#(k*62500);pressure=4095;started=$realtime;
-            wait(dut.u_xf.g_pressure.gain_q12>=3788);elapsed=$realtime-started;
-            if(elapsed>3500000)$fatal(1,"phase-sweep pressure response %f ns",elapsed);
+            wait(dut.fsr_muted);elapsed=$realtime-started;
+            if(elapsed>3500000)$fatal(1,"phase-sweep FSR press response %f ns",elapsed);
             if(elapsed>worst)worst=elapsed;if(elapsed<best)best=elapsed;
         end
         $display("METRIC control_sampling profile=%0d fresh_hz_per_channel=2000 checked_pairs=%0d conversions=%0d single_spike_peak=%0d step_phases=8 best_t90_us=%.3f worst_t90_us=%.3f",AUDIO_IF,samples,conversions,peak,best/1000,worst/1000);
-        $display("PASS tb_control_sampling: pin-level ADC, pair order/rate, no stale filter updates, one-conversion spike rejection and VCA response phase sweep");$finish;
+        $display("PASS tb_control_sampling: pin-level ADC, pair order/rate, no stale filter updates, one-conversion spike rejection and FSR mute response phase sweep");$finish;
     end
     initial begin #200000000;$fatal(1,"control sampling timeout");end
 endmodule
