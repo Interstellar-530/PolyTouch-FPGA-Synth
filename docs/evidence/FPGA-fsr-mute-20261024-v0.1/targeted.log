@@ -1,0 +1,23 @@
+Gate Custom: 4/83 positive benches; logs: E:\Working Space\FPGA\docs\evidence\FPGA-fsr-mute-20261024-v0.1\targeted
+=== tb_pressure_top ===
+PASS tb_pressure_top: 4543 I2S frames; demo/manual mute, hysteresis, UART priority, clocks and bend
+sim\tb_pressure_top.v:71: $finish called at 99347159033 (1ps)
+
+tb_pressure_top: pass=True, seconds=100.74
+=== tb_fsr_mute ===
+PASS tb_fsr_mute: 1031 threshold/hysteresis checks, update, bypass and reset
+sim\tb_fsr_mute.v:32: $finish called at 20720000 (1ps)
+
+tb_fsr_mute: pass=True, seconds=0.16
+=== tb_control_sampling ===
+METRIC control_sampling profile=1 fresh_hz_per_channel=2000 checked_pairs=210 conversions=420 single_spike_peak=0 step_phases=8 best_t90_us=1093.666 worst_t90_us=1531.164
+PASS tb_control_sampling: pin-level ADC, pair order/rate, no stale filter updates, one-conversion spike rejection and FSR mute response phase sweep
+sim\tb_control_sampling.v:59: $finish called at 110489097030 (1ps)
+
+tb_control_sampling: pass=True, seconds=61.54
+=== tb_mute_slew ===
+PASS tb_mute_slew: frames=1056 local/shared, pressure on/off, exact slew, pressure during mute and rapid reversals; max ramp=128 frames
+sim\tb_mute_slew.v:47: $finish called at 73960000 (1ps)
+
+tb_mute_slew: pass=True, seconds=0.34
+PASS Custom: 4 checks, 163.29s. Full regression=False. Evidence: E:\Working Space\FPGA\docs\evidence\FPGA-fsr-mute-20261024-v0.1\targeted

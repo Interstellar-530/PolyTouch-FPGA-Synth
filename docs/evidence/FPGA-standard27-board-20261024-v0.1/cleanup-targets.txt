@@ -1,0 +1,9 @@
+E:\Working Space\FPGA\tmp\gate-Quick-20261024-144354-838
+E:\Working Space\FPGA\tmp\gate-Quick-20261024-144510-467
+E:\Working Space\FPGA\tmp\gate-Quick-20261024-144730-706
+E:\Working Space\FPGA\tmp\standard27-board-20261024-gate
+E:\Working Space\FPGA\tmp\standard27-board-20261024-song
+E:\Working Space\FPGA\tmp\standard27-board-20261024-song-capture
+E:\Working Space\FPGA\archive\FPGA-20261024-v0.2\source\tools\__pycache__
+E:\Working Space\FPGA\archive\FPGA-20261024-v0.2\source\tools\offline_opt\a\__pycache__
+E:\Working Space\FPGA\archive\FPGA-20261024-v0.2\validation-output\tb_standard27_serial_audio.vvp

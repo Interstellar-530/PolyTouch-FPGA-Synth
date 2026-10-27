@@ -1,0 +1,23 @@
+{
+  "baseline": "b15ff7cc604b9fee55028acfad89b193eb7eeebb",
+  "overlays": [
+    {
+      "path": "rtl/audio/hid_keymap.v",
+      "sha256": "09f7d5d68b9d5b23dbfe1d55ee680430f3c14c9075d399ffd53a6e0ec31f4643"
+    },
+    {
+      "path": "rtl/audio/host_kbd_input.v",
+      "sha256": "ea2ad9e3e550937a8740351a833992716d54dd51fd1f0292dbfa705bdc5da4b5"
+    },
+    {
+      "path": "rtl/top.v",
+      "sha256": "429404aaf31c32564ab657a993685868b6da5b278699ffd3f4b03f12c223d590"
+    },
+    {
+      "path": "sim/tb_top_host_ctrl.v",
+      "sha256": "93d19fe9e2b12345274bda7bc747d3a5df779a6d17e4cb446e456a959b0ff6c8"
+    }
+  ],
+  "reason": "Tune files changed after mutable-workspace tests; validate feature in a fixed committed baseline without altering other work",
+  "frozen_source": "E:\\Working Space\\FPGA\\tmp\\keyboard-mode-20261026\\snapshot\\output\\handoff_milestone2_20261008\\source"
+}

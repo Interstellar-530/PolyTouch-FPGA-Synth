@@ -1,0 +1,124 @@
+{
+  "generated_by": "tools/offline_opt/a/a3_transitions.py",
+  "renderer": "ref_engine.Datapath (bit-exact against tb_opt_a_datapath)",
+  "full_scale_lsb": 8388608,
+  "stage_step_samples": 5859,
+  "results": {
+    "stage_transition": {
+      "transitions": [
+        {
+          "transition_step_lsb": 6125,
+          "steady_p99_lsb": 15636,
+          "steady_peak_lsb": 15923,
+          "extra_residual_lsb": 0,
+          "transition_dbfs": -62.73,
+          "extra_dbfs": -318.47,
+          "step_over_steady_db": -8.3,
+          "frame": 5859,
+          "bank_from": 3,
+          "bank_to": 2,
+          "weight_from": 18664,
+          "weight_to": 65528
+        },
+        {
+          "transition_step_lsb": 3817,
+          "steady_p99_lsb": 15001,
+          "steady_peak_lsb": 15266,
+          "extra_residual_lsb": 0,
+          "transition_dbfs": -66.84,
+          "extra_dbfs": -318.47,
+          "step_over_steady_db": -12.04,
+          "frame": 11718,
+          "bank_from": 2,
+          "bank_to": 1,
+          "weight_from": 18664,
+          "weight_to": 65528
+        },
+        {
+          "transition_step_lsb": 5739,
+          "steady_p99_lsb": 14853,
+          "steady_peak_lsb": 15226,
+          "extra_residual_lsb": 0,
+          "transition_dbfs": -63.3,
+          "extra_dbfs": -318.47,
+          "step_over_steady_db": -8.47,
+          "frame": 17577,
+          "bank_from": 1,
+          "bank_to": 0,
+          "weight_from": 18664,
+          "weight_to": 65528
+        }
+      ],
+      "frames": 17977
+    },
+    "timbre_change": {
+      "frame": 300,
+      "transition_step_lsb": 1002,
+      "steady_p99_lsb": 14052,
+      "steady_peak_lsb": 14334,
+      "extra_residual_lsb": 0,
+      "transition_dbfs": -78.46,
+      "extra_dbfs": -318.47,
+      "step_over_steady_db": -23.11,
+      "note": "bank 0 weight 65528 -> bank 6 weight 65528"
+    },
+    "retrigger": {
+      "frame": 300,
+      "transition_step_lsb": 64908,
+      "steady_p99_lsb": 11076,
+      "steady_peak_lsb": 11305,
+      "extra_residual_lsb": 53603,
+      "transition_dbfs": -42.23,
+      "extra_dbfs": -43.89,
+      "step_over_steady_db": 15.18,
+      "note": "envelope forced to 0 and phase restarted"
+    },
+    "note_off": {
+      "frame": 300,
+      "transition_step_lsb": 1558,
+      "steady_p99_lsb": 13223,
+      "steady_peak_lsb": 13569,
+      "extra_residual_lsb": 0,
+      "transition_dbfs": -74.62,
+      "extra_dbfs": -318.47,
+      "step_over_steady_db": -18.8,
+      "note": "release ramp 48/frame from sustain"
+    },
+    "mute": {
+      "frame": 200,
+      "transition_step_lsb": 1725,
+      "steady_p99_lsb": 6824,
+      "steady_peak_lsb": 6922,
+      "extra_residual_lsb": 0,
+      "transition_dbfs": -73.74,
+      "extra_dbfs": -318.47,
+      "step_over_steady_db": -12.07,
+      "note": "mute asserted, gain ramps at 32/frame"
+    },
+    "volume_step": {
+      "frame": 200,
+      "transition_step_lsb": 1884,
+      "steady_p99_lsb": 6824,
+      "steady_peak_lsb": 6922,
+      "extra_residual_lsb": 0,
+      "transition_dbfs": -72.97,
+      "extra_dbfs": -318.47,
+      "step_over_steady_db": -11.3,
+      "note": "main volume 100 -> 0, +-32/frame Q12 ramp"
+    },
+    "pressure_step": {
+      "frame": 200,
+      "worst_ramp_frame": 250,
+      "transition_step_lsb": 1725,
+      "steady_p99_lsb": 6824,
+      "steady_peak_lsb": 6922,
+      "extra_residual_lsb": 0,
+      "transition_dbfs": -73.74,
+      "extra_dbfs": -318.47,
+      "step_over_steady_db": -12.07,
+      "worst_ramp_step_lsb": 6785,
+      "worst_ramp_dbfs": -61.84,
+      "note": "pressure 3200 -> 128, Q12 gain ramps 32/frame"
+    }
+  }
+}

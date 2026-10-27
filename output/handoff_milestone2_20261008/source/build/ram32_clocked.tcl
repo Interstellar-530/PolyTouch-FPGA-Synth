@@ -14,6 +14,8 @@ set sources {
     rtl/prototypes/ram32_clocked_wrap.v
     rtl/prototypes/ram32_clocked_top.v
     rtl/prototypes/voice_sched32.v
+    rtl/prototypes/ram32_control_front.v
+    rtl/audio/pressure_bend.v
     rtl/prototypes/instrument_rom_banks.v
     rtl/prototypes/instrument_ram_audio_compute.v
     rtl/prototypes/instrument_ram_wavetable_engine.v
@@ -43,6 +45,10 @@ set project_work [file join $run_dir ram32c]
 file mkdir [file join $project_work rtl audio]
 foreach header [glob -directory [file join $root rtl audio] *.vh] {
     file copy -force $header [file join $project_work rtl audio [file tail $header]]
+}
+file mkdir [file join $project_work rtl prototypes]
+foreach header [glob -directory [file join $root rtl prototypes] *.vh] {
+    file copy -force $header [file join $project_work rtl prototypes [file tail $header]]
 }
 cd $project_work
 run all

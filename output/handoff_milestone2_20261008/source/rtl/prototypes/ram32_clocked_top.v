@@ -13,7 +13,13 @@ module ram32_clocked_top #(
  input  wire        clk_ref,
  input  wire        reset,
  input  wire        instrument,
- input  wire [1:0]  piano_tone,
+ input  wire [2:0]  piano_tone,
+ // 生产控制输入（ref 域，准静态）：主音量、静音、压力开关、FSR 与弯音 ADC。
+ input  wire [6:0]  volume_target,
+ input  wire        mute,
+ input  wire        pressure_enable,
+ input  wire [11:0] pressure_adc,
+ input  wire [11:0] bend_adc,
  input  wire        ev_valid,
  input  wire        ev_on,
  input  wire [6:0]  ev_note,
@@ -47,27 +53,30 @@ module ram32_clocked_top #(
   .left_audio(left_audio),.right_audio(right_audio),.valid_audio(valid_audio),
   .frame_id_audio(frame_id));
 
- // ----------------------------------------- coherent slow-control filter ---
- // The source bundle is held for a 12.288 MHz reference cycle. Two compute-
- // domain samples must then agree before the scheduler sees a new value, so a
- // one-cycle torn/metastable sample cannot change the global timbre.
- reg [2:0] ctrl_ref=0;
- always @(posedge clk_ref or posedge reset_audio)begin
-  if(reset_audio)ctrl_ref<=0;
-  else ctrl_ref<={instrument,piano_tone};
- end
- (* ASYNC_REG="TRUE" *) reg [2:0] ctrl_meta=0,ctrl_sync=0;
- reg [2:0] ctrl_previous=0,ctrl_filtered=0;
- always @(posedge clk_compute or posedge reset_compute)begin
-  if(reset_compute)begin
-   ctrl_meta<=0;ctrl_sync<=0;ctrl_previous<=0;ctrl_filtered<=0;
-  end else begin
-   ctrl_meta<=ctrl_ref;ctrl_sync<=ctrl_meta;ctrl_previous<=ctrl_sync;
-   if(ctrl_sync==ctrl_previous)ctrl_filtered<=ctrl_sync;
-  end
- end
- wire instrument_c=ctrl_filtered[2];
- wire [1:0] piano_tone_c=ctrl_filtered[1:0];
+ // ------------------------------------- coherent slow-control bundle ---
+ // 51 位控制束经四相握手整束快照跨域（见 ram32_control_front）：不再用"按位两拍
+ // 一致"去假称多位原子。压力/弯音的滤波、映射与 Q16 比率复用生产 pressure_bend，
+ // 主音量斜坡与曲线复用 top.v 的同一条表。
+ wire instrument_c;
+ wire [2:0] piano_tone_c;
+ wire [8:0] volume_gain_c;
+ wire [6:0] volume_c;
+ wire mute_c;
+ wire pressure_enable_c;
+ wire [11:0] pressure_level_c;
+ wire [16:0] bend_ratio_c;
+ ram32_control_front #(.CLK_REF_HZ(12288000)) u_ctrl (
+  .clk_ref(clk_ref), .reset_ref(reset_audio),
+  .clk_compute(clk_compute), .reset_compute(reset_compute),
+  .instrument(instrument), .piano_tone(piano_tone), .volume_target(volume_target),
+  .mute(mute), .pressure_enable(pressure_enable),
+  .pressure_adc(pressure_adc), .bend_adc(bend_adc), .frame_tick(tick_audio),
+  .instrument_c(instrument_c), .piano_tone_c(piano_tone_c),
+  .volume_gain_c(volume_gain_c), .volume_c(volume_c),
+  .mute_c(mute_c), .pressure_enable_c(pressure_enable_c),
+  .pressure_level_c(pressure_level_c), .bend_ratio_c(bend_ratio_c),
+  .control_busy()
+ );
 
  // ------------------------------------------------- event handshake (4-phase) ---
  wire ev_ready_c;
@@ -120,7 +129,8 @@ module ram32_clocked_top #(
   .cfg_increment(cfg_increment),.cfg_envelope(cfg_envelope),
   .cfg_velocity(cfg_velocity),.cfg_retrigger(cfg_retrigger),
   .cfg_param(cfg_param),.cfg_mask(cfg_mask),
-  .mix_weight(8'hff),.pressure_enable(1'b0),.pressure_level(12'd0),.mute(1'b0),
+  .mix_weight(8'hff),.pressure_enable(pressure_enable_c),.pressure_level(pressure_level_c),.mute(mute_c),
+  .volume_gain_q8(volume_gain_c),
   .audio_sample(audio_sample),.sample_valid(sample_valid),
   .clip_count(clip_count),.initialized(initialized),
   .sine_total(),.bright_total(),.sums_valid(),.master_req(),.master_ready());
@@ -133,5 +143,5 @@ module ram32_clocked_top #(
   .cfg_voice(cfg_voice),.cfg_increment(cfg_increment),.cfg_envelope(cfg_envelope),
   .cfg_velocity(cfg_velocity),.cfg_retrigger(cfg_retrigger),.cfg_param(cfg_param),
   .cfg_mask(cfg_mask),.cfg_valid(cfg_valid),.cfg_ready(cfg_ready),
-  .active_count(active_count));
+  .active_count(active_count),.bend_ratio(bend_ratio_c));
 endmodule

@@ -1,0 +1,3 @@
+PASS tb_top_host_eight: real UART, eight distinct allocated/rendered voices, 256 decoded I2S frames, 256 nonzero, ninth-key stealing, full release
+sim\tb_top_host_eight.v:85: $finish called at 14262093027 (1ps)
+

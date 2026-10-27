@@ -1,0 +1,880 @@
+{
+  "baseline": "b656b0d23cc91fbb6c7ff09a23eb7a691f0756f5",
+  "note": "Raw test hashes bind Windows CRLF snapshot; Git canonical LF text is equivalent. Only CRLF/LF conversion accepted.",
+  "verified_source_count": 346,
+  "raw_exact": 172,
+  "crlf_lf_only": 174,
+  "normalized_inputs": [
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/adsr.v",
+      "tested_raw_sha256": "925f31e58ac94c5c7e4c8d91d2e5e1266fdf63cb752a52d84334b4c898f5b914",
+      "committed_sha256": "50b462ea717307b409bb51cf5cd68a55f8ae25b66269841e5013381c351b4b2a"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/audio_frame_bridge_stereo.v",
+      "tested_raw_sha256": "313f4b8805df0abddbf64da5c37b9a832cf1471a289dac9f82c249ac4178bc16",
+      "committed_sha256": "9636a4e8d8d8bf6cadd56ae08f46b073bf7298869bc4610f30923c898945afae"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/audio_frame_bridge.v",
+      "tested_raw_sha256": "4c5870f55de082e1b567bb105d8712f6aa5b9a29a8ed3b7ed2adf21bcf47f2dc",
+      "committed_sha256": "5028cf840d571ea193cfa9096a9d34cb38aca330e196014a7108ddae4e6fc343"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/audio_pll_clock.v",
+      "tested_raw_sha256": "6d8fca41d1ea562712ba88453ce9116b91c97eccb4bd1d9b407c9d587b319590",
+      "committed_sha256": "87695e79a8e0f62ec3ccebfaf1467175eab6c82316952f584f0383acdb7a046b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/bend_coefficients.vh",
+      "tested_raw_sha256": "11ff7846cc9e11efd4e123f61699fe7639acab035757483bbc189caf1e1288e0",
+      "committed_sha256": "f557cd8e035fcb65e4d16962f96931fc0b8041eb1393644cdbf626448b595dd7"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/bend_ratio_pipeline.v",
+      "tested_raw_sha256": "383dc838b2676e15b43bc89248b450b879211c084a7a332b56b1cfdab9372c2b",
+      "committed_sha256": "114fa15a5c7ce3d8a32886ff354d9a703b4ede9c344c0c11e7e1fc14fc0bb8f0"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/ch9350_rx.v",
+      "tested_raw_sha256": "5c176ac23f5e6bb0025ea8565a0fef472407743cd9fdfb513e54d30b6a3dfbe5",
+      "committed_sha256": "101e53fc1546bc1029d37f8efbf159c3555a9a21a1a8cac57d82ca0885e5a2ed"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/clk_params.vh",
+      "tested_raw_sha256": "83d125bc36c9aaa3c3a0c1981be4c0d2ddc3b3fa582a49e54b27ccb040b91952",
+      "committed_sha256": "89f94e4fc0a8716a7358c56d2a9fb71e06a008c2c0b56bd179c58f214c09ddb3"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v",
+      "tested_raw_sha256": "c60abb48d44d8bc530c328789405bf24fd6579dcf598a4820e8db4f02c33af7f",
+      "committed_sha256": "303afb543ae32fc03d7bb9e06c080a484f16eec732d65f5ee7c9d5d1872fa0f5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/event_fifo.v",
+      "tested_raw_sha256": "fd4646dbe640469a94ebac2492a2358290197ee7f8c1e2ae63615ea2f25993b6",
+      "committed_sha256": "51c2fbf11416b6c78175b2665e07e7eba8be346e8c790470beb1ea26e27e9ea6"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/fsr_mute.v",
+      "tested_raw_sha256": "11df10018fa6fe2dc760ec2c3a47b169a4c009f977a48d38fda90c261c3b1ac5",
+      "committed_sha256": "7f5930e89977c90fff10543fd1fe9427347c7b5428ac0beb28a45e1f6354c576"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/global_crossfade.v",
+      "tested_raw_sha256": "46b26389cfca15411b65549ef8918e4835c438a00d04a627ae01f57a852311c4",
+      "committed_sha256": "476dcd3d15109f753dbf68476be51c26715469fb0899ce3bedf5fed9d0688ce8"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_bright_bank.v",
+      "tested_raw_sha256": "0c0084fdc9f14768bd96a51fc16d0e1c9213de1ff96a778c6bb60b7a3dd2d993",
+      "committed_sha256": "a2765c6f850f57247480d88996cd9a0da5aad34ec51359cbdb4578160137e47e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_guitar_bank.v",
+      "tested_raw_sha256": "55fcb38ebbf2136c0be600fdf891810d3f8330cba90955d10b0745a0ba89f3d5",
+      "committed_sha256": "b4f8b0352039d5e82339fd35fd7622268d2c88ca6f1a67c134dc893cf78d2b63"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_piano_bank.v",
+      "tested_raw_sha256": "547d498c602d41e1ecb854f8a068ab441b48293ba4009eebb63b5c7eca965114",
+      "committed_sha256": "bd6c09c0e9252844692fcf304bc14b0169ba59e74d10faab38eb5b25381f862b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_wave_bright.v",
+      "tested_raw_sha256": "367a760ceee08c7e57376f8411193e9eade9ec0365499072e033c25fc9476e5d",
+      "committed_sha256": "7f9a38488ea890f1d0386896607122449eddb6730f57181f3673881b18c08b6d"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gowin_prom_wave_sine.v",
+      "tested_raw_sha256": "55a6635a29ffdf5c0ef28d990d81809515c3480d025642d8c579aba1633d960d",
+      "committed_sha256": "c6158a3b554b90394d70a997e0bca5067e8f4d45cfe71f0396486a9a39d2a8b4"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/gpio_keyboard.v",
+      "tested_raw_sha256": "8f2ff53a0c700d4e3093708044e3ce174eb04362eaec1066438f90bd9bcecf57",
+      "committed_sha256": "194ec162acb7edd4ae1e0e41b6b967780658021e40f4f2805d34a3912f44ef1c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v",
+      "tested_raw_sha256": "3e0920a769e766b40bbc6eb68e3696a18121af0772745a3ee8b3805e58058167",
+      "committed_sha256": "d01893135084d44583893db755128c43cd02777ffebb439e76caab6c2a1e9047"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/hid_note_map.vh",
+      "tested_raw_sha256": "3783b4d3cef7cc32d3f0d903da0e8679f22cb5825d1bec878876d1ab62c2f70f",
+      "committed_sha256": "6d3c152f03623adf123e7f897d1c3f4c66f613c0fcd8f4b79925166095ae6186"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v",
+      "tested_raw_sha256": "42e27130953459bd623d71928b255fd2111b3f35d824274d72460216e3948c11",
+      "committed_sha256": "d5884dbc7cbe0303dfd9c75386313b9ab6c383685e5303d9bd37f1fe8397623d"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/i2s_tx.v",
+      "tested_raw_sha256": "24c3f915105a6928a5b9c1abf99a095803ad7a6fd48f8b485a3bac0ae5f2409b",
+      "committed_sha256": "7ec0d6ed6d6254c0899f2ce87f7a0d8c3fd5f82e482b28f37d54509e62fde45f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/instrument_controls.v",
+      "tested_raw_sha256": "2959d61b8109282178552a20bf32760f19685b9ec08c7c25634abd324e761227",
+      "committed_sha256": "cf2ee91b74e52a11b5361c262d206425321dd105fe5e85e9e13fcda52cc092d5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/kbd_uart_rx.v",
+      "tested_raw_sha256": "e3e321d451a60bcc8713ef0f16a66dabe566337b852b1da5f25a87fe4378ad3a",
+      "committed_sha256": "fc60a8f5f5b30f14869f0668aab03ef63d3cceeb24e99c578bd9bd61f7363730"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/mcp3208_spi.v",
+      "tested_raw_sha256": "730d8787d75d000f7f567dc3756203a626d98b53c49e99916a6e6b8fe1730103",
+      "committed_sha256": "9a2b2f416b2a844c6a06b0b0deb6d650db301081bfe367b5475338b6bef15a98"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/mixer_s6.v",
+      "tested_raw_sha256": "126fada0c39ba32a13c71c7650390937d05fd3c741c5f1050eac1d4ef9a93115",
+      "committed_sha256": "73d9f176424f22d03d41c79c419e3cf058328b39de4182f8e9e1a5f6eb8bb7f5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/mixer.v",
+      "tested_raw_sha256": "e9202d1316f06de94f04d82ab598c19f32a1ff00f90b68005d029c4787660b0c",
+      "committed_sha256": "ec7ef60f9567625d66001e8b29a34b6fbdefbc9b50f3e16b8970069ac219f925"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/note_ownership.v",
+      "tested_raw_sha256": "ccb2e75f72c671156604cda9e711cce79e2b438789139fd59228e16c678604bc",
+      "committed_sha256": "207af34ff856e96cf62dd1d8370505de99b94cb1f4a4ca1f8dc1daa511cb9f2f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/note_phase_inc.v",
+      "tested_raw_sha256": "d9cf887f9d6146b280befe4ca6ad763b90e5a709dd235c32c45e7c1914e76823",
+      "committed_sha256": "e53a3950dcdbad9f614d93ba4eec5a3f4c6358f50cff110e7efa99a995675a7c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/poly_voice_s6.v",
+      "tested_raw_sha256": "abfd61206fe073a9dd1e374ade9d1b0bdb5b2f1563616b2b2c8a6edce59ae206",
+      "committed_sha256": "1c7a6e8f26fa6c072f1fafa84836f2b0f542ccc9647ebb5dbaaa7a2aae5427f5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/poly_voice.v",
+      "tested_raw_sha256": "0713240f541a1502af401f8782498a6b090742bc1a27250fe57a7454281ba202",
+      "committed_sha256": "56f6ef6b63a0873f8f4c8ca2779d0075dca6b00b9ac5e23056e66dc8d9e47898"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/pressure_bend.v",
+      "tested_raw_sha256": "edf1a7740552487806aac4c3ee93e471e1210b9380512f5c5feef5fdf0f04655",
+      "committed_sha256": "596cbf29da5823961ac773fc7da0a1062ceb3d8a1624a1c9ce661a502fecbd90"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/pt8211_tx.v",
+      "tested_raw_sha256": "b6cd361c6cd7b61a33031ea956e672854b47d5098cd468eae986cec7bc666071",
+      "committed_sha256": "975cba9c403b902195719fc9fdc7ea22d86b02f3d3531ffeb6e90f9036258f05"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/ram_audio_clocked.v",
+      "tested_raw_sha256": "12555d8d36b62ae87e7ca0a3bd30800b0318b337a601cedc9da65f2042ec11ea",
+      "committed_sha256": "deafa30d73445456fa3d55a727f5f80596ce4b956b11ede8f43dfbe7adc7a978"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/ram_audio_compute.v",
+      "tested_raw_sha256": "63c3ddfbd6c9d54bc96e922205f7776509f1e74d507a664cbe83316ed613f981",
+      "committed_sha256": "613740917919e3de7646e1aa1c0bac6991ebc2e9b3ccb4df4ded8bbce8fa6ee2"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/ram_audio_datapath.v",
+      "tested_raw_sha256": "0f2f86e480262f8005f07df6eb60dbcc0dc48cb77ef718177b4ca46d13584977",
+      "committed_sha256": "e3bd26c5e4194adb966cdf056a69034d975dae7c0d03d179b01593320e8ba5f2"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/ram_wavetable_engine.v",
+      "tested_raw_sha256": "4c8c75632418f8eaeab4b16b0dc4b1886dd61893d4c9bfd3d7f42376d0d5dbef",
+      "committed_sha256": "8b506daee46e72e5678464e4fe9126a6267c5dafb001e649d79930d77e334ab8"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/shared_wavetable_engine.v",
+      "tested_raw_sha256": "eafd720a3e93ff3990ce0bc4b519f3c850c5ef687b2859f1964705e6e9401b1e",
+      "committed_sha256": "8b561f12a04736b48e9e9e00577d7998b7a63bc4348ac01c2fb8a3d01cacb244"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/song_expect.vh",
+      "tested_raw_sha256": "cd1db2e3a450e2e77f740afc443445108e6135b50e80458664d8dcbadf9a4a8f",
+      "committed_sha256": "f22e59e87a03831e637d0137585f22b4c052509d38de734f82af77635d8ab33f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/song_player.v",
+      "tested_raw_sha256": "53b4c24d6b59025c4b81e1433554ed8c076925958e401ab340ce150292e4475f",
+      "committed_sha256": "48eda9d14a112ebb9876982e004b7502f598fc9ca3f449be05f9f300c40122fc"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/song_roms.vh",
+      "tested_raw_sha256": "e51262c772ca08b66317bd44f2904b8e1c326e10eb283b259afd809665d7243b",
+      "committed_sha256": "d5f1d076b6e1797bb4331d50c5aa3f2543044893887f036f8bdbb94abaebb061"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/split_audio_multiplier.v",
+      "tested_raw_sha256": "b77333c8d600c0a39219d81ccffcdbe49cb094584e347ebbc7f67d2f1351a61e",
+      "committed_sha256": "433d8c140f205225c01bb4f3ff9ad46f43d729c04157942b2f57eab07a6f73cc"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v",
+      "tested_raw_sha256": "d9bd5bb20c4f93511b40cf043b129a4cefa6a37e5e73e66cb1159bcecfd4540f",
+      "committed_sha256": "1cd9765df512b3022c85d6a9208935f165056c4f2c16c7d003748db4c0c5855e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/voice_alloc.v",
+      "tested_raw_sha256": "57557ab3f7c489a77a9b9c3b56b4fb8c61e86f477109d72b2908d6417fc2f2e6",
+      "committed_sha256": "1f73085c2238bed4ab98b85d2a90c04c1d0aa787e87a0606b34d263ae7a60c17"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/voice_state_ram.v",
+      "tested_raw_sha256": "1389c66a54a47d3445b85da132e30c5f06afe5d95bd62ab22c7e63ac591a8b54",
+      "committed_sha256": "8262b84d0dec31cda70cb30d53e57b8089ba20cdb991947dd37fb7e9fe1add68"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/voice_transition.v",
+      "tested_raw_sha256": "82bc9e7560edd81875ea67ab6682b5bdf805c4e45a2624ecfde101fba9e82e9b",
+      "committed_sha256": "9459ce942b9294713cbec05af79517dffe6e6a89c7c59a8be4fd074a19e25f17"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/wavetable_osc_dual_prom.v",
+      "tested_raw_sha256": "0583d25b3ecadcc96c626f2b521cae4d1efc0961310c989381254e1385ec2af3",
+      "committed_sha256": "36ab19c863f4fc4cffb0f4a5a88c97ec4b692c240d754e55b2f53306ddee5a42"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/wavetable_osc_dual_s6.v",
+      "tested_raw_sha256": "3c3c26b397eb04b6993e7c518819ea9a2381d3e7ab6b3a8465e6cc4cfa15dfa2",
+      "committed_sha256": "5d5ad0f7c45d712658f2eb4d5dd91f537bcd1208a69481c7ffc65637c05fa8ce"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/wavetable_rom_dual.v",
+      "tested_raw_sha256": "2609a4371c782784a2d2f19328a4a8ce071b84dfc378f90f3b231bbfed82af35",
+      "committed_sha256": "c35f13ea3fc233b5dcc43c1a5487e965a1cf4239048dc7e3bf322d321ea6af4e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/audio/wide_master.v",
+      "tested_raw_sha256": "0313afbf642c80835acaf8ca400dee4798cd5f83d6a42b6dcfc5562c1773b3a9",
+      "committed_sha256": "c8f1da8ede712f9613c42f0b2f683903cbf058b9c9911c7a7dcb786b548db3ee"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_ram_audio_compute.v",
+      "tested_raw_sha256": "68847f5d8052908903689fbe0359897cb25534a6480df93179e6a6d38c142f74",
+      "committed_sha256": "14de76657af3268a6e356915e51be4635cd53a3fff5baf2484d8382b2534ac0f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_ram_audio_datapath.v",
+      "tested_raw_sha256": "89382127c9fc506e8a7c3230c2569c4ecce47f365200089d3830b201df60ce9e",
+      "committed_sha256": "31ef594bca1589dc8c693149ceecae6280e685e3bc9e464b1dc766db6c94a42b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_ram_wavetable_engine.v",
+      "tested_raw_sha256": "ecf141f34a9d96754eba7bff35b2d726ed6bb388d339618a99697f5987b9fa52",
+      "committed_sha256": "d2b7bf75f515dbb5269abf84918ac3e706c913ebffd5087d5a625455a7098dae"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/instrument_rom_banks.v",
+      "tested_raw_sha256": "7a82d6dbfafea8a1ca4e09f5f491888442068a1ef27464078d18742e4887b23b",
+      "committed_sha256": "9bce35d079db29bbee6f82284d6b90466deb036e25e23102b8c5e07df9ad7bea"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/ram_audio_pll_probe.v",
+      "tested_raw_sha256": "a97fcf5c74c3649f90bac2f7252002da596cf8df894a66d9a0294c3f65060363",
+      "committed_sha256": "5f4c009d513a97438f7162a0566252afeebbdc82767df0baf17a6828c55188dc"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/ram32_clocked_top.v",
+      "tested_raw_sha256": "47d40badf3485e41c1da1673044dd22b064655030b7fdee4182d040f748614ca",
+      "committed_sha256": "7972b72d9d57abb8abf2715ddd7e3c06f5c57af10d0472c280a3735931ac3c32"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/ram32_clocked_wrap.v",
+      "tested_raw_sha256": "9dbdfb0462ba00ad85a9d202594d691fcff912b1a51303f610a037d5a1bdec30",
+      "committed_sha256": "d91cd379286cc9addc1d1c748b92d6acd73dd03502f386cfe57685d501ba7ec1"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/ram32_control_front.v",
+      "tested_raw_sha256": "87104feb12c73359cb3dc0927e04d4f0dc175353e7feea61ef8bbe1cc5f2f831",
+      "committed_sha256": "381a6d8c674dc7bd6ff420fc18485d4743f293a10621e9cf907e89286ff67d73"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/ram32_top.v",
+      "tested_raw_sha256": "d6fa30e2a202e6152bcc5e779524cd464a7cb2205963757ad76a07c3d36fe481",
+      "committed_sha256": "9638a81f7ee987c391225695bc9e073357bf1ac5f1df48857fe55b04362523e5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/ram32_volume_curve.vh",
+      "tested_raw_sha256": "f745cc07f3831cc036cd4e0c9b703052708465226b7dc0d5adbeb6f77caedb27",
+      "committed_sha256": "59200339e1b42bd01443de46ffb1c220521360bdbf75e075ebdc1a868933ae3c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/prototypes/voice_sched32.v",
+      "tested_raw_sha256": "243a7d30c8cb2a1628a92a0f18c52cd428a8560b1fcb173465083a7d52ab9157",
+      "committed_sha256": "9db447b16129a3f84fb683f2916dfd2bb92ba4f166cf4e49521c364029b1a3b3"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/synth_s4s6_harness.v",
+      "tested_raw_sha256": "8e76610a22c4f19f1e26efc1518c7f961b2bab26dfe6e60a72189f3dcc9f5242",
+      "committed_sha256": "d781247dcfc53b5a69ff3200d7778df884ba269cbc703a2038519f17ea82a687"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/synth_s6_prom_harness.v",
+      "tested_raw_sha256": "058ab0ff268999d044607ef61b598def71be63d53539b30da56907f86259032e",
+      "committed_sha256": "e6ff1b5bc4de69fa58851c7dc18fbd7cd4a6ea301e4d5488a7a82f8c9f97ecec"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/synth_voices_per_voice_harness.v",
+      "tested_raw_sha256": "e738abad6274350c7672bd263ceec1185281959fdc06e6ce8f7612dc4a3644c6",
+      "committed_sha256": "4a462573a081065adbd83eb9a31402a4c60935f941f685342fcedafdca740b1c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/synth_voices_shared_harness.v",
+      "tested_raw_sha256": "c17be2792e6fd6e4bbe35643d7e064ca1f80e8907c6e2a1821dfbeade587894a",
+      "committed_sha256": "fe3c982e58a61468cd2d5ea309a864301cbd40ce8225e739e3649db4d6146aad"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/rtl/top.v",
+      "tested_raw_sha256": "19c0037968f003fc7dc7c10a4e98701b1e45374cd2a07768d7b2d2483283188e",
+      "committed_sha256": "6090c9f700fca3d4fc247b06e72843bb2609c31b49d0c55ce27975999205b69b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/dbg_shared_engine.v",
+      "tested_raw_sha256": "0d880a41593f490ba686a62343dcbfad0112db49ce58cd0d312e1e5fe45b1d01",
+      "committed_sha256": "9cf5e52e863967061712aac4b14e78842c73f1068d84be86fb9f53fb493c91bf"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/gate_process.ps1",
+      "tested_raw_sha256": "c28ca495cf8bfbf534f4f4ddeb64b47b7887b07b7029bbb72d3f1202fed1bfbd",
+      "committed_sha256": "9ebac01e257afa15bf42be5d18e17fe213e0a97ffefcec97434b6e9fb6799f72"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/gowin_prom_model.v",
+      "tested_raw_sha256": "4af0cca78d7353ab925ca8cf317612a5957b0aa68789fdf5ebf452d61c13517b",
+      "committed_sha256": "73fa77e6feda3f8cd469990acdbca9fcb5baa4d504d17d43dab8feb6d75dc448"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/gowin_rpll_model.v",
+      "tested_raw_sha256": "2bdc28c13d9cb7d13ae0e11992fc0bbf89d24f3fc75aed36a81eeb40787f7fd1",
+      "committed_sha256": "25a6b8c0a465148542cba49048e0ec8cc0a43345da9d38378c1f7ce7f3ab7755"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/i2s_rx_model.v",
+      "tested_raw_sha256": "d67d2351963cfd7b0ce9463f68f14553377d67fe04b97f804496d9cdb8757081",
+      "committed_sha256": "e511cdeda4f7906b5fba314ce0a09c3b2e0a495cd6e7a9ebbd6edee1320862a7"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/i2s_tx_checker.v",
+      "tested_raw_sha256": "2fd4e3680037355e7ddbc7ec83359df2de687a04309a1186873a3a09a330408e",
+      "committed_sha256": "d17286390492b540b2343df0dbb1418910f0a905fa71b1b450436dbfee029488"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/mcp3208_model.v",
+      "tested_raw_sha256": "3be1d6aa47ef0dafeb2299fa75cd3a5bc1d98fbd1e061e1bc8778929800c8599",
+      "committed_sha256": "bd28ba059ad07828ee162db86f625bbe2617dc6372a72e1340776dbee8839d2c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/run_opt_a.ps1",
+      "tested_raw_sha256": "c293f46b900c0f87a52348e92836eee6b900a74e4755dae49274966a50c084fc",
+      "committed_sha256": "d655826649ab24041aa9ba15b7afc2046be4fd18c8f7b2001f8d218b5b88c052"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/table_expect.vh",
+      "tested_raw_sha256": "dffd910634a3e08d0771a6389efb9dbbd9c39a03daba4e57ebaa0d3f5214a4e9",
+      "committed_sha256": "6b893c3dd356a5eca0081b06758ec668be1bd54858577614c401788f224323b7"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/tb_opt_a_datapath.v",
+      "tested_raw_sha256": "e194e5b48617271d541d3072ca60ded9092a3ba085dc7b2a2d93e67b24c23b0a",
+      "committed_sha256": "2f24d9ba46f20a246a87cbedad91c6d2f0810dd7ce47f44b3741711281babb87"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/tb_opt_a_master.v",
+      "tested_raw_sha256": "70d9fccb44ec4ee48629c4306b72befceaf7a271342ac5a06c25a107486aeeef",
+      "committed_sha256": "9706d0d610b10d8c2e4a27c7c2bbbffc0769c793636f15f7598dd49fe7066514"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/tb_opt_a_tables.v",
+      "tested_raw_sha256": "2dda0d416361e4070911243dac5ab8b4fda819be784f83f135ec1680955c641a",
+      "committed_sha256": "79e9a4dacaf55e16bc5fad003bf689384968562ee46319c243b5b5998c1b5d81"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/vectors_datapath_legacy.vh",
+      "tested_raw_sha256": "3b2b65243f810963fbf7d864f944198da94923cffdb483c20e59b11a1afb76e4",
+      "committed_sha256": "1dde4977507f5d159ac92b15571aa0c51fb18aa81d5251af6ed3babfae88477b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/vectors_datapath.vh",
+      "tested_raw_sha256": "7f414479b792612536cb6995be751bbdae96c1b3119bf6fd8f50eed1dad477a4",
+      "committed_sha256": "7de4410e702673ef0c0d21aa7ba2d08f23e230669232ebf29ddc5d77ee631a05"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/vectors_master_legacy.vh",
+      "tested_raw_sha256": "3273cbeb87d894cbb6ef4f167992e4136739f60354d26d2df75b069fcdddb8f9",
+      "committed_sha256": "bfc48b1bda55d6e273b3be1708bf7621ee5b0699cbb65562b3d1bd84367b0f0d"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/vectors_master.vh",
+      "tested_raw_sha256": "3273cbeb87d894cbb6ef4f167992e4136739f60354d26d2df75b069fcdddb8f9",
+      "committed_sha256": "bfc48b1bda55d6e273b3be1708bf7621ee5b0699cbb65562b3d1bd84367b0f0d"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/vectors_silence_legacy.vh",
+      "tested_raw_sha256": "02684e6919d20111852cd8d38bc0f693391759d88a446b9e7253929ec16e9c18",
+      "committed_sha256": "2be87d32ed5c488bf2ab57cb138074175fff88e27c961fbdfb0f2b80e8d686ea"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/opt_a/vectors_silence.vh",
+      "tested_raw_sha256": "02684e6919d20111852cd8d38bc0f693391759d88a446b9e7253929ec16e9c18",
+      "committed_sha256": "2be87d32ed5c488bf2ab57cb138074175fff88e27c961fbdfb0f2b80e8d686ea"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/reference/baseline_global_crossfade.v",
+      "tested_raw_sha256": "6830f7c6362b1beaf7ab01ddf79d9986347a144dfe5aea9aa5af2f35cb0ecb51",
+      "committed_sha256": "6d3e92f793ced6cab29eeef8090b1fea1273f58de90ca53e4711cba4d4f417c4"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/reference/baseline_pressure_bend.v",
+      "tested_raw_sha256": "0c465d505394faba4c6015b1b09d0a273fbad53683030f68ab563b1bafc94c0b",
+      "committed_sha256": "d4b6346e1286a00dc59e5a7ab9b05d09bc33592fb4141aa4384c91939c925b38"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/reference/baseline_shared_wavetable_engine.v",
+      "tested_raw_sha256": "c759b90033a68284ab23ed8e3688ea34480f99d707d022dc3738d12ae802e085",
+      "committed_sha256": "0b941b4bafd3a1a475a14eacec2d8902e454b83648c53fa00471b488f5093b0a"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/reference/baseline_top.v",
+      "tested_raw_sha256": "d15a7d8373cd59e2e6aa106ed3c5b0984b06afa989063da54b821fee9af35581",
+      "committed_sha256": "8b3cad3836c34d27253549b2dc9acb3835a8909d61f83a1c289fd1edc004698b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/run_simulation.ps1",
+      "tested_raw_sha256": "dd12bc68c414e808b2af3b3fdbe6ae52488d1035d634652de115ab63a95a0550",
+      "committed_sha256": "7506c279b386b1ae887259316f6e3180a700915128fd1018b1d457d61f193eef"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_adc_reset_top.v",
+      "tested_raw_sha256": "0d9120940d0b720ccf13bab016472e0826a3a19617510dce3b6bd754e0a7be7a",
+      "committed_sha256": "b07ca2424386034ae87e813ee3e47f6d72cc212da14e06b0225a8e6d9c79a29b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_adsr.v",
+      "tested_raw_sha256": "e94c59fbba0887b33d2dc2f1cfb447bec4b23944077dc2d7dee27484cd396ca8",
+      "committed_sha256": "575d9ed0b6a1432d114f65372f3cb60be8b3d3a803b1b0300d1150a9f12b5c48"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_architecture_equivalence.v",
+      "tested_raw_sha256": "132d22562a4d517b27a9c758fe548082b58fab217b24f05e801c35cffd4762db",
+      "committed_sha256": "b3648aef0dac86ee6679bade7021d446c2ae1f934d292b00c980f15ef823f428"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_audio_capture.v",
+      "tested_raw_sha256": "dc70197d44c45158a1ebd0ba9dd30e3d2ccb36a92bafd7f95aa2ea374cc660d2",
+      "committed_sha256": "beecba6400e78f587f9c55b5ce3f3e0c4db24f6710dd458d97bac47cbd727c26"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_audio_frame_bridge.v",
+      "tested_raw_sha256": "3a878e053a9c58bbc7ec7e4503c9779c34e196cba8133150860ae5adb8743d11",
+      "committed_sha256": "9174377c3d491f161d7c415d66a2943d61adea2033cf5da43f428eac2bb02e68"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_audio_pll_clock.v",
+      "tested_raw_sha256": "d747270e9174350b6b1a3371f98c865215306410131660cade90de96fc95eafc",
+      "committed_sha256": "16a3037d1d9a094b96cc317540c9cbe14af21cbdfaa590544d26c479dc8fa89a"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_audio_pll_mult.v",
+      "tested_raw_sha256": "78fb0ffc0dbf4ec938f7273065c3e3748be52f467ddd54a243a94a40a8cd5540",
+      "committed_sha256": "081086f4391b0e6356577e41fe50e087875025a020c595dc4663ebc341f170ee"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_bandlimit_engine.v",
+      "tested_raw_sha256": "c651f9c0d1136f6227ae778037ce39ebe53064af01dab4bd61b412102394e0c5",
+      "committed_sha256": "74ac4b7d321740e6f4a96c86581631bc1b7ba2668002c6fb3a65ad9a87cb206e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_bend_equivalence.v",
+      "tested_raw_sha256": "c5b9d00ae187297eba79dc71e4d15622f35d1ab2a8d97c5bedd02b0e9569b55a",
+      "committed_sha256": "a9863fffab81816b566c7fc72bdcbaf51d43f8a3f828366f3eeff4b630113a82"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_bend_precision.v",
+      "tested_raw_sha256": "e7a060f6c5ede32165117373f24c325293a9fd8c356d4162af775314ed9a76a7",
+      "committed_sha256": "5647a34b1a6265560753e19fe81d305fdf71cf3b1ac9fc8c2e4d5cc566b73e32"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_bend_ratio_pipeline.v",
+      "tested_raw_sha256": "6d13aa8f5e9d704100ebac7bf19799e368c3d2ef54e8113da00752bd4cef3c78",
+      "committed_sha256": "0963edceb5d15b9a76b977465c4983ee0fa1c1df3887dd3648079f7615831fbe"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_bright_banks.v",
+      "tested_raw_sha256": "b80bbd83f33c7f3962a198029bd4f60a7c08446dbfd2ae5c26e3ec6c53d2a4f3",
+      "committed_sha256": "7566f4334ff42924dd3182b9090e4e92ad1ab24937b10c7456975838132e84b3"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_control_sampling.v",
+      "tested_raw_sha256": "12e2937a599f666c7ccdcc808ab3b9d4def506a482072aa9771ff1289be5ab03",
+      "committed_sha256": "fbb745925dae73d7462f1a75c90a794c2e2276d161dbb8b146e878d59df2a2f5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_engine8_pitch.v",
+      "tested_raw_sha256": "5040611f8ec91e23d4ce65ca9a36636956ef9c53de13c6793c8fee48c04fb09c",
+      "committed_sha256": "6863dc801f4383f5a35fd9635c111aa60be34565a54b110a891c08a7acbd8f51"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_event_fifo.v",
+      "tested_raw_sha256": "01a7386f261f8330000c0c6c5a8112a69d024b2cf75360793883bbfe85a3a6b8",
+      "committed_sha256": "b81ddb15302954aa3ffbffb63fdb96cf69934a5dfc363442ff71f11d8e03d845"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_event_prefetch.v",
+      "tested_raw_sha256": "8e41bce5bfc4dc7763affc7fe80ae47fb3aeca18aa9abce0fb033e56bc0970b8",
+      "committed_sha256": "c104893735fa09949a06703cf51b6eae03848b52640ad617ee063eafcf9e3455"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_frame_velocity.v",
+      "tested_raw_sha256": "a6df3c3ca5e9de50329212826a175dab76fb81f09fc027dc5d29dde6e4a4e3d9",
+      "committed_sha256": "92176b6e4a0b2a1d7d6a7ffbefd7da772eb18bf25f8f284bbe0e21620a865d37"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_fsr_mute.v",
+      "tested_raw_sha256": "61a06b3b49f7f5cfca4d22589d45c5419c1e8b86e2909502d4374de6fdb111c3",
+      "committed_sha256": "5a6e4fb936701c20218d5dcf8298bfecd62258938539c3aae4b8595939f41ef4"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_generic_bright.v",
+      "tested_raw_sha256": "6fb8518df2d3ac4889c08b9d9637fae115ea671aa5bdfce139c89e1d0214fc5f",
+      "committed_sha256": "61441c77d15aa7bdc72467bd55046170bb6c33ed83efb6065f612675499b7cce"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_gpio_keyboard.v",
+      "tested_raw_sha256": "ed89e559d93d8e1c5e134a5e75baf2e8f8e51dba700dfda0194fa89d8a7a9787",
+      "committed_sha256": "f5e331f408da50ef0f31fd2311b13f564c5b7a08135c2cc761f4ab9adaffe336"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_gpio_top.v",
+      "tested_raw_sha256": "a09651ca931e38d1863e27dbcd27fd8d8e7eed7499e8e72ad95813792e4d6f6e",
+      "committed_sha256": "018a4572f4afc68a6dfdc827c798904ca5fd7100faea05536f04e30ae2ee62ab"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_guitar_bank.v",
+      "tested_raw_sha256": "c054be6a1627b4ec9f36eaba5f8b95a937d573a7b2158d5008873f216071a76b",
+      "committed_sha256": "965d9b0727e64ad8f27525da8a8def31f2c5c26fbda228a77d0b29fbe6eeee9b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_headroom.v",
+      "tested_raw_sha256": "890985625b7fc0d604bb0889668c5c98768b0931d24ab9152dcf90f1e0f2fe8d",
+      "committed_sha256": "d4721597c3c86367678da4f1db0cb1f7b4356ad802db9f39350f1c5c089f6771"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_host_kbd_timeout.v",
+      "tested_raw_sha256": "80482fcd57dc12537e80b081487cf6aaf0efebaf264127d28adf6ff980f4b6da",
+      "committed_sha256": "1275126da124203e38e53f6898a2916edefa0b2a4ed0d0dee5e139e53249780b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_host_kbd.v",
+      "tested_raw_sha256": "e8121370ac539b8cfc04689b408db88a123440ebf23181b723fb8f73d6869852",
+      "committed_sha256": "55b7ed299202aafdf1c4dbee5c6b9b9fcee528ff2883c97df325fb1fd4ed306c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_i2s_tx_params.v",
+      "tested_raw_sha256": "31b151cb5dfcc1b9f86be70493bdb6e79b5b12ede8c3439f5f57dbcac4346d50",
+      "committed_sha256": "77b38927c0605412c258a2dada51b3cb8165271189ea975b1ada4f1356509e71"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_i2s_tx.v",
+      "tested_raw_sha256": "81be4cbfb8cc4f95537b860cacf288f169b615b12dbac3f60ae9384b1f3dada8",
+      "committed_sha256": "85a26251e7a85beadbe7dfd77b25b9746e70fd529c4589ef1166f009c4ae615e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_instrument_rom_banks.v",
+      "tested_raw_sha256": "0363f7b67ef3b475fd8f7eff21e0a99808500048d0f73c477c7d4ecaa8e8f72c",
+      "committed_sha256": "19c6226ce37f3e743e5867a90cf62722a703b904cd55cee1e542cb329531eb57"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_key_gain.v",
+      "tested_raw_sha256": "c79153c87ed31d50c3aca0e916b4c47bf3179b7b029a86a4b889c3faa70a1a92",
+      "committed_sha256": "c6cd6effbcd5c20cec25771854aa18798fcc6d25a9a6f73529a9e2af25469031"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_mcp3208_i2s_coexist.v",
+      "tested_raw_sha256": "cfb9ae136dd3eff49c4fc9ddb12dd361163da29cff4a5e79aab5bfe6a25781c9",
+      "committed_sha256": "b8f9d45050f734cb27aa0e19ec72fe3bb9de591d4fc11270006b66065150deb8"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_mcp3208_params.v",
+      "tested_raw_sha256": "766ea2c60582f1769d18fc6b840c748667d00cf77e59c8a0786c66dd87243802",
+      "committed_sha256": "8c40367fd904ca92dd42386a44b4482d3539963d5f0580bb5cf431288ba31336"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_mcp3208_spi.v",
+      "tested_raw_sha256": "12d1f51d79fd76cdbcdc73a72c96a82029f6ab73dc20f5dc930a9ba5e0cec888",
+      "committed_sha256": "68af026247189042958b6577eda94f9fb8708c709b49e4e7ef9f354d2ade9feb"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_mode_uart.v",
+      "tested_raw_sha256": "8fcbe05b89f6eaff3008124d163de1d63a9020eade9846dbe8590f182306712e",
+      "committed_sha256": "7e60ea922ef0656de1438bce6142471cd42ae47924ec0742aa376deca50c4f4e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_mute_slew.v",
+      "tested_raw_sha256": "e78810784c4ac264b390d361c924e1a4beb31df5c1a4705172455fe7d8f1aa21",
+      "committed_sha256": "c2f9efd6c7645b089a583f882b21de872793d91f3fabb6ad5c5b98a6be1e8625"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_note_ownership_top.v",
+      "tested_raw_sha256": "000095eac74256d9b67f404123ec91b42ac91093e673b80216c2d761aa1615a4",
+      "committed_sha256": "e0346b99680b06b4e073797b7e509745c8a17e4e3e27da39c562c2b79e07e791"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_note_ownership.v",
+      "tested_raw_sha256": "571bf858a1a3221a64957dbea9832ebdf6dc2afae7f01fdd9deb8cfc7d0b8776",
+      "committed_sha256": "f032d89b468f7c5e9da37981f67fad8504466a9807eedd8cb1aacaf9bd6fe8a6"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_piano_bank.v",
+      "tested_raw_sha256": "9975b89ca9658f5df40b5ea7ac8ccef697f3d9d2627782da476b56691624df11",
+      "committed_sha256": "6aa128bc2a87b144051168a9e83d1945a04bb18b50a3530f36c8e2df31601b1c"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_piano_engine.v",
+      "tested_raw_sha256": "9ae6dcd2da4aebe92c6bddbcc42f40862e26266783e35ccacf21e98399821549",
+      "committed_sha256": "9c5b85053c0ab9ca126bfec29de61e4eb38fadf8be87d149c1477ebc6887e0f8"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_piano_envelope.v",
+      "tested_raw_sha256": "ff7feeb1d4f4cdec691c65b4a450abe79309bff59463bc2959461d5efd23b411",
+      "committed_sha256": "8e1b88461fe6e4cb63e4b07672d8918e06ad76b7b7f295dbd9a1e59e98891bbd"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_piano_morph.v",
+      "tested_raw_sha256": "3073655423ff381b1cac0278b07b794165c5dab06c1a13c5ffbfc29b28bd5ecc",
+      "committed_sha256": "e2f8296b653b3bf7fb9f0adab67368bbe5b6d2cf0befca935471c5ef9d294460"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_piano_stage.v",
+      "tested_raw_sha256": "fcedb7299cca74a6cc843f977236d9daf62f1b2faed9a88c7edd38b68b01cdb7",
+      "committed_sha256": "80fe6ff55f8f4ef77efb91c4f627adcdddd9d6974a973e4df04dddf880f3b18e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_poly.v",
+      "tested_raw_sha256": "c2c409acf710837315358997ae4e0d8d4bb1fe8e5259d796850e5445078dcf99",
+      "committed_sha256": "31d0d5c684d45cbfc5a2b47fe80b925812442dba2e0f55f1a7f202907c7ba7b5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_precision_audio.v",
+      "tested_raw_sha256": "fe959243d558f7ec2aca5903040e815fbc97fa290d530eaa13c7b678317235d2",
+      "committed_sha256": "26a52d1232d631f3e2d2aed92220891e3b0a199a54e84d7f227ce2b73fe7ce6d"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_pressure_bend.v",
+      "tested_raw_sha256": "ad26591e5ba1b0a90fc1b268f59c93ebb4f8c269310f4d2710b1746676e8a70f",
+      "committed_sha256": "195c91584ef7390cdf98eac855ac6d5a6d16882f6dffc1902cae7def1c7769a8"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_pressure_gain.v",
+      "tested_raw_sha256": "7342f9ca5c633865a5881cc164b9f3d750bdbb850f50b39b9779a12df7be85b8",
+      "committed_sha256": "fade5f80976419762a5ebc779a259928523a672de5d42c84ab91a59c48f1a38b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_pressure_top.v",
+      "tested_raw_sha256": "723e7030ec9e5bccdd6407b0e99a5695c8da30bb19410b667673666b4c7f720c",
+      "committed_sha256": "9448ed81ea4ee5cc7df83d8ae12d43acaaeeed3f36ef08722fb93ab70c4ff2d5"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_pt8211_tx.v",
+      "tested_raw_sha256": "c95e1c183b7ca761ccc544dc227c2bddf2c5d8cb079b13c737ee00fb57df25d5",
+      "committed_sha256": "2668bd1410d36f982809517054c78b68b5cb10906496cccdfe0a95b438f8fb42"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram_audio_datapath.v",
+      "tested_raw_sha256": "f501846331f2c4602220488a8b272bdd8c645aac9735e8847215a7483c11d592",
+      "committed_sha256": "32394e8f9e6c5370e4ca46b9171d0c46f0ec9e257de596394109fd18192ba757"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram_audio_pll_probe.v",
+      "tested_raw_sha256": "c5ad0fe5312bb1546101276299c1586fcdbbe98308c837b27d50903b95ee8fae",
+      "committed_sha256": "7c83ecf96eb8f09d90078e4dd6dc5e417759103b9a7f7e36d9a0df7846a3f665"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram_wavetable_engine.v",
+      "tested_raw_sha256": "f3c825a6b0c27198639b3b5a6128b53753de900510ceb9c44804043938f2122a",
+      "committed_sha256": "e82513bda60d76eae8cbd417ac3a777d72977818a3a441798f291b7dd3c89f96"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram32_clocked.v",
+      "tested_raw_sha256": "a4690f298751754e14c2b718d6b5b84721b2fec7ea3b2010cb4f4bd75948b5de",
+      "committed_sha256": "6b25d91e694339ed2f1e9d7519655668e541e305180ce6d502dcfa1e4da58380"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram32_complete.v",
+      "tested_raw_sha256": "b5a203ba19704ade0ef1a04e475c43d087c89c7fb63de3ab672e8046c177d695",
+      "committed_sha256": "e4b00da25eefc6c356ab70a262c8131f4f3d1c017c7bea4fe9d53daf040bc0b7"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram32_controls.v",
+      "tested_raw_sha256": "0fe93817a591b3e896304cc080ee38e8a806c06ee4206194c4d7ed3d39bedb7b",
+      "committed_sha256": "5795e5f1b87c65a4f151a59b6b6ae4d29b8594aa8f805f7f3c633e44a22d44ce"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_ram32_engine_audio.v",
+      "tested_raw_sha256": "2c3f3fbd98abc341c78d4cc642aa791f29a4e027d96ebbd292c438e4636186c6",
+      "committed_sha256": "afb12cbfca60cd814db4cefc18c28029d9e7eb496ac43de88ed9844059fd7d14"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_s6_audio.v",
+      "tested_raw_sha256": "149bbf8bf4f9d5b938e738c65c981aafa32bc9984e730b531fec00dd3f959350",
+      "committed_sha256": "a44ea16752f561935c657cc9a907986dece4dba6665a8a65f14c947967c4bd0f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_s6_rom_prim.v",
+      "tested_raw_sha256": "070ce35cf8e3828cf774b7e36bb14f5ce2fcd8ba53f89543826ac39bb1abf816",
+      "committed_sha256": "9bc79a2126332e7464143be4a30e5e88a62b9fc0d54b4d4e8b76fc370ce8ccb1"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_shared_bend_equivalence.v",
+      "tested_raw_sha256": "2f8967579525dadae2d5048ead5bd18824cd4ad2b3a7d555d242ebc4a7dc1ba6",
+      "committed_sha256": "d1aa330fbcfdf7ca602e36ba00269fc9b351aee644ecad0d09fed61db58df62a"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_shared_engine.v",
+      "tested_raw_sha256": "7b93fa4b67c45e0fcd3af369f02706696c949ad5928f7e0ff6dc5b36aac110af",
+      "committed_sha256": "3527fb32bb2462ea637776b44e59171d6afb5b56f5ba9cebd09f27aae337d880"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_shared_master.v",
+      "tested_raw_sha256": "06e330586ed105b80b7c683ae731ad91ed1724982508027744d92c7ec1a24a30",
+      "committed_sha256": "c1f6992fdbaa92b0f509d63c4d7c3603bead40422e0b3bd8e69e5eb0808ada00"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_song_backpressure.v",
+      "tested_raw_sha256": "232dbf5e6b0743c92d4c1749de174d3e91c8385344833a6f6ffc1aac1f90f42b",
+      "committed_sha256": "9e84cabc6ca0fc2ede724fa0ff55a5af9f4de640ae7f25c588c60d3a57246ab4"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_song_timing.v",
+      "tested_raw_sha256": "8ae302cd084120a9263492ce4a3ae3787019c4c668ecb5311a7ab7d53757be1a",
+      "committed_sha256": "b418822140d473b3c2982d4bd774039def611c45bd738de3b9b567bd470417a2"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_split_audio_multiplier.v",
+      "tested_raw_sha256": "9aa5770d3ad498d32a65753ade48558a9469c922efe60d20fa96728aaff3951c",
+      "committed_sha256": "b74db625b485ddd0caae847032fefba2a5dd0e0bda0ca0ffec8e08edcddbc401"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_tick_rate.v",
+      "tested_raw_sha256": "b68346f92cc1f679e9318c52c16a06eda7cae0277dacc1797ac36959e90ec7f2",
+      "committed_sha256": "afe5eb80e99d0393cbbae1b1942863488ed9a9e846f9435be36efeae8e729d3e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_timbre_audio.v",
+      "tested_raw_sha256": "fdb0ad69830caf316a4940788af45fc04335f63182fe29e3079e69bd86eedc44",
+      "committed_sha256": "bfcbc9e69ffa84fe09ba7cf5cefa746f5d42a39387f2d4b4f892bdc4eb7c046b"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_timbre_controls.v",
+      "tested_raw_sha256": "f07f94d799f7ab28de8cb09a1037be7987260c0c22b869072303738bab2dc628",
+      "committed_sha256": "fc13d95531970ad5dc08ab446d493eaba099fc2c00c13a9e9fedef760b8fd4c0"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_timbre_top.v",
+      "tested_raw_sha256": "0b23f97bf12f3a4759da4d65d52e193d73a0024d254141fe06f31e7cd1a8728f",
+      "committed_sha256": "c82c8c14199b25c2d56f5569d871809141f9cb442f6d004e7932d6084833bb71"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_timbre_uart.v",
+      "tested_raw_sha256": "ef81ffc18351a6588744bf4e8f9f141d083278b29c8f32f9a32d94be43914cae",
+      "committed_sha256": "f21c212abee741e64717093d08df50d038d848980721cf26643f0f9ff2ef76bb"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_guitar.v",
+      "tested_raw_sha256": "ebf773cf1e54de99209ea8040884ed18265c52506f86d015d417184678f166d6",
+      "committed_sha256": "a3a6efd626157ba2674d5f54b1f58d4f6a93b8a08f2d73b3107b79e058960db7"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_host_ctrl.v",
+      "tested_raw_sha256": "93d19fe9e2b12345274bda7bc747d3a5df779a6d17e4cb446e456a959b0ff6c8",
+      "committed_sha256": "b8d4ed63fae5944e3f002700748d45057cff4761266262b4703e4ce47eb33285"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_host_pause.v",
+      "tested_raw_sha256": "ff92c99e16bff68c1e78449051350aab3586d6f4224d342d2648be9baef559af",
+      "committed_sha256": "888a4eb2d2710246f38284c7b81cf4d0482767535a2c9276fbd96be858bf0b8a"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_i2s_27m.v",
+      "tested_raw_sha256": "bb8b80dfbd5fa8f92ef7331ea9e9dbc1fa957b8f9e9cab5355e8e83d36fc2a19",
+      "committed_sha256": "3d4d7d5b167f1b322969b9532f5dcb19edbc0ce2c6a8ac8a0069d0d1bd07ce6f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_i2s.v",
+      "tested_raw_sha256": "3c4e9a819a10361afa3da2b0b4313b894924f0c1c16a297249745fa5fc0f8a35",
+      "committed_sha256": "057c7de9e4edca65b67411d9a9cc0684109f18c11eff637284b05e2b738df69f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_pitch8.v",
+      "tested_raw_sha256": "46cfd03063f035f73b2d3749374d89c6bcda4cfe2355985b9673d44778f0db19",
+      "committed_sha256": "ad796b319d046e125fd12a680e2e79bd7dcf593f898eddfe240fe09c8f71a2c8"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_s4s6.v",
+      "tested_raw_sha256": "533162ebe1109ac953067929c20db9a9d4988e4cf683f787896f11eaf63a9135",
+      "committed_sha256": "2b380fd3eb03fe48412c1a02f16d6478823625d60f987482217c00fef82d7277"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_top_switch.v",
+      "tested_raw_sha256": "8ca313e582aef3d083f197159f0f7520f51e2c8076b2f214be24a69ed952ba0e",
+      "committed_sha256": "f39ab09fa7edabba22301dd63dd8c39473d44a3e6a78c0dd553304869fdc2b64"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_velocity_bounds.v",
+      "tested_raw_sha256": "fb53262f8ec921f00b99751b4cd7d08fd12d9485728fb02da510f1810d96ee4d",
+      "committed_sha256": "58fb917b112a13e9ce574bfc7f132eb54574908523e2093caf752e0beb519862"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_order.v",
+      "tested_raw_sha256": "4b4e20f6d8377bc24b46be8e2a3ef58e92d4130d986cc498fd01e9e1385bf85f",
+      "committed_sha256": "404afdb0ce4e0a1b62197e06e857cc258338ae39741555a36c7edf825a0aa6b0"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_retrigger.v",
+      "tested_raw_sha256": "e4ddc444f61c484241a4aff634c5afca9b0e169e4426a1017c667d3bf35a8464",
+      "committed_sha256": "f7dfa114ac0e3cdded856e9fed005e891d8c628b6a649416a077e3a11eec2e66"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_sched32_review.v",
+      "tested_raw_sha256": "634fc81de765e65131669dadd0ffe8be9a1e1914d33daeab50766e712dfc2451",
+      "committed_sha256": "50fc8961202fd3fdeb0f8d5292bc8bf663e59b9be297ebae0c136d2d2db5aa66"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_state_ram.v",
+      "tested_raw_sha256": "a76a9caf2364a164bd830a2c0805c9ef51823c7c6e2573d25893a2c26c8453bd",
+      "committed_sha256": "0f15c4bca9fa92ebdd748e8928d723aeb14db45eec154191ce1fed44a8aad02f"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_transition_audio.v",
+      "tested_raw_sha256": "3d8a37f6e682917e617c0f6f1094f24f092e4f82cf7bff8c2c19492a1800dd3f",
+      "committed_sha256": "1c717e9c410563b8593321756b11a313b41907acc980923f4b5da8bb1fa4295e"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_transition_top.v",
+      "tested_raw_sha256": "53c2e86ced926bb2a3f794958e4dd095e32477caba71ba9527acd2672793a83d",
+      "committed_sha256": "3790195b532ad3ed2369ee92d81cefd460a95e4821e421ec8a110322f9324132"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_voice_transition.v",
+      "tested_raw_sha256": "bde193c8591c77915394003910eefa892a9a98bd36637c3d5aec5a7962515fb9",
+      "committed_sha256": "f11ecbe43856682abc607345a72c966414cecd8370ac29d22197940ae94a0390"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_wide_master_pair.v",
+      "tested_raw_sha256": "bb3c38370c642ba6fb62551e51847fd68e5a27c4a60ad80272f56b2538a35552",
+      "committed_sha256": "96c8d2b37d9b220a3d4d337c5be465e72f948298a529015dc2d0db23fec85335"
+    },
+    {
+      "path": "output/handoff_milestone2_20261008/source/sim/tb_wide_master.v",
+      "tested_raw_sha256": "99888ac83c1ed7427302a6174a685e78fd4009095370da47eddb3a7506269b3c",
+      "committed_sha256": "d503b89d3e5b17827007db8331810db87840a0e41fdf6b9c27e44c7cbec524ae"
+    }
+  ],
+  "mismatch": []
+}

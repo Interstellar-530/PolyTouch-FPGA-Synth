@@ -39,6 +39,7 @@ module ram_audio_compute #(
  wide_master #(.VOICE_SHIFT($clog2(VOICES))) u_master(
   .clk(clk),.rst(rst),.update(sums_valid),.sine_sum(sine_total),.bright_sum(bright_total),
   .mix_weight(mix_weight),.pressure_enable(pressure_enable),.pressure_level(pressure_level),.mute(mute),
+  .volume_gain_q8(9'd256),
   .sample_out(audio_sample),.result_valid(sample_valid),.busy(master_busy),.clip_count(clip_count),.clip_event(),
   .mult_request(master_req),.mult_ready(master_ready),.mult_operand_a(master_a),.mult_operand_b(master_b),.mult_product(product_v[0]));
 `ifdef SIMULATION

@@ -1,0 +1,10 @@
+{
+  "operation": 37,
+  "exit_code": 0,
+  "explicit_flash_verify_success": true,
+  "started_utc": "2026-10-26T10:36:08.0539228Z",
+  "finished_utc": "2026-10-26T10:36:35.7706530Z",
+  "simulation_skipped": true,
+  "reason": "User explicitly requested 跳过门禁",
+  "sha256": "e9341aa47674ecf90bf677024830f4de7a771e3b56384240b9c32382cc062137"
+}

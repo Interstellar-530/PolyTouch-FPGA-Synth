@@ -11,7 +11,7 @@ module tb_voice_sched32_review;
     voice_sched32 dut(.clk(clk),.rst(rst),.sample_tick(tick),.instrument(instrument),.piano_tone(tone),.ev_valid(valid),
         .ev_on(on),.ev_note(note),.ev_vel(velocity),.ev_ready(ev_ready),
         .cfg_voice(voice),.cfg_increment(increment),.cfg_envelope(envelope),
-        .cfg_velocity(vel),.cfg_retrigger(retrigger),.cfg_param(param),.cfg_valid(cv),.cfg_ready(ready),.active_count(active));
+        .cfg_velocity(vel),.cfg_retrigger(retrigger),.cfg_param(param),.cfg_valid(cv),.cfg_ready(ready),.active_count(active),.bend_ratio(17'd65536));
     integer which,i,count62,cycles,first_case,last_case;
     reg [31:0] saved_inc;
     task step;begin @(posedge clk);#1;@(negedge clk);end endtask
@@ -68,7 +68,8 @@ module tb_voice_sched32_review;
                 $fatal(1,"pending_config_payload_changed");
             ready=1;step();
             cycles=0;
-            while(!cv)begin step();cycles=cycles+1;if(cycles>33)$fatal(1,"new dirty update lost after a complete scan");end
+            // One 32-voice scan plus note/product/round pipeline and handoff.
+            while(!cv)begin step();cycles=cycles+1;if(cycles>40)$fatal(1,"new dirty update lost after a complete scan plus pipeline");end
             if(vel!=63 || !retrigger)$fatal(1,"new retrigger lost while old config waited");
             step();
         end

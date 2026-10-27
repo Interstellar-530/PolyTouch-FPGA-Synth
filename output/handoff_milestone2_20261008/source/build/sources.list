@@ -15,6 +15,7 @@ rtl/audio/uart_ctrl.v
 rtl/audio/gpio_keyboard.v
 rtl/audio/mcp3208_spi.v
 rtl/audio/pressure_bend.v
+rtl/audio/fsr_mute.v
 rtl/audio/shared_wavetable_engine.v
 rtl/audio/global_crossfade.v
 rtl/audio/gowin_prom_wave_sine.v

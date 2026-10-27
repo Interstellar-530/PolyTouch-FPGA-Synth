@@ -26,17 +26,20 @@ module top #(
     parameter integer AUDIO_CLK_HZ  = (AUDIO_IF == 1) ? `FPGA_AUDIO_STD_CLK_HZ : `FPGA_AUDIO_DBG_CLK_HZ,
     parameter integer AUDIO_FS_HZ   = (AUDIO_IF == 1) ? `FPGA_AUDIO_STD_FS_HZ  : `FPGA_AUDIO_DBG_FS_HZ,
     parameter integer I2S_DATA_BITS = 24,                     // AUDIO_IF=1/2 时每声道槽宽
-    // 曲目单位时长：调试档 9766 采样 @46.875 kHz = 208.34 ms；48 kHz 档按同一时长
-    // 换算得 10000.4，取 10000（208.33 ms，偏差 0.004%）。
-    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 1) ? 10000 : 9766,
+    // 曲目单位时长：81 BPM 的十六分音符。48 kHz 档为 8889 采样（185.19 ms），
+    // 调试档 46875 Hz 为 8681 采样（185.17 ms），偏差都在 0.01% 以内。
+    parameter integer SONG_UNIT_SAMPLES = (AUDIO_IF == 1) ? 8889 : 8681,
     // 演奏输入选择：标准 27 MHz 生产档停用 12 路 GPIO 键（GPIO_KEY_ENABLE=0），
     // 由 USB 电脑键盘经 CH9350L 串口输入（HOST_KBD_ENABLE=1）。旧 debug/standard
     // profile 保持 GPIO=1、HOST=0，便于回归与回退。
     parameter integer GPIO_KEY_ENABLE = 1,
     parameter integer HOST_KBD_ENABLE = 0,
-    // FSR controls one global VCA. Standard profiles (1 and 2) enabled, legacy
-    // PT8211 profile bypassed. These are provisional ADC calibration values, not N.
+    // 0 = strict；1 = idle-only（默认，持键静默不误清音）。
+    parameter integer HOST_KBD_TIMEOUT_POLICY = 1,
+    // FSR is a momentary mute in demo and manual modes. Standard profiles
+    // enabled; legacy PT8211 bypassed unless explicitly enabled by its wrapper.
     parameter integer PRESSURE_ENABLE = (AUDIO_IF != 0),
+    // Retained legacy pressure-gain parameters for source compatibility.
     parameter integer PRESSURE_ADC_LOW = 128,
     parameter integer PRESSURE_ADC_FULL = 3200,
     parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
@@ -133,6 +136,8 @@ module top #(
     wire hid_timbre_valid;
     wire [7:0] hid_timbre_value;
     wire hid_instr_toggle;
+    wire hid_mode_toggle;
+    wire hid_pause_toggle;
     wire hid_vol_up;
     wire hid_vol_down;
     wire       uart_instr_valid;
@@ -185,11 +190,12 @@ module top #(
         if (por) begin
             chord_set <= 1'b0;
             restart   <= 1'b0;
-            // Preset index 1 (2x) is the state that was reported as the right
-            // playback speed: L14 lit, L16 dark.  The LEDs are active low and
-            // driven as ~tempo_sel[bit], so a lit LED means that bit is one.
-            // S2 steps through all four presets.
-            tempo_sel <= 2'd1;
+            // Preset index 0 (1x) is the score tempo of the new test tune:
+            // quarter = 81, exactly as written, so a cold boot is already the
+            // strict-tempo run.  The LEDs are active low and driven as
+            // ~tempo_sel[bit], so a lit LED means that bit is one.  S2 steps
+            // through all four presets for slow-motion listening.
+            tempo_sel <= 2'd0;
         end else begin
             if (s1_press)
                 chord_set <= ~chord_set;
@@ -202,7 +208,7 @@ module top #(
     // ------------------------------------------------------- note events ---
     wire        sp_ev_wr;
     wire [15:0] sp_ev_data;
-    wire [5:0]  mel_idx_dbg;
+    wire [7:0]  mel_idx_dbg;
     wire        fifo_empty;
     wire        fifo_full;
     wire        fifo_ready;
@@ -210,6 +216,7 @@ module top #(
     wire        fifo_rd;
     wire        uart_ev_valid, uart_ev_on, uart_panic, uart_muted;
     wire        uart_demo_on, uart_demo_off;
+    wire        demo_on_request, demo_off_request;
     wire [6:0]  uart_ev_note;
     wire [7:0]  uart_ev_vel;
 
@@ -235,7 +242,7 @@ module top #(
     // 否则由输入触发的那次“退出演示”会把首个按键事件一起清掉。
     wire manual_flush = uart_panic || hid_panic || hid_link_timeout || hid_device_notify ||
                         instrument_change ||
-                        uart_demo_on || uart_demo_off;
+                        demo_on_request || demo_off_request;
 
     // 标准 27 MHz 档不再使用 12 路 GPIO 演奏键；旧 debug/standard 档保留以便回退。
     generate
@@ -265,14 +272,16 @@ module top #(
     wire kbd_rx_i = (kbd_uart_rx === 1'b0) ? 1'b0 : 1'b1;
     generate
         if (HOST_KBD_ENABLE) begin : g_host_kbd
-            host_kbd_input #(.CLK_HZ(AUDIO_CLK_HZ)) u_host_kbd (
+            host_kbd_input #(.CLK_HZ(AUDIO_CLK_HZ), .TIMEOUT_POLICY(HOST_KBD_TIMEOUT_POLICY)) u_host_kbd (
                 .clk(clk_audio), .rst(rst), .kbd_rx(kbd_rx_i), .kbd_tx(kbd_uart_tx),
                 .flush(manual_flush),
                 .ev_valid(hid_ev_valid), .ev_word({hid_ev_on, hid_ev_note, hid_ev_vel}),
                 .ev_ready(hid_ev_ready),
                 .panic(hid_panic), .timbre_valid(hid_timbre_valid),
                 .timbre_value(hid_timbre_value),
-                .instr_toggle(hid_instr_toggle), .vol_up(hid_vol_up), .vol_down(hid_vol_down),
+                .instr_toggle(hid_instr_toggle), .mode_toggle(hid_mode_toggle),
+                .pause_toggle(hid_pause_toggle),
+                .vol_up(hid_vol_up), .vol_down(hid_vol_down),
                 .base_note(hid_base_note), .held_count(hid_held_count),
                 .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
                 .frame_valid()
@@ -286,6 +295,8 @@ module top #(
             assign hid_timbre_valid = 1'b0;
             assign hid_timbre_value = 8'd0;
             assign hid_instr_toggle = 1'b0;
+            assign hid_mode_toggle = 1'b0;
+            assign hid_pause_toggle = 1'b0;
             assign hid_vol_up    = 1'b0;
             assign hid_vol_down  = 1'b0;
             assign hid_base_note = 7'd60;
@@ -298,6 +309,12 @@ module top #(
     endgenerate
 
     reg         demo_mode;
+    reg         demo_paused;
+    wire demo_transport_paused = demo_mode && demo_paused;
+    // Explicit UART D0/D1 wins if both interfaces request a mode on this clock.
+    wire hid_mode_request = hid_mode_toggle && !uart_demo_on && !uart_demo_off;
+    assign demo_on_request  = uart_demo_on  || (hid_mode_request && !demo_mode);
+    assign demo_off_request = uart_demo_off || (hid_mode_request &&  demo_mode);
     reg         pending_valid;
     reg [15:0]  pending_word;
 
@@ -340,21 +357,26 @@ module top #(
                                                   (gp_ev_valid && gp_ev_on) ||
                                                   (hid_ev_valid && hid_ev_on) ||
                                                   (man_ev_valid && man_ev_on));
-    wire        clear_events = uart_demo_on || uart_demo_off ||
+    wire        clear_events = demo_on_request || demo_off_request ||
                                manual_transition || uart_panic || hid_panic ||
                                hid_link_timeout || hid_device_notify || instrument_change || (restart && demo_mode);
 
     always @(posedge clk_audio) begin
         if (rst) begin
             demo_mode     <= 1'b1; // preserve power-on song demonstration
+            demo_paused   <= 1'b0;
             pending_valid <= 1'b0;
             pending_word  <= 16'd0;
         end else begin
             pending_valid <= 1'b0;
-            if (uart_demo_on)
+            if (demo_on_request)
                 demo_mode <= 1'b1;
-            else if (uart_demo_off || manual_transition)
+            else if (demo_off_request || manual_transition)
                 demo_mode <= 1'b0;
+            if (demo_on_request || demo_off_request || manual_transition)
+                demo_paused <= 1'b0;
+            else if (hid_pause_toggle && demo_mode)
+                demo_paused <= !demo_paused;
             // 退出演示这一拍先清队列并松开旧声部，把首个 N/O 事件暂存一拍，
             // 下一拍再送分配器，避免同拍 panic 吞掉它；并非等 Release 完成。
             // pending_valid 没有 ready 握手且只保留一拍。UART 命令相隔多个字节
@@ -369,11 +391,11 @@ module top #(
     song_player #(.UNIT_SAMPLES(SONG_UNIT_SAMPLES)) u_song (
         .clk          (clk_audio),
         .rst          (rst | ~demo_mode),
-        .sample_tick  (sample_tick),
-        .restart      (restart | uart_demo_on),
+        .sample_tick  (sample_tick && !demo_transport_paused),
+        .restart      (restart | demo_on_request),
         .chord_set    (chord_set),
         .tempo_sel    (tempo_sel),
-        .ev_ready     (fifo_ready),
+        .ev_ready     (fifo_ready && !demo_transport_paused),
         .ev_wr        (sp_ev_wr),
         .ev_data      (sp_ev_data),
         .mel_idx_dbg  (mel_idx_dbg),
@@ -383,18 +405,18 @@ module top #(
     // ------------------------------------------------------- loop marker ---
     // 旋律索引返回 0 时亮灯约 111 ms，便于测量循环间隔。
     // 周期随 tempo_sel + 1 成比例变化；切换模式/重启也可能触发索引回零。
-    reg [5:0]  mel_idx_d;
+    reg [7:0]  mel_idx_d;
     reg [21:0] loop_blink_cnt;
     reg        loop_blink;
 
     always @(posedge clk_audio) begin
         if (por) begin
-            mel_idx_d      <= 6'd0;
+            mel_idx_d      <= 8'd0;
             loop_blink_cnt <= 22'd0;
             loop_blink     <= 1'b0;
         end else begin
             mel_idx_d <= mel_idx_dbg;
-            if ((mel_idx_dbg == 6'd0) && (mel_idx_d != 6'd0)) begin
+            if ((mel_idx_dbg == 8'd0) && (mel_idx_d != 8'd0)) begin
                 loop_blink_cnt <= BLINK_CYCLES[21:0];   // about 111 ms
                 loop_blink     <= 1'b1;
             end else if (loop_blink_cnt != 22'd0) begin
@@ -408,7 +430,7 @@ module top #(
     event_fifo u_fifo (
         .clk     (clk_audio),
         .rst     (rst | clear_events),
-        .wr_en   (sp_ev_wr & demo_mode),
+        .wr_en   (sp_ev_wr & demo_mode & !demo_transport_paused),
         .wr_data (sp_ev_data),
         .rd_en   (fifo_rd),
         .rd_data (fifo_data),
@@ -444,7 +466,7 @@ module top #(
     wire        uart_direct  = uart_ev_valid && !manual_transition;
     // [S2-AI] 手动 FIFO 只在非演示模式送出；演示期间的 GPIO 松键已在 man_wr 处过滤。
     wire        man_deliver  = man_ev_valid && !demo_mode;
-    wire        demo_deliver = demo_mode && !fifo_empty;
+    wire        demo_deliver = demo_mode && !demo_transport_paused && !fifo_empty;
     wire        ev_valid = !clear_events &&
                            (pending_valid || uart_direct || man_deliver || demo_deliver);
     wire [15:0] ev_word  = pending_valid ? pending_word :
@@ -605,6 +627,13 @@ module top #(
         .phase_inc_out (bend_inc0)
     );
 
+    wire fsr_muted;
+    wire audio_muted = uart_muted | fsr_muted | demo_transport_paused;
+    fsr_mute u_fsr_mute (
+        .clk(clk_audio), .rst(rst), .enable(PRESSURE_ENABLE != 0),
+        .update(control_sample_tick), .pressure(pressure_filtered), .muted(fsr_muted)
+    );
+
     // ----------------------------------------------------------- voices ---
     // Reference bend increments remain observable for simulation. The audio
     // engine uses base increments and shares its multiplier for all four;
@@ -714,7 +743,7 @@ module top #(
     wire        xf_clip_event;
 
     global_crossfade #(
-        .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(PRESSURE_ENABLE),
+        .CLIP_COUNTER_WIDTH(32), .PRESSURE_GAIN_ENABLE(0),
         .PRESSURE_ADC_LOW(PRESSURE_ADC_LOW), .PRESSURE_ADC_FULL(PRESSURE_ADC_FULL),
         .PRESSURE_MIN_GAIN_Q12(PRESSURE_MIN_GAIN_Q12),
         .PRESSURE_GAIN_STEP(PRESSURE_GAIN_STEP), .TIMBRE_SLEW_ENABLE(1),.SHARED_MULT_ENABLE(1),.GUITAR_BOOST_ENABLE(1),
@@ -728,7 +757,7 @@ module top #(
         .guitar_boost(guitar_mode), .sample_out (mixed_shared),
         .sample_out24(mixed_shared24), .result_valid_o(xf_result_valid),
         .clip_count (xf_clip_count), .clip_event (xf_clip_event),
-        .pressure_enable (!demo_mode), .pressure_level (pressure_level), .mute(uart_muted)
+        .pressure_enable (1'b0), .pressure_level (pressure_level), .mute(audio_muted)
     );
 
     // ------------------------------------------------------------ mixer ---
@@ -900,7 +929,7 @@ module top #(
             if (xf_result_valid_d) begin
                 // 一阶低通状态在静音后可能停在 -1 LSB；共享 VCA 已精确到零时把
                 // 状态刷成 0，让静音是真正的数字静音（移植 1fd865a 的静音收敛修复）。
-                if (uart_muted && mixed_shared24 == 24'sd0) mix_lp_y <= 26'sd0;
+                if (audio_muted && mixed_shared24 == 24'sd0) mix_lp_y <= 26'sd0;
                 else mix_lp_y <= mix_lp_next[25:0];
                 vol_prod <= vol_prod_comb[32:0];
             end
@@ -1005,7 +1034,7 @@ module top #(
     // about 110 ms at the start of every pass through the tune, and stays lit
     // while the output is muted.  Timing the gap between flashes measures the
     // loop directly.  N14 shows the chord set, L14/L16 the tempo preset.
-    assign led       = uart_muted ? 1'b0 : ~loop_blink;
+    assign led       = audio_muted ? 1'b0 : ~loop_blink;
     assign led_chord = ~chord_set;
     assign led_t0    = ~(show_timbre ? timbre_preset[0] : tempo_sel[0]);
     assign led_t1    = ~(show_timbre ? timbre_preset[1] : tempo_sel[1]);

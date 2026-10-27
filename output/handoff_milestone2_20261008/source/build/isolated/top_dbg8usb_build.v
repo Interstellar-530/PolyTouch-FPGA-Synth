@@ -1,6 +1,8 @@
 // [USB + FSR] 板载 PT8211 / 27 MHz / 46.875 kHz，普通 USB 键盘走 CH9350L，
 // FSR 压力增益启用，GPIO 琴键关闭。旧的 debug8 档保持原样。
-module top_dbg8usb_build (
+module top_dbg8usb_build #(
+    parameter integer HOST_KBD_TIMEOUT_POLICY = 1
+) (
     input  wire        clk_27m,
     input  wire        key_rst,
     input  wire        key_s1,
@@ -25,7 +27,7 @@ module top_dbg8usb_build (
 );
     wire i2s_bck_w, i2s_lrck_w, i2s_din_w, dac_xsmt_w;
     top #(.AUDIO_IF(0), .VOICES(8), .MASTER_VOLUME_SHIFT(3),
-          .HOST_KBD_ENABLE(1), .GPIO_KEY_ENABLE(0), .PRESSURE_ENABLE(1)) u_top (
+          .HOST_KBD_TIMEOUT_POLICY(HOST_KBD_TIMEOUT_POLICY), .HOST_KBD_ENABLE(1), .GPIO_KEY_ENABLE(0), .PRESSURE_ENABLE(1)) u_top (
         .clk_27m(clk_27m), .clk_12m288(1'b0),
         .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),
         .uart_rx(uart_rx), .gpio_key_n(12'hFFF),

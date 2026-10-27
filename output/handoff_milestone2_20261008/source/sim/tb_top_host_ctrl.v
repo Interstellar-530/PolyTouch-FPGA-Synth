@@ -2,6 +2,7 @@
 // 顶层 HID 控制补齐验收：CH9350L state-2 帧 -> top -> 统一音色/主音量状态。
 // 覆盖：UART 兼容（D0/X/N/V）、首键、和弦、F6 钢琴/吉他切换、Up/Down 音量上下界、
 // Esc 清音，以及切换乐器时清空旧声部、切换后重新按键能正常发声。
+// 0x86 拔出通知：清按键状态与声部，重新接入后仍可演奏（优化 07 合流验收）。
 module tb_top_host_ctrl;
     reg clk27 = 0;
     always #18.5185 clk27 = ~clk27;
@@ -19,7 +20,9 @@ module tb_top_host_ctrl;
         .ch4(12'd0), .ch5(12'd0), .ch6(12'd0), .ch7(12'd0)
     );
 
-    top #(.AUDIO_IF(0), .VOICES(8), .MASTER_VOLUME_SHIFT(3),
+    // Production standard27 audio/control path; shorten only the test tune.
+    top #(.AUDIO_IF(2), .VOICES(8), .MASTER_VOLUME_SHIFT(3),
+          .SONG_UNIT_SAMPLES(32),
           .GPIO_KEY_ENABLE(0), .HOST_KBD_ENABLE(1)) dut (
         .clk_27m(clk27), .clk_12m288(1'b0),
         .key_rst(key_rst), .key_s1(s1), .key_s2(s2),
@@ -141,6 +144,47 @@ module tb_top_host_ctrl;
         while (dut.por) @(posedge clk27);
         repeat (20) @(posedge clk27);
 
+        // F7 switches modes once per physical press. A simultaneous note must
+        // not consume/reverse the switch, regardless of its report slot.
+        if (!dut.demo_mode) $fatal(1, "boot did not select automatic mode");
+        kbd_report(8'h40, 0, 0, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "F7 did not enter manual mode");
+        wait_gates(0);
+        kbd_report(8'h40, 0, 0, 0, 0, 0);
+        kbd_report(0, 0, 8'h40, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "held/reordered F7 toggled repeatedly");
+        release_all();
+
+        kbd_report(8'h14, 8'h40, 0, 0, 0, 0);
+        if (!dut.demo_mode) $fatal(1, "F7 with Q did not enter automatic mode");
+        if (dut.hid_held_count != 0) $fatal(1, "mode switch retained manual note ownership");
+        kbd_report(8'h40, 8'h14, 0, 0, 0, 0);
+        if (!dut.demo_mode) $fatal(1, "reordered held note/F7 interrupted automatic mode");
+        release_all();
+        t = 0;
+        while (gate_n == 0 && t < 200000) begin @(posedge clk27); t = t + 1; end
+        if (gate_n == 0) $fatal(1, "automatic mode produced no note events");
+
+        kbd_report(8'h40, 0, 0, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "second F7 did not stop automatic mode");
+        wait_gates(0);
+        kbd_report(8'h14, 8'h40, 0, 0, 0, 0);
+        wait_gates(1);
+        expect_note(7'd60);
+        kbd_report(8'h14, 0, 0, 0, 0, 0); // release F7, keep Q held
+        kbd_report(8'h14, 0, 0, 0, 0, 8'h40);
+        if (!dut.demo_mode) $fatal(1, "F7 in last slot did not start automatic mode");
+        if (dut.hid_held_count != 0) $fatal(1, "held Q survived mode change");
+        kbd_report(8'h14, 8'h40, 0, 0, 0, 0);
+        if (!dut.demo_mode) $fatal(1, "held Q retriggered after mode flush");
+        release_all();
+        kbd_report(8'h14, 0, 0, 0, 0, 0);
+        if (dut.demo_mode) $fatal(1, "fresh note did not retain automatic-to-manual takeover");
+        wait_gates(1);
+        expect_note(7'd60);
+        release_all();
+        wait_gates(0);
+
         // 0) 用 UART 退出演示并清音，验证 HID 档下串口命令仍生效。
         uart_cmd2("D", "0");
         uart_cmd2("X", " ");
@@ -260,7 +304,23 @@ module tb_top_host_ctrl;
         repeat (50000) @(posedge clk27);
         if (gate_n != 0) $fatal(1, "residual voices after Esc: %b", dut.v_gate);
 
-        $display("PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear");
+        // 11) 0x86 拔出通知：清按键与声部，重新接入后可继续演奏。
+        release_all();
+        wait_gates(0);
+        kbd_report(8'h14, 8'h1A, 8'd0, 8'd0, 8'd0, 8'd0);
+        wait_gates(2);
+        kbd_byte(8'h57); kbd_byte(8'hAB); kbd_byte(8'h86);
+        wait_gates(0);
+        repeat (2000) @(posedge clk27);
+        if (dut.hid_held_count !== 4'd0)
+            $fatal(1, "0x86 left %0d held keys", dut.hid_held_count);
+        if (gate_n != 0) $fatal(1, "0x86 left %b voices", dut.v_gate);
+        release_all();
+        kbd_report(8'h14, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0);
+        wait_gates(1);
+        expect_note(7'd60);
+
+        $display("PASS tb_top_host_ctrl: standard27 F7 mode toggle/dedup/simultaneous-note/takeover, UART compat, first key, chord, F6 switch, volume clamps, Esc, detach recovery");
         $finish;
     end
 

@@ -3,7 +3,7 @@
     [S3-AI | deepseek | 2026-10-14] S3 台与参数负例。
     [S3-REVIEW | Codex | 2026-10-14] 六个负例、原始诊断、ASCII路径及本次指标绑定。
 
-    编译并运行全部测试台，任何一个失败都以退出码 1 结束。烧录脚本在调用
+    默认运行 Quick 短门禁；-Suite Full 保留全部历史测试。失败以退出码 1 结束。烧录脚本在调用
     programmer_cli 之前必须先跑这个脚本，仿真不过就拒绝烧录。
 
     测试台各管一段：
@@ -39,10 +39,15 @@ param(
     [string]$AudioCaptureDir = '',
     [string]$MetricsDir = '',
     [string]$BuildDir = '',
-    [switch]$SkipAudioCapture
+    [switch]$SkipAudioCapture,
+    [Alias('Suite')][ValidateSet('Quick','Full','Host','Ram32','OptA')][string]$GateSuite = 'Quick',
+    [string[]]$Tests = @(),
+    [switch]$ListTests,
+    [ValidateRange(1,3600)][int]$TimeoutSeconds = 180
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'gate_process.ps1')
 $sourceRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 
 function Find-Tool {
@@ -73,42 +78,17 @@ if ($Iverilog -and $Vvp) {
     if ($env:PATH -notlike "*$toolDir*") { $env:PATH = "$toolDir;$env:PATH" }
 }
 
-if (-not $Iverilog -or -not (Test-Path -LiteralPath $Iverilog -PathType Leaf)) {
+if (-not $ListTests -and (-not $Iverilog -or -not (Test-Path -LiteralPath $Iverilog -PathType Leaf))) {
     Write-Error "找不到 iverilog。安装 Icarus Verilog，或用 -Iverilog 指定路径。仿真门禁无法跳过。"
     exit 1
 }
-if (-not $Vvp -or -not (Test-Path -LiteralPath $Vvp -PathType Leaf)) {
+if (-not $ListTests -and (-not $Vvp -or -not (Test-Path -LiteralPath $Vvp -PathType Leaf))) {
     Write-Error "找不到 vvp。安装 Icarus Verilog，或用 -Vvp 指定路径。仿真门禁无法跳过。"
     exit 1
 }
 
 Push-Location $sourceRoot
 try {
-    # S1 捕获数据默认放在工作区 tmp，不向源码目录写大文件。
-    if (-not $AudioCaptureDir) {
-        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
-        $AudioCaptureDir = Join-Path $repoRoot 'tmp\audio_capture'
-    }
-    New-Item -ItemType Directory -Force -Path $AudioCaptureDir | Out-Null
-    $AudioCaptureDir = (Resolve-Path -LiteralPath $AudioCaptureDir).Path
-    if (-not $BuildDir) {
-        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
-        $BuildDir = Join-Path $repoRoot 'tmp\simulation_build'
-    }
-    New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
-    $BuildDir = (Resolve-Path -LiteralPath $BuildDir).Path
-    # S3 指标文件同样写到工作区 tmp，不向源码目录写大文件。
-    if (-not $MetricsDir) {
-        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
-        $MetricsDir = Join-Path $repoRoot 'tmp\i2s_metrics'
-    }
-    New-Item -ItemType Directory -Force -Path $MetricsDir | Out-Null
-    $MetricsDir = (Resolve-Path -LiteralPath $MetricsDir).Path
-    foreach ($runtimeDir in @($AudioCaptureDir, $BuildDir, $MetricsDir)) {
-        if ($runtimeDir -match '[^\x00-\x7F]') {
-            throw "Icarus runtime path must use ASCII characters (vvp plusargs encoding): $runtimeDir"
-        }
-    }
     $suite = @(
         @{ Name = 'tb_tick_rate';   Top = 'sim\tb_tick_rate.v';   Src = @('rtl\audio\pt8211_tx.v') },
         @{ Name = 'tb_song_timing'; Top = 'sim\tb_song_timing.v'; Src = @('rtl\audio\song_player.v') },
@@ -274,9 +254,12 @@ try {
 
     # Shared board controls are required by every bench containing rtl/top.v.
     foreach ($entry in $suite) {
-        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\bend_ratio_pipeline.v','rtl\video\ui_status_export.v','rtl\video\ui_audio_visual_export.v') }
+        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\bend_ratio_pipeline.v','rtl\audio\fsr_mute.v') }
     }
     $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName) + @('rtl\video\ui_status_export.v','rtl\video\ui_audio_visual_export.v')
+    # The FSR integration bench now exercises the complete standard27 front end.
+    ($suite | Where-Object { $_.Name -eq 'tb_pressure_top' }).Src = @($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v'))
+    $suite += @{ Name='tb_fsr_mute'; Top='sim\tb_fsr_mute.v'; Src=@('rtl\audio\fsr_mute.v') }
     foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top','tb_uart_dashboard')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v')) }
     }
@@ -302,11 +285,19 @@ try {
     $suite += @{ Name='tb_piano_stage'; Top='sim\tb_piano_stage.v'; Src=@('rtl\audio\shared_wavetable_engine.v',
                 'rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_wave_sine.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','sim\gowin_prom_model.v') }
     $suite += @{ Name='tb_host_kbd'; Top='sim\tb_host_kbd.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
+    # 优化 07：持键静默不误清音，strict 模式保持旧行为。
+    $suite += @{ Name='tb_host_kbd_timeout'; Top='sim\tb_host_kbd_timeout.v'; Src=@('rtl\audio\kbd_uart_rx.v','rtl\audio\ch9350_rx.v','rtl\audio\hid_keymap.v','rtl\audio\host_kbd_input.v') }
     # HID 控制补齐：F6 乐器切换、Up/Down 主音量、Esc 清音，以及与 UART 命令共存。
     $suite += @{ Name='tb_top_host_ctrl'; Top='sim\tb_top_host_ctrl.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    $suite += @{ Name='tb_top_host_pause'; Top='sim\tb_top_host_pause.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v')) }
+    $suite += @{ Name='tb_hid_full_keyboard'; Top='sim\tb_hid_full_keyboard.v'; Src=@('rtl\audio\hid_keymap.v') }
+    $suite += @{ Name='tb_top_host_eight'; Top='sim\tb_top_host_eight.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v')) }
     $suite += @{ Name='tb_event_prefetch'; Top='sim\tb_event_prefetch.v'; Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v')) }
     $suite += @{ Name='tb_ram32_complete'; Top='sim\tb_ram32_complete.v'; Src=($audioSources + @('rtl\prototypes\voice_sched32.v','rtl\prototypes\ram32_top.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_datapath.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
     $suite += @{ Name='tb_instrument_rom_banks'; Top='sim\tb_instrument_rom_banks.v'; Src=@('rtl\prototypes\instrument_rom_banks.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\gowin_prom_guitar_bank.v','rtl\audio\gowin_prom_bright_bank.v','sim\gowin_prom_model.v') }
+    $suite += @{ Name='tb_ram32_controls'; Top='sim\tb_ram32_controls.v'; Src=@('rtl\prototypes\ram32_control_front.v','rtl\prototypes\voice_sched32.v','rtl\audio\pressure_bend.v','rtl\audio\note_phase_inc.v') }
+    $suite += @{ Name='tb_ram32_engine_audio'; Top='sim\tb_ram32_engine_audio.v'; Src=($audioSources + @('rtl\prototypes\ram32_clocked_top.v','rtl\prototypes\ram32_control_front.v','rtl\prototypes\voice_sched32.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_rpll_model.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
+    $suite += @{ Name='tb_ram32_latency'; Top='sim\tb_ram32_latency.v'; Src=($audioSources + @('rtl\prototypes\ram32_clocked_top.v','rtl\prototypes\ram32_control_front.v','rtl\prototypes\voice_sched32.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_rpll_model.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
     $suite += @{ Name='tb_voice_sched32_review'; Top='sim\tb_voice_sched32_review.v'; Src=@('rtl\prototypes\voice_sched32.v','rtl\audio\note_phase_inc.v') }
     # Product regressions for the eight-voice profiles must run at the same
     # gate as the older four-voice benches.
@@ -316,21 +307,90 @@ try {
     foreach($voices in @(8,32,64)) {
         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
     }
-    # HDMI dashboard modules are independent of the audio datapath and run as
-    # their own self-checking benches.
+    # A-line offline optimisation (2026-10-24): bit-exact datapath against
+    # the independent 64-bit reference, master saturation, wavetable
+    # integrity.  Every bench self-checks and exits non-zero via $fatal.
+    $optABankSources = @('rtl\audio\voice_state_ram.v','rtl\audio\split_audio_multiplier.v',
+        'rtl\audio\wide_master.v','rtl\audio\gowin_prom_wave_sine.v',
+        'rtl\audio\gowin_prom_piano_bank.v','rtl\audio\gowin_prom_guitar_bank.v',
+        'rtl\audio\gowin_prom_bright_bank.v','sim\gowin_prom_model.v')
+    $suite += @{ Name='tb_opt_a_datapath'; Top='sim\opt_a\tb_opt_a_datapath.v'; Src=($optABankSources + @('rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_wavetable_engine.v','rtl\prototypes\instrument_ram_audio_compute.v')) }
+    $suite += @{ Name='tb_opt_a_master'; Top='sim\opt_a\tb_opt_a_master.v'; Src=@('rtl\audio\wide_master.v') }
+    $suite += @{ Name='tb_opt_a_tables'; Top='sim\opt_a\tb_opt_a_tables.v'; Src=($optABankSources + @('rtl\prototypes\instrument_rom_banks.v')) }
+    # HDMI dashboard modules and the UART route/snapshot protocol have their
+    # own self-checking benches and are included in Full.
     $suite += @{ Name='tb_hdmi_timing'; Top='sim\tb_hdmi_timing.v'; Src=@('rtl\video\hdmi_720p_timing.v') }
     $suite += @{ Name='tb_ui_status_export'; Top='sim\tb_ui_status_export.v'; Src=@('rtl\video\ui_status_export.v') }
     $suite += @{ Name='tb_ui_audio_visual_export'; Top='sim\tb_ui_audio_visual_export.v'; Src=@('rtl\video\ui_audio_visual_export.v') }
     $suite += @{ Name='tb_dashboard'; Top='sim\tb_dashboard.v'; Src=@(
         'rtl\video\dashboard_text_mux.v','rtl\video\dashboard_renderer.v',
         'rtl\video\dashboard_font_prom.v','sim\gowin_prom_model.v') }
+    $allNames = @($suite | ForEach-Object { $_.Name })
+    $groups = @{
+        Quick = @('tb_tick_rate','tb_adsr','tb_event_fifo','tb_i2s_tx','tb_mcp3208_spi','tb_fsr_mute',
+                  'tb_pressure_bend','tb_pressure_gain','tb_velocity_bounds','tb_wide_master_pair',
+                  'tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause')
+        Host = @('tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause','tb_hid_full_keyboard','tb_top_host_eight')
+        Ram32 = @('tb_voice_sched32_review','tb_instrument_rom_banks','tb_ram32_complete','tb_ram32_controls','tb_ram32_engine_audio','tb_ram32_latency')
+        OptA = @('tb_opt_a_datapath','tb_opt_a_master','tb_opt_a_tables')
+    }
+    $runParams = $GateSuite -in @('Quick','Full') -and $Tests.Count -eq 0
+    if ($Tests.Count -gt 0) { $wanted = @($Tests); $selectionName = 'Custom' }
+    elseif ($GateSuite -eq 'Full') { $wanted = $allNames; $selectionName = 'Full' }
+    else { $wanted = $groups[$GateSuite]; $selectionName = $GateSuite }
+    $unknown = @($wanted | Where-Object { $_ -notin $allNames })
+    if ($unknown.Count -gt 0) { throw ('Unknown test(s): ' + ($unknown -join ', ')) }
+    $suite = @($suite | Where-Object { $_.Name -in $wanted })
+    if ($SkipAudioCapture) { $suite = @($suite | Where-Object { $_.Name -ne 'tb_audio_capture' }) }
+    if ($suite.Count -eq 0) { throw 'No tests selected; gate cannot pass.' }
+    if ($ListTests) {
+        $suite | ForEach-Object { Write-Output $_.Name }
+        if ($runParams) { Write-Output 'tb_i2s_tx_params (6 negative cases)' }
+        exit 0
+    }
+    $runId = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+    $runRoot = Join-Path (Join-Path $sourceRoot '..\..\..\tmp') ('gate-' + $selectionName + '-' + $runId)
+    if (-not $BuildDir) { $BuildDir = Join-Path $runRoot 'build' }
+    if (-not $AudioCaptureDir) { $AudioCaptureDir = Join-Path $runRoot 'capture' }
+    if (-not $MetricsDir) { $MetricsDir = Join-Path $runRoot 'evidence' }
+    # S1 捕获数据默认放在工作区 tmp，不向源码目录写大文件。
+    if (-not $AudioCaptureDir) {
+        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
+        $AudioCaptureDir = Join-Path $repoRoot 'tmp\audio_capture'
+    }
+    New-Item -ItemType Directory -Force -Path $AudioCaptureDir | Out-Null
+    $AudioCaptureDir = (Resolve-Path -LiteralPath $AudioCaptureDir).Path
+    if (-not $BuildDir) {
+        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
+        $BuildDir = Join-Path $repoRoot 'tmp\simulation_build'
+    }
+    New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
+    $BuildDir = (Resolve-Path -LiteralPath $BuildDir).Path
+    # S3 指标文件同样写到工作区 tmp，不向源码目录写大文件。
+    if (-not $MetricsDir) {
+        $repoRoot = (Resolve-Path -LiteralPath (Join-Path $sourceRoot '..\..\..')).Path
+        $MetricsDir = Join-Path $repoRoot 'tmp\i2s_metrics'
+    }
+    New-Item -ItemType Directory -Force -Path $MetricsDir | Out-Null
+    $MetricsDir = (Resolve-Path -LiteralPath $MetricsDir).Path
+    foreach ($runtimeDir in @($AudioCaptureDir, $BuildDir, $MetricsDir)) {
+        if ($runtimeDir -match '[^\x00-\x7F]') {
+            throw "Icarus runtime path must use ASCII characters (vvp plusargs encoding): $runtimeDir"
+        }
+    }
 
+    $gateTimer = [Diagnostics.Stopwatch]::StartNew()
+    $results = @()
+    $fingerprints = @(Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'rtl'),(Join-Path $sourceRoot 'sim') -Recurse -File |
+        Where-Object { $_.Extension -in @('.v','.vh','.hex','.ps1') } | Sort-Object FullName | ForEach-Object {
+            @{ Path=$_.FullName.Substring($sourceRoot.Length+1); SHA256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash }
+        })
+    Write-Output ("Gate {0}: {1}/{2} positive benches; logs: {3}" -f $selectionName,$suite.Count,$allNames.Count,$MetricsDir)
     $failed = 0
-    $skipped = 0
     # Fail before compilation if the checkout is incomplete. A missing bench
     # is a broken gate, never evidence that the corresponding behavior passed.
     $missing = @($suite | Where-Object { -not (Test-Path -LiteralPath $_.Top -PathType Leaf) })
-    if (-not (Test-Path -LiteralPath 'sim\tb_i2s_tx_params.v' -PathType Leaf)) {
+    if ($runParams -and -not (Test-Path -LiteralPath 'sim\tb_i2s_tx_params.v' -PathType Leaf)) {
         Write-Output '缺失参数负例测试台：sim\tb_i2s_tx_params.v；禁止烧录。'
         exit 1
     }
@@ -342,11 +402,6 @@ try {
     foreach ($test in $suite) {
         $out = Join-Path $BuildDir ("{0}.vvp" -f $test.Name)
         Write-Output ("=== {0} ===" -f $test.Name)
-        if ($SkipAudioCapture -and $test.Name -eq 'tb_audio_capture') {
-            Write-Output '跳过 tb_audio_capture（已单独完成，使用 -SkipAudioCapture）'
-            $skipped++
-            continue
-        }
         # -DSIMULATION 打开 i2s_tx 的参数合法性检查（综合时该块被忽略）。
         # Explicit root prevents uninstantiated library prototypes from being
         # elaborated as extra tops requiring unrelated primitive models.
@@ -363,24 +418,23 @@ try {
         }
         if($test.Name -eq 'tb_bandlimit_engine_wide') { $compileArgs=@('-Ptb_bandlimit_engine.EXTRA=2')+$compileArgs }
         if($test.ContainsKey('Voices')) { $compileArgs=@('-Ptb_ram_audio_datapath.VOICES='+$test.Voices)+$compileArgs }
-        & $Iverilog @compileArgs
-        if ($LASTEXITCODE -ne 0) {
-            Write-Output ("编译失败：{0}" -f $test.Name)
-            $failed++
-            continue
+        if ($test.Name -eq 'tb_host_kbd_timeout' -and $GateSuite -ne 'Full') {
+            $compileArgs = @('-Ptb_host_kbd_timeout.LONG_HOLD_MS=100') + $compileArgs
         }
-
-        if ($test.Name -eq 'tb_audio_capture') {
-            & $Vvp $out "+CAPTURE_DIR=$AudioCaptureDir"
-        } elseif ($test.Name -eq 'tb_i2s_tx') {
-            & $Vvp $out "+METRICS_FILE=$(Join-Path $MetricsDir 'tb_i2s_tx_metrics.json')"
-        } else {
-            & $Vvp $out
-        }
-        if ($LASTEXITCODE -ne 0) {
-            Write-Output ("仿真失败：{0}" -f $test.Name)
-            $failed++
-        }
+        $compiled = Invoke-GateProcess $Iverilog $compileArgs (Join-Path $MetricsDir ($test.Name+'.compile.log')) 60
+        $row = [ordered]@{ Name=$test.Name; CompileExit=$compiled.ExitCode; RunExit=$null; Seconds=$compiled.Seconds; Passed=$false }
+        if ($compiled.ExitCode -eq 0) {
+            $runArgs = @('-N', $out)
+            if ($test.Name -eq 'tb_audio_capture') { $runArgs += "+CAPTURE_DIR=$AudioCaptureDir" }
+            if ($test.Name -eq 'tb_i2s_tx') { $runArgs += "+METRICS_FILE=$(Join-Path $MetricsDir 'tb_i2s_tx_metrics.json')" }
+            $ran = Invoke-GateProcess $Vvp $runArgs (Join-Path $MetricsDir ($test.Name+'.run.log')) $TimeoutSeconds
+            $row.RunExit=$ran.ExitCode; $row.Seconds+=$ran.Seconds; $row.Passed=($ran.ExitCode -eq 0)
+            Write-Output $ran.Output
+        } else { Write-Output $compiled.Output }
+        $results += [pscustomobject]$row
+        if (-not $row.Passed) { $failed++ }
+        Write-Output ("{0}: pass={1}, seconds={2:N2}" -f $test.Name,$row.Passed,$row.Seconds)
+        if ($failed -gt 0 -and $selectionName -ne 'Full') { break }
     }
 
     # S3 参数负例：每一例都必须编译通过、运行以非零退出，并且给出匹配的原因。
@@ -398,47 +452,45 @@ try {
         @{ Name = 'data_bits_32';    Define = 'S3_CASE_DATA_BITS_32';
            Reason = 'S3_PARAM_INVALID: DATA_BITS must be 16 or 24' }
     )
+    if (-not $runParams -or ($failed -gt 0 -and $selectionName -ne 'Full')) { $paramCases = @() }
     foreach ($case in $paramCases) {
         $out = Join-Path $BuildDir ("tb_i2s_tx_params_{0}.vvp" -f $case.Name)
         Write-Output ("=== tb_i2s_tx_params[{0}] （预期失败）===" -f $case.Name)
-        $compileLog = (& $Iverilog '-g2012' '-DSIMULATION' ("-D" + $case.Define) '-I' '.' '-o' $out `
-            'sim\tb_i2s_tx_params.v' 'rtl\audio\i2s_tx.v' 2>&1 | Out-String)
-        $compileExit = $LASTEXITCODE
-        if ($compileExit -ne 0) {
-            Write-Output ("参数负例编译失败：{0}（工具问题不是预期失败）" -f $case.Name)
-            Write-Output $compileLog
-            $failed++
-            continue
+        $compiled = Invoke-GateProcess $Iverilog @('-g2012','-DSIMULATION',('-D'+$case.Define),'-s','tb_i2s_tx_params','-I','.', '-o',$out,
+            'sim\tb_i2s_tx_params.v','rtl\audio\i2s_tx.v') (Join-Path $MetricsDir ('param_'+$case.Name+'.compile.log')) 60
+        $row = [ordered]@{ Name=('param_'+$case.Name); CompileExit=$compiled.ExitCode; RunExit=$null; Seconds=$compiled.Seconds; Passed=$false }
+        if ($compiled.ExitCode -eq 0) {
+            $ran = Invoke-GateProcess $Vvp @('-N',$out) (Join-Path $MetricsDir ('param_'+$case.Name+'.run.log')) $TimeoutSeconds
+            $row.RunExit=$ran.ExitCode; $row.Seconds+=$ran.Seconds
+            $row.Passed=($ran.ExitCode -eq 1 -and $ran.Output -match 'FATAL:' -and $ran.Output -match [regex]::Escape($case.Reason))
         }
-        $caseLog = (& $Vvp $out 2>&1 | Out-String)
-        $caseExit = $LASTEXITCODE
-        $caseLog | Set-Content -LiteralPath (Join-Path $MetricsDir ("param_{0}.log" -f $case.Name)) -Encoding UTF8
-        if ($caseExit -eq 0) {
-            Write-Output ("参数负例 {0} 退出码为 0：非法参数没有被拦截" -f $case.Name)
-            $failed++
-            continue
-        }
-        if ($caseExit -ne 1 -or $caseLog -notmatch 'FATAL:' -or
-            $caseLog -notmatch [regex]::Escape($case.Reason)) {
-            Write-Output ("参数负例 {0} 退出码 {1}，但原因不匹配，期望包含：{2}" -f
-                          $case.Name, $caseExit, $case.Reason)
-            $failed++
-            continue
-        }
-        Write-Output ("参数负例 {0} 按预期被拒绝（退出码 {1}，原因匹配）" -f $case.Name, $caseExit)
+        $results += [pscustomobject]$row
+        if (-not $row.Passed) { $failed++ }
     }
+    $changedInputs = @($fingerprints | Where-Object {
+        $inputPath = Join-Path $sourceRoot $_.Path
+        -not (Test-Path -LiteralPath $inputPath -PathType Leaf) -or
+        ((Get-FileHash -LiteralPath $inputPath -Algorithm SHA256).Hash -ne $_.SHA256)
+    })
+    if ($changedInputs.Count -gt 0) {
+        $failed++
+        Write-Output 'Source changed during simulation; result invalid. Rerun after edits stop.'
+    }
+    $summary = [ordered]@{
+        Suite=$selectionName; Passed=($failed -eq 0); CompleteRegression=($selectionName -eq 'Full' -and -not $SkipAudioCapture -and $failed -eq 0)
+        Selected=@($suite.Name); NotSelected=@($allNames | Where-Object { $_ -notin $suite.Name })
+        ElapsedSeconds=$gateTimer.Elapsed.TotalSeconds; Results=$results; Inputs=$fingerprints
+        ChangedDuringRun=@($changedInputs.Path)
+        Iverilog=$Iverilog; Vvp=$Vvp; LongHoldMs=$(if ($GateSuite -eq 'Full') {5000} else {100})
+    }
+    $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $MetricsDir 'gate-result.json') -Encoding UTF8
 
     if ($failed -ne 0) {
         Write-Output ("仿真门禁未通过，{0} 个测试台失败，禁止烧录。" -f $failed)
         exit 1
     }
-    if ($skipped -ne 0) {
-        Write-Output ("本次 {0} 台正向测试台与 {1} 个参数负例通过，显式跳过 {2} 台；不构成完整烧录门禁。" -f
-                      ($suite.Count - $skipped), $paramCases.Count, $skipped)
-    } else {
-        Write-Output ("全部 {0} 台正向测试台与 {1} 个参数负例通过，允许进入烧录流程。" -f
-                      $suite.Count, $paramCases.Count)
-    }
+    Write-Output ("PASS {0}: {1} checks, {2:N2}s. Full regression={3}. Evidence: {4}" -f
+        $selectionName,$results.Count,$gateTimer.Elapsed.TotalSeconds,$summary.CompleteRegression,$MetricsDir)
     exit 0
 }
 finally {

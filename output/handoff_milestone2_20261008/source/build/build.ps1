@@ -1,13 +1,17 @@
 ﻿param(
     [string]$GwSh = '',
-    [ValidateSet('debug','standard','standard27','debug8','debug8g','debug8usb','hdmi')][string]$Profile = 'debug'
+    [ValidateSet('debug','standard','standard27','debug8','debug8g','debug8usb','hdmi')][string]$Profile = 'debug',
+    [ValidateSet('IdleOnly','Strict')][string]$HostTimeoutPolicy = 'IdleOnly'
 )
 
 $ErrorActionPreference = 'Stop'
 $ProjectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'profile_helpers.ps1')
 $configuration = Get-BuildProfile $Profile
-$receipt = Join-Path $PSScriptRoot ('receipts/' + $Profile + '.json')
+if ($HostTimeoutPolicy -eq 'Strict' -and $Profile -notin @('standard27','debug8usb')) { throw 'Strict policy is supported only by standard27/debug8usb.' }
+$receiptSuffix = '.json'
+if ($HostTimeoutPolicy -eq 'Strict') { $receiptSuffix = '.strict.json' }
+$receipt = Join-Path $PSScriptRoot ('receipts/' + $Profile + $receiptSuffix)
 # An unsuccessful attempt must never leave a previous build as the default.
 if (Test-Path -LiteralPath $receipt) { Remove-Item -LiteralPath $receipt }
 $inputs = @(Get-BuildInputs $configuration)
@@ -48,8 +52,23 @@ New-Item -ItemType Directory -Path $runDir -Force | Out-Null
 $tclPath = $tcl.Replace('\','/')
 Set-Content -LiteralPath $entry -Encoding ASCII -Value "set profile $Profile`nsource {$tclPath}"
 $oldRunDir = $env:FPGA_BUILD_RUN_DIR
+$oldWrapper = $env:FPGA_BUILD_WRAPPER
+$wrapperFile = ''
+if ($Profile -in @('standard27','debug8usb')) {
+    $template = Join-Path $PSScriptRoot ('isolated/' + $configuration.Top + '.v')
+    $wrapperFile = Join-Path $runDir ($configuration.Top + '.v')
+    $text = [System.IO.File]::ReadAllText($template, [System.Text.Encoding]::UTF8)
+    $policyValue = 1
+    if ($HostTimeoutPolicy -eq 'Strict') { $policyValue = 0 }
+    $pattern = 'parameter integer HOST_KBD_TIMEOUT_POLICY = 1'
+    if (-not $text.Contains($pattern)) { throw 'Policy wrapper template mismatch.' }
+    $text = $text.Replace($pattern, ('parameter integer HOST_KBD_TIMEOUT_POLICY = ' + $policyValue))
+    [System.IO.File]::WriteAllText($wrapperFile, $text, (New-Object System.Text.UTF8Encoding($false)))
+}
+
 try {
     $env:FPGA_BUILD_RUN_DIR = $runDir
+    $env:FPGA_BUILD_WRAPPER = $wrapperFile
     Write-Output "Profile     : $Profile ($($configuration.Top))"
     & $GwSh $entry
     if ($LASTEXITCODE -ne 0) { throw "Gowin build failed: exit $LASTEXITCODE" }
@@ -68,10 +87,12 @@ try {
     [ordered]@{ Profile=$Profile; Top=$configuration.Top; Bitstream=$fs;
         BitstreamLength=$bitstream.Length; BitstreamModifiedUtc=$bitstream.LastWriteTimeUtc.Ticks;
         BitstreamSha256=(Get-FileHash -LiteralPath $fs -Algorithm SHA256).Hash.ToLower();
+        TimeoutPolicy=$HostTimeoutPolicy; GeneratedWrapper=$wrapperFile;
+        GeneratedWrapperSha256=$(if ($wrapperFile) { (Get-FileHash -LiteralPath $wrapperFile -Algorithm SHA256).Hash.ToLower() } else { '' });
         CompletedUtc=[DateTime]::UtcNow.ToString('o');
         Tool=[ordered]@{ Name='gw_sh'; Path=$GwSh; Version=$toolVersion; VersionSource=$versionSource };
         InputsDigest=(Get-BuildInputsDigest $inputs); Inputs=$inputs } |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $receipt -Encoding UTF8
     Write-Output "Bitstream   : $fs"
     Write-Output "Receipt     : $receipt"
-} finally { $env:FPGA_BUILD_RUN_DIR = $oldRunDir }
+} finally { $env:FPGA_BUILD_RUN_DIR = $oldRunDir; $env:FPGA_BUILD_WRAPPER = $oldWrapper }

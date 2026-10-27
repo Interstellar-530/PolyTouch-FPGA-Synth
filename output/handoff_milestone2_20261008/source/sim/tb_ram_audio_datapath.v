@@ -40,7 +40,7 @@ module tb_ram_audio_datapath #(parameter integer VOICES=8);
  end
  always @(posedge valid)begin
   #1;
-  if(audio!==expected[23:0] || products!=2 || frame_cycles!=27*(VOICES>32?32:VOICES)+6)
+  if(audio!==expected[23:0] || products!=2 || frame_cycles!=27*(VOICES>32?32:VOICES)+8)
    $fatal(1,"RAM master mismatch sample=%0d expected=%0d cycles=%0d requests=%0d",audio,expected,frame_cycles,products);
   frames=frames+1;
  end
@@ -56,7 +56,7 @@ module tb_ram_audio_datapath #(parameter integer VOICES=8);
   @(negedge clk);muted=0;weight=0;pressure=0;unmute_audible=audible;
   repeat(260)@(posedge tick);@(negedge clk);
   if(audible-unmute_audible<100 || low_bits<100 || frames<600 || clips!=0)$fatal(1,"RAM audio coverage/headroom failed");
-  $display("PASS tb_ram_audio_datapath: voices=%0d master_frames=%0d decoded=%0d low_bits=%0d shared_products=2 frame_cycles=%0d period=%0d; slew/mute/stereo/24-bit exact",VOICES,frames,serial_frames,low_bits,27*(VOICES>32?32:VOICES)+6,PERIOD);$finish;
+  $display("PASS tb_ram_audio_datapath: voices=%0d master_frames=%0d decoded=%0d low_bits=%0d shared_products=2 frame_cycles=%0d period=%0d; slew/mute/stereo/24-bit exact",VOICES,frames,serial_frames,low_bits,27*(VOICES>32?32:VOICES)+8,PERIOD);$finish;
  end
  initial begin #100000000;$fatal(1,"RAM audio timeout");end
 endmodule

@@ -21,7 +21,7 @@ module tb_top_i2s;
     wire adc_cs_n, adc_sck, adc_mosi, adc_miso;
     wire [3:0] clip_fold;
     wire i2s_bck, i2s_lrck, i2s_din, dac_xsmt;
-    reg [11:0] adc_ch0 = 12'd2048, adc_ch1 = 12'd2048;
+    reg [11:0] adc_ch0 = 12'd0, adc_ch1 = 12'd2048; // FSR released; bend centered
 
     always #18.5185 clk27 = ~clk27;   // 本档不使用，但端口必须被驱动
     always #40.69   clk12 = ~clk12;   // 12.288 MHz（半周期 40.69 ns）

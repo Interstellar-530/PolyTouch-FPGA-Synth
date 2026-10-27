@@ -1,0 +1,13 @@
+{
+  "baseline": "93072c1a1b9a91ddd9b2344f4190d82502c318ef",
+  "feature_files": [
+    "rtl/audio/hid_keymap.v",
+    "rtl/audio/host_kbd_input.v",
+    "rtl/top.v",
+    "sim/run_simulation.ps1",
+    "sim/README.md",
+    "sim/tb_top_host_pause.v"
+  ],
+  "archive": "archive/FPGA-20261026-v0.5",
+  "scope": "one short pause/play check only; no Full or Quick run"
+}

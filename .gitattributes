@@ -10,6 +10,7 @@ releases/v1.0.0/*.fs binary
 
 # FPGA bitstreams must preserve their receipt-bound bytes.
 *.fs binary
+*.pdf binary
 releases/v2.1.0/*.json text eol=lf
 releases/v2.1.0/*.sha256 text eol=lf
 releases/v2.1.0/MANIFEST.md text eol=lf

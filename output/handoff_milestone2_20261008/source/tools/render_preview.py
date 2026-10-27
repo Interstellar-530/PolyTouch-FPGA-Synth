@@ -123,6 +123,12 @@ class Allocator:
             pool = [v for v in self.voices if not v.gate] or self.voices
             target = min(pool, key=lambda v: v.age)
         target.note, target.vel, target.gate, target.age = note, vel, True, self.age
+        # The RTL restarts phase and envelope on every note-on, including a
+        # repeated note that reuses its own voice.  Mirror that here so the
+        # preview articulates repeated pitches instead of gluing them together.
+        target.phase = 0
+        target.env = 0
+        target.state = "ATTACK"
         self.age += 1
 
     def note_off(self, note):
@@ -140,13 +146,15 @@ def build_script(chord_set):
     script = {}
 
     tick = 0
-    for note, on_units, code in song_data.melody_events():
-        slot = song_data.slot_units(on_units)
-        gap = song_data.gap_units(on_units)
-        script.setdefault(tick, []).append(
-            ("on", note, song_data.VELOCITY_CODES[code]))
-        # the voice is released one gap before the next note starts
-        script.setdefault(tick + slot - gap, []).append(("off", note))
+    for note, slot, code in song_data.melody_events():
+        gap = song_data.gap_units(slot)
+        if note:
+            script.setdefault(tick, []).append(
+                ("on", note, song_data.VELOCITY_CODES[code]))
+            # The RTL releases the voice gap units before the slot ends; a
+            # one-unit slot is released on the next slot boundary instead.
+            release = max(1, slot - gap)
+            script.setdefault(tick + release, []).append(("off", note))
         tick += slot
 
     tick, prev_triad = 0, []
@@ -156,7 +164,7 @@ def build_script(chord_set):
             script.setdefault(tick, []).append(("off", note))
         triad = song_data.triad(root, quality)
         for note in triad:
-            script[tick].append(("on", note, chord_vel))
+            script.setdefault(tick, []).append(("on", note, chord_vel))
         prev_triad = triad
         tick += length
 
@@ -210,7 +218,7 @@ def render(chord_set="A", tempo_mult=1):
 
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
-        SRC, "..", "artifacts", "lanhuacao_preview.wav")
+        SRC, "..", "artifacts", "wanye_preview.wav")
     chord_set = (sys.argv[2] if len(sys.argv) > 2 else "A").upper()
     tempo_mult = int(sys.argv[3]) if len(sys.argv) > 3 else 1
 
@@ -219,7 +227,7 @@ def main():
         for issue in issues:
             print("FAIL:", issue)
         raise SystemExit(1)
-    if chord_set not in song_data.CHORD_SETS:
+    if chord_set not in song_data.PASS_CHORDS:
         raise SystemExit(f"unknown chord set {chord_set}")
 
     samples, peak = render(chord_set, tempo_mult)

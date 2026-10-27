@@ -8,7 +8,9 @@
 //      下位机（state 2）从 kbd_uart_rx 输入；GPIO 输入在内部固定为未按下。
 //
 // 本文件与 top.v 的端口列表必须同步；改动 top.v 端口后要一起改这里。
-module top_std27_build (
+module top_std27_build #(
+    parameter integer HOST_KBD_TIMEOUT_POLICY = 1
+) (
     input  wire        clk_27m,       // H11，核心板板载 27 MHz 有源晶振
     input  wire        key_rst,       // S3 / D7，低有效设计复位
     input  wire        key_s1,        // S1 / T3，切伴奏集
@@ -36,8 +38,9 @@ module top_std27_build (
 
     top #(
         .AUDIO_IF(2), .I2S_DATA_BITS(24),
-        .VOICES(8), .MASTER_VOLUME_SHIFT(3),
-        .GPIO_KEY_ENABLE(0), .HOST_KBD_ENABLE(1)
+        // +6.02 dB over the previous /8 mix; retain soft limiting and V0..V100.
+        .VOICES(8), .MASTER_VOLUME_SHIFT(2),
+        .GPIO_KEY_ENABLE(0), .HOST_KBD_TIMEOUT_POLICY(HOST_KBD_TIMEOUT_POLICY), .HOST_KBD_ENABLE(1)
     ) u_top (
         .clk_27m(clk_27m), .clk_12m288(1'b0),
         .key_rst(key_rst), .key_s1(key_s1), .key_s2(key_s2),

@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "operation": 2,
+  "profile": "standard27",
+  "skipped_simulation": true,
+  "reason": "Explicit user request; unchanged previously verified bitstream",
+  "sha256": "8f70f54bb4cb95b68aeb41ca8180283ebaa33b21b282d88165867af2239723af",
+  "time": "2026-10-24T15:10:18.4223681+08:00"
+}

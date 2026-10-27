@@ -5,7 +5,7 @@ module instrument_ram_audio_compute #(
  input wire clk,rst,sample_tick,input wire cfg_valid,output wire cfg_ready,
  input wire[5:0]cfg_voice,input wire[31:0]cfg_increment,input wire[15:0]cfg_envelope,
  input wire[6:0]cfg_velocity,input wire cfg_retrigger,input wire[23:0]cfg_param,input wire[2:0]cfg_mask,
- input wire[7:0]mix_weight,input wire pressure_enable,input wire[11:0]pressure_level,input wire mute,
+ input wire[7:0]mix_weight,input wire pressure_enable,input wire[11:0]pressure_level,input wire mute,input wire[8:0]volume_gain_q8,
  output wire signed[23:0]audio_sample,output wire sample_valid,
  output wire[31:0]clip_count,output wire initialized,
  output wire signed[31:0]sine_total,bright_total,output wire sums_valid,
@@ -38,7 +38,7 @@ module instrument_ram_audio_compute #(
  assign sums_valid=&valid_v;
  wide_master #(.VOICE_SHIFT($clog2(VOICES))) u_master(
   .clk(clk),.rst(rst),.update(sums_valid),.sine_sum(sine_total),.bright_sum(bright_total),
-  .mix_weight(mix_weight),.pressure_enable(pressure_enable),.pressure_level(pressure_level),.mute(mute),
+  .mix_weight(mix_weight),.pressure_enable(pressure_enable),.pressure_level(pressure_level),.mute(mute),.volume_gain_q8(volume_gain_q8),
   .sample_out(audio_sample),.result_valid(sample_valid),.busy(master_busy),.clip_count(clip_count),.clip_event(),
   .mult_request(master_req),.mult_ready(master_ready),.mult_operand_a(master_a),.mult_operand_b(master_b),.mult_product(product_v[0]));
 `ifdef SIMULATION

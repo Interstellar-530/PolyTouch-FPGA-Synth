@@ -9,7 +9,7 @@ module tb_wide_master_pair;
  wire request,busy,valid,clip;wire signed[32:0]ma;wire signed[17:0]mb;
  wire signed[50:0]product;wire signed[23:0]sample_out;wire[31:0]clip_count;
  split_audio_multiplier #(33) backend(clk,rst,request && ready,ma,mb,product);
- wide_master dut(clk,rst,update,a,b,weight,1'b1,pressure,muted,sample_out,valid,busy,
+ wide_master dut(clk,rst,update,a,b,weight,1'b1,pressure,muted,9'd256,sample_out,valid,busy,
   clip_count,clip,request,ready,ma,mb,product);
  integer i,cycle=0,products=0,gain=4096,w=64,target,expected_clip,expected_clips=0,waits;
  reg signed[63:0]num,master,expected,aa,bb;reg[31:0]rng=32'h59753137;

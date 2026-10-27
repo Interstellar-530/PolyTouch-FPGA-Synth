@@ -1,0 +1,5 @@
+LATENCY voices=8 single_min_us=67.668 single_max_us=83.293 full_load_change_us=62.460 burst_allocate_us=2.582 all_rendered_us=43.640 uart_start_to_i2s_us=1020.710 env10_us=979.119 env90_us=8791.603 max_tail_cycles=161 frame_cycles=1536 queue_min_us=0.042 queue_max_us=0.049
+LATENCY voices=32 single_min_us=67.668 single_max_us=83.293 full_load_change_us=62.460 burst_allocate_us=15.536 all_rendered_us=49.825 uart_start_to_i2s_us=1020.710 env10_us=979.119 env90_us=8791.603 max_tail_cycles=617 frame_cycles=1536 queue_min_us=0.042 queue_max_us=0.358
+PASS tb_ram32_latency: default ADSR, 8/32 comparison, four event phases, full-load shadow I2S, real UART, all-voice contributions, frame deadlines
+sim\tb_ram32_latency.v:141: $finish called at 11357108970 (1ps)
+

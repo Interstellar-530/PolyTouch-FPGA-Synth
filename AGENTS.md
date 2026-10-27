@@ -16,7 +16,7 @@ PDF 阅读默认先转 Markdown，再阅读；PDF 输出默认先写 Markdown，
 
 任何 Verilog 改动，在烧录之前必须先通过 RTL 仿真。这条规则不接受"改动很小""只调参数""时间紧"之类的例外。
 
-仿真门禁由 `output/handoff_milestone2_20261008/source/sim/run_simulation.ps1` 执行，它编译并运行全部测试台，任何一个失败就返回退出码 1。烧录脚本 `source/build/program_sram.ps1` 默认先跑这个门禁，未通过时直接拒绝烧录；`-SkipSimulation` 只在仿真器本身不可用的极端情况下使用，且必须在调试日志里写明原因。工具链是 Icarus Verilog（`C:\iverilog`），仅用于开发期仿真，不参与硬件运行。
+仿真门禁由 `output/handoff_milestone2_20261008/source/sim/run_simulation.ps1` 执行，按2026-10-23用户要求，默认Quick运行当前生产链短门禁；-Suite Full保留全部历史回归，Host/Ram32或-Tests用于开发定向验证。所选测试任一失败就返回非零，不允许空清单或缺失测试通过。烧录脚本 `source/build/program_sram.ps1` 默认先跑Quick，可用-SimulationSuite Full选择完整回归，未通过时直接拒绝烧录；`-SkipSimulation` 只在仿真器本身不可用的极端情况下使用，且必须在调试日志里写明原因。工具链是 Icarus Verilog（`C:\iverilog`），仅用于开发期仿真，不参与硬件运行。
 
 新增或修改功能时同步补测试台，并让测试台自检：断言不成立时用 `$fatal` 结束，使退出码非零，而不是只打印一行提示。历史教训是本项目曾把宽 576 个时钟的使能电平当成单周期脉冲使用，导致旋律飞速跑圈，读代码时完全看不出问题，只有逐周期仿真才暴露出来。
 
