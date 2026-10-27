@@ -1,0 +1,17 @@
+// Existing Tang Primer20K Dock3714 pins; isolated timing/self-test wrapper.
+IO_LOC "clk_12m288" T7;
+IO_PORT "clk_12m288" IO_TYPE=LVCMOS33;
+IO_LOC "key_rst" D7;
+IO_PORT "key_rst" IO_TYPE=LVCMOS15;
+IO_LOC "key_s1" T3;
+IO_PORT "key_s1" IO_TYPE=LVCMOS15;
+IO_LOC "i2s_bck" B12;
+IO_PORT "i2s_bck" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC "i2s_lrck" C12;
+IO_PORT "i2s_lrck" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC "i2s_din" B13;
+IO_PORT "i2s_din" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC "dac_xsmt" P6;
+IO_PORT "dac_xsmt" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "led" N16;
+IO_PORT "led" IO_TYPE=LVCMOS33 DRIVE=4;

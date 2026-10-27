@@ -1,0 +1,26 @@
+{
+  "source": "AKWF_epiano_0001.wav",
+  "license": "CC0",
+  "tables": 12,
+  "depth": 512,
+  "bsram_blocks": 6,
+  "bank_index": "group*6 + stage",
+  "groups": [
+    {
+      "group": 0,
+      "zone": 0,
+      "midi_lo": 0,
+      "midi_hi": 47,
+      "fmax_hz": 123.5,
+      "harmonics": 170
+    },
+    {
+      "group": 1,
+      "zone": 5,
+      "midi_lo": 84,
+      "midi_hi": 95,
+      "fmax_hz": 1975.5,
+      "harmonics": 10
+    }
+  ]
+}

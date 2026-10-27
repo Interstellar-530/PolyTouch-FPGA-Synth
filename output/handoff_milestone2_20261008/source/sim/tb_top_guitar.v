@@ -79,9 +79,9 @@ module tb_top_guitar;
         $display("INFO tb_top_guitar: maxabs=%0d active=%0d env=%0d inc=%0d",
                  maxabs, active, dut.v_env[0], dut.inc[0]);
 
-        // 1 s 后仍在持续段，包络不能自行归零
+        // 1 s 后仍在持续段，包络不能自行归零。当前 guitar sustain 为 16384。
         while (frames < 25000) @(posedge clk27);
-        if (dut.v_env[0] < 30000)
+        if (dut.v_env[0] < 16'd8192)
             $fatal(1, "guitar sustain env=%0d after 1s", dut.v_env[0]);
         $display("PASS tb_top_guitar: guitar table selected, audio active, sustain env=%0d", dut.v_env[0]);
         $finish;

@@ -42,3 +42,5 @@ rtl/audio/kbd_uart_rx.v
 rtl/audio/ch9350_rx.v
 rtl/audio/hid_keymap.v
 rtl/audio/host_kbd_input.v
+rtl/video/ui_status_export.v
+rtl/video/ui_audio_visual_export.v

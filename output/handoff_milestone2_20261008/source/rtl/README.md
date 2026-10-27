@@ -8,6 +8,8 @@ with clarified comments. See the repository-root README and
 `docs/releases/v1.0.0-validation.json` for release verification.
 
 - `top.v`: wiring, reset tree, key handling, LED indicators.
+- `uart_ctrl.v`: 115200 command parser; `R0/R1` selects computer/HDMI dashboard
+  routing and `Q` returns a 116-byte ASCII-hex snapshot for the PC dashboard.
 - `audio/note_phase_inc.v`: MIDI note to 32 bit phase increment.
 - `audio/dds_osc.v`: interpolating single-cycle wavetable oscillator.
 - `audio/adsr.v`: envelope with parameterised step sizes.

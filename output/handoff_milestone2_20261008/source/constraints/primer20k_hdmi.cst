@@ -1,0 +1,91 @@
+// Tang Primer 20K + Dock 3714 pins —— 27 MHz 标准 I2S 档（构建入口 build/isolated/top_std27_build.v）。
+//
+// 与 primer20k_i2s.cst 的区别只有时钟：本档用核心板 H11 的板载 27 MHz，不接 T7 的
+// 12.288 MHz 成品晶振。I2S 仍是 64 BCK/帧、24 位槽，但 BCK = 3.000 MHz、LRCK = 46.875 kHz，
+// 不是 48 kHz（27e6/9/64 = 46875 整除；27 MHz 无法用整数分频得到精确 48 kHz）。
+//
+// 本档只驱动外置 PCM5102A 路径：12 路 GPIO 键、UART 调试口、4 个用户 LED、MCP3208 SPI
+// 与 I2S/XSMT。板载 PT8211 三线、pa_en 与 clip_fold 不在本档的端口表里（由封装在内部消化），
+// 所以这里没有它们的引脚定义，也不存在未约束端口。
+//
+// 引脚来源：docs/hardware/FPGA-pinplan-20261013-v0.1.csv 与同目录硬件连接文档。
+// 27 MHz 档与 12.288 MHz 档都要外置 DAC；两档的 I2S 接线相同，但不能同时驱动点流。
+
+// 核心板板载 27 MHz 有源晶振 U10，经 R20 22 ohm 到 H11（GCLKT_0，Bank 0，3.3 V）。
+IO_LOC "clk_27m" H11;
+IO_PORT "clk_27m" IO_TYPE=LVCMOS33;
+
+// 标准 I2S（Philips）三线到 PCM5102A，按 3.000 MHz BCK 规划，驱动 8 mA。
+IO_LOC "i2s_bck" B12;
+IO_PORT "i2s_bck" IO_TYPE=LVCMOS33 DRIVE=8;
+
+IO_LOC "i2s_lrck" C12;
+IO_PORT "i2s_lrck" IO_TYPE=LVCMOS33 DRIVE=8;
+
+IO_LOC "i2s_din" B13;
+IO_PORT "i2s_din" IO_TYPE=LVCMOS33 DRIVE=8;
+
+// PCM5102A 软静音：本档恒为高（解除静音）。静态电平，取 4 mA 降低边沿耦合。
+IO_LOC "dac_xsmt" P6;
+IO_PORT "dac_xsmt" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// S3 / D7 是同步设计复位。T10（S0）是配置 SSPI 保留脚、S4/B10 是 RECONFIG_N，都不能用。
+IO_LOC "key_rst" D7;
+IO_PORT "key_rst" IO_TYPE=LVCMOS15;
+
+// S1 与 S2 用户键，底板上拉到 +1V5。
+IO_LOC "key_s1" T3;
+IO_PORT "key_s1" IO_TYPE=LVCMOS15;
+
+IO_LOC "key_s2" T2;
+IO_PORT "key_s2" IO_TYPE=LVCMOS15;
+
+// BL702 USB-UART 桥（底板 3714 原理图第 1 页）：M11 -> BL702_UART1_RX，T13 <- BL702_UART1_TX。
+// 两脚都在 Bank 2，该 Bank 因同时承载 JTAG 而被底板锁定在 3.3 V。
+IO_LOC "uart_tx" M11;
+IO_PORT "uart_tx" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "uart_rx" T13;
+IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
+
+// 用户 LED，低有效。N16 = 曲目循环标记；N14 = 伴奏集；L14/L16 = 速度档位二进制。
+IO_LOC "led" N16;
+IO_PORT "led" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led_chord" N14;
+IO_PORT "led_chord" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led_t0" L14;
+IO_PORT "led_t0" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led_t1" L16;
+IO_PORT "led_t1" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// 演奏输入：CH9350L 下位机（state 2）UART，停在 J5-5/J5-6，替代原 12 路 GPIO 键。
+// Host TXD -> FPGA L9；FPGA N8 -> Host RXD（当前固定高，保留给将来 LED/握手）。
+IO_LOC "kbd_uart_rx" L9;
+IO_PORT "kbd_uart_rx" IO_TYPE=LVCMOS33;
+IO_LOC "kbd_uart_tx" N8;
+IO_PORT "kbd_uart_tx" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// MCP3208 SPI：CH0 = 压力 FSR，CH1 = 弯音电位器。Bank 3/7 均按 3.3 V 规划。
+// 仍属草稿：上板前按到货验收流程核对接线与 Bank 电压。
+IO_LOC "adc_cs_n" N6;
+IO_PORT "adc_cs_n" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_sck" D11;
+IO_PORT "adc_sck" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_mosi" A11;
+IO_PORT "adc_mosi" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_miso" B11;
+IO_PORT "adc_miso" IO_TYPE=LVCMOS33;
+
+// Dock 3714 onboard HDMI/DVI. Pin pairs and DRIVE=3.5 follow the verified
+// Sipeed TangPrimer-20K-example HDMI/src/dk_video.cst constraint.
+IO_LOC "tmds_clk_p" G16,H15;
+IO_PORT "tmds_clk_p" PULL_MODE=NONE DRIVE=3.5;
+IO_LOC "tmds_data_p[0]" H14,H16;
+IO_PORT "tmds_data_p[0]" PULL_MODE=NONE DRIVE=3.5;
+IO_LOC "tmds_data_p[1]" J15,K16;
+IO_PORT "tmds_data_p[1]" PULL_MODE=NONE DRIVE=3.5;
+IO_LOC "tmds_data_p[2]" K14,K15;
+IO_PORT "tmds_data_p[2]" PULL_MODE=NONE DRIVE=3.5;

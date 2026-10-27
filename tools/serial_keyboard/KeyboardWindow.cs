@@ -26,12 +26,18 @@ namespace PolyTouchPc
         private readonly Button instrumentButton;
         private readonly TrackBar timbre = new TrackBar();
         private readonly Timer polyphonyTimer = new Timer();
+        private readonly Timer dashboardTimer = new Timer();
+        private readonly DashboardPanel dashboard = new DashboardPanel();
         private readonly string logPath;
         private int baseNote = KeyboardLayout.DefaultBaseNote;
         private bool timbreDirty;
         private bool manual = true;
         private bool guitarMode;
         private int volume = 100;
+        private bool computerDisplay;
+        // Windows repeats KeyDown while F7 is held. Keep one toggle per
+        // physical press and release the latch on key-up or focus loss.
+        private bool f7Held;
         public KeyboardWindow(string defaultPort, string logFile)
         {
             logPath = logFile;
@@ -58,7 +64,7 @@ namespace PolyTouchPc
             instrumentButton.Width = 140;
             status.SetBounds(20, 60, 1160, 28); status.Text = "正在连接…"; Controls.Add(status);
             Label guide = new Label(); guide.SetBounds(20, 96, 1160, 52);
-            guide.Text = "两排钢琴键：低排 C3–B3，高排 C4–B4；A/F/K 保留为 C4/F4/C5 快捷别名。\r\nPageUp/PageDown 移调；F1–F5 切换钢琴硬度，F5 为最强击弦；F6 或“音色”按钮切换钢琴/吉他；↑/↓ 调音量；空格全松键。";
+            guide.Text = "两排钢琴键：低排 C3–B3，高排 C4–B4；A/F/K 保留为 C4/F4/C5 快捷别名。\r\nPageUp/PageDown 移调；F1–F5 切换钢琴硬度，F5 为最强击弦；F6 或“音色”按钮切换钢琴/吉他；↑/↓ 调音量；F7 切换电脑/HDMI 仪表盘；空格全松键。";
             Controls.Add(guide);
 
             for (int i = 0; i < KeyboardLayout.LowerKeys.Length; i++)
@@ -115,6 +121,17 @@ namespace PolyTouchPc
             history.SetBounds(20, 458, 1160, 182); history.Multiline = true;
             history.ReadOnly = true; history.ScrollBars = ScrollBars.Vertical;
             history.TabStop = false; Controls.Add(history);
+            dashboard.Dock = DockStyle.Fill;
+            dashboard.Visible = false;
+            dashboard.TabStop = false;
+            Controls.Add(dashboard);
+            dashboardTimer.Interval = 100;
+            dashboardTimer.Tick += delegate
+            {
+                if (computerDisplay && transport != null && transport.Connected)
+                    transport.RequestSnapshot();
+            };
+            dashboardTimer.Start();
             Shown += delegate
             {
                 ConnectPort();
@@ -127,6 +144,7 @@ namespace PolyTouchPc
             };
             Deactivate += delegate
             {
+                f7Held = false;
                 if (manual) { Record("失去焦点 -> 全松键"); AllOff(); }
             };
             Activated += delegate
@@ -142,6 +160,7 @@ namespace PolyTouchPc
             FormClosing += delegate
             {
                 polyphonyTimer.Stop(); polyphonyTimer.Dispose();
+                dashboardTimer.Stop(); dashboardTimer.Dispose();
                 if (transport != null) transport.Dispose();
             };
         }
@@ -248,9 +267,15 @@ namespace PolyTouchPc
             if (transport != null) transport.Dispose();
             notes.Clear(); ResetTiles();
             transport = new SerialTransport(); transport.Message += Record;
+            transport.Snapshot += UpdateDashboard;
             try
             {
                 transport.Connect(ports.SelectedItem.ToString()); manual = true;
+                computerDisplay = false;
+                dashboard.Visible = false;
+                // Establish a known default after reconnecting to a board that
+                // may have been left in computer-dashboard mode.
+                Send("R1");
                 status.Text = "已连接 · 手动模式 · 按住琴键发音（若无应答请看下方记录）";
                 ActiveControl = manualButton; manualButton.Focus();
             }
@@ -299,6 +324,13 @@ namespace PolyTouchPc
                 ToggleInstrument();
                 e.Handled = true; e.SuppressKeyPress = true; return;
             }
+            if (e.KeyCode == Keys.F7) {
+                if (!f7Held) {
+                    f7Held = true;
+                    ToggleDisplayRoute();
+                }
+                e.Handled = true; e.SuppressKeyPress = true; return;
+            }
             int timbreTarget = KeyboardLayout.TimbreForFunctionKey((int)e.KeyCode);
             if (timbreTarget >= 0) {
                 SetTimbre(timbreTarget - 250);
@@ -332,6 +364,11 @@ namespace PolyTouchPc
         }
         protected override void OnKeyUp(KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.F7) {
+                f7Held = false;
+                e.Handled = true; e.SuppressKeyPress = true;
+                return;
+            }
             string command = notes.Release((int)e.KeyCode);
             if (command != null) { Send(command); ResetTile(e.KeyCode); e.Handled = true; }
             base.OnKeyUp(e);
@@ -344,6 +381,39 @@ namespace PolyTouchPc
         {
             Label tile; if (tiles.TryGetValue(key, out tile))
                 tile.BackColor = tile.Text.Contains("#") ? Color.FromArgb(54, 65, 82) : Color.White;
+        }
+
+        private void UpdateDashboard(DashboardSnapshot value)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action<DashboardSnapshot>(UpdateDashboard), value); } catch (InvalidOperationException) { }
+                return;
+            }
+            dashboard.SetSnapshot(value);
+        }
+
+        private void ToggleDisplayRoute()
+        {
+            if (transport == null || !transport.Connected)
+            {
+                status.Text = "请先连接串口，再切换显示路由。";
+                return;
+            }
+            computerDisplay = !computerDisplay;
+            Send("R" + (computerDisplay ? "0" : "1"));
+            dashboard.Visible = computerDisplay;
+            if (computerDisplay)
+            {
+                dashboard.BringToFront();
+                status.Text = "电脑仪表盘 · F7 切回外接 HDMI";
+            }
+            else
+            {
+                status.Text = "外接 HDMI 仪表盘 · F7 切到电脑";
+                ActiveControl = manualButton; manualButton.Focus();
+            }
         }
         public static void Open(string port, string log)
         {

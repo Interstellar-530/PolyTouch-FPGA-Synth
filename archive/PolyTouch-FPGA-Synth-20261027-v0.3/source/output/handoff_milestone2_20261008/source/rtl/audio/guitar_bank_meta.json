@@ -1,0 +1,501 @@
+{
+  "source": "Karoryfer Black And Green Guitars",
+  "license": "CC0",
+  "method": "exact-f0 harmonic decomposition + 6.5 kHz rolloff",
+  "tables": 30,
+  "depth": 512,
+  "bsram_blocks": 15,
+  "bands": [
+    40,
+    48,
+    56,
+    64,
+    72,
+    80,
+    89
+  ],
+  "variants": [
+    "green/p",
+    "green/mf",
+    "green/f",
+    "black/p",
+    "black/mf",
+    "black/f"
+  ],
+  "groups": [
+    [
+      0,
+      1
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      4
+    ],
+    [
+      5
+    ]
+  ],
+  "entries": [
+    {
+      "group": 0,
+      "bands": [
+        0,
+        1
+      ],
+      "variant": 0,
+      "guitar": "green",
+      "dynamic": "p",
+      "source_note": 52,
+      "file": "twang_e3_p_rr1.flac",
+      "f0_est": 164.8,
+      "harmonics_used": 6,
+      "highest_hz": 988.8,
+      "seam": 77
+    },
+    {
+      "group": 0,
+      "bands": [
+        0,
+        1
+      ],
+      "variant": 1,
+      "guitar": "green",
+      "dynamic": "mf",
+      "source_note": 52,
+      "file": "twang_e3_mf_rr1.flac",
+      "f0_est": 164.87,
+      "harmonics_used": 7,
+      "highest_hz": 1154.1,
+      "seam": 493
+    },
+    {
+      "group": 0,
+      "bands": [
+        0,
+        1
+      ],
+      "variant": 2,
+      "guitar": "green",
+      "dynamic": "f",
+      "source_note": 52,
+      "file": "twang_e3_f_rr1.flac",
+      "f0_est": 165.69,
+      "harmonics_used": 9,
+      "highest_hz": 1491.2,
+      "seam": 268
+    },
+    {
+      "group": 0,
+      "bands": [
+        0,
+        1
+      ],
+      "variant": 3,
+      "guitar": "black",
+      "dynamic": "p",
+      "source_note": 52,
+      "file": "twang_e3_p_rr1.flac",
+      "f0_est": 164.18,
+      "harmonics_used": 6,
+      "highest_hz": 985.1,
+      "seam": 406
+    },
+    {
+      "group": 0,
+      "bands": [
+        0,
+        1
+      ],
+      "variant": 4,
+      "guitar": "black",
+      "dynamic": "mf",
+      "source_note": 52,
+      "file": "twang_e3_mf_rr1.flac",
+      "f0_est": 164.35,
+      "harmonics_used": 6,
+      "highest_hz": 986.1,
+      "seam": 87
+    },
+    {
+      "group": 0,
+      "bands": [
+        0,
+        1
+      ],
+      "variant": 5,
+      "guitar": "black",
+      "dynamic": "f",
+      "source_note": 52,
+      "file": "twang_e3_f_rr1.flac",
+      "f0_est": 165.6,
+      "harmonics_used": 14,
+      "highest_hz": 2318.4,
+      "seam": 21
+    },
+    {
+      "group": 1,
+      "bands": [
+        2
+      ],
+      "variant": 0,
+      "guitar": "green",
+      "dynamic": "p",
+      "source_note": 59,
+      "file": "twang_b3_p_rr1.flac",
+      "f0_est": 248.11,
+      "harmonics_used": 5,
+      "highest_hz": 1240.5,
+      "seam": 151
+    },
+    {
+      "group": 1,
+      "bands": [
+        2
+      ],
+      "variant": 1,
+      "guitar": "green",
+      "dynamic": "mf",
+      "source_note": 59,
+      "file": "twang_b3_mf_rr1.flac",
+      "f0_est": 247.97,
+      "harmonics_used": 7,
+      "highest_hz": 1735.8,
+      "seam": 326
+    },
+    {
+      "group": 1,
+      "bands": [
+        2
+      ],
+      "variant": 2,
+      "guitar": "green",
+      "dynamic": "f",
+      "source_note": 59,
+      "file": "twang_b3_f_rr1.flac",
+      "f0_est": 248.61,
+      "harmonics_used": 9,
+      "highest_hz": 2237.5,
+      "seam": 12
+    },
+    {
+      "group": 1,
+      "bands": [
+        2
+      ],
+      "variant": 3,
+      "guitar": "black",
+      "dynamic": "p",
+      "source_note": 59,
+      "file": "twang_b3_p_rr1.flac",
+      "f0_est": 246.25,
+      "harmonics_used": 8,
+      "highest_hz": 1970.0,
+      "seam": 17
+    },
+    {
+      "group": 1,
+      "bands": [
+        2
+      ],
+      "variant": 4,
+      "guitar": "black",
+      "dynamic": "mf",
+      "source_note": 59,
+      "file": "twang_b3_mf_rr1.flac",
+      "f0_est": 246.48,
+      "harmonics_used": 8,
+      "highest_hz": 1971.8,
+      "seam": 22
+    },
+    {
+      "group": 1,
+      "bands": [
+        2
+      ],
+      "variant": 5,
+      "guitar": "black",
+      "dynamic": "f",
+      "source_note": 59,
+      "file": "twang_b3_f_rr1.flac",
+      "f0_est": 247.74,
+      "harmonics_used": 16,
+      "highest_hz": 3963.9,
+      "seam": 323
+    },
+    {
+      "group": 2,
+      "bands": [
+        3
+      ],
+      "variant": 0,
+      "guitar": "green",
+      "dynamic": "p",
+      "source_note": 67,
+      "file": "twang_g4_p_rr1.flac",
+      "f0_est": 393.75,
+      "harmonics_used": 6,
+      "highest_hz": 2362.5,
+      "seam": 380
+    },
+    {
+      "group": 2,
+      "bands": [
+        3
+      ],
+      "variant": 1,
+      "guitar": "green",
+      "dynamic": "mf",
+      "source_note": 67,
+      "file": "twang_g4_mf_rr1.flac",
+      "f0_est": 393.98,
+      "harmonics_used": 7,
+      "highest_hz": 2757.9,
+      "seam": 148
+    },
+    {
+      "group": 2,
+      "bands": [
+        3
+      ],
+      "variant": 2,
+      "guitar": "green",
+      "dynamic": "f",
+      "source_note": 67,
+      "file": "twang_g4_f_rr1.flac",
+      "f0_est": 394.84,
+      "harmonics_used": 13,
+      "highest_hz": 5133.0,
+      "seam": 541
+    },
+    {
+      "group": 2,
+      "bands": [
+        3
+      ],
+      "variant": 3,
+      "guitar": "black",
+      "dynamic": "p",
+      "source_note": 67,
+      "file": "twang_g4_p_rr1.flac",
+      "f0_est": 392.43,
+      "harmonics_used": 5,
+      "highest_hz": 1962.1,
+      "seam": 309
+    },
+    {
+      "group": 2,
+      "bands": [
+        3
+      ],
+      "variant": 4,
+      "guitar": "black",
+      "dynamic": "mf",
+      "source_note": 67,
+      "file": "twang_g4_mf_rr1.flac",
+      "f0_est": 393.1,
+      "harmonics_used": 5,
+      "highest_hz": 1965.5,
+      "seam": 495
+    },
+    {
+      "group": 2,
+      "bands": [
+        3
+      ],
+      "variant": 5,
+      "guitar": "black",
+      "dynamic": "f",
+      "source_note": 67,
+      "file": "twang_g4_f_rr1.flac",
+      "f0_est": 395.29,
+      "harmonics_used": 20,
+      "highest_hz": 7905.7,
+      "seam": 388
+    },
+    {
+      "group": 3,
+      "bands": [
+        4
+      ],
+      "variant": 0,
+      "guitar": "green",
+      "dynamic": "p",
+      "source_note": 75,
+      "file": "twang_eb5_p_rr1.flac",
+      "f0_est": 624.74,
+      "harmonics_used": 13,
+      "highest_hz": 8121.7,
+      "seam": 198
+    },
+    {
+      "group": 3,
+      "bands": [
+        4
+      ],
+      "variant": 1,
+      "guitar": "green",
+      "dynamic": "mf",
+      "source_note": 75,
+      "file": "twang_eb5_mf_rr1.flac",
+      "f0_est": 624.98,
+      "harmonics_used": 5,
+      "highest_hz": 3124.9,
+      "seam": 48
+    },
+    {
+      "group": 3,
+      "bands": [
+        4
+      ],
+      "variant": 2,
+      "guitar": "green",
+      "dynamic": "f",
+      "source_note": 75,
+      "file": "twang_eb5_f_rr1.flac",
+      "f0_est": 625.62,
+      "harmonics_used": 8,
+      "highest_hz": 5005.0,
+      "seam": 128
+    },
+    {
+      "group": 3,
+      "bands": [
+        4
+      ],
+      "variant": 3,
+      "guitar": "black",
+      "dynamic": "p",
+      "source_note": 75,
+      "file": "twang_eb5_p_rr1.flac",
+      "f0_est": 623.21,
+      "harmonics_used": 4,
+      "highest_hz": 2492.9,
+      "seam": 373
+    },
+    {
+      "group": 3,
+      "bands": [
+        4
+      ],
+      "variant": 4,
+      "guitar": "black",
+      "dynamic": "mf",
+      "source_note": 75,
+      "file": "twang_eb5_mf_rr1.flac",
+      "f0_est": 623.25,
+      "harmonics_used": 6,
+      "highest_hz": 3739.5,
+      "seam": 112
+    },
+    {
+      "group": 3,
+      "bands": [
+        4
+      ],
+      "variant": 5,
+      "guitar": "black",
+      "dynamic": "f",
+      "source_note": 75,
+      "file": "twang_eb5_f_rr1.flac",
+      "f0_est": 623.64,
+      "harmonics_used": 9,
+      "highest_hz": 5612.8,
+      "seam": 406
+    },
+    {
+      "group": 4,
+      "bands": [
+        5
+      ],
+      "variant": 0,
+      "guitar": "green",
+      "dynamic": "p",
+      "source_note": 84,
+      "file": "twang_c6_p_rr1.flac",
+      "f0_est": 1046.47,
+      "harmonics_used": 19,
+      "highest_hz": 19882.8,
+      "seam": 53
+    },
+    {
+      "group": 4,
+      "bands": [
+        5
+      ],
+      "variant": 1,
+      "guitar": "green",
+      "dynamic": "mf",
+      "source_note": 84,
+      "file": "twang_c6_mf_rr1.flac",
+      "f0_est": 1046.28,
+      "harmonics_used": 10,
+      "highest_hz": 10462.8,
+      "seam": 46
+    },
+    {
+      "group": 4,
+      "bands": [
+        5
+      ],
+      "variant": 2,
+      "guitar": "green",
+      "dynamic": "f",
+      "source_note": 84,
+      "file": "twang_c6_f_rr1.flac",
+      "f0_est": 1045.3,
+      "harmonics_used": 7,
+      "highest_hz": 7317.1,
+      "seam": 110
+    },
+    {
+      "group": 4,
+      "bands": [
+        5
+      ],
+      "variant": 3,
+      "guitar": "black",
+      "dynamic": "p",
+      "source_note": 84,
+      "file": "twang_c6_p_rr1.flac",
+      "f0_est": 1045.76,
+      "harmonics_used": 4,
+      "highest_hz": 4183.0,
+      "seam": 71
+    },
+    {
+      "group": 4,
+      "bands": [
+        5
+      ],
+      "variant": 4,
+      "guitar": "black",
+      "dynamic": "mf",
+      "source_note": 84,
+      "file": "twang_c6_mf_rr1.flac",
+      "f0_est": 1045.77,
+      "harmonics_used": 7,
+      "highest_hz": 7320.4,
+      "seam": 89
+    },
+    {
+      "group": 4,
+      "bands": [
+        5
+      ],
+      "variant": 5,
+      "guitar": "black",
+      "dynamic": "f",
+      "source_note": 84,
+      "file": "twang_c6_f_rr1.flac",
+      "f0_est": 1046.01,
+      "harmonics_used": 7,
+      "highest_hz": 7322.1,
+      "seam": 474
+    }
+  ]
+}

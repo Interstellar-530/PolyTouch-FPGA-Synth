@@ -122,6 +122,68 @@ namespace PolyTouchPc
         }
     }
 
+    // One line returned by the FPGA Q command. The payload is ASCII hex so
+    // it remains compatible with the existing 115200 8N1 link.
+    public sealed class DashboardSnapshot
+    {
+        public ulong Status;
+        public readonly byte[] Waveform = new byte[32];
+        public readonly byte[] Spectrum = new byte[8];
+        public readonly byte[] Lissajous = new byte[8];
+        public int ActiveCount { get { return (int)(Status & 0x0fUL); } }
+        public int LeadNote { get { return (int)((Status >> 4) & 0x7fUL); } }
+        public int LeadVelocity { get { return (int)((Status >> 11) & 0xffUL); } }
+        public int Pressure { get { return (int)((Status >> 19) & 0xffUL) << 4; } }
+        public bool Demo { get { return ((Status >> 27) & 1UL) != 0; } }
+        public int Instrument { get { return (int)((Status >> 28) & 3UL); } }
+        public bool Piano { get { return ((Status >> 30) & 1UL) != 0; } }
+        public bool Guitar { get { return ((Status >> 31) & 1UL) != 0; } }
+        public bool Muted { get { return ((Status >> 32) & 1UL) != 0; } }
+        public int PianoTone { get { return (int)((Status >> 33) & 7UL); } }
+        public int Timbre { get { return (int)((Status >> 36) & 0xffUL); } }
+        public int Tempo { get { return (int)((Status >> 44) & 3UL); } }
+        public bool ShowTimbre { get { return ((Status >> 46) & 1UL) != 0; } }
+        public bool ChordB { get { return ((Status >> 47) & 1UL) != 0; } }
+        public int NoteMask { get { return (int)((Status >> 52) & 0xfffUL); } }
+
+        private static byte HexByte(string text, int offset)
+        {
+            return Convert.ToByte(text.Substring(offset, 2), 16);
+        }
+
+        private static byte HexNibble(char value)
+        {
+            if (value >= '0' && value <= '9') return (byte)(value - '0');
+            if (value >= 'A' && value <= 'F') return (byte)(value - 'A' + 10);
+            if (value >= 'a' && value <= 'f') return (byte)(value - 'a' + 10);
+            throw new FormatException();
+        }
+
+        public static bool TryParse(string line, out DashboardSnapshot result)
+        {
+            result = null;
+            if (String.IsNullOrEmpty(line) || !line.StartsWith("@S") || line.Length != 114)
+                return false;
+            try
+            {
+                DashboardSnapshot value = new DashboardSnapshot();
+                value.Status = Convert.ToUInt64(line.Substring(2, 16), 16);
+                // The FPGA keeps 64 four-bit waveform columns in 256 bits;
+                // keep every second column for the 32-pixel PC trace.
+                for (int i = 0; i < 32; i++)
+                    value.Waveform[i] = HexNibble(line[18 + 63 - i * 2]);
+                for (int i = 0; i < 8; i++)
+                    value.Spectrum[i] = HexByte(line, 82 + (7 - i) * 2);
+                for (int i = 0; i < 8; i++)
+                    value.Lissajous[i] = HexByte(line, 98 + (7 - i) * 2);
+                result = value;
+                return true;
+            }
+            catch (FormatException) { return false; }
+            catch (OverflowException) { return false; }
+        }
+    }
+
     public sealed class SerialTransport : IDisposable
     {
         private readonly CommandQueue commands = new CommandQueue();
@@ -130,7 +192,9 @@ namespace PolyTouchPc
         private Thread worker;
         private volatile bool stopAfterDrain;
         private volatile bool connected;
+        private volatile bool snapshotOutstanding;
         public event Action<string> Message;
+        public event Action<DashboardSnapshot> Snapshot;
         public bool Connected { get { return connected; } }
         private void Report(string text) { Action<string> callback = Message; if (callback != null) callback(text); }
         public void Connect(string name)
@@ -145,6 +209,7 @@ namespace PolyTouchPc
             catch { port.Dispose(); port = null; throw; }
             connected = true;
             stopAfterDrain = false;
+            snapshotOutstanding = false;
             worker = new Thread(Run);
             worker.IsBackground = true;
             worker.Start();
@@ -152,13 +217,23 @@ namespace PolyTouchPc
         }
         public void Send(string command)
         {
-            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3}|I[01]|V[0-9]{1,3})$"))
+            if (!Regex.IsMatch(command, "^(N[0-9]{1,3}|O[0-9]{1,3}|X|D[01]|M[01]|T[0-9]{1,3}|I[01]|V[0-9]{1,3}|R[01])$"))
                 throw new ArgumentException("不支持的命令。");
             if (command.StartsWith("V") && Int32.Parse(command.Substring(1)) > 100) throw new ArgumentException("音量必须为 0 到 100。");
             if (command.StartsWith("T") && Int32.Parse(command.Substring(1)) > 255)
                 throw new ArgumentException("音色权重必须为 0 到 255。");
+            if (command.StartsWith("R") && Int32.Parse(command.Substring(1)) > 1)
+                throw new ArgumentException("显示路由必须为 0（电脑）或 1（HDMI）。");
             if (!connected || stopAfterDrain) throw new InvalidOperationException("串口尚未连接。");
             commands.Add(command); wake.Set();
+        }
+
+        public bool RequestSnapshot()
+        {
+            if (!connected || stopAfterDrain || snapshotOutstanding) return false;
+            snapshotOutstanding = true;
+            try { commands.Add("Q"); wake.Set(); return true; }
+            catch { snapshotOutstanding = false; throw; }
         }
         public void Panic(string next)
         {
@@ -180,15 +255,41 @@ namespace PolyTouchPc
                     }
                     port.Write(command + "\r");
                     string reply = port.ReadLine().Trim();
+                    if (command == "Q")
+                    {
+                        DashboardSnapshot snapshot;
+                        if (!DashboardSnapshot.TryParse(reply, out snapshot))
+                            throw new InvalidOperationException("Q 收到无效状态快照：" + reply);
+                        Action<DashboardSnapshot> callback = Snapshot;
+                        if (callback != null) callback(snapshot);
+                        snapshotOutstanding = false;
+                        continue;
+                    }
                     if (reply != "OK")
-                        throw new InvalidOperationException(command + " 收到 " + reply + "；请确认固件支持该命令，音色 T 命令需要本次版本。");
+                        throw new InvalidOperationException(command + " 收到 " + reply + "；请确认固件支持该命令，音色 T/R 命令需要本次版本。");
                     Report(command + " -> OK");
                 }
             }
             catch (Exception error) { Report("ERROR: " + error.Message); }
             finally
             {
+                snapshotOutstanding = false;
                 connected = false;
+                // Best effort fallback for an unexpected worker exit.  If the
+                // UART is still usable, restore the board-side HDMI route
+                // before closing it so a PC dashboard crash cannot leave the
+                // external screen black indefinitely.  A removed cable or an
+                // older bitstream may reject R1; either case is intentionally
+                // ignored while tearing the transport down.
+                try
+                {
+                    if (port != null && port.IsOpen)
+                    {
+                        port.Write("R1\r");
+                        port.ReadLine();
+                    }
+                }
+                catch { }
                 if (port != null) { port.Close(); port.Dispose(); }
                 Report("串口已关闭");
             }
@@ -196,7 +297,15 @@ namespace PolyTouchPc
         public void Dispose()
         {
             if (worker == null) return;
-            if (connected) { commands.Panic(null); stopAfterDrain = true; wake.Set(); }
+            if (connected)
+            {
+                // Clear stale notes and put the HDMI route behind the panic
+                // command.  The worker drains this pair before it exits.
+                commands.Panic(null);
+                commands.Add("R1");
+                stopAfterDrain = true;
+                wake.Set();
+            }
             if (!worker.Join(2800))
             {
                 if (port != null) port.Close();
@@ -234,6 +343,11 @@ namespace PolyTouchPc
             Check(q.Take(out item) && item == "T255" && !q.Take(out item), "timbre coalescing failed");
             q.Add("T160"); q.Panic(null);
             Check(q.Take(out item) && item == "X" && !q.Take(out item), "panic retained stale timbre");
+            CommandQueue safeClose = new CommandQueue();
+            safeClose.Add("N60"); safeClose.Panic(null); safeClose.Add("R1");
+            Check(safeClose.Take(out item) && item == "X", "safe close did not put panic first");
+            Check(safeClose.Take(out item) && item == "R1" && !safeClose.Take(out item),
+                "safe close did not leave HDMI route as the final command");
 
             int offset;
             Check(KeyboardLayout.TryOffset('Z', out offset) && offset == -12,
@@ -259,7 +373,17 @@ namespace PolyTouchPc
             Check(KeyboardLayout.TimbreForFunctionKey(114) == 252, "F3 did not select piano medium");
             Check(KeyboardLayout.TimbreForFunctionKey(115) == 253, "F4 did not select piano bright");
             Check(KeyboardLayout.TimbreForFunctionKey(116) == 254, "F5 did not select piano hard");
-            Console.WriteLine("PASS keyboard: press/release, chord, panic, range, octave and piano hardness keys");
+            DashboardSnapshot snapshot;
+            Check(DashboardSnapshot.TryParse("@S" + new String('0', 112), out snapshot),
+                "dashboard Q snapshot parser rejected a zero frame");
+            Check(snapshot.ActiveCount == 0 && snapshot.Waveform.Length == 32 &&
+                  !DashboardSnapshot.TryParse("@S00", out snapshot),
+                "dashboard Q snapshot length checks failed");
+            char[] frame = ("@S" + new String('0', 112)).ToCharArray();
+            frame[18 + 63] = 'F';
+            Check(DashboardSnapshot.TryParse(new String(frame), out snapshot) && snapshot.Waveform[0] == 15,
+                "dashboard waveform nibble order failed");
+            Console.WriteLine("PASS keyboard: press/release, chord, panic, range, octave, piano keys and dashboard parser");
         }
         public static void Smoke(string port)
         {
@@ -282,8 +406,9 @@ namespace PolyTouchPc
                 Check(failure == null && acknowledgements == 8, "hardware rejected keyboard commands: " + failure);
             }
             finally { transport.Dispose(); }
-            Check(failure == null && acknowledgements == 9, "disconnect did not acknowledge final panic");
-            Console.WriteLine("PASS serial transport: mode, chord, Note Off and closing panic acknowledged");
+            Check(failure == null && acknowledgements == 10,
+                "disconnect did not acknowledge final panic and HDMI route");
+            Console.WriteLine("PASS serial transport: mode, chord, Note Off, panic and HDMI fallback acknowledged");
         }
     }
 }

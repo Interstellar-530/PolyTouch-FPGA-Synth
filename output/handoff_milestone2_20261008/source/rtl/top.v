@@ -77,7 +77,16 @@ module top #(
     output wire             i2s_bck,
     output wire             i2s_lrck,
     output wire             i2s_din,
-    output wire             dac_xsmt      // PCM5102A 软静音控制，1 = 解除静音
+    output wire             dac_xsmt,     // PCM5102A 软静音控制，1 = 解除静音
+    // HDMI dashboard snapshot. Stable bus plus a 1 kHz toggle for CDC.
+    output wire [63:0]      ui_status,
+    output wire             ui_status_toggle,
+    output wire [255:0]     ui_waveform,
+    output wire [63:0]      ui_spectrum,
+    output wire [63:0]      ui_lissajous,
+    output wire             ui_visual_toggle,
+    // 1 = HDMI external display, 0 = computer dashboard over UART.
+    output wire             display_route
 );
 
     // 编译期选择的内部音频时钟。AUDIO_IF 是常数，综合会把它折叠成直连，
@@ -413,6 +422,8 @@ module top #(
         .rst      (rst),
         .uart_rx  (uart_rx),
         .uart_tx  (uart_tx),
+        .ui_status (ui_status), .ui_waveform (ui_waveform),
+        .ui_spectrum (ui_spectrum), .ui_lissajous (ui_lissajous),
         .ev_valid (uart_ev_valid),
         .ev_on    (uart_ev_on),
         .ev_note  (uart_ev_note),
@@ -423,7 +434,8 @@ module top #(
         .demo_off (uart_demo_off),
         .timbre_valid (uart_timbre_valid), .timbre_value (uart_timbre_value),
         .instr_valid (uart_instr_valid), .instr_id (uart_instr_id),
-        .vol_valid (uart_vol_valid), .vol_value (uart_vol_value)
+        .vol_valid (uart_vol_valid), .vol_value (uart_vol_value),
+        .display_route (display_route)
     );
 
     // 模式切换、X 或演示重启先清 FIFO 并撤销旧声部 gate，走正常 Release。
@@ -960,6 +972,34 @@ module top #(
         end
     endgenerate
 
+    // ------------------------------------------------ HDMI dashboard status ---
+    // The export block samples the existing voice/control state at 1 kHz. It
+    // does not touch the audio sample path; unconnected users simply optimize
+    // the dashboard snapshot away.
+    ui_status_export #(
+        .VOICES(VOICES),
+        .TICK_DIV(AUDIO_CLK_HZ / 1000)
+    ) u_ui_status (
+        .clk(clk_audio), .rst(rst),
+        .v_gate(v_gate), .v_note(v_note), .v_vel(v_vel),
+        .pressure_level(pressure_level),
+        .demo_mode(demo_mode), .muted(uart_muted),
+        .piano_mode(piano_mode), .guitar_mode(guitar_mode),
+        .chord_set(chord_set), .show_timbre(show_timbre),
+        .instrument_id(instrument_id), .tempo_sel(tempo_sel),
+        .timbre_target(timbre_target), .piano_tone(piano_tone),
+        .status(ui_status), .status_toggle(ui_status_toggle)
+    );
+
+    ui_audio_visual_export #(
+        .VOICES(VOICES)
+    ) u_ui_visual (
+        .clk(clk_audio), .rst(rst), .sample_tick(sample_tick),
+        .sample_in(final_sample),
+        .v_gate(v_gate), .v_note(v_note), .v_vel(v_vel),
+        .waveform(ui_waveform), .spectrum(ui_spectrum),
+        .lissajous(ui_lissajous), .snapshot_toggle(ui_visual_toggle)
+    );
     // ---------------------------------------------------------- display ---
     // The user LEDs are active low.  N16 is the loop marker: it lights for
     // about 110 ms at the start of every pass through the tune, and stays lit

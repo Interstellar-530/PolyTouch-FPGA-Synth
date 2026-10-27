@@ -56,8 +56,8 @@ function Find-Tool {
     return ''
 }
 
-$iverilogCandidates = @('C:\iverilog\bin\iverilog.exe')
-$vvpCandidates = @('C:\iverilog\bin\vvp.exe')
+$iverilogCandidates = @('C:\iverilog\bin\iverilog.exe', (Join-Path $PSScriptRoot '..\..\..\..\..\msys64\ucrt64\bin\iverilog.exe'))
+$vvpCandidates = @('C:\iverilog\bin\vvp.exe', (Join-Path $PSScriptRoot '..\..\..\..\..\msys64\ucrt64\bin\vvp.exe'))
 foreach ($pf in @($env:ProgramFiles, ${env:ProgramFiles(x86)})) {
     if ($pf) {
         $iverilogCandidates += (Join-Path $pf 'iverilog\bin\iverilog.exe')
@@ -67,6 +67,11 @@ foreach ($pf in @($env:ProgramFiles, ${env:ProgramFiles(x86)})) {
 
 if (-not $Iverilog) { $Iverilog = Find-Tool -Name 'iverilog' -FromEnv $env:IVERILOG -Candidates $iverilogCandidates }
 if (-not $Vvp)      { $Vvp      = Find-Tool -Name 'vvp'      -FromEnv $env:VVP      -Candidates $vvpCandidates }
+# MSYS2 Icarus needs its UCRT64 DLL directory on PATH.
+if ($Iverilog -and $Vvp) {
+    $toolDir = Split-Path -Parent $Iverilog
+    if ($env:PATH -notlike "*$toolDir*") { $env:PATH = "$toolDir;$env:PATH" }
+}
 
 if (-not $Iverilog -or -not (Test-Path -LiteralPath $Iverilog -PathType Leaf)) {
     Write-Error "找不到 iverilog。安装 Icarus Verilog，或用 -Iverilog 指定路径。仿真门禁无法跳过。"
@@ -269,10 +274,10 @@ try {
 
     # Shared board controls are required by every bench containing rtl/top.v.
     foreach ($entry in $suite) {
-        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\bend_ratio_pipeline.v') }
+        if ($entry.Src -contains 'rtl\top.v') { $entry.Src += @('rtl\audio\instrument_controls.v','rtl\audio\voice_transition.v','rtl\audio\note_ownership.v','rtl\audio\gowin_prom_bright_bank.v','rtl\audio\gowin_prom_piano_bank.v','rtl\audio\bend_ratio_pipeline.v','rtl\video\ui_status_export.v','rtl\video\ui_audio_visual_export.v') }
     }
-    $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName)
-    foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top')) {
+    $audioSources = @(Get-ChildItem -LiteralPath 'rtl/audio' -Filter '*.v' | ForEach-Object FullName) + @('rtl\video\ui_status_export.v','rtl\video\ui_audio_visual_export.v')
+    foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top','tb_uart_dashboard')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v')) }
     }
 
@@ -311,6 +316,15 @@ try {
     foreach($voices in @(8,32,64)) {
         $suite += @{ Name=('tb_ram_audio_datapath_'+$voices); Top='sim\tb_ram_audio_datapath.v'; Src=($audioSources + @('sim\gowin_prom_model.v','sim\i2s_rx_model.v')); Voices=$voices }
     }
+    # HDMI dashboard modules are independent of the audio datapath and run as
+    # their own self-checking benches.
+    $suite += @{ Name='tb_hdmi_timing'; Top='sim\tb_hdmi_timing.v'; Src=@('rtl\video\hdmi_720p_timing.v') }
+    $suite += @{ Name='tb_ui_status_export'; Top='sim\tb_ui_status_export.v'; Src=@('rtl\video\ui_status_export.v') }
+    $suite += @{ Name='tb_ui_audio_visual_export'; Top='sim\tb_ui_audio_visual_export.v'; Src=@('rtl\video\ui_audio_visual_export.v') }
+    $suite += @{ Name='tb_dashboard'; Top='sim\tb_dashboard.v'; Src=@(
+        'rtl\video\dashboard_text_mux.v','rtl\video\dashboard_renderer.v',
+        'rtl\video\dashboard_font_prom.v','sim\gowin_prom_model.v') }
+
     $failed = 0
     $skipped = 0
     # Fail before compilation if the checkout is incomplete. A missing bench

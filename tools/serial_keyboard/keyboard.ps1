@@ -15,7 +15,7 @@ if ($SelfTest -or $SmokeTest) {
 if ([Threading.Thread]::CurrentThread.GetApartmentState() -ne 'STA') {
     throw 'Use open-keyboard.cmd or Windows PowerShell -STA to open the keyboard.'
 }
-Add-Type -Path $core,(Join-Path $PSScriptRoot 'KeyboardWindow.cs') -ReferencedAssemblies System.dll,System.Core.dll,System.Drawing.dll,System.Windows.Forms.dll
+Add-Type -Path $core,(Join-Path $PSScriptRoot 'DashboardPanel.cs'),(Join-Path $PSScriptRoot 'KeyboardWindow.cs') -ReferencedAssemblies System.dll,System.Core.dll,System.Drawing.dll,System.Windows.Forms.dll
 if (-not $LogPath) {
     $folder = Join-Path $PSScriptRoot '..\..\output\serial_keyboard'
     New-Item -ItemType Directory -Path $folder -Force | Out-Null

@@ -46,3 +46,6 @@ output/serial_keyboard/
 # 内容不入库，说明见 docs/版本索引与文件地图-20261014-v0.1.md。
 legacy/pending_removal/untracked/
 output/handoff_milestone2_20261008/source/build/gowin_top_dbg8usb/
+
+# Generated HDMI Gowin implementation output; keep source/build inputs in Git.
+output/handoff_milestone2_20261008/source/build/gowin_top_hdmi/

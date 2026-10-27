@@ -24,6 +24,12 @@ set handle [open [file join $script_dir sources.list] r]
 set sources [split [string trim [read $handle]] \n]
 close $handle
 foreach src $sources { add_file [file join $root [string trim $src]] }
+if {$profile eq "hdmi"} {
+    set handle [open [file join $script_dir hdmi_sources.list] r]
+    set hdmi_sources [split [string trim [read $handle]] \n]
+    close $handle
+    foreach src $hdmi_sources { add_file [file join $root [string trim $src]] }
+}
 add_file [file join $root constraints $cst]
 add_file [file join $root constraints $sdc]
 set_option -top_module $top_module

@@ -8,7 +8,9 @@
 //   M0 / M1：恰好 1 位参数，数字静音/恢复；不停止曲目或切换演奏模式。
 //   D0 / D1：恰好 1 位参数，手动等待/重启演示；N/O/X 的模式切换由 top 完成。
 //   T<weight>：1..3 位十进制，范围 0..255；改变音色，不改变模式或音符。
-// 每个有效命令排队回复 "OK\r\n"，格式错误回复 "ERR\r\n"；CRLF 不重复执行。
+//   I0/I1：钢琴/吉他；V0..V100：主音量；R0/R1：电脑/HDMI 仪表盘路由；
+//   Q：返回一次 @S<status><waveform><spectrum><lissajous> 十六进制快照。
+// 普通有效命令排队回复 "OK\r\n"，格式错误回复 "ERR\r\n"；Q 返回快照；CRLF 不重复执行。
 module uart_ctrl #(
     parameter integer CLK_HZ      = 27000000,
     parameter integer BAUD        = 115200,
@@ -18,6 +20,10 @@ module uart_ctrl #(
     input  wire       rst,
     input  wire       uart_rx,
     output wire       uart_tx,
+    input  wire [63:0] ui_status,
+    input  wire [255:0] ui_waveform,
+    input  wire [63:0] ui_spectrum,
+    input  wire [63:0] ui_lissajous,
     output reg        ev_valid,      // one clock pulse per accepted note event
     output reg        ev_on,
     output reg [6:0]  ev_note,
@@ -31,7 +37,8 @@ module uart_ctrl #(
     output reg        instr_valid,
     output reg [1:0]  instr_id,
     output reg        vol_valid,
-    output reg [6:0]  vol_value
+    output reg [6:0]  vol_value,
+    output reg        display_route
 );
 
     // 整数四舍五入分频，默认 234 个 clk/位；RX 先在半位确认起始位，再逐位采样。
@@ -110,10 +117,12 @@ module uart_ctrl #(
     end
 
     // ------------------------------------------------------------- parse ---
-    localparam [2:0] CMD_NONE = 3'd0, CMD_NOTE = 3'd1,
-                     CMD_MUTE = 3'd2, CMD_DEMO = 3'd3, CMD_TIMBRE = 3'd4, CMD_INSTR = 3'd5, CMD_VOL = 3'd6;
+    localparam [3:0] CMD_NONE = 4'd0, CMD_NOTE = 4'd1,
+                     CMD_MUTE = 4'd2, CMD_DEMO = 4'd3, CMD_TIMBRE = 4'd4,
+                     CMD_INSTR = 4'd5, CMD_VOL = 4'd6, CMD_ROUTE = 4'd7,
+                     CMD_QUERY = 4'd8;
 
-    reg [2:0]  cmd;
+    reg [3:0]  cmd;
     reg [11:0] note_acc;
     reg [2:0]  digit_cnt; // 到 4 饱和：第 4 位即令行结束检查失败，避免超长数回绕
     reg        have_digit;
@@ -122,6 +131,8 @@ module uart_ctrl #(
     reg        invalid;
     reg        reply_ok;
     reg        reply_err;
+    reg        reply_query;
+    reg [447:0] snapshot_bits;
 
     always @(posedge clk) begin
         if (rst) begin
@@ -146,8 +157,11 @@ module uart_ctrl #(
             instr_id <= 2'd0;
             vol_valid <= 1'b0;
             vol_value <= 7'd100;
+            display_route <= 1'b1;
             reply_ok   <= 1'b0;
             reply_err  <= 1'b0;
+            reply_query <= 1'b0;
+            snapshot_bits <= 448'd0;
         end else begin
             // 默认清脉冲，在完整一行解析成功后才触发；主机应按行发送。
             ev_valid  <= 1'b0;
@@ -159,6 +173,7 @@ module uart_ctrl #(
             vol_valid <= 1'b0;
             reply_ok  <= 1'b0;
             reply_err <= 1'b0;
+            reply_query <= 1'b0;
 
             if (rx_valid) begin
                 if ((rx_byte == 8'h0D) || (rx_byte == 8'h0A)) begin
@@ -195,6 +210,14 @@ module uart_ctrl #(
                         vol_value <= note_acc[6:0];
                         vol_valid <= 1'b1;
                         reply_ok <= 1'b1;
+                    end else if (!invalid && (cmd == CMD_ROUTE) &&
+                                 (digit_cnt == 3'd1) && (note_acc <= 12'd1)) begin
+                        display_route <= (note_acc == 12'd1);
+                        reply_ok <= 1'b1;
+                    end else if (!invalid && (cmd == CMD_QUERY) &&
+                                 !have_digit && (digit_cnt == 3'd0)) begin
+                        snapshot_bits <= {ui_status, ui_waveform, ui_spectrum, ui_lissajous};
+                        reply_query <= 1'b1;
                     end else if (!invalid && have_panic && (cmd == CMD_NONE)) begin
                         panic    <= 1'b1;
                         reply_ok <= 1'b1;
@@ -248,6 +271,14 @@ module uart_ctrl #(
                 end else if ((rx_byte == "V") || (rx_byte == "v")) begin
                     if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
                     cmd <= CMD_VOL;
+                    have_digit <= 1'b0; note_acc <= 12'd0; digit_cnt <= 3'd0;
+                end else if ((rx_byte == "R") || (rx_byte == "r")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
+                    cmd <= CMD_ROUTE;
+                    have_digit <= 1'b0; note_acc <= 12'd0; digit_cnt <= 3'd0;
+                end else if ((rx_byte == "Q") || (rx_byte == "q")) begin
+                    if ((cmd != CMD_NONE) || have_panic) invalid <= 1'b1;
+                    cmd <= CMD_QUERY;
                     have_digit <= 1'b0; note_acc <= 12'd0; digit_cnt <= 3'd0;
                 end else if ((rx_byte >= "0") && (rx_byte <= "9")) begin
                     if (cmd != CMD_NONE) begin
@@ -305,34 +336,50 @@ module uart_ctrl #(
     localparam [1:0] TX_IDLE = 2'd0, TX_SEND = 2'd1, TX_WAIT = 2'd2, TX_DONE = 2'd3;
 
     reg [1:0] msg_state;
-    reg [2:0] msg_idx;
-    reg       msg_err;
-    // 队列存 16 个回复类型位（0=OK，1=ERR），另有一个正在发送的消息。
+    reg [6:0] msg_idx;
+    reg [1:0] msg_kind; // 0=OK, 1=ERR, 2=snapshot
+    // 队列存 16 个回复类型（0=OK，1=ERR，2=snapshot），另有一个正在发送的消息。
     // 发送比短命令执行慢，因此必须排队；满且同拍弹出时仍可接受新回复。
-    reg [15:0] reply_queue;
+    reg [1:0] reply_queue [0:15];
     reg [3:0]  reply_wr_ptr, reply_rd_ptr;
     reg [4:0]  reply_count;
     reg [15:0] reply_drop_count; // 回复满时计数，到 65535 饱和；仅仿真/GAO 内部可见
-    wire reply_push = reply_ok || reply_err;
+    wire [1:0] reply_push_kind = reply_query ? 2'd2 : (reply_err ? 2'd1 : 2'd0);
+    wire reply_push = reply_ok || reply_err || reply_query;
     wire reply_pop  = (msg_state == TX_IDLE) && (reply_count != 0);
     wire reply_room = (reply_count != 5'd16) || reply_pop;
 
-    wire [2:0] msg_len = msg_err ? 3'd5 : 3'd4;
+    wire [6:0] msg_len = (msg_kind == 2'd1) ? 7'd5 :
+                         (msg_kind == 2'd2) ? 7'd116 : 7'd4;
+
+    function [7:0] hex_char;
+        input [3:0] nibble;
+        begin
+            hex_char = (nibble < 4'd10) ? (8'h30 + nibble) : (8'h41 + nibble - 4'd10);
+        end
+    endfunction
+
+    wire [6:0] snapshot_nibble_index = msg_idx - 7'd2;
+    wire [3:0] snapshot_nibble = snapshot_bits[447 - snapshot_nibble_index*4 -: 4];
 
     wire [7:0] msg_byte =
-        msg_err ? (msg_idx == 3'd0 ? "E" :
-                   msg_idx == 3'd1 ? "R" :
-                   msg_idx == 3'd2 ? "R" :
-                   msg_idx == 3'd3 ? 8'h0D : 8'h0A)
-                : (msg_idx == 3'd0 ? "O" :
-                   msg_idx == 3'd1 ? "K" :
-                   msg_idx == 3'd2 ? 8'h0D : 8'h0A);
+        (msg_kind == 2'd1) ? (msg_idx == 7'd0 ? "E" :
+                              msg_idx == 7'd1 ? "R" :
+                              msg_idx == 7'd2 ? "R" :
+                              msg_idx == 7'd3 ? 8'h0D : 8'h0A) :
+        (msg_kind == 2'd2) ? (msg_idx == 7'd0 ? "@" :
+                              msg_idx == 7'd1 ? "S" :
+                              msg_idx < 7'd114 ? hex_char(snapshot_nibble) :
+                              msg_idx == 7'd114 ? 8'h0D : 8'h0A) :
+                           (msg_idx == 7'd0 ? "O" :
+                            msg_idx == 7'd1 ? "K" :
+                            msg_idx == 7'd2 ? 8'h0D : 8'h0A);
 
     always @(posedge clk) begin
         if (rst) begin
             msg_state  <= TX_IDLE;
-            msg_idx    <= 3'd0;
-            msg_err    <= 1'b0;
+            msg_idx    <= 7'd0;
+            msg_kind   <= 2'd0;
             reply_wr_ptr <= 4'd0;
             reply_rd_ptr <= 4'd0;
             reply_count <= 5'd0;
@@ -343,7 +390,7 @@ module uart_ctrl #(
             // DROP 只丢回复，不回滚已经执行的音符/模式命令，也不会串口发送 DROP。
             // 无无限突发保证；主机以收到回复/合理限速推进，不能仅凭无回复判断未执行。
             if (reply_push && reply_room) begin
-                reply_queue[reply_wr_ptr] <= reply_err;
+                reply_queue[reply_wr_ptr] <= reply_push_kind;
                 reply_wr_ptr <= reply_wr_ptr + 1'b1;
             end else if (reply_push && reply_drop_count != 16'hFFFF)
                 reply_drop_count <= reply_drop_count + 1'b1;
@@ -356,8 +403,8 @@ module uart_ctrl #(
             endcase
             case (msg_state)
                 TX_IDLE: if (reply_pop) begin
-                    msg_err   <= reply_queue[reply_rd_ptr];
-                    msg_idx   <= 3'd0;
+                    msg_kind  <= reply_queue[reply_rd_ptr];
+                    msg_idx   <= 7'd0;
                     msg_state <= TX_SEND;
                 end
                 TX_SEND: if (!tx_busy) begin
@@ -370,7 +417,7 @@ module uart_ctrl #(
                     msg_state  <= TX_DONE;
                 end
                 TX_DONE: if (!tx_busy) begin
-                    if (msg_idx == msg_len - 3'd1)
+                    if (msg_idx == msg_len - 7'd1)
                         msg_state <= TX_IDLE;
                     else begin
                         msg_idx   <= msg_idx + 1'b1;

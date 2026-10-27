@@ -1,0 +1,49 @@
+// Draft constraints for the S4-S6 synthesis/PnR measurement harness.
+//
+// Pins come from docs/hardware/FPGA-pinplan-20261013-v0.1.csv (the project's
+// own pin plan).  The harness is a measurement build, not a product top, so it
+// borrows the twelve GPIO key pins for its folded observables.  Wiring, bank
+// voltages and the final pin lock still need the physical check before any
+// programming.
+IO_LOC "clk_27m" H11;
+IO_PORT "clk_27m" IO_TYPE=LVCMOS33;
+
+// S3 / D7 user key, pulled to +1V5 on the Dock, used as the harness reset.
+IO_LOC "rst_n" D7;
+IO_PORT "rst_n" IO_TYPE=LVCMOS15;
+
+// MCP3208 SPI, bank 3 / bank 7, both 3.3 V.
+IO_LOC "adc_cs_n" N6;
+IO_PORT "adc_cs_n" IO_TYPE=LVCMOS33;
+IO_LOC "adc_sck" D11;
+IO_PORT "adc_sck" IO_TYPE=LVCMOS33;
+IO_LOC "adc_mosi" A11;
+IO_PORT "adc_mosi" IO_TYPE=LVCMOS33;
+IO_LOC "adc_miso" B11;
+IO_PORT "adc_miso" IO_TYPE=LVCMOS33;
+
+// Folded observables on the twelve GPIO key pins (unused by this harness).
+IO_LOC "audio_fold[0]" L9;
+IO_PORT "audio_fold[0]" IO_TYPE=LVCMOS33;
+IO_LOC "audio_fold[1]" N8;
+IO_PORT "audio_fold[1]" IO_TYPE=LVCMOS33;
+IO_LOC "audio_fold[2]" P9;
+IO_PORT "audio_fold[2]" IO_TYPE=LVCMOS33;
+IO_LOC "audio_fold[3]" N7;
+IO_PORT "audio_fold[3]" IO_TYPE=LVCMOS33;
+IO_LOC "status_fold[0]" A14;
+IO_PORT "status_fold[0]" IO_TYPE=LVCMOS33;
+IO_LOC "status_fold[1]" B14;
+IO_PORT "status_fold[1]" IO_TYPE=LVCMOS33;
+IO_LOC "status_fold[2]" A15;
+IO_PORT "status_fold[2]" IO_TYPE=LVCMOS33;
+IO_LOC "status_fold[3]" D14;
+IO_PORT "status_fold[3]" IO_TYPE=LVCMOS33;
+IO_LOC "clip_fold[0]" E15;
+IO_PORT "clip_fold[0]" IO_TYPE=LVCMOS33;
+IO_LOC "clip_fold[1]" T8;
+IO_PORT "clip_fold[1]" IO_TYPE=LVCMOS33;
+IO_LOC "clip_fold[2]" P8;
+IO_PORT "clip_fold[2]" IO_TYPE=LVCMOS33;
+IO_LOC "clip_fold[3]" R8;
+IO_PORT "clip_fold[3]" IO_TYPE=LVCMOS33;

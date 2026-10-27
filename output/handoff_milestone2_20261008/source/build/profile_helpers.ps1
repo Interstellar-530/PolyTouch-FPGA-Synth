@@ -1,4 +1,4 @@
-function Get-BuildProfile([string]$Name) {
+﻿function Get-BuildProfile([string]$Name) {
     $row = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'profiles.tsv') |
         Where-Object { ($_ -split "`t")[0] -eq $Name } | Select-Object -First 1
     if (-not $row) { throw "Unknown build profile: $Name" }
@@ -19,12 +19,13 @@ function Get-BuildInputs {
     param($Profile, [string]$SourceRoot = '')
     $sourceRoot = Get-BuildSourceRoot $SourceRoot
     $paths = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'sources.list') |
-        ForEach-Object { Join-Path $sourceRoot $_ })
+        Where-Object { $_.Trim() -ne '' } | ForEach-Object { Join-Path $sourceRoot $_ })
     # Include ROM data and headers, even when not added as synthesis source files.
     $paths += @(Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'rtl/audio') -File |
         Where-Object Extension -In '.vh', '.hex', '.mi', '.mif' | ForEach-Object FullName)
-    $paths += @('profiles.tsv','sources.list','build_profile.tcl','profile_helpers.ps1','build.ps1',
+    $paths += @('profiles.tsv','sources.list','hdmi_sources.list','build_profile.tcl','profile_helpers.ps1','build.ps1',
         ('isolated/' + $Profile.Top + '.v')) | ForEach-Object { Join-Path $PSScriptRoot $_ }
+    $paths += @(Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'rtl/video') -File | ForEach-Object FullName)
     $paths += Join-Path $sourceRoot ('constraints/' + $Profile.Cst)
     $paths += Join-Path $sourceRoot ('constraints/' + $Profile.Sdc)
     $paths | Sort-Object -Unique | ForEach-Object {
