@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
@@ -130,21 +130,26 @@ namespace PolyTouchPc
         public readonly byte[] Waveform = new byte[32];
         public readonly byte[] Spectrum = new byte[8];
         public readonly byte[] Lissajous = new byte[8];
-        public int ActiveCount { get { return (int)(Status & 0x0fUL); } }
-        public int LeadNote { get { return (int)((Status >> 4) & 0x7fUL); } }
-        public int LeadVelocity { get { return (int)((Status >> 11) & 0xffUL); } }
-        public int Pressure { get { return (int)((Status >> 19) & 0xffUL) << 4; } }
-        public bool Demo { get { return ((Status >> 27) & 1UL) != 0; } }
-        public int Instrument { get { return (int)((Status >> 28) & 3UL); } }
-        public bool Piano { get { return ((Status >> 30) & 1UL) != 0; } }
-        public bool Guitar { get { return ((Status >> 31) & 1UL) != 0; } }
-        public bool Muted { get { return ((Status >> 32) & 1UL) != 0; } }
-        public int PianoTone { get { return (int)((Status >> 33) & 7UL); } }
-        public int Timbre { get { return (int)((Status >> 36) & 0xffUL); } }
-        public int Tempo { get { return (int)((Status >> 44) & 3UL); } }
-        public bool ShowTimbre { get { return ((Status >> 46) & 1UL) != 0; } }
-        public bool ChordB { get { return ((Status >> 47) & 1UL) != 0; } }
-        public int NoteMask { get { return (int)((Status >> 52) & 0xfffUL); } }
+        // Match ui_status_export.v exactly; the UART transmits this 64-bit word unchanged.
+        public int ActiveCount { get { return (int)(((Status >> 12) & 15UL) | (((Status >> 60) & 3UL) << 4)); } }
+        public int Capacity { get { return ((Status >> 62) & 1UL) != 0 ? 32 : 8; } }
+        public int LeadNote { get { return (int)((Status >> 16) & 127UL); } }
+        public int LeadVelocity { get { return (int)((Status >> 23) & 255UL); } }
+        public int Pressure { get { return (int)((Status >> 31) & 255UL) << 4; } }
+        public bool Demo { get { return ((Status >> 39) & 1UL) != 0; } }
+        public int Instrument { get { return (int)((Status >> 40) & (Capacity == 32 ? 1UL : 3UL)); } }
+        public bool Sustain { get { return Capacity == 32 && ((Status >> 41) & 1UL) != 0; } }
+        public bool Piano { get { return ((Status >> 42) & 1UL) != 0; } }
+        public bool Guitar { get { return ((Status >> 43) & 1UL) != 0; } }
+        public bool Muted { get { return ((Status >> 44) & 1UL) != 0; } }
+        public int PianoTone { get { return (int)((Status >> 45) & 7UL); } }
+        public int Timbre { get { return (int)((Status >> 48) & 255UL); } }
+        public int Tempo { get { return (int)((Status >> 56) & 3UL); } }
+        public bool ShowTimbre { get { return ((Status >> 58) & 1UL) != 0; } }
+        public bool ChordB { get { return Capacity != 32 && ((Status >> 59) & 1UL) != 0; } }
+        public int Song { get { return Capacity == 32 && ((Status >> 59) & 1UL) != 0 ? 2 : 1; } }
+        public bool Paused { get { return ((Status >> 63) & 1UL) != 0; } }
+        public int NoteMask { get { return (int)(Status & 4095UL); } }
 
         private static byte HexByte(string text, int offset)
         {
@@ -379,6 +384,13 @@ namespace PolyTouchPc
             Check(snapshot.ActiveCount == 0 && snapshot.Waveform.Length == 32 &&
                   !DashboardSnapshot.TryParse("@S00", out snapshot),
                 "dashboard Q snapshot length checks failed");
+            ulong probeStatus = (2UL << 60) | (1UL << 62) | (1UL << 41) | (1UL << 59) |
+                (64UL << 16) | (100UL << 23) | (64UL << 31) | (1UL << 42) | (252UL << 48) | 0x11UL;
+            Check(DashboardSnapshot.TryParse("@S" + probeStatus.ToString("X16") + new String('0', 96), out snapshot) &&
+                snapshot.ActiveCount == 32 && snapshot.Capacity == 32 && snapshot.Sustain && snapshot.Song == 2 &&
+                snapshot.LeadNote == 64 && snapshot.LeadVelocity == 100 && snapshot.Pressure == 1024 &&
+                snapshot.Piano && snapshot.Timbre == 252 && snapshot.NoteMask == 0x11,
+                "32-voice hardware status schema mismatch");
             char[] frame = ("@S" + new String('0', 112)).ToCharArray();
             frame[18 + 63] = 'F';
             Check(DashboardSnapshot.TryParse(new String(frame), out snapshot) && snapshot.Waveform[0] == 15,

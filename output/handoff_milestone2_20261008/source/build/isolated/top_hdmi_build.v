@@ -35,10 +35,11 @@ module top_hdmi_build (
     wire [63:0]  ui_lissajous;
     wire         ui_visual_toggle;
     wire         display_route;
+    wire [31:0]  ui_voice_mask;
 
-    top #(
+    instrument32_top #(
         .AUDIO_IF(2), .I2S_DATA_BITS(24),
-        .VOICES(8), .MASTER_VOLUME_SHIFT(3),
+        .VOICES(32), .MASTER_VOLUME_SHIFT(5),
         .GPIO_KEY_ENABLE(0), .HOST_KBD_ENABLE(1)
     ) u_top (
         .clk_27m(clk_27m), .clk_12m288(1'b0),
@@ -53,12 +54,12 @@ module top_hdmi_build (
         .ui_status(ui_status), .ui_status_toggle(ui_status_toggle),
         .ui_waveform(ui_waveform), .ui_spectrum(ui_spectrum),
         .ui_lissajous(ui_lissajous), .ui_visual_toggle(ui_visual_toggle),
-        .display_route(display_route)
+        .display_route(display_route),.ui_voice_mask(ui_voice_mask)
     );
 
-    hdmi_dashboard #(.SAMPLE_RATE_48K(0)) u_hdmi (
+    hdmi_dashboard #(.SAMPLE_RATE_48K(0),.VOICES(32)) u_hdmi (
         .clk_27m(clk_27m), .key_rst(key_rst), .enable(display_route),
-        .ui_status(ui_status), .ui_status_toggle(ui_status_toggle),
+        .ui_status(ui_status), .ui_status_toggle(ui_status_toggle),.ui_voice_mask(ui_voice_mask),
         .ui_waveform(ui_waveform), .ui_spectrum(ui_spectrum),
         .ui_lissajous(ui_lissajous), .ui_visual_toggle(ui_visual_toggle),
         .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n),

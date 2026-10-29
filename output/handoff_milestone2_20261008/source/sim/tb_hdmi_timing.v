@@ -27,13 +27,13 @@ module tb_hdmi_timing;
             seen_frame <= 1'b0;
         end else if (frame_start) begin
             if (seen_frame) begin
-                if (de_count != 1280*720)
+                if (de_count != 1024*600)
                     $fatal(1, "HDMI_DE_COUNT=%0d", de_count);
-                if (line_count != 720)
+                if (line_count != 600)
                     $fatal(1, "HDMI_LINE_COUNT=%0d", line_count);
-                if (hsync_count != 750*40)
+                if (hsync_count != 635*20)
                     $fatal(1, "HDMI_HSYNC_COUNT=%0d", hsync_count);
-                if (vsync_count != 5*1650)
+                if (vsync_count != 3*1344)
                     $fatal(1, "HDMI_VSYNC_COUNT=%0d", vsync_count);
                 $display("HDMI_TIMING_PASS pixels=%0d lines=%0d", de_count, line_count);
                 $finish;

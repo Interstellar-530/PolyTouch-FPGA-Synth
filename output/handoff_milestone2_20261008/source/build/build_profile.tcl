@@ -46,4 +46,12 @@ foreach header [glob -directory [file join $root rtl audio] *.vh] {
     file copy -force $header [file join $project_work rtl audio [file tail $header]]
 }
 cd $project_work
+file mkdir [file join $project_work rtl prototypes]
+foreach header [glob -directory [file join $root rtl prototypes] *.vh] {
+    file copy -force $header [file join $project_work rtl prototypes [file tail $header]]
+}
+if {$profile eq "hdmi"} {
+    set_option -place_option 2
+    set_option -route_option 1
+}
 run all

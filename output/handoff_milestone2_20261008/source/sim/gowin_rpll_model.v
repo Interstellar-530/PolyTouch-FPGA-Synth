@@ -37,7 +37,7 @@ module rPLL #(
     output wire CLKOUTD3
 );
     // FCLKIN 是 MHz 字符串；这里只接受 12.288 这一种参考频率。
-    localparam real FIN_MHZ = 12.288;
+    localparam real FIN_MHZ = (FCLKIN=="27") ? 27.0 : 12.288;
     localparam real DIV     = (IDIV_SEL + 1);
     localparam real MULT    = (FBDIV_SEL + 1);
     localparam real FOUT_MHZ = FIN_MHZ * MULT / DIV;

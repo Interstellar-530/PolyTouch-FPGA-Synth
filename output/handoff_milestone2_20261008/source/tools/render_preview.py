@@ -31,6 +31,12 @@ SUSTAIN_LEVEL = 45875
 # Must match mixer.v VOLUME_SHIFT: 1 means the master level is -6 dB.
 VOLUME_SHIFT = 1
 
+# Arrangement mock-up only (not the four-voice RTL chain).
+BASS_VEL = 40
+ARP_VEL = 20
+COLOR_VEL = 22
+DOUBLE_VEL = 26
+
 
 def load_wave():
     values = []
@@ -176,10 +182,50 @@ def build_script(chord_set):
     return script
 
 
-def render(chord_set="A", tempo_mult=1):
-    table = load_wave()
-    alloc = Allocator()
+def build_arranged_script(chord_set):
+    """Eight-voice arrangement mock-up: melody, pad triad, bass, arp, colour,
+    and a melody double.
+
+    This is NOT the four-voice RTL chain.  It is an audition of the arrangement
+    we intend to port to the eight-voice engine (extra voices need more event
+    slots in song_player.v).
+    """
     script = build_script(chord_set)
+    tick = 0
+    for root, quality, length in song_data.chord_events(chord_set):
+        triad = song_data.triad(root, quality)
+        bass = root - 12
+        script.setdefault(tick, []).append(("on", bass, BASS_VEL))
+        script.setdefault(tick + length, []).append(("off", bass))
+        colour = triad[2] + 12
+        script.setdefault(tick, []).append(("on", colour, COLOR_VEL))
+        script.setdefault(tick + length, []).append(("off", colour))
+        for k in range(0, length, 2):
+            note = triad[(k // 2) % 3] + 24
+            script.setdefault(tick + k, []).append(("on", note, ARP_VEL))
+            script.setdefault(tick + k + 2, []).append(("off", note))
+        tick += length
+
+    # Melody double an octave below, at low level, so the lead keeps its edge.
+    tick = 0
+    for note, slot, code in song_data.melody_events():
+        if note:
+            low = note - 12
+            script.setdefault(tick, []).append(("on", low, DOUBLE_VEL))
+            script.setdefault(tick + max(1, slot), []).append(("off", low))
+        tick += slot
+
+    for key, items in script.items():
+        offs = [i for i in items if i[0] == "off"]
+        ons = [i for i in items if i[0] == "on"]
+        script[key] = offs + ons
+    return script
+
+
+def render(chord_set="A", tempo_mult=1, arranged=False):
+    table = load_wave()
+    alloc = Allocator(8 if arranged else 4)
+    script = build_arranged_script(chord_set) if arranged else build_script(chord_set)
 
     unit_samples = song_data.UNIT_SAMPLES * tempo_mult
     total_ticks = song_data.total_slot_units()
@@ -221,6 +267,7 @@ def main():
         SRC, "..", "artifacts", "wanye_preview.wav")
     chord_set = (sys.argv[2] if len(sys.argv) > 2 else "A").upper()
     tempo_mult = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+    arranged = len(sys.argv) > 4 and sys.argv[4].lower() == "arrange"
 
     issues = song_data.check()
     if issues:
@@ -230,7 +277,7 @@ def main():
     if chord_set not in song_data.PASS_CHORDS:
         raise SystemExit(f"unknown chord set {chord_set}")
 
-    samples, peak = render(chord_set, tempo_mult)
+    samples, peak = render(chord_set, tempo_mult, arranged)
     if peak == 0:
         raise SystemExit("FAIL: the render is silent")
 
@@ -243,7 +290,8 @@ def main():
         handle.writeframes(b"".join(struct.pack("<h", s) for s in samples))
 
     print(f"wrote {out}")
-    print(f"chord set {chord_set}, tempo x{tempo_mult}: {len(samples)} samples, "
+    print(f"{'arrangement mock' if arranged else 'RTL-equivalent'} chord set {chord_set}, "
+          f"tempo x{tempo_mult}: {len(samples)} samples, "
           f"{len(samples) / song_data.SAMPLE_RATE:.2f} s, peak {peak} "
           f"({20 * math.log10(peak / 32768.0):.1f} dBFS)")
 

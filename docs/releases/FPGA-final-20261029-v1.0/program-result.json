@@ -1,0 +1,12 @@
+{
+  "Profile": "hdmi",
+  "Operation": 37,
+  "ProgrammerBuiltInVerify": true,
+  "ReloadedFromFlash": true,
+  "IndependentReadback": false,
+  "ColdPowerCycleTested": false,
+  "SimulationRun": false,
+  "BitstreamSha256": "e6023373b5ecd8a63a241a381b9097ffb76ae52e2c93ec6b712449abf8a04f70",
+  "Frequency": "1MHz",
+  "CompletedUtc": "2026-10-29T12:10:51.2229967Z"
+}

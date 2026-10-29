@@ -123,6 +123,8 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 - 音频链路已从单声部扩为四声部复音：每声部独立的相位累加器、ADSR 与力度，四路求和后统一做饱和、平滑和主音量。
 - 新增四声部分配器 `voice_alloc`，音符事件统一走 `{valid, on, note, velocity}` 总线，这就是将来 MPR121 触摸键盘的接入点；UART 已能通过同一总线实时触发音符。
 - 内置测试曲《晚夜微雨问海棠》副歌，旋律加三个和弦音同时发声，共 146 个旋律事件（两遍副歌，59.26 秒），播完自动循环；转写依据、节奏表与和弦见 `SONG_WANYE_WEIYU.md`。
+- 第二首测试曲《旷古回响》bridge 已登记：按用户提供的简谱（1=♭A、4/4、♩=100）录入 13 小节、31.2 秒，旋律与连音线数据在 `source/tools/song_kuanggu.py`，试听 `artifacts/kuanggu_bridge.wav`，说明见 `SONG_KUANGGU_HUIXIANG.md`；尚未接入 RTL 曲目表，未烧录，高潮段待补。
+- 两首测试曲均已出 **32 声部编曲 mock**：`artifacts/wanye_32voice.wav`（59.26 秒）与 `artifacts/kuanggu_32voice.wav`（31.2 秒），分层为主旋律+高低八度、六音垫、贝斯+超低音、六声部分解、四声部弦乐、色彩/和声/节奏点；脚本 `tmp/kuanggu/arrange32.py`。
 - S1 在和弦套 A 与 B 之间切换，S2 重播，S3 保持同步复位，N14 指示灯显示当前和弦套。
 - 资源 4522 逻辑单元、772 寄存器、4 BSRAM、6 DSP；Fmax 37.409 MHz，无建立与保持违规。
 - 码流 SHA256 `802305f7…`，User Code `0x00009EC7`，已写入 SRAM。外部 Flash 里仍是修订十一的基线码流，按 S4 或断电即可回到基线。
@@ -207,3 +209,13 @@ to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
 ## 2026-10-26 周末版本写入 Flash
 
 用户明确要求将周末版本写 Flash 并跳过门禁。复用上述最终位流，核对 193 个归档构建输入及 SHA256 后，操作 37 完成外部 Flash 擦写校验，退出 0。操作 1 从 Flash 重载后延后读码为 0x000063DC / 0x00006020。没有重新构建或仿真，未改 RTL，未做彻底断电冷启动或串口、音频、CH9350L 实物验收。新归档 archive/FPGA-20261026-v0.1；记录 docs/logs/FPGA_FLASH_20261026.md。以后断电或 S4 重配置将加载本次 Flash 版本，替代此前 debug8。
+
+## 2026-10-26 F7/F8 新版写入 Flash
+
+从已推送提交 b656b0d 构建 standard27 / IdleOnly，写入外部 Flash。按用户要求跳过本轮仿真门禁；建立/保持违例均零，操作37写入校验成功，操作1重载后读到0x0000C452 / 0x00006020。F7切手动/自动，F8暂停/继续。其他未提交曲目修改未纳入，实物按键、声音及彻底断电测试待确认。归档archive/FPGA-20261026-v0.6，记录docs/logs/FPGA_FLASH_F7F8_20261026.md。
+
+## 2026-10-28 双曲目与 HDMI Flash
+S1 短按切换《晚夜微雨问海棠》/《旷古回响》bridge，长按保留音色，S2 保留速度。hdmi 档 Flash 擦写校验与重加载完成，User Code 0x5E47、Status 0x6020。最终 Quick 22 项与显示/曲目 8 项通过，setup/hold 0/0。源码、位流与证据见 archive/FPGA-20261028-v0.2；屏幕实显和冷启动待现场确认。接线见 docs/hardware/FPGA-HDMI双曲目与触摸接线-20261028-v0.1.md。
+
+## 2026-10-28 32 声部 HDMI 与延音联调
+生产 hdmi profile 已切换 instrument32_top：板载 27 MHz 前端、54 MHz RAM 引擎，32 声部与真实 32 格 UI，FSR 手动延音，双曲目保留。Flash 最终 User Code 0xA163、Status 0x6020。修复 HID rollover 误撤音，但 state-2 六个普通键槽的信息上限未解除。最后修补按用户要求未再针对性仿真；最终像素域 setup 11、hold 0，音频域时序通过。具体证据及限制见 archive/FPGA-20261028-v0.3。

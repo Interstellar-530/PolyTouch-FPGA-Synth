@@ -2,7 +2,7 @@
 // CH9350L state-2 键盘输入链路验收：UART RX -> 帧解析 -> 键位/移调/控制。
 //
 // 覆盖：按下/松开、报告重复去重、和弦、移调后松开用按下时音高、PageDown、
-// Esc 全松键、F1 音色、截断帧 1 ms 重同步、rollover 释放。
+// Esc 全松键、F1 音色、截断帧 1 ms 重同步、rollover 保留原持键。
 module tb_host_kbd;
     reg clk = 0;
     always #18.5185 clk = ~clk;   // 27 MHz
@@ -173,10 +173,11 @@ module tb_host_kbd;
         send_report(8'h14, 0, 0, 0, 0, 0);
         expect_ev(1'b1, 7'd60);
 
-        // rollover (0x01) -> 释放 Q
+        // rollover (0x01) is an invalid key list; it must not release Q.
         send_report(8'h01, 8'h01, 8'h01, 8'h01, 8'h01, 8'h01);
-        expect_ev(1'b0, 7'd60);
         expect_quiet(2000);
+        send_report(0, 0, 0, 0, 0, 0);
+        expect_ev(1'b0, 7'd60);
 
 
         // FIFO 回绕：20 次按/松 = 40 事件，跨 16 项两次

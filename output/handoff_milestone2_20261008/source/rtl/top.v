@@ -183,11 +183,15 @@ module top #(
     // 档位索引 0..3 对应每个曲目时间单位的 1..4 倍时长，并非逐档翻倍。
     // 本组寄存器仅用 por 复位：S3 保留和弦集和速度档，rst 会重启演奏逻辑。
     reg chord_set;
+    reg song_select;
+    reg song_change;
     reg restart;
     reg [1:0] tempo_sel;
 
     always @(posedge clk_audio) begin
         if (por) begin
+            song_select <= 1'b0;
+            song_change <= 1'b0;
             chord_set <= 1'b0;
             restart   <= 1'b0;
             // Preset index 0 (1x) is the score tempo of the new test tune:
@@ -197,8 +201,9 @@ module top #(
             // through all four presets for slow-motion listening.
             tempo_sel <= 2'd0;
         end else begin
+            song_change <= s1_press;
             if (s1_press)
-                chord_set <= ~chord_set;
+                song_select <= ~song_select;
             if (s2_press)
                 tempo_sel <= tempo_sel + 2'd1;   // wraps 3 -> 0
             restart <= s2_press;
@@ -241,7 +246,7 @@ module top #(
     // 已经按住的键必须松开再按才会重新起音。这里不能直接用 clear_events 驱动，
     // 否则由输入触发的那次“退出演示”会把首个按键事件一起清掉。
     wire manual_flush = uart_panic || hid_panic || hid_link_timeout || hid_device_notify ||
-                        instrument_change ||
+                        instrument_change || song_change ||
                         demo_on_request || demo_off_request;
 
     // 标准 27 MHz 档不再使用 12 路 GPIO 演奏键；旧 debug/standard 档保留以便回退。
@@ -359,7 +364,7 @@ module top #(
                                                   (man_ev_valid && man_ev_on));
     wire        clear_events = demo_on_request || demo_off_request ||
                                manual_transition || uart_panic || hid_panic ||
-                               hid_link_timeout || hid_device_notify || instrument_change || (restart && demo_mode);
+                               hid_link_timeout || hid_device_notify || instrument_change || song_change || (restart && demo_mode);
 
     always @(posedge clk_audio) begin
         if (rst) begin
@@ -369,11 +374,11 @@ module top #(
             pending_word  <= 16'd0;
         end else begin
             pending_valid <= 1'b0;
-            if (demo_on_request)
+            if (demo_on_request || song_change)
                 demo_mode <= 1'b1;
             else if (demo_off_request || manual_transition)
                 demo_mode <= 1'b0;
-            if (demo_on_request || demo_off_request || manual_transition)
+            if (demo_on_request || demo_off_request || manual_transition || song_change)
                 demo_paused <= 1'b0;
             else if (hid_pause_toggle && demo_mode)
                 demo_paused <= !demo_paused;
@@ -388,11 +393,12 @@ module top #(
         end
     end
 
-    song_player #(.UNIT_SAMPLES(SONG_UNIT_SAMPLES)) u_song (
+    song_player #(.UNIT_SAMPLES(SONG_UNIT_SAMPLES), .SONG_SELECT_ENABLE(1)) u_song (
         .clk          (clk_audio),
         .rst          (rst | ~demo_mode),
         .sample_tick  (sample_tick && !demo_transport_paused),
-        .restart      (restart | demo_on_request),
+        .restart      (restart | demo_on_request | song_change),
+        .song_select  (song_select),
         .chord_set    (chord_set),
         .tempo_sel    (tempo_sel),
         .ev_ready     (fifo_ready && !demo_transport_paused),
@@ -438,6 +444,7 @@ module top #(
         .full    (fifo_full),
         .wr_ready(fifo_ready)
     );
+
 
     uart_ctrl #(.CLK_HZ(AUDIO_CLK_HZ)) u_uart (
         .clk      (clk_audio),
@@ -603,6 +610,9 @@ module top #(
         end
       end
     end
+
+    // Debug snapshot for the UART 'A' command: CH0 pressure in [63:52],
+    // CH1 bend in [51:40].
 
     mcp3208_spi #(.CLK_HZ(AUDIO_CLK_HZ), .SPI_HZ(250_000)) u_adc (
         .clk (clk_audio), .rst (rst), .start (adc_start),
@@ -1035,8 +1045,9 @@ module top #(
     // while the output is muted.  Timing the gap between flashes measures the
     // loop directly.  N14 shows the chord set, L14/L16 the tempo preset.
     assign led       = audio_muted ? 1'b0 : ~loop_blink;
-    assign led_chord = ~chord_set;
+    assign led_chord = ~song_select; // off = Wanye, on = Kuanggu
     assign led_t0    = ~(show_timbre ? timbre_preset[0] : tempo_sel[0]);
     assign led_t1    = ~(show_timbre ? timbre_preset[1] : tempo_sel[1]);
 
 endmodule
+

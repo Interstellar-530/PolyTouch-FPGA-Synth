@@ -63,11 +63,12 @@ TEMPO_DEFAULT = 0
 # --------------------------------------------------------------- melody ----
 # (note-or-0, slot in sixteenths).  0 is a rest.  Every bar must sum to 16.
 #
-# Bar-by-bar rhythm was read from the reduction's beaming and note spacing:
-# dotted eighths, sixteenth pairs, ties written as one longer slot.  Where the
-# engraved bar leaves a gap without a rest symbol, the preceding note is held
-# through it.  The only silences left are the notated rest at the start of
-# bar 1 and the breath before the "晚夜" phrase in bar 9.
+# Melody source: the piano reduction's right hand (tan8 score 119727), which is
+# the line this test tune has used from the start.  The ktvc8 chord-and-melody
+# edition turned out to carry a second voice on its melody staff, so it was NOT
+# the lead vocal; it has been reverted.  Articulation is legato (no per-note
+# gap) and the score's long notes are held (bar 4 E5, bar 8 A5, bar 10 A5).
+# Rhythm alignment to the original vocal is still open; do not claim it matches.
 PASS_BARS = [
     # 1  "爱恨此消彼长" - the hook picks up after an eighth rest
     [(0, 2), ("A4", 2), ("A4", 2), ("E5", 2), ("D5", 2), ("C5", 2),
@@ -77,24 +78,25 @@ PASS_BARS = [
     # 3  "念想从未消亡"
     [("A5", 2), ("G5", 1), ("E5", 2), ("D5", 3),
      ("A5", 2), ("G5", 1), ("E5", 2), ("D5", 3)],
-    # 4  "踏断红尘不肯相忘" - the E5 is tied and held through the engraved gap
+    # 4  "踏断红尘不肯相忘" - E5 tie held, D5/E5 answer starts a cell earlier
     [("D5", 2), ("E5", 1), ("G5", 2), ("D5", 2),
-     ("E5", 6), ("D5", 2), ("E5", 1)],
+     ("E5", 5), ("D5", 2), ("E5", 2)],
     # 5  "飞上九天落千丈"
     [("A5", 2), ("G5", 1), ("E5", 2), ("D5", 3),
      ("A5", 2), ("G5", 1), ("E5", 2), ("D5", 3)],
-    # 6  "为你闯一趟"
-    [("D5", 3), ("E5", 1), ("E5", 2), ("G5", 2),
+    # 6  "为你闯一趟" - the score has G5 as a sixteenth, then two E5s:
+    #    D5(3) E5(3 tie) G5(1) E5(1) E5(4) D5(2) E5(2)
+    [("D5", 3), ("E5", 3), ("G5", 1), ("E5", 1),
      ("E5", 4), ("D5", 2), ("E5", 2)],
-    # 7  "若你独留远方" - tied D5 held, no extra stroke, then the answer phrase
+    # 7  "若你独留远方"
     [("A5", 2), ("G5", 1), ("E5", 2), ("C5", 2),
      ("D5", 5), ("D5", 2), ("E5", 2)],
-    # 8  "谁来与我相望" - quarter C6, then the long dotted A5 through the gap
-    [("C6", 4), ("B5", 2), ("A5", 2), ("A5", 6), ("C5", 1), ("C5", 1)],
-    # 9  "晚夜微雨问海棠"
-    [(0, 2), ("D5", 2), ("C5", 1), ("D5", 1), ("D5", 1), ("E5", 2),
-     ("C6", 3), ("B5", 1), ("B5", 2), ("G5", 1)],
-    # 10 "用地久天长" - dotted half on the tonic, 3 beats
+    # 8  "谁来与我相望" - C6 quarter, B5 sixteenth, A5 held, two C5s
+    [("C6", 4), ("B5", 1), ("A5", 2), ("A5", 5), ("C5", 2), ("C5", 2)],
+    # 9  "晚夜微雨问海棠" - downbeat D5, no leading rest, G5 held to the bar
+    [("D5", 2), ("C5", 1), ("D5", 1), ("D5", 1), ("E5", 2),
+     ("C6", 3), ("B5", 1), ("B5", 2), ("G5", 3)],
+    # 10 "用地久天长" - G5 plus two sixteenths, then a dotted half on A5
     [("G5", 2), ("A5", 1), ("A5", 1), ("A5", 12)],
 ]
 

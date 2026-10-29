@@ -1,3 +1,4 @@
+// 1024x600 compatibility timing, 51.3 MHz / (1344*635) = 60.1097 Hz.
 // CEA-861 1280x720@60 timing. Pixel clock is 74.25 MHz, 5x serial clock
 // is 371.25 MHz. Sync pulses are positive.
 module hdmi_720p_timing (
@@ -10,17 +11,17 @@ module hdmi_720p_timing (
     output reg  [9:0]  y,
     output reg         frame_start
 );
-    localparam integer H_SYNC   = 40;
-    localparam integer H_BACK   = 220;
-    localparam integer H_ACTIVE = 1280;
-    localparam integer H_FRONT  = 110;
-    localparam integer H_TOTAL  = 1650;
+    localparam integer H_SYNC   = 20;
+    localparam integer H_BACK   = 140;
+    localparam integer H_ACTIVE = 1024;
+    localparam integer H_FRONT  = 160;
+    localparam integer H_TOTAL  = 1344;
 
-    localparam integer V_SYNC   = 5;
+    localparam integer V_SYNC   = 3;
     localparam integer V_BACK   = 20;
-    localparam integer V_ACTIVE = 720;
-    localparam integer V_FRONT  = 5;
-    localparam integer V_TOTAL  = 750;
+    localparam integer V_ACTIVE = 600;
+    localparam integer V_FRONT  = 12;
+    localparam integer V_TOTAL  = 635;
 
     reg [10:0] h_count;
     reg [9:0]  v_count;
@@ -62,7 +63,7 @@ module hdmi_720p_timing (
 
 `ifdef SIMULATION
     initial begin
-        if ((H_TOTAL != 1650) || (V_TOTAL != 750) || (H_ACTIVE != 1280) || (V_ACTIVE != 720))
+        if ((H_TOTAL != 1344) || (V_TOTAL != 635) || (H_ACTIVE != 1024) || (V_ACTIVE != 600))
             $fatal(1, "HDMI_720P_TIMING_PARAM_INVALID");
     end
 `endif

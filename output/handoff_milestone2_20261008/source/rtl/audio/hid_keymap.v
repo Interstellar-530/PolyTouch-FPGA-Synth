@@ -41,6 +41,12 @@ module hid_keymap (
     output wire [3:0]  held_count,
     output reg         overflow
 );
+    // USB Boot 0x01/02/03 are error usages, not a trustworthy release list.
+    wire report_error =
+        (report[23:16]>=1 && report[23:16]<=3) || (report[31:24]>=1 && report[31:24]<=3) ||
+        (report[39:32]>=1 && report[39:32]<=3) || (report[47:40]>=1 && report[47:40]<=3) ||
+        (report[55:48]>=1 && report[55:48]<=3) || (report[63:56]>=1 && report[63:56]<=3);
+    wire valid_report = report_valid && !report_error;
     localparam integer KEY_SLOTS = 14;
     localparam [7:0] VELOCITY = 8'd100;
     wire clear_all = flush || link_timeout || device_notify;
@@ -66,7 +72,7 @@ module hid_keymap (
         end else begin
             mode_toggle <= 1'b0;
             pause_toggle <= 1'b0;
-            if (report_valid) begin
+            if (valid_report) begin
                 mode_key_held <= report_has_mode;
                 if (report_has_mode && !mode_key_held) mode_toggle <= 1'b1;
                 pause_key_held <= report_has_pause;
@@ -245,7 +251,7 @@ module hid_keymap (
                     if (link_timeout || device_notify) begin
                         prev_key[m] <= 8'd0;
                         prev_seen[m] <= 1'b0;
-                    end else if (report_valid) begin
+                    end else if (valid_report) begin
                         prev_key[m] <= report_key(report, m);
                         prev_seen[m] <= (report_key(report, m) != 8'd0);
                     end else if (pending) begin
@@ -257,7 +263,7 @@ module hid_keymap (
                     end
                 end
             end else if (!busy) begin
-                if (report_valid) begin
+                if (valid_report) begin
                     for (m = 0; m < KEY_SLOTS; m = m + 1)
                         cur_key[m] <= report_key(report, m);
                     busy <= 1'b1; phase <= 1'b0; idx <= 4'd0;
@@ -267,8 +273,8 @@ module hid_keymap (
                     pending <= 1'b0; busy <= 1'b1; phase <= 1'b0; idx <= 4'd0;
                 end
             end else begin
-                if (report_valid && !pending) begin pending <= 1'b1; pending_report <= report; end
-                else if (report_valid && pending && phase != 2'd2) overflow <= 1'b1;
+                if (valid_report && !pending) begin pending <= 1'b1; pending_report <= report; end
+                else if (valid_report && pending && phase != 2'd2) overflow <= 1'b1;
                 if (!push || room) begin
                 if (phase == 1'b0) begin
                 // OFF 扫描只发 Note Off，不改 prev
@@ -317,7 +323,7 @@ module hid_keymap (
                     prev_seen[m] <= next_seen[m];
                 end
                 busy <= 1'b0; idx <= 4'd0;
-                if (report_valid) begin
+                if (valid_report) begin
                     pending <= 1'b1; pending_report <= report;
                 end
             end

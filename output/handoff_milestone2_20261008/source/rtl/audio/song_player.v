@@ -17,15 +17,18 @@
 // the score tempo), so the burned bitstream plays the tune at 81 BPM.
 module song_player #(
     parameter integer UNIT_SAMPLES = 8681,
+    parameter integer SECOND_UNIT_SAMPLES = (UNIT_SAMPLES * 81 + 50) / 100,
+    parameter integer SONG_SELECT_ENABLE = 0,
     parameter [7:0]   CHORD_VEL_A  = 8'd30,
     parameter [7:0]   CHORD_VEL_B  = 8'd46,
-    parameter [7:0]   MELODY_LAST  = 8'd139,
+    parameter [7:0]   MELODY_LAST  = 8'd137,
     parameter [5:0]   CHORD_LAST   = 6'd39
 )(
     input  wire        clk,
     input  wire        rst,
     input  wire        sample_tick,
     input  wire        restart,
+    input  wire        song_select,      // enabled in production top; 0 = Wanye, 1 = Kuanggu
     input  wire        chord_set,        // 0 = set A, 1 = set B
     input  wire [1:0]  tempo_sel,        // 0..3 -> every unit stretched 1x..4x
     input  wire        ev_ready,         // FIFO accepts current event this clock
@@ -39,12 +42,16 @@ module song_player #(
     // 这里的少量 case 是曲目事件表。音频单周期波表在 dds_osc.v 中使用 BSRAM，
     // 不应把曲目表实现方式照搬到 512/1024 点振荡器波表。
     `include "rtl/audio/song_roms.vh"
+    `include "rtl/audio/song_second_roms.vh"
+    wire second_song = SONG_SELECT_ENABLE ? song_select : 1'b0;
+    wire [7:0] melody_last = second_song ? SECOND_MELODY_LAST : MELODY_LAST;
+    wire [5:0] chord_last = second_song ? SECOND_CHORD_LAST : CHORD_LAST;
 
     // ----------------------------------------------------------- tick base --
     reg [15:0] tick_cnt;
     // UNIT_SAMPLES * 4 is 34724 here, still inside 16 bits, so the slice below
     // is exact; slicing keeps the 32 bit parameter arithmetic explicit.
-    wire [31:0] tick_period = UNIT_SAMPLES * (tempo_sel + 1);
+    wire [31:0] tick_period = (second_song ? SECOND_UNIT_SAMPLES : UNIT_SAMPLES) * (tempo_sel + 1);
     wire [15:0] tick_top    = tick_period[15:0] - 16'd1;
 
     // tick_cnt 每个音频采样才更新，到顶比较会保持 576 个 clk。
@@ -53,7 +60,7 @@ module song_player #(
     wire tick_pulse = sample_tick && (tick_cnt == tick_top);
 
     always @(posedge clk) begin
-        if (rst)
+        if (rst || restart)
             tick_cnt <= 16'd0;
         else if (sample_tick)
             tick_cnt <= tick_pulse ? 16'd0 : tick_cnt + 16'd1;
@@ -70,9 +77,9 @@ module song_player #(
     // what was switched on even if the chord set changes in between.
     reg [6:0]  cnote0, cnote1, cnote2;
 
-    wire [7:0] mel_nxt       = (mel_idx == MELODY_LAST) ? 8'd0 : mel_idx + 8'd1;
-    wire [15:0] mel_cur_word = mel_word(mel_idx);
-    wire [15:0] mel_nxt_word = mel_word(mel_nxt);
+    wire [7:0] mel_nxt       = (mel_idx == melody_last) ? 8'd0 : mel_idx + 8'd1;
+    wire [15:0] mel_cur_word = second_song ? second_mel_word(mel_idx) : mel_word(mel_idx);
+    wire [15:0] mel_nxt_word = second_song ? second_mel_word(mel_nxt) : mel_word(mel_nxt);
     wire [6:0] mel_cur_note  = mel_cur_word[12:6];
     wire [6:0] mel_nxt_note  = mel_nxt_word[12:6];
     wire [2:0] mel_nxt_code  = mel_nxt_word[15:13];
@@ -102,9 +109,9 @@ module song_player #(
         end
     endfunction
 
-    wire [5:0] chord_nxt     = (chord_idx == CHORD_LAST) ? 6'd0 : chord_idx + 6'd1;
-    wire [15:0] ch_nxt_entry = chord_set ? chord_b_word(chord_nxt)
-                                         : chord_a_word(chord_nxt);
+    wire [5:0] chord_nxt     = (chord_idx == chord_last) ? 6'd0 : chord_idx + 6'd1;
+    wire [15:0] ch_nxt_entry = second_song ? second_chord_word(chord_nxt) :
+                             chord_set ? chord_b_word(chord_nxt) : chord_a_word(chord_nxt);
     // The two harmonisations also differ in level, which makes the S1 switch
     // unmistakable next to the different progressions.
     wire [7:0]  chord_vel    = chord_set ? CHORD_VEL_B : CHORD_VEL_A;
@@ -134,8 +141,8 @@ module song_player #(
     always @(posedge clk) begin
         if (rst) begin
             // 从表尾初始化，使第一个节拍转到索引 0，启动第一组旋律/和弦。
-            mel_idx    <= MELODY_LAST;
-            chord_idx  <= CHORD_LAST;
+            mel_idx    <= melody_last;
+            chord_idx  <= chord_last;
             mel_left   <= 8'd0;
             chord_left <= 8'd0;
             mel_gap_len <= 8'd1;
@@ -147,8 +154,8 @@ module song_player #(
             bactive    <= 1'b0;
         end else begin
             if (restart) begin
-                mel_idx    <= MELODY_LAST;
-                chord_idx  <= CHORD_LAST;
+                mel_idx    <= melody_last;
+                chord_idx  <= chord_last;
                 mel_left   <= 8'd0;
                 chord_left <= 8'd0;
                 mel_gap_len <= 8'd1;

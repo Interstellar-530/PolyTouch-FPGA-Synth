@@ -6,3 +6,15 @@ rtl/video/hdmi_clock.v
 rtl/video/hdmi_dashboard.v
 rtl/video/dvi_tx.v
 rtl/video/ui_visual_sync.v
+rtl/instrument32_top.v
+rtl/audio/board_audio_clock.v
+rtl/audio/control_bundle_cdc.v
+rtl/audio/ram32_board_engine.v
+rtl/audio/sustain_pedal.v
+rtl/audio/audio_frame_bridge_stereo.v
+rtl/prototypes/voice_sched32.v
+rtl/prototypes/instrument_ram_audio_compute.v
+rtl/prototypes/instrument_ram_wavetable_engine.v
+rtl/prototypes/instrument_rom_banks.v
+rtl/audio/arrangement32_rom.v
+rtl/audio/song_player32.v

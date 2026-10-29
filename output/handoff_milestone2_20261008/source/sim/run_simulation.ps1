@@ -1,4 +1,4 @@
-﻿<#
+<#
     RTL 仿真门禁。
     [S3-AI | deepseek | 2026-10-14] S3 台与参数负例。
     [S3-REVIEW | Codex | 2026-10-14] 六个负例、原始诊断、ASCII路径及本次指标绑定。
@@ -260,7 +260,8 @@ try {
     # The FSR integration bench now exercises the complete standard27 front end.
     ($suite | Where-Object { $_.Name -eq 'tb_pressure_top' }).Src = @($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v'))
     $suite += @{ Name='tb_fsr_mute'; Top='sim\tb_fsr_mute.v'; Src=@('rtl\audio\fsr_mute.v') }
-    foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top','tb_uart_dashboard')) {
+    $suite += @{ Name='tb_song_select'; Top='sim\tb_song_select.v'; Src=@('rtl\audio\song_player.v') }
+    foreach ($name in @('tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top','tb_uart_dashboard','tb_top_song_select')) {
         $suite += @{ Name=$name; Top=('sim\'+$name+'.v'); Src=($audioSources + @('rtl\top.v','sim\gowin_prom_model.v','sim\mcp3208_model.v','sim\i2s_rx_model.v')) }
     }
 
@@ -299,6 +300,7 @@ try {
     $suite += @{ Name='tb_ram32_engine_audio'; Top='sim\tb_ram32_engine_audio.v'; Src=($audioSources + @('rtl\prototypes\ram32_clocked_top.v','rtl\prototypes\ram32_control_front.v','rtl\prototypes\voice_sched32.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_rpll_model.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
     $suite += @{ Name='tb_ram32_latency'; Top='sim\tb_ram32_latency.v'; Src=($audioSources + @('rtl\prototypes\ram32_clocked_top.v','rtl\prototypes\ram32_control_front.v','rtl\prototypes\voice_sched32.v','rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v','sim\gowin_rpll_model.v','sim\gowin_prom_model.v','sim\i2s_rx_model.v')) }
     $suite += @{ Name='tb_voice_sched32_review'; Top='sim\tb_voice_sched32_review.v'; Src=@('rtl\prototypes\voice_sched32.v','rtl\audio\note_phase_inc.v') }
+    $suite += @{ Name='tb_piano_balance'; Top='sim\tb_piano_balance.v'; Src=@('rtl\prototypes\voice_sched32.v','rtl\audio\note_phase_inc.v') }
     # Product regressions for the eight-voice profiles must run at the same
     # gate as the older four-voice benches.
     foreach ($name in @('tb_engine8_pitch','tb_top_pitch8','tb_top_switch','tb_top_guitar','tb_guitar_bank')) {
@@ -317,17 +319,32 @@ try {
     $suite += @{ Name='tb_opt_a_datapath'; Top='sim\opt_a\tb_opt_a_datapath.v'; Src=($optABankSources + @('rtl\prototypes\instrument_rom_banks.v','rtl\prototypes\instrument_ram_wavetable_engine.v','rtl\prototypes\instrument_ram_audio_compute.v')) }
     $suite += @{ Name='tb_opt_a_master'; Top='sim\opt_a\tb_opt_a_master.v'; Src=@('rtl\audio\wide_master.v') }
     $suite += @{ Name='tb_opt_a_tables'; Top='sim\opt_a\tb_opt_a_tables.v'; Src=($optABankSources + @('rtl\prototypes\instrument_rom_banks.v')) }
+    $suite += @{ Name='tb_arrangement32'; Top='sim\tb_arrangement32.v'; Src=@('rtl\audio\song_player32.v','rtl\audio\arrangement32_rom.v','sim\gowin_prom_model.v') }
     # HDMI dashboard modules and the UART route/snapshot protocol have their
     # own self-checking benches and are included in Full.
     $suite += @{ Name='tb_hdmi_timing'; Top='sim\tb_hdmi_timing.v'; Src=@('rtl\video\hdmi_720p_timing.v') }
+    $suite += @{ Name='tb_dashboard_pipeline'; Top='sim\tb_dashboard_pipeline.v'; Src=@(
+        'rtl\video\dashboard_text_mux.v','rtl\video\dashboard_renderer.v',
+        'sim\reference\baseline_dashboard_renderer.v','rtl\video\dashboard_font_prom.v','sim\gowin_prom_model.v') }
     $suite += @{ Name='tb_ui_status_export'; Top='sim\tb_ui_status_export.v'; Src=@('rtl\video\ui_status_export.v') }
     $suite += @{ Name='tb_ui_audio_visual_export'; Top='sim\tb_ui_audio_visual_export.v'; Src=@('rtl\video\ui_audio_visual_export.v') }
     $suite += @{ Name='tb_dashboard'; Top='sim\tb_dashboard.v'; Src=@(
         'rtl\video\dashboard_text_mux.v','rtl\video\dashboard_renderer.v',
         'rtl\video\dashboard_font_prom.v','sim\gowin_prom_model.v') }
     $allNames = @($suite | ForEach-Object { $_.Name })
+    $production32Sources=@($audioSources + @('rtl\instrument32_top.v','rtl\prototypes\voice_sched32.v',
+        'rtl\prototypes\instrument_ram_audio_compute.v','rtl\prototypes\instrument_ram_wavetable_engine.v',
+        'rtl\prototypes\instrument_rom_banks.v','sim\gowin_prom_model.v','sim\gowin_rpll_model.v',
+        'sim\mcp3208_model.v','sim\i2s_rx_model.v'))
+    $suite += @{ Name='tb_production32'; Top='sim\tb_production32.v'; Src=$production32Sources }
+    $suite += @{ Name='tb_sustain_pedal'; Top='sim\tb_sustain_pedal.v'; Src=@('rtl\audio\sustain_pedal.v') }
+    $suite += @{ Name='tb_ui_status32'; Top='sim\tb_ui_status32.v'; Src=@('rtl\video\ui_status_export.v') }
+    $suite += @{ Name='tb_dashboard32'; Top='sim\tb_dashboard32.v'; Src=@(
+        'rtl\video\dashboard_text_mux.v','rtl\video\dashboard_renderer.v',
+        'rtl\video\dashboard_font_prom.v','sim\gowin_prom_model.v') }
+    $allNames = @($suite | ForEach-Object { $_.Name })
     $groups = @{
-        Quick = @('tb_tick_rate','tb_adsr','tb_event_fifo','tb_i2s_tx','tb_mcp3208_spi','tb_fsr_mute',
+        Quick = @('tb_piano_balance','tb_arrangement32','tb_ui_audio_visual_export','tb_hdmi_timing','tb_production32','tb_sustain_pedal','tb_ui_status32','tb_dashboard32','tb_song_select','tb_top_song_select','tb_tick_rate','tb_adsr','tb_event_fifo','tb_i2s_tx','tb_mcp3208_spi','tb_fsr_mute',
                   'tb_pressure_bend','tb_pressure_gain','tb_velocity_bounds','tb_wide_master_pair',
                   'tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause')
         Host = @('tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause','tb_hid_full_keyboard','tb_top_host_eight')
@@ -496,3 +513,5 @@ try {
 finally {
     Pop-Location
 }
+
+

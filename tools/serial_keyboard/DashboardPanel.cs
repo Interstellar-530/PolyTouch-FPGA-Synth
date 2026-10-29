@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -60,7 +60,7 @@ namespace PolyTouchPc
                     snapshot.Muted ? Brushes.OrangeRed : cyan, w - 180, 55);
 
                 int cardY = 90;
-                Card(g, "活跃声部", snapshot.ActiveCount.ToString(), 28, cardY, 150, 64, white, cyan);
+                Card(g, "活跃声部", snapshot.ActiveCount.ToString() + "/" + snapshot.Capacity.ToString(), 28, cardY, 150, 64, white, cyan);
                 Card(g, "主音符", snapshot.LeadNote == 0 ? "--" : NoteName(snapshot.LeadNote), 190, cardY, 150, 64, white, cyan);
                 Card(g, "力度", snapshot.LeadVelocity.ToString(), 352, cardY, 150, 64, white, cyan);
                 Card(g, "压力", snapshot.Pressure.ToString(), 514, cardY, 150, 64, white, cyan);
@@ -120,7 +120,7 @@ namespace PolyTouchPc
                         using (Brush cellBrush = new SolidBrush(on ? Color.FromArgb(241, 180, 77) : Color.FromArgb(34, 50, 70)))
                             g.FillRectangle(cellBrush, gridX + x * cell, gridY + y * cell, cell - 2, cell - 2);
                     }
-                DrawText(g, "Q 快照 · 115200 8N1", smallFont, muted, w - 190, h - 26);
+                DrawText(g, (snapshot.Sustain ? "延音踏板：按下" : "延音踏板：松开"), smallFont, muted, w - 190, h - 26);
             }
         }
 

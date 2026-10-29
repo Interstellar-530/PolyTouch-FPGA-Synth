@@ -11,10 +11,17 @@ module tb_ui_audio_visual_export;
     wire [63:0] spectrum;
     wire [63:0] lissajous;
     wire snapshot_toggle;
+    wire [63:0] spectrum32;
+    wire [255:0] waveform32;
+    ui_audio_visual_export #(.VOICES(32),.DECIMATION(1),.WAVE_HOLD_WINDOWS(4)) sparse32 (
+        .clk(clk),.rst(rst),.sample_tick(sample_tick),.sample_in(sample_in),
+        .v_gate(32'd1),.v_note({217'd0,7'd77}),.v_vel({248'd0,8'd112}),
+        .waveform(waveform32),.spectrum(spectrum32),.lissajous(),.snapshot_toggle()
+    );
 
     always #5 clk = ~clk;
 
-    ui_audio_visual_export #(.VOICES(4)) dut (
+    ui_audio_visual_export #(.VOICES(4),.DECIMATION(1)) dut (
         .clk(clk), .rst(rst), .sample_tick(sample_tick),
         .sample_in(sample_in), .v_gate(v_gate), .v_note(v_note), .v_vel(v_vel),
         .waveform(waveform), .spectrum(spectrum),
@@ -39,14 +46,34 @@ module tb_ui_audio_visual_export;
             sample_tick <= 1'b0;
         end
         wait (snapshot_toggle != old_toggle);
-        if (waveform[3:0] !== 4'd3)
+        if (waveform[3:0] !== 4'd0)
             $fatal(1, "VIS_WAVE_FIRST=%0d", waveform[3:0]);
-        if (waveform[63*4 +: 4] !== 4'd4)
+        if (waveform[63*4 +: 4] !== 4'd7)
             $fatal(1, "VIS_WAVE_LAST=%0d", waveform[63*4 +: 4]);
         if (spectrum[5*8 +: 8] == 0 || spectrum[7*8 +: 8] == 0)
             $fatal(1, "VIS_SPECTRUM=%h", spectrum);
         if (lissajous == 0)
             $fatal(1, "VIS_PHASE_EMPTY");
+        if(spectrum32[6*8 +: 8]<64 || spectrum32[6*8 +: 8]>192)
+            $fatal(1,"single lead must remain readable in a 32-voice display");
+        if(waveform32!=={64{4'd4}}) $fatal(1,"waveform published before four windows");
+        // All voices in one band: sum 4*127 must saturate at 255, without wrap.
+        v_gate=4'b1111;
+        v_note={4{7'd60}}; v_vel=32'hffffffff;
+        repeat(4) @(negedge clk);
+        old_toggle=snapshot_toggle;
+        for(i=0;i<64;i=i+1) begin
+            @(negedge clk); sample_tick=1;
+            @(negedge clk); sample_tick=0;
+        end
+        wait(snapshot_toggle!=old_toggle); #1;
+        if(spectrum!==64'h2400ff0000000000) $fatal(1,"spectrum saturation/slow decay failed %h",spectrum);
+        for(i=0;i<128;i=i+1) begin
+            @(negedge clk); sample_tick=1;
+            @(negedge clk); sample_tick=0;
+        end
+        #1;
+        if(waveform32==={64{4'd4}}) $fatal(1,"held waveform did not publish at fourth window");
         $display("UI_VISUAL_PASS wave_rows=%0d..%0d spectrum=%h", waveform[3:0],
                  waveform[63*4 +: 4], spectrum);
         $finish;
@@ -57,3 +84,5 @@ module tb_ui_audio_visual_export;
         $fatal(1, "UI_VISUAL_TIMEOUT");
     end
 endmodule
+
+

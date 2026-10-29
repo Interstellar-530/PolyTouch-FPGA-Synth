@@ -15,6 +15,7 @@
 // starts release; the voice becomes free only when env reaches zero.
 module voice_sched32 #(
     parameter integer VOICES = 32,
+    parameter integer HIGH_NOTE_BALANCE = 0,
     parameter [15:0] ATTACK_STEP   = 16'd140,
     parameter [15:0] DECAY_STEP    = 16'd16,
     parameter [15:0] RELEASE_STEP  = 16'd48,
@@ -44,7 +45,10 @@ module voice_sched32 #(
     output reg  [5:0]  active_count,
     // 全局弯音比率（Q16，65536=不弯）。施加在每次配置事务的增量上，
     // 不重触发包络；只在比率变化时把活动声部标脏刷新。
-    input  wire [16:0] bend_ratio
+    input  wire [16:0] bend_ratio,
+    output wire [VOICES-1:0] voice_active,
+    output wire [VOICES*7-1:0] voice_notes,
+    output wire [VOICES*8-1:0] voice_velocities
 );
     localparam [2:0] ST_IDLE = 3'd0, ST_ATTACK = 3'd1, ST_DECAY = 3'd2,
                      ST_SUSTAIN = 3'd3, ST_RELEASE = 3'd4;
@@ -63,6 +67,12 @@ module voice_sched32 #(
     reg instrument_q;
     reg [2:0] tone_q;
     reg [16:0] ratio_q = 17'd65536;
+    genvar vi;
+    generate for(vi=0;vi<VOICES;vi=vi+1) begin: g_status
+        assign voice_active[vi]=(est[vi]!=ST_IDLE);
+        assign voice_notes[vi*7 +: 7]=note[vi];
+        assign voice_velocities[vi*8 +: 8]=vel[vi];
+    end endgenerate
     wire [2:0] start_stage=(tone_q>=3)?3'd4:3'd3;
 
     integer i, k;
@@ -192,6 +202,34 @@ module voice_sched32 #(
         (snap_note>=78?6'd6:6'd0)+candidate_stage;
     wire [15:0] candidate_weight=instrument_q?16'd0:
         ((16'd8191-{3'd0,snap_timer})<<3);
+
+    // Optional 2026-10-29 balanced piano curve. The gain is applied to the
+    // envelope once per configuration transaction, with no new audio lane.
+    function [8:0] piano_note_gain_q8;
+        input [6:0] n;
+        begin
+            case(n)
+                7'd73:piano_note_gain_q8=251; 7'd74:piano_note_gain_q8=246;
+                7'd75:piano_note_gain_q8=241; 7'd76:piano_note_gain_q8=237;
+                7'd77:piano_note_gain_q8=232; 7'd78:piano_note_gain_q8=228;
+                7'd79:piano_note_gain_q8=223; 7'd80:piano_note_gain_q8=219;
+                7'd81:piano_note_gain_q8=215; 7'd82:piano_note_gain_q8=210;
+                7'd83:piano_note_gain_q8=206; 7'd84:piano_note_gain_q8=202;
+                7'd85:piano_note_gain_q8=198; 7'd86:piano_note_gain_q8=195;
+                7'd87:piano_note_gain_q8=191; 7'd88:piano_note_gain_q8=187;
+                7'd89:piano_note_gain_q8=184; 7'd90:piano_note_gain_q8=180;
+                7'd91:piano_note_gain_q8=176; 7'd92:piano_note_gain_q8=173;
+                7'd93:piano_note_gain_q8=170; 7'd94:piano_note_gain_q8=166;
+                7'd95:piano_note_gain_q8=163; 7'd96:piano_note_gain_q8=160;
+                7'd97:piano_note_gain_q8=157; 7'd98:piano_note_gain_q8=154;
+                default:piano_note_gain_q8=(n<=72)?9'd256:9'd152;
+            endcase
+        end
+    endfunction
+    wire [8:0] note_gain_q8=(HIGH_NOTE_BALANCE && !instrument_q) ?
+        piano_note_gain_q8(snap_note) : 9'd256;
+    wire [24:0] balanced_env_product=snap_env*note_gain_q8;
+    wire [15:0] balanced_env=(balanced_env_product+25'd128)>>8;
 
     always @(posedge clk) begin
         if (rst) begin
@@ -329,7 +367,7 @@ module voice_sched32 #(
             if(!cfg_pend || cfg_ready)begin
                 if(snap_valid && snap_phase==2)begin
                     sel<=snap_sel;cfg_inc_q<=bent_inc;
-                    cfg_env_q<=snap_env;cfg_vel_q<=snap_vel[6:0];
+                    cfg_env_q<=balanced_env;cfg_vel_q<=snap_vel[6:0];
                     cfg_retrig_q<=snap_retrig;cfg_param_q<={2'd0,candidate_bank,candidate_weight};
                     cfg_mask_q<=snap_mask;cfg_pend<=1;snap_valid<=0;
                 end else cfg_pend<=0;

@@ -20,6 +20,12 @@ function Get-BuildInputs {
     $sourceRoot = Get-BuildSourceRoot $SourceRoot
     $paths = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'sources.list') |
         Where-Object { $_.Trim() -ne '' } | ForEach-Object { Join-Path $sourceRoot $_ })
+    if($Profile.Name -eq 'hdmi') {
+        $paths += @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'hdmi_sources.list') |
+            Where-Object { $_.Trim() -ne '' } | ForEach-Object { Join-Path $sourceRoot $_ })
+    }
+    $paths += @(Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'rtl/prototypes') -File |
+        Where-Object Extension -In '.vh' | ForEach-Object FullName)
     # Include ROM data and headers, even when not added as synthesis source files.
     $paths += @(Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'rtl/audio') -File |
         Where-Object Extension -In '.vh', '.hex', '.mi', '.mif' | ForEach-Object FullName)

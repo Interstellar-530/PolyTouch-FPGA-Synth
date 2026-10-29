@@ -1,3 +1,4 @@
+// 27 MHz * 19 / 2 = 256.5 MHz serial; CLKDIV5 = 51.3 MHz pixel.
 // 27 MHz -> 371.25 MHz serial clock / 74.25 MHz pixel clock, matching the
 // Sipeed Tang Primer 20K HDMI reference design.
 module hdmi_clock (
@@ -31,11 +32,11 @@ module hdmi_clock (
     );
     defparam rpll_inst.FCLKIN = "27";
     defparam rpll_inst.DYN_IDIV_SEL = "false";
-    defparam rpll_inst.IDIV_SEL = 3;
+    defparam rpll_inst.IDIV_SEL = 1;
     defparam rpll_inst.DYN_FBDIV_SEL = "false";
-    defparam rpll_inst.FBDIV_SEL = 54;
+    defparam rpll_inst.FBDIV_SEL = 18;
     defparam rpll_inst.DYN_ODIV_SEL = "false";
-    defparam rpll_inst.ODIV_SEL = 2;
+    defparam rpll_inst.ODIV_SEL = 4;
     defparam rpll_inst.PSDA_SEL = "0000";
     defparam rpll_inst.DYN_DA_EN = "true";
     defparam rpll_inst.DUTYDA_SEL = "1000";

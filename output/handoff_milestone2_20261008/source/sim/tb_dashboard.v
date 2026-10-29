@@ -63,7 +63,7 @@ module tb_dashboard;
         rst <= 1'b0;
 
         expect_char(11'd48,  10'd32,  "P", "title");
-        expect_char(11'd912, 10'd40,  "H", "header");
+        expect_char(11'd912, 10'd40,  "1", "header");
         expect_char(11'd1092,10'd208, "P", "piano");
         st[43] = 1'b1;
         expect_char(11'd1092,10'd208, "G", "guitar");
