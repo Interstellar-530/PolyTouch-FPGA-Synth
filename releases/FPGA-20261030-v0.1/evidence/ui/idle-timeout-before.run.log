@@ -1,0 +1,4 @@
+TIMEOUT_TRACE policy=1 held=0 pedal=1 clear=1 deferred=1 gate=1
+FATAL: sim\tb_fsr_idle_timeout.v:44: IDLE_TIMEOUT_CLEARS_SUSTAIN_WITH_PEDAL_DOWN
+       Time: 4000456861  Scope: tb_fsr_idle_timeout
+

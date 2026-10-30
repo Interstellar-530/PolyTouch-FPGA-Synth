@@ -1,0 +1,2 @@
+PASS tb_dashboard32: note field, waveform dots and 32 activity slots, metrics and 00/06/08/16/32 voice counts
+sim/tb_dashboard32.v:79: $finish called at 6147646000 (1ps)

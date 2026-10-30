@@ -1,0 +1,439 @@
+ Target Cable: Gowin USB Cable(FT2CH)/0/None/null@1MHz
+ Target Device: GW2A-18C(0x0000081B)
+ Operation "exFlash Erase,Program,Verify thru GAO-Bridge" for device#1...
+
+Preparing data...: [#########################] 100%                 
+ Loading GAO-Bridge...
+
+Programing: [                         ] 1%                 
+Programing: [                         ] 2%                 
+Programing: [                         ] 3%                 
+Programing: [#                        ] 4%                 
+Programing: [#                        ] 5%                 
+Programing: [#                        ] 6%                 
+Programing: [#                        ] 7%                 
+Programing: [##                       ] 8%                 
+Programing: [##                       ] 9%                 
+Programing: [##                       ] 10%                 
+Programing: [##                       ] 11%                 
+Programing: [###                      ] 12%                 
+Programing: [###                      ] 13%                 
+Programing: [###                      ] 14%                 
+Programing: [###                      ] 15%                 
+Programing: [####                     ] 16%                 
+Programing: [####                     ] 17%                 
+Programing: [####                     ] 18%                 
+Programing: [####                     ] 19%                 
+Programing: [#####                    ] 20%                 
+Programing: [#####                    ] 21%                 
+Programing: [#####                    ] 22%                 
+Programing: [#####                    ] 23%                 
+Programing: [######                   ] 24%                 
+Programing: [######                   ] 25%                 
+Programing: [######                   ] 26%                 
+Programing: [######                   ] 27%                 
+Programing: [#######                  ] 28%                 
+Programing: [#######                  ] 29%                 
+Programing: [#######                  ] 30%                 
+Programing: [#######                  ] 31%                 
+Programing: [########                 ] 32%                 
+Programing: [########                 ] 33%                 
+Programing: [########                 ] 34%                 
+Programing: [########                 ] 35%                 
+Programing: [#########                ] 36%                 
+Programing: [#########                ] 37%                 
+Programing: [#########                ] 38%                 
+Programing: [#########                ] 39%                 
+Programing: [##########               ] 40%                 
+Programing: [##########               ] 41%                 
+Programing: [##########               ] 42%                 
+Programing: [##########               ] 43%                 
+Programing: [###########              ] 44%                 
+Programing: [###########              ] 45%                 
+Programing: [###########              ] 46%                 
+Programing: [###########              ] 47%                 
+Programing: [############             ] 48%                 
+Programing: [############             ] 49%                 
+Programing: [############             ] 50%                 
+Programing: [############             ] 51%                 
+Programing: [#############            ] 52%                 
+Programing: [#############            ] 53%                 
+Programing: [#############            ] 54%                 
+Programing: [#############            ] 55%                 
+Programing: [##############           ] 56%                 
+Programing: [##############           ] 57%                 
+Programing: [##############           ] 58%                 
+Programing: [##############           ] 59%                 
+Programing: [###############          ] 60%                 
+Programing: [###############          ] 61%                 
+Programing: [###############          ] 62%                 
+Programing: [###############          ] 63%                 
+Programing: [################         ] 64%                 
+Programing: [################         ] 65%                 
+Programing: [################         ] 66%                 
+Programing: [################         ] 67%                 
+Programing: [#################        ] 68%                 
+Programing: [#################        ] 69%                 
+Programing: [#################        ] 70%                 
+Programing: [#################        ] 71%                 
+Programing: [##################       ] 72%                 
+Programing: [##################       ] 73%                 
+Programing: [##################       ] 74%                 
+Programing: [##################       ] 75%                 
+Programing: [###################      ] 76%                 
+Programing: [###################      ] 77%                 
+Programing: [###################      ] 78%                 
+Programing: [###################      ] 79%                 
+Programing: [####################     ] 80%                 
+Programing: [####################     ] 81%                 
+Programing: [####################     ] 82%                 
+Programing: [####################     ] 83%                 
+Programing: [#####################    ] 84%                 
+Programing: [#####################    ] 85%                 
+Programing: [#####################    ] 86%                 
+Programing: [#####################    ] 87%                 
+Programing: [######################   ] 88%                 
+Programing: [######################   ] 89%                 
+Programing: [######################   ] 90%                 
+Programing: [######################   ] 91%                 
+Programing: [#######################  ] 92%                 
+Programing: [#######################  ] 93%                 
+Programing: [#######################  ] 94%                 
+Programing: [#######################  ] 95%                 
+Programing: [######################## ] 96%                 
+Programing: [######################## ] 97%                 
+Programing: [######################## ] 98%                 
+Programing: [######################## ] 99%                 
+Programming...: [#########################] 100%                 
+ Gao-Bridge User Code is: 0x0000B8DF
+ Status Code is: 0x00006020
+ Try to program spi-flash: 0xB4017!
+ Erasing 222 sectors from address 0x000000 to 0x0de000...
+
+Erasing sector at 0...: [                         ] 0%                 
+Erasing sector at 1...: [                         ] 0%                 
+Erasing sector at 2...: [                         ] 0%                 
+Erasing sector at 3...: [                         ] 1%                 
+Erasing sector at 4...: [                         ] 1%                 
+Erasing sector at 5...: [                         ] 2%                 
+Erasing sector at 6...: [                         ] 2%                 
+Erasing sector at 7...: [                         ] 3%                 
+Erasing sector at 8...: [                         ] 3%                 
+Erasing sector at 9...: [#                        ] 4%                 
+Erasing sector at 10...: [#                        ] 4%                 
+Erasing sector at 11...: [#                        ] 4%                 
+Erasing sector at 12...: [#                        ] 5%                 
+Erasing sector at 13...: [#                        ] 5%                 
+Erasing sector at 14...: [#                        ] 6%                 
+Erasing sector at 15...: [#                        ] 6%                 
+Erasing sector at 16...: [#                        ] 7%                 
+Erasing sector at 17...: [#                        ] 7%                 
+Erasing sector at 18...: [##                       ] 8%                 
+Erasing sector at 19...: [##                       ] 8%                 
+Erasing sector at 20...: [##                       ] 9%                 
+Erasing sector at 21...: [##                       ] 9%                 
+Erasing sector at 22...: [##                       ] 9%                 
+Erasing sector at 23...: [##                       ] 10%                 
+Erasing sector at 24...: [##                       ] 10%                 
+Erasing sector at 25...: [##                       ] 11%                 
+Erasing sector at 26...: [##                       ] 11%                 
+Erasing sector at 27...: [###                      ] 12%                 
+Erasing sector at 28...: [###                      ] 12%                 
+Erasing sector at 29...: [###                      ] 13%                 
+Erasing sector at 30...: [###                      ] 13%                 
+Erasing sector at 31...: [###                      ] 13%                 
+Erasing sector at 32...: [###                      ] 14%                 
+Erasing sector at 33...: [###                      ] 14%                 
+Erasing sector at 34...: [###                      ] 15%                 
+Erasing sector at 35...: [###                      ] 15%                 
+Erasing sector at 36...: [####                     ] 16%                 
+Erasing sector at 37...: [####                     ] 16%                 
+Erasing sector at 38...: [####                     ] 17%                 
+Erasing sector at 39...: [####                     ] 17%                 
+Erasing sector at 40...: [####                     ] 18%                 
+Erasing sector at 41...: [####                     ] 18%                 
+Erasing sector at 42...: [####                     ] 18%                 
+Erasing sector at 43...: [####                     ] 19%                 
+Erasing sector at 44...: [####                     ] 19%                 
+Erasing sector at 45...: [#####                    ] 20%                 
+Erasing sector at 46...: [#####                    ] 20%                 
+Erasing sector at 47...: [#####                    ] 21%                 
+Erasing sector at 48...: [#####                    ] 21%                 
+Erasing sector at 49...: [#####                    ] 22%                 
+Erasing sector at 50...: [#####                    ] 22%                 
+Erasing sector at 51...: [#####                    ] 22%                 
+Erasing sector at 52...: [#####                    ] 23%                 
+Erasing sector at 53...: [#####                    ] 23%                 
+Erasing sector at 54...: [######                   ] 24%                 
+Erasing sector at 55...: [######                   ] 24%                 
+Erasing sector at 56...: [######                   ] 25%                 
+Erasing sector at 57...: [######                   ] 25%                 
+Erasing sector at 58...: [######                   ] 26%                 
+Erasing sector at 59...: [######                   ] 26%                 
+Erasing sector at 60...: [######                   ] 27%                 
+Erasing sector at 61...: [######                   ] 27%                 
+Erasing sector at 62...: [######                   ] 27%                 
+Erasing sector at 63...: [#######                  ] 28%                 
+Erasing sector at 64...: [#######                  ] 28%                 
+Erasing sector at 65...: [#######                  ] 29%                 
+Erasing sector at 66...: [#######                  ] 29%                 
+Erasing sector at 67...: [#######                  ] 30%                 
+Erasing sector at 68...: [#######                  ] 30%                 
+Erasing sector at 69...: [#######                  ] 31%                 
+Erasing sector at 70...: [#######                  ] 31%                 
+Erasing sector at 71...: [#######                  ] 31%                 
+Erasing sector at 72...: [########                 ] 32%                 
+Erasing sector at 73...: [########                 ] 32%                 
+Erasing sector at 74...: [########                 ] 33%                 
+Erasing sector at 75...: [########                 ] 33%                 
+Erasing sector at 76...: [########                 ] 34%                 
+Erasing sector at 77...: [########                 ] 34%                 
+Erasing sector at 78...: [########                 ] 35%                 
+Erasing sector at 79...: [########                 ] 35%                 
+Erasing sector at 80...: [#########                ] 36%                 
+Erasing sector at 81...: [#########                ] 36%                 
+Erasing sector at 82...: [#########                ] 36%                 
+Erasing sector at 83...: [#########                ] 37%                 
+Erasing sector at 84...: [#########                ] 37%                 
+Erasing sector at 85...: [#########                ] 38%                 
+Erasing sector at 86...: [#########                ] 38%                 
+Erasing sector at 87...: [#########                ] 39%                 
+Erasing sector at 88...: [#########                ] 39%                 
+Erasing sector at 89...: [##########               ] 40%                 
+Erasing sector at 90...: [##########               ] 40%                 
+Erasing sector at 91...: [##########               ] 40%                 
+Erasing sector at 92...: [##########               ] 41%                 
+Erasing sector at 93...: [##########               ] 41%                 
+Erasing sector at 94...: [##########               ] 42%                 
+Erasing sector at 95...: [##########               ] 42%                 
+Erasing sector at 96...: [##########               ] 43%                 
+Erasing sector at 97...: [##########               ] 43%                 
+Erasing sector at 98...: [###########              ] 44%                 
+Erasing sector at 99...: [###########              ] 44%                 
+Erasing sector at 100...: [###########              ] 45%                 
+Erasing sector at 101...: [###########              ] 45%                 
+Erasing sector at 102...: [###########              ] 45%                 
+Erasing sector at 103...: [###########              ] 46%                 
+Erasing sector at 104...: [###########              ] 46%                 
+Erasing sector at 105...: [###########              ] 47%                 
+Erasing sector at 106...: [###########              ] 47%                 
+Erasing sector at 107...: [############             ] 48%                 
+Erasing sector at 108...: [############             ] 48%                 
+Erasing sector at 109...: [############             ] 49%                 
+Erasing sector at 110...: [############             ] 49%                 
+Erasing sector at 111...: [############             ] 50%                 
+Erasing sector at 112...: [############             ] 50%                 
+Erasing sector at 113...: [############             ] 50%                 
+Erasing sector at 114...: [############             ] 51%                 
+Erasing sector at 115...: [############             ] 51%                 
+Erasing sector at 116...: [#############            ] 52%                 
+Erasing sector at 117...: [#############            ] 52%                 
+Erasing sector at 118...: [#############            ] 53%                 
+Erasing sector at 119...: [#############            ] 53%                 
+Erasing sector at 120...: [#############            ] 54%                 
+Erasing sector at 121...: [#############            ] 54%                 
+Erasing sector at 122...: [#############            ] 54%                 
+Erasing sector at 123...: [#############            ] 55%                 
+Erasing sector at 124...: [#############            ] 55%                 
+Erasing sector at 125...: [##############           ] 56%                 
+Erasing sector at 126...: [##############           ] 56%                 
+Erasing sector at 127...: [##############           ] 57%                 
+Erasing sector at 128...: [##############           ] 57%                 
+Erasing sector at 129...: [##############           ] 58%                 
+Erasing sector at 130...: [##############           ] 58%                 
+Erasing sector at 131...: [##############           ] 59%                 
+Erasing sector at 132...: [##############           ] 59%                 
+Erasing sector at 133...: [##############           ] 59%                 
+Erasing sector at 134...: [###############          ] 60%                 
+Erasing sector at 135...: [###############          ] 60%                 
+Erasing sector at 136...: [###############          ] 61%                 
+Erasing sector at 137...: [###############          ] 61%                 
+Erasing sector at 138...: [###############          ] 62%                 
+Erasing sector at 139...: [###############          ] 62%                 
+Erasing sector at 140...: [###############          ] 63%                 
+Erasing sector at 141...: [###############          ] 63%                 
+Erasing sector at 142...: [###############          ] 63%                 
+Erasing sector at 143...: [################         ] 64%                 
+Erasing sector at 144...: [################         ] 64%                 
+Erasing sector at 145...: [################         ] 65%                 
+Erasing sector at 146...: [################         ] 65%                 
+Erasing sector at 147...: [################         ] 66%                 
+Erasing sector at 148...: [################         ] 66%                 
+Erasing sector at 149...: [################         ] 67%                 
+Erasing sector at 150...: [################         ] 67%                 
+Erasing sector at 151...: [#################        ] 68%                 
+Erasing sector at 152...: [#################        ] 68%                 
+Erasing sector at 153...: [#################        ] 68%                 
+Erasing sector at 154...: [#################        ] 69%                 
+Erasing sector at 155...: [#################        ] 69%                 
+Erasing sector at 156...: [#################        ] 70%                 
+Erasing sector at 157...: [#################        ] 70%                 
+Erasing sector at 158...: [#################        ] 71%                 
+Erasing sector at 159...: [#################        ] 71%                 
+Erasing sector at 160...: [##################       ] 72%                 
+Erasing sector at 161...: [##################       ] 72%                 
+Erasing sector at 162...: [##################       ] 72%                 
+Erasing sector at 163...: [##################       ] 73%                 
+Erasing sector at 164...: [##################       ] 73%                 
+Erasing sector at 165...: [##################       ] 74%                 
+Erasing sector at 166...: [##################       ] 74%                 
+Erasing sector at 167...: [##################       ] 75%                 
+Erasing sector at 168...: [##################       ] 75%                 
+Erasing sector at 169...: [###################      ] 76%                 
+Erasing sector at 170...: [###################      ] 76%                 
+Erasing sector at 171...: [###################      ] 77%                 
+Erasing sector at 172...: [###################      ] 77%                 
+Erasing sector at 173...: [###################      ] 77%                 
+Erasing sector at 174...: [###################      ] 78%                 
+Erasing sector at 175...: [###################      ] 78%                 
+Erasing sector at 176...: [###################      ] 79%                 
+Erasing sector at 177...: [###################      ] 79%                 
+Erasing sector at 178...: [####################     ] 80%                 
+Erasing sector at 179...: [####################     ] 80%                 
+Erasing sector at 180...: [####################     ] 81%                 
+Erasing sector at 181...: [####################     ] 81%                 
+Erasing sector at 182...: [####################     ] 81%                 
+Erasing sector at 183...: [####################     ] 82%                 
+Erasing sector at 184...: [####################     ] 82%                 
+Erasing sector at 185...: [####################     ] 83%                 
+Erasing sector at 186...: [####################     ] 83%                 
+Erasing sector at 187...: [#####################    ] 84%                 
+Erasing sector at 188...: [#####################    ] 84%                 
+Erasing sector at 189...: [#####################    ] 85%                 
+Erasing sector at 190...: [#####################    ] 85%                 
+Erasing sector at 191...: [#####################    ] 86%                 
+Erasing sector at 192...: [#####################    ] 86%                 
+Erasing sector at 193...: [#####################    ] 86%                 
+Erasing sector at 194...: [#####################    ] 87%                 
+Erasing sector at 195...: [#####################    ] 87%                 
+Erasing sector at 196...: [######################   ] 88%                 
+Erasing sector at 197...: [######################   ] 88%                 
+Erasing sector at 198...: [######################   ] 89%                 
+Erasing sector at 199...: [######################   ] 89%                 
+Erasing sector at 200...: [######################   ] 90%                 
+Erasing sector at 201...: [######################   ] 90%                 
+Erasing sector at 202...: [######################   ] 90%                 
+Erasing sector at 203...: [######################   ] 91%                 
+Erasing sector at 204...: [######################   ] 91%                 
+Erasing sector at 205...: [#######################  ] 92%                 
+Erasing sector at 206...: [#######################  ] 92%                 
+Erasing sector at 207...: [#######################  ] 93%                 
+Erasing sector at 208...: [#######################  ] 93%                 
+Erasing sector at 209...: [#######################  ] 94%                 
+Erasing sector at 210...: [#######################  ] 94%                 
+Erasing sector at 211...: [#######################  ] 95%                 
+Erasing sector at 212...: [#######################  ] 95%                 
+Erasing sector at 213...: [#######################  ] 95%                 
+Erasing sector at 214...: [######################## ] 96%                 
+Erasing sector at 215...: [######################## ] 96%                 
+Erasing sector at 216...: [######################## ] 97%                 
+Erasing sector at 217...: [######################## ] 97%                 
+Erasing sector at 218...: [######################## ] 98%                 
+Erasing sector at 219...: [######################## ] 98%                 
+Erasing sector at 220...: [######################## ] 99%                 
+Erasing sector at 221...: [######################## ] 99%                 
+Programming Flash...: [                         ] 0%                 
+Programming Flash...: [                         ] 1%                 
+Programming Flash...: [                         ] 2%                 
+Programming Flash...: [                         ] 3%                 
+Programming Flash...: [#                        ] 4%                 
+Programming Flash...: [#                        ] 5%                 
+Programming Flash...: [#                        ] 6%                 
+Programming Flash...: [#                        ] 7%                 
+Programming Flash...: [##                       ] 8%                 
+Programming Flash...: [##                       ] 9%                 
+Programming Flash...: [##                       ] 10%                 
+Programming Flash...: [##                       ] 11%                 
+Programming Flash...: [###                      ] 12%                 
+Programming Flash...: [###                      ] 13%                 
+Programming Flash...: [###                      ] 14%                 
+Programming Flash...: [###                      ] 15%                 
+Programming Flash...: [####                     ] 16%                 
+Programming Flash...: [####                     ] 17%                 
+Programming Flash...: [####                     ] 18%                 
+Programming Flash...: [####                     ] 19%                 
+Programming Flash...: [#####                    ] 20%                 
+Programming Flash...: [#####                    ] 21%                 
+Programming Flash...: [#####                    ] 22%                 
+Programming Flash...: [#####                    ] 23%                 
+Programming Flash...: [######                   ] 24%                 
+Programming Flash...: [######                   ] 25%                 
+Programming Flash...: [######                   ] 26%                 
+Programming Flash...: [######                   ] 27%                 
+Programming Flash...: [#######                  ] 28%                 
+Programming Flash...: [#######                  ] 29%                 
+Programming Flash...: [#######                  ] 30%                 
+Programming Flash...: [#######                  ] 31%                 
+Programming Flash...: [########                 ] 32%                 
+Programming Flash...: [########                 ] 33%                 
+Programming Flash...: [########                 ] 34%                 
+Programming Flash...: [########                 ] 35%                 
+Programming Flash...: [#########                ] 36%                 
+Programming Flash...: [#########                ] 37%                 
+Programming Flash...: [#########                ] 38%                 
+Programming Flash...: [#########                ] 39%                 
+Programming Flash...: [##########               ] 40%                 
+Programming Flash...: [##########               ] 41%                 
+Programming Flash...: [##########               ] 42%                 
+Programming Flash...: [##########               ] 43%                 
+Programming Flash...: [###########              ] 44%                 
+Programming Flash...: [###########              ] 45%                 
+Programming Flash...: [###########              ] 46%                 
+Programming Flash...: [###########              ] 47%                 
+Programming Flash...: [############             ] 48%                 
+Programming Flash...: [############             ] 49%                 
+Programming Flash...: [############             ] 50%                 
+Programming Flash...: [############             ] 51%                 
+Programming Flash...: [#############            ] 52%                 
+Programming Flash...: [#############            ] 53%                 
+Programming Flash...: [#############            ] 54%                 
+Programming Flash...: [#############            ] 55%                 
+Programming Flash...: [##############           ] 56%                 
+Programming Flash...: [##############           ] 57%                 
+Programming Flash...: [##############           ] 58%                 
+Programming Flash...: [##############           ] 59%                 
+Programming Flash...: [###############          ] 60%                 
+Programming Flash...: [###############          ] 61%                 
+Programming Flash...: [###############          ] 62%                 
+Programming Flash...: [###############          ] 63%                 
+Programming Flash...: [################         ] 64%                 
+Programming Flash...: [################         ] 65%                 
+Programming Flash...: [################         ] 66%                 
+Programming Flash...: [################         ] 67%                 
+Programming Flash...: [#################        ] 68%                 
+Programming Flash...: [#################        ] 69%                 
+Programming Flash...: [#################        ] 70%                 
+Programming Flash...: [#################        ] 71%                 
+Programming Flash...: [##################       ] 72%                 
+Programming Flash...: [##################       ] 73%                 
+Programming Flash...: [##################       ] 74%                 
+Programming Flash...: [##################       ] 75%                 
+Programming Flash...: [###################      ] 76%                 
+Programming Flash...: [###################      ] 77%                 
+Programming Flash...: [###################      ] 78%                 
+Programming Flash...: [###################      ] 79%                 
+Programming Flash...: [####################     ] 80%                 
+Programming Flash...: [####################     ] 81%                 
+Programming Flash...: [####################     ] 82%                 
+Programming Flash...: [####################     ] 83%                 
+Programming Flash...: [#####################    ] 84%                 
+Programming Flash...: [#####################    ] 85%                 
+Programming Flash...: [#####################    ] 86%                 
+Programming Flash...: [#####################    ] 87%                 
+Programming Flash...: [######################   ] 88%                 
+Programming Flash...: [######################   ] 89%                 
+Programming Flash...: [######################   ] 90%                 
+Programming Flash...: [######################   ] 91%                 
+Programming Flash...: [#######################  ] 92%                 
+Programming Flash...: [#######################  ] 93%                 
+Programming Flash...: [#######################  ] 94%                 
+Programming Flash...: [#######################  ] 95%                 
+Programming Flash...: [######################## ] 96%                 
+Programming Flash...: [######################## ] 97%                 
+Programming Flash...: [######################## ] 98%                 
+Programming Flash...: [######################## ] 99%                 
+Programming Flash...: [#########################] 100%                 
+ Program and Verify flash successfully.
+ Finished.
+ Cost 31.35 second(s)
+  

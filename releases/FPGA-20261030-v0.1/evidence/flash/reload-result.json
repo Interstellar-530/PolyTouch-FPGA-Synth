@@ -1,0 +1,7 @@
+{
+  "FlashReloadExit": 0,
+  "ReadExit": 0,
+  "ExpectedUserCode": "0x00002626",
+  "ReloadReadbackMatched": false,
+  "ColdPowerCycleTested": false
+}

@@ -1,0 +1,11 @@
+{
+  "Operation": 2,
+  "ExitCode": 0,
+  "IndependentReadExit": 0,
+  "ExpectedUserCode": "0x00002626",
+  "ReadbackMatched": true,
+  "Status": "0x00006020",
+  "BitstreamSha256": "b4dd1b5d1a5d89ba871e34f4e230a85fbe3c92c486934f57dcc811bdb2edf003",
+  "Target": "SRAM",
+  "FlashWritten": false
+}

@@ -236,7 +236,12 @@ module instrument32_top #(
     // X 全松键、D1/D0 模式切换、HID Esc 或断线时，丢弃未发送的手动事件并重新武装输入：
     // 已经按住的键必须松开再按才会重新起音。这里不能直接用 clear_events 驱动，
     // 否则由输入触发的那次“退出演示”会把首个按键事件一起清掉。
-    wire manual_flush = uart_panic || hid_panic || hid_link_timeout || hid_device_notify ||
+    // IdleOnly timeout means no physical keys are held, not USB detach.
+    // Sustained notes / release tails can still sound. Reset the HID parser's
+    // local state, but never clear the musical state on that idle observation.
+    // Strict policy and explicit detach keep their emergency clear behavior.
+    wire hid_audio_timeout = (HOST_KBD_TIMEOUT_POLICY == 0) && hid_link_timeout;
+    wire manual_flush = uart_panic || hid_panic || hid_audio_timeout || hid_device_notify ||
                         instrument_change || song_change ||
                         demo_on_request || demo_off_request;
 
@@ -355,7 +360,7 @@ module instrument32_top #(
                                                   (man_ev_valid && man_ev_on));
     wire        clear_events = demo_on_request || demo_off_request ||
                                manual_transition || uart_panic || hid_panic ||
-                               hid_link_timeout || hid_device_notify || instrument_change || song_change || (restart && demo_mode);
+                               hid_audio_timeout || hid_device_notify || instrument_change || song_change || (restart && demo_mode);
 
     always @(posedge clk_audio) begin
         if (rst) begin
@@ -568,10 +573,12 @@ module instrument32_top #(
 
     wire sustain_pressed;
     wire audio_muted = uart_muted | demo_transport_paused;
-    // Reuse the existing pressure thresholds/hysteresis as a pedal detector.
-    fsr_mute u_fsr_pedal_detector (
+    // Separate median-only pedal switching from the display's slower IIR.
+    // At 2 kHz: 2/6 confirmations plus median/alignment stay within 4 ms
+    // of a sustained raw threshold crossing (ADC/audio stages are additional).
+    fsr_pedal_conditioner u_fsr_pedal_detector (
         .clk(clk_audio), .rst(rst), .enable(PRESSURE_ENABLE != 0),
-        .update(control_sample_tick), .pressure(pressure_filtered), .muted(sustain_pressed)
+        .update(control_sample_tick), .pressure(pressure_raw), .pressed(sustain_pressed)
     );
 
     function [8:0] volume_gain;

@@ -16,8 +16,23 @@ module tb_dashboard32;
         input integer count;
         begin
             st[15:12]=count&15;st[61:60]=count>>4;st[62]=1;
-            x=900;y=268;#1;if(dut.u_text.char_code!=48+count/10)$fatal(1,"count tens %0d",count);
-            x=916;#1;if(dut.u_text.char_code!=48+count%10)$fatal(1,"count ones %0d",count);
+            x=896;y=268;#1;if(dut.u_text.char_code!=48+count/10)$fatal(1,"count tens %0d",count);
+            x=912;#1;if(dut.u_text.char_code!=48+count%10)$fatal(1,"count ones %0d",count);
+        end
+    endtask
+    task word_fits;
+        input integer tx,ty,len;
+        input [127:0] expected;
+        integer c;
+        begin
+            for(c=0;c<len;c=c+1)begin
+                x=tx+c*16;y=ty;#1;
+                if(!dut.u_text.text_on || dut.u_text.char_code!==expected[127-c*8 -:8])
+                    $fatal(1,"clipped word at (%0d,%0d) char %0d got %h",tx,ty,c,dut.u_text.char_code);
+                x=tx+c*16+15;#1;
+                if(!dut.u_text.text_on || dut.u_text.char_code!==expected[127-c*8 -:8] || dut.u_text.bit_index!==7)
+                    $fatal(1,"partial glyph at (%0d,%0d) char %0d",tx,ty,c);
+            end
         end
     endtask
     initial begin
@@ -39,8 +54,17 @@ module tb_dashboard32;
             if(rgb!==24'h40e090)$fatal(1,"voice activity slot %0d",i);
         end
         x=24;y=552;#1;if(dut.u_text.char_code!="3")$fatal(1,"voice metric");
-        x=216;#1;if(dut.u_text.char_code!="M")$fatal(1,"touch metric");
+        x=216;#1;if(dut.u_text.char_code!="U")$fatal(1,"keyboard metric");
         x=264;y=576;#1;if(dut.u_text.char_code!="M")$fatal(1,"FSR metric");
+        st[41]=1;word_fits(560,108,10,"PEDAL DOWN      ");
+        word_fits(780,348,8,"VELOCITY        ");
+        word_fits(780,388,8,"PRESSURE        ");
+        word_fits(824,468,10,"46.875 KHZ      ");
+        word_fits(216,552,12,"USB KEYBOARD    ");
+        st[43]=1;word_fits(896,148,6,"GUITAR          ");
+        st[39]=0;word_fits(896,188,6,"MANUAL          ");
+        st[39]=1;st[63]=1;word_fits(896,188,6,"PAUSED          ");
+        st[43]=0;st[63]=0;
         // An optional real RTL raster export for visual review, not an artist's mockup.
         if($value$plusargs("UI_PPM_FILE=%s",ppm_path))begin
             fd=$fopen(ppm_path,"wb");if(!fd)$fatal(1,"PPM open failed");

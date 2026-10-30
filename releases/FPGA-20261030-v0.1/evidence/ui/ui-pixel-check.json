@@ -1,0 +1,6 @@
+{
+  "checks": 4736,
+  "mismatches": 0,
+  "examples": [],
+  "scope": "RTL raster versus authored glyph pixels in the affected text regions"
+}

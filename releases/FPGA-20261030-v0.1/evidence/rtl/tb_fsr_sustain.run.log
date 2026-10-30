@@ -1,0 +1,4 @@
+FSR_RELEASE_UPDATES=7 nominal_ms=7/2 (median + detector, excludes ADC/DAC)
+PASS tb_fsr_sustain: exact thresholds/counts, interrupted qualification, update gating, reset/disable, 12 filtered dropouts, single real release
+sim\tb_fsr_sustain.v:86: $finish called at 76670000 (1ps)
+

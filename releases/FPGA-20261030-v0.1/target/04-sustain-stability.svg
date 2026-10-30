@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1620" viewBox="0 0 1920 1620" role="img" aria-labelledby="title desc"><title id="title">延音踏板稳定检测与释音流程</title><desc id="desc">纯 HDL 控制路径 · 2 kHz 新样本更新 · 按下 2 点 / 松开 6 点。实线为音频或事件流，虚线为控制与状态。依据当前32声部HDMI生产源码。</desc>
+<defs><marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" viewBox="0 0 9 9" refX="8" refY="4.5" orient="auto-start-reverse"><path d="M0 0 L9 4.5 L0 9Z" fill="#007E78"/></marker><marker id="ctrl" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" viewBox="0 0 9 9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#2864B6"/></marker></defs>
+<rect width="1920" height="1620" fill="#F8FAFD"/>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif} .line{fill:none;stroke-linejoin:round;stroke-linecap:round}</style>
+<text x="64" y="58" font-size="19" font-weight="600" fill="#007E78" text-anchor="start">POLYTOUCH  /  FPGA SYNTHESIZER</text>
+<text x="64" y="120" font-size="44" font-weight="700" fill="#152944" text-anchor="start">延音踏板稳定检测与释音流程</text>
+<text x="64" y="164" font-size="23" font-weight="400" fill="#53677E" text-anchor="start">纯 HDL 控制路径 · 2 kHz 新样本更新 · 按下 2 点 / 松开 6 点</text>
+<path class="line" d="M64 194 L1856 194" stroke="#CED9E5" stroke-width="1"/>
+<text x="64" y="244" font-size="25" font-weight="600" fill="#007E78" text-anchor="start">A  从压力到稳定踏板状态</text>
+<g data-panel="采集压力"><rect x="64" y="280" width="382" height="198" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="86" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="104" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">采集压力</text>
+<text x="88" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">FSR → MCP3208 CH0</text>
+<text x="88" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">12 位 ADC，每组采样完成更新</text>
+<text x="88" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">更新频率 2 kHz，间隔 0.5 ms</text>
+</g>
+<g data-panel="快速中值判定路径"><rect x="510" y="280" width="382" height="198" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="532" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="550" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">快速中值判定路径</text>
+<text x="534" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">取当前与前两点的中值 m</text>
+<text x="534" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">三点中值后直接进入判定</text>
+<text x="534" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">显示用 IIR 保留在独立支路</text>
+</g>
+<g data-panel="状态相关的回差判定"><rect x="956" y="280" width="404" height="198" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="978" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="996" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">状态相关的回差判定</text>
+<text x="980" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">未按下：检查 m ≥ 512</text>
+<text x="980" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">已按下：检查 m ≤ 256</text>
+<text x="980" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">中间区域维持既有踏板状态</text>
+</g>
+<g data-panel="连续确认生成稳定状态"><rect x="1424" y="280" width="432" height="198" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="1446" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="1464" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">连续确认生成稳定状态</text>
+<text x="1448" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">按下连续 2 点，松开连续 6 点</text>
+<text x="1448" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">条件不成立就清对应计数</text>
+<text x="1448" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">无 update 不推进；复位清状态</text>
+</g>
+<path class="line" d="M446 380 L500 380" stroke="#2864B6" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#ctrl)"/>
+<path class="line" d="M892 380 L946 380" stroke="#2864B6" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#ctrl)"/>
+<path class="line" d="M1360 380 L1414 380" stroke="#2864B6" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#ctrl)"/>
+<text x="64" y="548" font-size="25" font-weight="600" fill="#007E78" text-anchor="start">B  两个状态分别计数，短时低谷恢复后重新开始松开确认</text>
+<g data-panel="未按下：确认踩下踏板"><rect x="64" y="585" width="860" height="246" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="86" y="609" width="5" height="28" rx="2" fill="#2864B6"/>
+<text x="104" y="632" font-size="27" font-weight="600" fill="#152944" text-anchor="start">未按下：确认踩下踏板</text>
+<text x="88" y="673" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">m ≥ 512：累积按下计数；不足 2 点仍未按下</text>
+<text x="88" y="707" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">连续第 2 点满足条件：踏板状态置 1，清按下计数</text>
+<text x="88" y="741" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">m &lt; 512：按下计数清零，等待新的连续高值</text>
+<text x="88" y="811" font-size="18" font-weight="500" fill="#2864B6" text-anchor="start">三点中值 + 按下确认；计数不受 IIR 收敛速度影响</text>
+</g>
+<g data-panel="已按下：确认松开踏板"><rect x="956" y="585" width="900" height="246" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="978" y="609" width="5" height="28" rx="2" fill="#2864B6"/>
+<text x="996" y="632" font-size="27" font-weight="600" fill="#152944" text-anchor="start">已按下：确认松开踏板</text>
+<text x="980" y="673" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">m ≤ 256：累积松开计数；不足 6 点仍保持延音</text>
+<text x="980" y="707" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">连续第 6 点满足条件：踏板状态置 0，清松开计数</text>
+<text x="980" y="741" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">m &gt; 256：松开计数清零，不累加不连续低谷</text>
+<text x="980" y="811" font-size="18" font-weight="500" fill="#2864B6" text-anchor="start">三点中值 + 松开确认；测试 2 ms 掉压保持场景</text>
+</g>
+<text x="64" y="908" font-size="25" font-weight="600" fill="#007E78" text-anchor="start">C  稳定踏板状态决定 Note Off 的处理，音频仍逐样本合成</text>
+<g data-panel="踏板按住时"><rect x="64" y="945" width="568" height="230" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="86" y="969" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="104" y="992" font-size="27" font-weight="600" fill="#152944" text-anchor="start">踏板按住时</text>
+<text x="88" y="1033" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">Note On 正常发送，记录按键仍被按住</text>
+<text x="88" y="1067" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">Note Off 暂存，保持声部 gate</text>
+<text x="88" y="1101" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">同音重新按下时取消旧待释音</text>
+<text x="88" y="1155" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">手动模式启用；演示曲保留自身事件时序</text>
+</g>
+<g data-panel="踏板确认松开后"><rect x="676" y="945" width="568" height="230" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="698" y="969" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="716" y="992" font-size="27" font-weight="600" fill="#152944" text-anchor="start">踏板确认松开后</text>
+<text x="700" y="1033" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">扫描暂存的 Note Off，按就绪握手补发</text>
+<text x="700" y="1067" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">仍被按住的音符继续保留</text>
+<text x="700" y="1101" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">声部进入 ADSR Release，生成自然余音</text>
+<text x="700" y="1155" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">背压时等待下游，不丢弃释音事件</text>
+</g>
+<g data-panel="保持延音与紧急清音"><rect x="1288" y="945" width="568" height="230" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="1310" y="969" width="5" height="28" rx="2" fill="#2864B6"/>
+<text x="1328" y="992" font-size="27" font-weight="600" fill="#152944" text-anchor="start">保持延音与紧急清音</text>
+<text x="1312" y="1033" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">IdleOnly 键盘空闲超时保留音乐状态</text>
+<text x="1312" y="1067" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">明确断开 / Panic / 复位仍可清音</text>
+<text x="1312" y="1101" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">严格策略超时按原规则清音</text>
+<text x="1312" y="1155" font-size="18" font-weight="500" fill="#2864B6" text-anchor="start">空闲超时不再误当成设备断开</text>
+</g>
+<path class="line" d="M632 1058 L666 1058" stroke="#2864B6" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#ctrl)"/>
+<text x="64" y="1254" font-size="25" font-weight="600" fill="#152944" text-anchor="start">确认窗口：按下约 1 ms / 松开约 3 ms；中值与采样对齐另计，稳定阶跃状态更新预算 ≤4 ms。</text>
+<text x="64" y="1303" font-size="23" font-weight="400" fill="#53677E" text-anchor="start">赛题基础要求：至少两个独立演奏维度、纯 HDL 实时合成、控制到音频输出总延迟 ≤10 ms。</text>
+<text x="64" y="1344" font-size="23" font-weight="400" fill="#53677E" text-anchor="start">小于 5 ms 的状态更新时间按持续跨阈值阶跃验证；完整音频响应仍需计入 ADC、调度及 DAC。</text>
+<text x="64" y="1385" font-size="23" font-weight="400" fill="#53677E" text-anchor="start">踏板用于延音控制；旋钮控制弯音。演示曲仅存演奏事件，全部声音由开发板实时合成。</text>
+<text x="64" y="1460" font-size="21" font-weight="400" fill="#53677E" text-anchor="start">稳定性边界：2 ms 短掉压可保持；持续 5 ms 的低值按松开处理。ADSR 自然余音不等于状态延迟。</text>
+<path class="line" d="M64 1533 L1856 1533" stroke="#CED9E5" stroke-width="1"/>
+<text x="64" y="1566" font-size="18" font-weight="400" fill="#53677E" text-anchor="start">当前源码快照 · 2026-10-30 · 32 声部 HDMI 路径</text>
+<text x="1856" y="1566" font-size="18" font-weight="400" fill="#53677E" text-anchor="end">GW2A-18  ·  纯硬件实时合成</text>
+</svg>

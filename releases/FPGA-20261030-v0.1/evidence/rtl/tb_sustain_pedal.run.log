@@ -1,0 +1,3 @@
+PASS tb_sustain_pedal: hold, release, repeat note, held-key exception, backpressure, panic
+sim\tb_sustain_pedal.v:42: $finish called at 4600000 (1ps)
+

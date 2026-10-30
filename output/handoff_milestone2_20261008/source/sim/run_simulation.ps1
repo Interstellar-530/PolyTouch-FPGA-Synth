@@ -337,14 +337,18 @@ try {
         'rtl\prototypes\instrument_rom_banks.v','sim\gowin_prom_model.v','sim\gowin_rpll_model.v',
         'sim\mcp3208_model.v','sim\i2s_rx_model.v'))
     $suite += @{ Name='tb_production32'; Top='sim\tb_production32.v'; Src=$production32Sources }
+    $suite += @{ Name='tb_fsr_idle_timeout'; Top='sim\tb_fsr_idle_timeout.v'; Src=$production32Sources }
+    $suite += @{ Name='tb_fsr_idle_strict'; Top='sim\tb_fsr_idle_strict.v'; Src=($production32Sources + @('sim\tb_fsr_idle_timeout.v')) }
     $suite += @{ Name='tb_sustain_pedal'; Top='sim\tb_sustain_pedal.v'; Src=@('rtl\audio\sustain_pedal.v') }
+    $suite += @{ Name='tb_fsr_sustain'; Top='sim\tb_fsr_sustain.v'; Src=@('rtl\audio\fsr_mute.v','rtl\audio\pressure_bend.v','rtl\audio\sustain_pedal.v') }
+    $suite += @{ Name='tb_fsr_pedal_latency'; Top='sim\tb_fsr_pedal_latency.v'; Src=@('rtl\audio\fsr_mute.v') }
     $suite += @{ Name='tb_ui_status32'; Top='sim\tb_ui_status32.v'; Src=@('rtl\video\ui_status_export.v') }
     $suite += @{ Name='tb_dashboard32'; Top='sim\tb_dashboard32.v'; Src=@(
         'rtl\video\dashboard_text_mux.v','rtl\video\dashboard_renderer.v',
         'rtl\video\dashboard_font_prom.v','sim\gowin_prom_model.v') }
     $allNames = @($suite | ForEach-Object { $_.Name })
     $groups = @{
-        Quick = @('tb_piano_balance','tb_arrangement32','tb_ui_audio_visual_export','tb_hdmi_timing','tb_production32','tb_sustain_pedal','tb_ui_status32','tb_dashboard32','tb_song_select','tb_top_song_select','tb_tick_rate','tb_adsr','tb_event_fifo','tb_i2s_tx','tb_mcp3208_spi','tb_fsr_mute',
+        Quick = @('tb_piano_balance','tb_arrangement32','tb_ui_audio_visual_export','tb_hdmi_timing','tb_production32','tb_sustain_pedal','tb_fsr_sustain','tb_fsr_pedal_latency','tb_fsr_idle_timeout','tb_fsr_idle_strict','tb_ui_status32','tb_dashboard32','tb_song_select','tb_top_song_select','tb_tick_rate','tb_adsr','tb_event_fifo','tb_i2s_tx','tb_mcp3208_spi','tb_fsr_mute',
                   'tb_pressure_bend','tb_pressure_gain','tb_velocity_bounds','tb_wide_master_pair',
                   'tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause')
         Host = @('tb_host_kbd','tb_host_kbd_timeout','tb_top_host_ctrl','tb_top_host_pause','tb_hid_full_keyboard','tb_top_host_eight')

@@ -1,0 +1,7 @@
+debug	gowin_top_integrated	top_dbg_build	primer20k_dock3714.cst	primer20k.sdc
+standard	gowin_top_i2s_std	top_std_build	primer20k_i2s.cst	primer20k_i2s.sdc
+standard27	gowin_top_i2s_std27	top_std27_build	primer20k_i2s_27m.cst	primer20k_i2s_27m.sdc
+debug8	gowin_top_dbg8	top_dbg8_build	primer20k_dock3714.cst	primer20k.sdc
+debug8g	gowin_top_dbg8g	top_dbg8_guitar_build	primer20k_dock3714.cst	primer20k.sdc
+debug8usb	gowin_top_dbg8usb	top_dbg8usb_build	primer20k_dock3714_usb.cst	primer20k.sdc
+hdmi	gowin_top_hdmi	top_hdmi_build	primer20k_hdmi.cst	primer20k_hdmi.sdc

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1380" viewBox="0 0 1920 1380" role="img" aria-labelledby="title desc"><title id="title">演示曲如何构建与发声</title><desc id="desc">曲目保存类似自动弹奏的事件信息；声音仍由 FPGA 实时合成。实线为音频或事件流，虚线为控制与状态。依据当前32声部HDMI生产源码。</desc>
+<defs><marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" viewBox="0 0 9 9" refX="8" refY="4.5" orient="auto-start-reverse"><path d="M0 0 L9 4.5 L0 9Z" fill="#007E78"/></marker><marker id="ctrl" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" viewBox="0 0 9 9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#2864B6"/></marker></defs>
+<rect width="1920" height="1380" fill="#F8FAFD"/>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif} .line{fill:none;stroke-linejoin:round;stroke-linecap:round}</style>
+<text x="64" y="58" font-size="19" font-weight="600" fill="#007E78" text-anchor="start">POLYTOUCH  /  FPGA SYNTHESIZER</text>
+<text x="64" y="120" font-size="44" font-weight="700" fill="#152944" text-anchor="start">演示曲如何构建与发声</text>
+<text x="64" y="164" font-size="23" font-weight="400" fill="#53677E" text-anchor="start">曲目保存类似自动弹奏的事件信息；声音仍由 FPGA 实时合成</text>
+<path class="line" d="M64 194 L1856 194" stroke="#CED9E5" stroke-width="1"/>
+<text x="64" y="245" font-size="25" font-weight="600" fill="#007E78" text-anchor="start">A  开发期：从曲谱编排到事件 ROM</text>
+<g data-panel="曲谱转写与编排"><rect x="64" y="280" width="382" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="86" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="104" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">曲谱转写与编排</text>
+<text x="88" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">记录音高、起始拍、时值、力度</text>
+<text x="88" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">保留旋律与和声，编排伴奏</text>
+<text x="88" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">整理同音来源与按下 / 松开</text>
+<text x="88" y="478" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">song_data.py / song_kuanggu.py</text>
+</g>
+<g data-panel="编译演奏事件序列"><rect x="510" y="280" width="382" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="532" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="550" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">编译演奏事件序列</text>
+<text x="534" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">按时间排序，生成按下 / 松开</text>
+<text x="534" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">时间间隔编码为等待单位</text>
+<text x="534" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">曲末加入循环标记</text>
+<text x="534" y="478" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">gen_arrangement32.py</text>
+</g>
+<g data-panel="初始化曲目 BSRAM ROM"><rect x="956" y="280" width="404" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="978" y="304" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="996" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">初始化曲目 BSRAM ROM</text>
+<text x="980" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">16 位指令，3 个 pROM 块</text>
+<text x="980" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">两首曲目连续存放，按基址选曲</text>
+<text x="980" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">保存音符事件及时间间隔</text>
+<text x="980" y="478" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">arrangement32_rom.v</text>
+</g>
+<g data-panel="曲目存储的实际含义"><rect x="1424" y="280" width="432" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="1446" y="304" width="5" height="28" rx="2" fill="#2864B6"/>
+<text x="1464" y="327" font-size="27" font-weight="600" fill="#152944" text-anchor="start">曲目存储的实际含义</text>
+<text x="1448" y="368" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">保存何时弹、音高与演奏力度</text>
+<text x="1448" y="402" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">记录松开与等待，描述演奏时序</text>
+<text x="1448" y="436" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">最终声音在开发板上实时生成</text>
+<text x="1448" y="478" font-size="18" font-weight="500" fill="#2864B6" text-anchor="start">类似自动弹奏记录，不是完整音频</text>
+</g>
+<path class="line" d="M446 390 L500 390" stroke="#007E78" stroke-width="3" marker-end="url(#arrow)"/>
+<path class="line" d="M892 390 L946 390" stroke="#007E78" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="64" y="602" font-size="25" font-weight="600" fill="#007E78" text-anchor="start">B  板上运行：事件驱动同一套实时合成引擎</text>
+<g data-panel="硬件曲目时序器"><rect x="64" y="640" width="382" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="86" y="664" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="104" y="687" font-size="27" font-weight="600" fill="#152944" text-anchor="start">硬件曲目时序器</text>
+<text x="88" y="728" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">读取事件 ROM，解码与等待</text>
+<text x="88" y="762" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">按采样节拍计时，支持变速</text>
+<text x="88" y="796" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">就绪握手后派发 Note On / Off</text>
+<text x="88" y="838" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">song_player32.v</text>
+</g>
+<g data-panel="统一事件通路与声部调度"><rect x="510" y="640" width="382" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="532" y="664" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="550" y="687" font-size="27" font-weight="600" fill="#152944" text-anchor="start">统一事件通路与声部调度</text>
+<text x="534" y="728" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">手动键盘 / 串口也送入此处</text>
+<text x="534" y="762" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">队列 → 跨域 → 分配与释音</text>
+<text x="534" y="796" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">每声部保留相位与包络状态</text>
+<text x="534" y="838" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">32 个声部复用运算流水线</text>
+</g>
+<g data-panel="FPGA 逐样本实时计算"><rect x="956" y="640" width="404" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="978" y="664" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="996" y="687" font-size="27" font-weight="600" fill="#152944" text-anchor="start">FPGA 逐样本实时计算</text>
+<text x="980" y="728" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">相位 → 单周期音色波表查表</text>
+<text x="980" y="762" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">插值 → ADSR × 力度 → 混音</text>
+<text x="980" y="796" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">音高、音色与音量参与运算</text>
+<text x="980" y="838" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">音色波表独立于曲目事件 ROM</text>
+</g>
+<g data-panel="板上生成音频并输出"><rect x="1424" y="640" width="432" height="218" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="1446" y="664" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="1464" y="687" font-size="27" font-weight="600" fill="#152944" text-anchor="start">板上生成音频并输出</text>
+<text x="1448" y="728" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">主混音 → 24 位样本</text>
+<text x="1448" y="762" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">标准 I2S → PCM5102A DAC</text>
+<text x="1448" y="796" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">46.875 kHz，左右相同样本</text>
+<text x="1448" y="838" font-size="18" font-weight="500" fill="#007E78" text-anchor="start">此处才产生最终音频样本</text>
+</g>
+<path class="line" d="M1158 498 L1158 566 L44 566 L44 750 L52 750" stroke="#007E78" stroke-width="3" marker-end="url(#arrow)"/>
+<path class="line" d="M446 750 L500 750" stroke="#007E78" stroke-width="3" marker-end="url(#arrow)"/>
+<path class="line" d="M892 750 L946 750" stroke="#007E78" stroke-width="3" marker-end="url(#arrow)"/>
+<path class="line" d="M1360 750 L1414 750" stroke="#007E78" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="64" y="930" font-size="25" font-weight="600" fill="#007E78" text-anchor="start">16 位曲目指令实例</text>
+<g data-panel="0xBC70：按下音符"><rect x="64" y="960" width="568" height="178" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="86" y="984" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="104" y="1007" font-size="27" font-weight="600" fill="#152944" text-anchor="start">0xBC70：按下音符</text>
+<text x="88" y="1048" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">Note On，音高 60（C4），力度 112</text>
+<text x="88" y="1082" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">编码：0x8000 | (60 &lt;&lt; 8) | 112</text>
+</g>
+<g data-panel="0x0004：等待"><rect x="676" y="960" width="568" height="178" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="698" y="984" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="716" y="1007" font-size="27" font-weight="600" fill="#152944" text-anchor="start">0x0004：等待</text>
+<text x="700" y="1048" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">等待 4 个十六分音符单位</text>
+<text x="700" y="1082" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">每单位由采样节拍与速度参数决定</text>
+</g>
+<g data-panel="0x3C00：松开音符"><rect x="1288" y="960" width="568" height="178" rx="16" fill="#FFFFFF" stroke="#CED9E5"/>
+<rect x="1310" y="984" width="5" height="28" rx="2" fill="#007E78"/>
+<text x="1328" y="1007" font-size="27" font-weight="600" fill="#152944" text-anchor="start">0x3C00：松开音符</text>
+<text x="1312" y="1048" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">Note Off，音高 60，进入释音</text>
+<text x="1312" y="1082" font-size="22" font-weight="400" fill="#53677E" text-anchor="start">0x0000 为回到本曲起点的标记</text>
+</g>
+<text x="64" y="1200" font-size="27" font-weight="600" fill="#152944" text-anchor="start">曲目 ROM 记录“何时弹、弹什么、用多大力度、何时松开”，不是完整音频文件。</text>
+<text x="64" y="1245" font-size="24" font-weight="400" fill="#53677E" text-anchor="start">波表仅提供周期波形；整曲声音由开发板在运行时逐声部、逐样本计算生成。</text>
+<path class="line" d="M64 1293 L1856 1293" stroke="#CED9E5" stroke-width="1"/>
+<text x="64" y="1326" font-size="18" font-weight="400" fill="#53677E" text-anchor="start">当前源码快照 · 2026-10-30 · 32 声部 HDMI 路径</text>
+<text x="1856" y="1326" font-size="18" font-weight="400" fill="#53677E" text-anchor="end">GW2A-18  ·  纯硬件实时合成</text>
+</svg>

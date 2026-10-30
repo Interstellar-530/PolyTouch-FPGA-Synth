@@ -1,0 +1,6 @@
+{
+  "ReadExit": 0,
+  "ExpectedUserCode": "0x00002626",
+  "SettledReadbackMatched": true,
+  "ColdPowerCycleTested": false
+}

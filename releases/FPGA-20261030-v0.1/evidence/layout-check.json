@@ -1,0 +1,52 @@
+[
+  {
+    "file": "01-overview-dark.svg",
+    "textCount": 47,
+    "clipped": [],
+    "panelOverflow": [],
+    "pixels": [
+      3840,
+      2160
+    ]
+  },
+  {
+    "file": "01-overview-light.svg",
+    "textCount": 47,
+    "clipped": [],
+    "panelOverflow": [],
+    "pixels": [
+      3840,
+      2160
+    ]
+  },
+  {
+    "file": "02-signal-flow-detail.svg",
+    "textCount": 95,
+    "clipped": [],
+    "panelOverflow": [],
+    "pixels": [
+      3840,
+      3920
+    ]
+  },
+  {
+    "file": "03-demo-construction.svg",
+    "textCount": 59,
+    "clipped": [],
+    "panelOverflow": [],
+    "pixels": [
+      3840,
+      2760
+    ]
+  },
+  {
+    "file": "04-sustain-stability.svg",
+    "textCount": 54,
+    "clipped": [],
+    "panelOverflow": [],
+    "pixels": [
+      3840,
+      3240
+    ]
+  }
+]

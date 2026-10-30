@@ -504,13 +504,13 @@ module dashboard_text_1024(
         text_on=0;char_code=8'd32;font_row=0;bit_index=0;color=24'he8f0ff;
         id=0;idx=0;ox=0;oy=0;scale=0;row=0;s=0;v=0;
         if(x>=24 && x<536 && y>=20 && y<52) begin id=0;ox=24;oy=20;scale=2;color=24'h20d0f0;text_on=1;end
-        else if(x>=672 && x<1024 && y>=28 && y<60) begin id=1;ox=672;oy=28;scale=2;color=24'h40e090;text_on=1;end
+        else if(x>=640 && x<992 && y>=28 && y<60) begin id=1;ox=640;oy=28;scale=2;color=24'h40e090;text_on=1;end
         else if(x>=40 && x<296 && y>=108 && y<124) begin id=2;ox=40;oy=108;scale=1;color=24'h20d0f0;text_on=1;end
-        else if(x>=560 && x<688 && y>=108 && y<124) begin id=32;ox=560;oy=108;scale=1;color=24'h40e090;text_on=1;end
+        else if(x>=560 && x<728 && y>=108 && y<124) begin id=32;ox=560;oy=108;scale=1;color=24'h40e090;text_on=1;end
         else if(x>=560 && x<688 && y>=140 && y<156) begin id=33;ox=560;oy=140;scale=1;color=24'hffa030;text_on=1;end
         else if(x>=600 && x<728 && y>=448 && y<464) begin id=3;ox=600;oy=448;scale=1;text_on=1;end
         else if(x>=776 && x<968 && y>=108 && y<124) begin id=4;ox=776;oy=108;scale=1;color=24'h20d0f0;text_on=1;end
-        else if(x>=780 && x<980 && y>=148 && y<484) begin
+        else if(x>=780 && x<992 && y>=148 && y<484) begin
             if(y>=468) row=8;
             else if(y>=428) row=7;
             else if(y>=388) row=6;
@@ -520,8 +520,14 @@ module dashboard_text_1024(
             else if(y>=228) row=2;
             else if(y>=188) row=1;
             oy=148+row*40;scale=1;text_on=(y<oy+16);
-            if(x<892) begin id=5+row;ox=780;color=24'h7890a8;end
-            else if(x>=900) begin id=14+row;ox=900;color=24'he8f0ff;end
+            // Long labels get 8 full cells. Their 3-digit values fit farther
+            // right; the sample-rate row uses a short FS label to retain units.
+            if((row==5 || row==6) && x<908) begin id=5+row;ox=780;color=24'h7890a8;end
+            else if((row==5 || row==6) && x>=928) begin id=14+row;ox=928;color=24'he8f0ff;end
+            else if(row==8 && x<812) begin id=13;ox=780;color=24'h7890a8;end
+            else if(row==8 && x>=824) begin id=22;ox=824;color=24'he8f0ff;end
+            else if(row!=5 && row!=6 && row!=8 && x<880) begin id=5+row;ox=780;color=24'h7890a8;end
+            else if(row!=5 && row!=6 && row!=8 && x>=896) begin id=14+row;ox=896;color=24'he8f0ff;end
             else text_on=0;
         end
         else if(y>=552 && y<568 && x>=24 && x<1000) begin
@@ -557,16 +563,16 @@ module dashboard_text_1024(
                 10:s="VELOCITY        ";
                 11:s="PRESSURE        ";
                 12:s="TIMBRE          ";
-                13:s="SAMPLE          ";
+                13:s="FS              ";
                 14:begin if(st[43]) s="GUITAR          "; else s="PIANO           ";end
                 15:begin if(st[39]) begin if(st[63]) s="PAUSED          "; else s="DEMO            ";end else s="MANUAL          ";end
                 16:begin if(st[44]) s="MUTED           "; else s="LIVE            ";end
                 22:s="46.875 KHZ      ";
                 23:s="32 VOICES       ";
-                24:s="MPR121 12 KEYS  ";
+                24:s="USB KEYBOARD    ";
                 25:s="512 PT WAVES    ";
                 26:s="46.875 KHZ      ";
-                27:s="GW2A-18        ";
+                27:s="GW2A-18         ";
                 28:s="PCM5102A I2S    ";
                 29:s="MCP3208 FSR     ";
                 30:s="NO SOFT CPU     ";

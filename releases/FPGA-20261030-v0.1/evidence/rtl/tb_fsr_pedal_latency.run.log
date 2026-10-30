@@ -1,0 +1,3 @@
+PASS tb_fsr_pedal_latency: 24 press/release cases, thresholds 512/256, 2 ms glitches, max_press_ms=1.499998 max_release_ms=3.499998
+sim\tb_fsr_pedal_latency.v:54: $finish called at 816003501000 (1ps)
+

@@ -64,11 +64,25 @@ module tb_production32;
         if(dut.u_ram32.u_sched.ratio_q<=65536 || dut.sustain_pressed || dut.u_ram32.active_count!=32)
             $fatal(1,"bend dimension coupled to pressure/note state");
         // Hold pedal, release a key, then release pedal: FSR must never mute audio.
-        pressure=3000;repeat(90000)@(negedge clk);saved_audible=audible;
+        pressure=3000;repeat(150000)@(negedge clk);saved_audible=audible;
         note_command("O",48);repeat(10000)@(negedge clk);
         if(!dut.sustain_pressed || !dut.u_ram32.u_sched.gate[0] || dut.audio_muted || audible<=saved_audible)
             $fatal(1,"FSR sustain failed or muted audio");
-        pressure=0;repeat(150000)@(negedge clk);
+        // A 2 ms raw dropout must not release the pedal or deferred Note Off.
+        // Longer outages may be a release under the <=5 ms response contract.
+        pressure=0;repeat(54000)@(negedge clk);
+        if(!dut.sustain_pressed || !dut.u_ram32.u_sched.gate[0])
+            $fatal(1,"brief FSR dropout released a sustained note");
+        pressure=3000;repeat(135000)@(negedge clk);
+        if(!dut.sustain_pressed || !dut.u_ram32.u_sched.gate[0])
+            $fatal(1,"FSR recovery lost sustain");
+        pressure=0;
+        fork : pedal_release_deadline
+            begin wait(!dut.sustain_pressed);end
+            begin #5000000;$fatal(1,"real ADC pedal state release exceeded 5 ms");end
+        join_any
+        disable pedal_release_deadline;
+        repeat(20000)@(negedge clk);
         if(dut.sustain_pressed || dut.u_ram32.u_sched.gate[0] || dut.u_ram32.u_sched.note[1]!=49)
             $fatal(1,"pedal release did not release exactly the deferred note");
         // S1 still selects either local song and flushes sustain/manual state.
@@ -79,6 +93,6 @@ module tb_production32;
         begin : check_lead integer j; reg found; found=0; for(j=0;j<32;j=j+1) if(dut.u_ram32.u_sched.gate[j] && dut.u_ram32.u_sched.note[j]==77 && dut.u_ram32.u_sched.vel[j]==112) found=1; if(!found)$fatal(1,"second song lead not integrated");end
         $display("PASS tb_production32: UART32, per-voice state/render, real I2S, frame deadlines, independent bend/FSR sustain, song switch");$finish;
     end
-    initial begin #50000000;$fatal(1,"production32 timeout");end
+    initial begin #100000000;$fatal(1,"production32 timeout");end
 endmodule
 
