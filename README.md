@@ -1,4 +1,6 @@
-# PolyTouch FPGA Synth — v2.1.1 本地合流基线
+# PolyTouch FPGA Synth — 最终大版本（2026-10-30）
+
+按最终交付版本冻结，Git标签 **final-20261030**。源码、已写入Flash的位流、流程图和验证范围统一见[最终交付说明](docs/releases/FINAL-20261030.md)。日期发布目录中的v0.1是归档编号，不另行改变项目的语义版本编号。
 
 2026-10-30：32声部HDMI版本已更新到 **Flash**，User Code **0x00002626**，Status **0x00006020**。修复键盘IdleOnly空闲误清延音，FSR改为三点中值、回差和按下2点/松开6点确认，24组测试最长按下约1.5ms、松开约3.5ms；真实ADC生产顶层的5ms踏板状态断言通过。同步修复面板文字裁切并更新演示曲事件存储、板上实时合成与踏板稳定流程图。8项定向RTL自检、零setup/hold违例实现、Flash写入校验及重载标识核对通过；完整Quick/Full和实物冷启动未新增通过结论。今日源码、位流、图稿、证据与复现见[每日发布包](releases/FPGA-20261030-v0.1/README.md)，[Flash记录](docs/logs/FPGA_FLASH_FAST_PEDAL_20261030.md)。以下日期较早的记录保留为历史。
 
