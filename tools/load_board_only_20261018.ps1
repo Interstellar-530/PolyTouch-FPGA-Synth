@@ -1,7 +1,7 @@
 param([string]$Port='COM13')
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$ev=Join-Path $root 'docs/evidence/FPGA-板载联调-20261018-v0.1'
+$ev=Join-Path $root 'evidence/2026/10/FPGA-板载联调-20261018-v0.1'
 $work=Join-Path $root 'tmp/board-only-20261018'
 $summary=Get-Content -LiteralPath (Join-Path $ev 'validation-summary.json') -Raw | ConvertFrom-Json
 if($summary.gate_exit -ne 0 -or $summary.board_only_sim_exit -ne 0){throw 'Simulation receipts failed'}
@@ -12,7 +12,7 @@ $bindings=Get-Content -LiteralPath (Join-Path $ev 'source_binding.json') -Raw | 
 foreach($binding in $bindings.PSObject.Properties){
     if((Get-FileHash -LiteralPath (Join-Path $root $binding.Name) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $binding.Value){throw "Source changed: $($binding.Name)"}
 }
-$test=Join-Path $root 'output/handoff_milestone2_20261008/source/sim/tb_audio_capture.v'
+$test=Join-Path $root 'source/sim/tb_audio_capture.v'
 if((Get-FileHash -LiteralPath $test -Algorithm SHA256).Hash.ToLowerInvariant() -ne $summary.capture_test_sha256){throw 'Capture test changed'}
 $fs=Join-Path $ev 'board_only.fs'
 if((Get-FileHash -LiteralPath $fs -Algorithm SHA256).Hash.ToLowerInvariant() -ne $summary.bitstream_sha256){throw 'Bitstream hash mismatch'}

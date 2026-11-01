@@ -4,8 +4,8 @@ import argparse,json,subprocess,sys
 
 def main():
  sys.stdout.reconfigure(encoding='utf-8',errors='replace')
- root=Path(__file__).resolve().parents[1];src=root/'output/handoff_milestone2_20261008/source'
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'docs/evidence/FPGA-PLL时钟-20261017-v0.1/vendor');p.add_argument('--clock-only',action='store_true');args=p.parse_args()
+ root=Path(__file__).resolve().parents[1];src=root/'source'
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'evidence/2026/10/FPGA-PLL时钟-20261017-v0.1/vendor');p.add_argument('--clock-only',action='store_true');args=p.parse_args()
  out=args.out;out.mkdir(parents=True,exist_ok=True);work=root/'tmp/pll-20261017';work.mkdir(parents=True,exist_ok=True);results=[]
  for name in (['tb_audio_pll_clock'] if args.clock_only else ['tb_audio_pll_clock','tb_ram_audio_pll_probe']):
   exe=work/(name+'.vvp')

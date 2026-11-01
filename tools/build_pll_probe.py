@@ -5,8 +5,8 @@ from measure_timbre_resources import resource_metrics
 
 def main():
  sys.stdout.reconfigure(encoding='utf-8',errors='replace')
- root=Path(__file__).resolve().parents[1];src=root/'output/handoff_milestone2_20261008/source'
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'docs/evidence/FPGA-PLL时钟-20261017-v0.1/pnr');args=p.parse_args()
+ root=Path(__file__).resolve().parents[1];src=root/'source'
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'evidence/2026/10/FPGA-PLL时钟-20261017-v0.1/pnr');args=p.parse_args()
  out=args.out;out.mkdir(parents=True,exist_ok=True);project=root/'tmp/pll-probe-20261017'/str(time.time_ns());project.mkdir(parents=True)
  header_dir=project/'rtl/audio';header_dir.mkdir(parents=True)
  for header in (src/'rtl/audio').glob('*.vh'):shutil.copy2(header,header_dir/header.name)

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "quick_list",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "name": "full_list",
+    "exit": 0,
+    "passed": true
+  },
+  {
+    "name": "unknown_test",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "empty_selection",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "missing_bench",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "fatal_rejected",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "compile_rejected",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "timeout_rejected",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "program_reject_Quick",
+    "exit": 1,
+    "passed": true
+  },
+  {
+    "name": "program_reject_Full",
+    "exit": 1,
+    "passed": true
+  }
+]

@@ -1,4 +1,0 @@
-METRIC PLL period_ns=20.344402 edges_per256ref=1024 model_lock_us=201.375
-METRIC PLL period_ns=20.345219 edges_per256ref=1024 model_lock_us=201.375
-PASS tb_audio_pll_clock: vendor rPLL4x, startup reset, lock, domain reset release, reset/relock, passes=2
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_audio_pll_clock.v:24: $finish called at 458943510 (1ps)

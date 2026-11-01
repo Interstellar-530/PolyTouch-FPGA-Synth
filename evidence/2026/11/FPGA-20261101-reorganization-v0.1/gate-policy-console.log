@@ -1,0 +1,10 @@
+{'name': 'quick_list', 'exit': 0, 'passed': True}
+{'name': 'full_list', 'exit': 0, 'passed': True}
+{'name': 'unknown_test', 'exit': 1, 'passed': True}
+{'name': 'empty_selection', 'exit': 1, 'passed': True}
+{'name': 'missing_bench', 'exit': 1, 'passed': True}
+{'name': 'fatal_rejected', 'exit': 1, 'passed': True}
+{'name': 'compile_rejected', 'exit': 1, 'passed': True}
+{'name': 'timeout_rejected', 'exit': 1, 'passed': True}
+{'name': 'program_reject_Quick', 'exit': 1, 'passed': True}
+{'name': 'program_reject_Full', 'exit': 1, 'passed': True}

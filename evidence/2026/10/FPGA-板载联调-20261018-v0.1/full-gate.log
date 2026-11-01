@@ -1,0 +1,547 @@
+=== tb_tick_rate ===
+PASS tb_tick_rate: 186 periods, all 576 clocks (46875.0 Hz)
+sim\tb_tick_rate.v:67: $finish called at 4001000000 (1ps)
+=== tb_song_timing ===
+expecting pass = 169 units x 9766 samples x 2 = 3300908 ticks, 95 note events
+pass 1 complete at tick 19536, delta 19536, note ons 0
+pass 2 complete at tick 3320444, delta 3300908, note ons 95
+PASS tb_song_timing: pass = 3300908 ticks, 95 note events
+sim\tb_song_timing.v:88: $finish called at 132817775000 (1ps)
+=== tb_adsr ===
+PASS tb_adsr: attack/decay/sustain note-off, release and retrigger
+sim\tb_adsr.v:93: $finish called at 516000 (1ps)
+=== tb_voice_retrigger ===
+PASS tb_voice_retrigger: repeat, held steal, release reuse and drain
+sim\tb_voice_retrigger.v:131: $finish called at 386000 (1ps)
+=== tb_voice_order ===
+PASS tb_voice_order: oldest voice remains correct after 65538 Note Ons
+sim\tb_voice_order.v:55: $finish called at 1310780000 (1ps)
+=== tb_event_fifo ===
+PASS tb_event_fifo: full, simultaneous read/write, order and clear
+sim\tb_event_fifo.v:42: $finish called at 370000 (1ps)
+=== tb_song_backpressure ===
+PASS tb_song_backpressure: event held and burst drained
+sim\tb_song_backpressure.v:29: $finish called at 445000 (1ps)
+=== tb_gpio_keyboard ===
+ok   idle emits no event = 0
+ok   short jitter never commits = 0
+ok   one press yields one event = 1
+ok   first event is Note On = 1
+ok   key 0 maps to C4 (60) = 60
+ok   held key does not retrigger = 1
+ok   one release yields one event = 2
+ok   second event is Note Off = 1
+ok   held release does not repeat = 2
+ok   12-key press event count = 12
+ok   12-key press all Note On = 12
+ok   12-key release all Note Off = 12
+ok   preload keys 0..3 = 4
+ok   backpressure holds all events = 0
+ok   backpressure burst total = 8
+ok   backpressure burst Off count = 4
+ok   backpressure burst On count = 4
+ok   setup before flush = 1
+ok   flush keeps held key silent = 1
+ok   elease after flush emits one Off = 1
+ok   e-press after flush sounds again = 1
+ok   re-press release emits one Off = 1
+ok   press-to-event latency = 27002 cycles (bound 27060)
+ok   t press stays silent after flush = 0
+ok   ess after in-flight flush sounds = 1
+ok   per-key queue drains both events = 2
+ok   full per-key queue Off count = 1
+ok   full per-key queue On count = 1
+PASS tb_gpio_keyboard: sync, debounce, edge, burst, backpressure, flush, bound
+sim\tb_gpio_keyboard.v:257: $finish called at 77650574418 (1ps)
+=== tb_mode_uart ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_mode_uart: manual priority, demo restart, panic, invalid commands
+sim\tb_mode_uart.v:102: $finish called at 8745801459 (1ps)
+=== tb_gpio_top ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+note-on start: t=3427515000 count=1 v_gate=0001 v_note=000003c
+ok   GPIO press-to-voice latency = 27005 cycles (bound 29000)
+note-on start: t=11835437000 count=2 v_gate=0011 v_note=0001ebc
+note-on start: t=11835474000 count=3 v_gate=0111 v_note=00f9ebc
+note-on start: t=11835511000 count=4 v_gate=1111 v_note=7ef9ebc
+note-on start: t=23446850000 count=5 v_gate=0010 v_note=7ef9e3c
+note-on start: t=26819457000 count=6 v_gate=0100 v_note=7f0de3c
+note-on start: t=28172010000 count=7 v_gate=0100 v_note=7ef1e3c
+note-on start: t=36166477000 count=8 v_gate=0010 v_note=7ef1e3c
+note-on start: t=46448226000 count=9 v_gate=0001 v_note=7ef1e3c
+note-on start: t=46448263000 count=10 v_gate=0101 v_note=7ef5e3c
+note-on start: t=46448300000 count=11 v_gate=1101 v_note=7cf5e3c
+note-on start: t=46448337000 count=12 v_gate=1111 v_note=7cf5fbc
+note-on start: t=46448374000 count=13 v_gate=1111 v_note=7cf5fc0
+note-on start: t=46448411000 count=14 v_gate=1111 v_note=7d05fc0
+note-on start: t=46448448000 count=15 v_gate=1111 v_note=8505fc0
+note-on start: t=46448485000 count=16 v_gate=1111 v_note=85061c0
+note-on start: t=46448522000 count=17 v_gate=1111 v_note=85061c4
+note-on start: t=46448559000 count=18 v_gate=1111 v_note=85161c4
+note-on start: t=46448597000 count=19 v_gate=1111 v_note=8d161c4
+note-on start: t=46448634000 count=20 v_gate=1111 v_note=8d163c4
+ok   full manual FIFO: 16 resident + 4 retained, 20 events delivered, full read/write
+PASS tb_gpio_top: GPIO mode switch, 4-key burst, panic priority, UART path
+sim\tb_gpio_top.v:261: $finish called at 46451874384 (1ps)
+=== tb_poly ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+ok   power-on reset released
+ok   default preset index 1, bit0 lit
+ok   efault preset index 1, bit1 dark
+ok   chord set A, indicator dark
+ok   S1 selected chord set B
+ok   ped to preset index 2, bit0 dark
+ok   pped to preset index 2, bit1 lit
+PASS tb_poly
+sim\tb_poly.v:110: $finish called at 131100000000 (1ps)
+=== tb_audio_capture ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+CAPTURE initial_silence: 512 native PT8211 frames
+CAPTURE a4_steady: 32768 native PT8211 frames
+CAPTURE release_a4: 4096 native PT8211 frames
+CAPTURE chord4: 4096 native PT8211 frames
+CAPTURE after_off60: 4096 native PT8211 frames
+CAPTURE after_off63: 4096 native PT8211 frames
+CAPTURE after_off66: 4096 native PT8211 frames
+CAPTURE all_released: 512 native PT8211 frames
+CAPTURE muted_active: 512 native PT8211 frames
+CAPTURE unmuted_active: 4096 native PT8211 frames
+PASS tb_audio_capture: 58880 frames, native tick, independent PT8211 decode, UART/ADSR/mute/chord
+sim\tb_audio_capture.v:323: $finish called at 1568806992625 (1ps)
+=== tb_i2s_tx ===
+自检：接收模型对人工构造的 I2S 位串解码正确（4 帧，含零、最小负数与左右不同值）
+PASS S3_RX_RESET: BCK 停止期间复位丢弃旧配对
+S3_RESET_INJECT: tb_i2s_tx.c_std16 round=1 frame_cycle=32
+S3_RESET_INJECT: tb_i2s_tx.c_std24 round=1 frame_cycle=32
+S3_RESET_RECOVERED: tb_i2s_tx.c_std24 round=1 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_std16 round=1 L=7fff R=aaaa
+S3_RESET_INJECT: tb_i2s_tx.c_std16 round=2 frame_cycle=160
+S3_RESET_INJECT: tb_i2s_tx.c_std24 round=2 frame_cycle=160
+S3_RESET_INJECT: tb_i2s_tx.c_dbg16 round=1 frame_cycle=72
+S3_RESET_INJECT: tb_i2s_tx.c_dbg24 round=1 frame_cycle=72
+S3_RESET_RECOVERED: tb_i2s_tx.c_std24 round=2 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_std16 round=2 L=7fff R=aaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg24 round=1 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg16 round=1 L=7fff R=aaaa
+S3_RESET_INJECT: tb_i2s_tx.c_std16 round=3 frame_cycle=248
+S3_RESET_INJECT: tb_i2s_tx.c_std24 round=3 frame_cycle=248
+S3_RESET_INJECT: tb_i2s_tx.c_dbg24 round=2 frame_cycle=360
+S3_RESET_INJECT: tb_i2s_tx.c_dbg16 round=2 frame_cycle=360
+S3_RESET_RECOVERED: tb_i2s_tx.c_std24 round=3 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_std16 round=3 L=7fff R=aaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg16 round=2 L=7fff R=aaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg24 round=2 L=7fffff R=aaaaaa
+S3_RESET_INJECT: tb_i2s_tx.c_dbg16 round=3 frame_cycle=558
+S3_RESET_INJECT: tb_i2s_tx.c_dbg24 round=3 frame_cycle=558
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg24 round=3 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg16 round=3 L=7fff R=aaaa
+PASS tb_i2s_tx: 四组合 I2S 时序、一位延迟、逐位解码、抗撕裂、复位恢复、负面控制
+  std16: 帧=285 帧长=256 拍 BCK 高/低=2/2 tick=285 复位=3
+  std24: 帧=285 帧长=256 拍 BCK 高/低=2/2 tick=285 复位=3
+  dbg16: 帧=279 帧长=576 拍 BCK 高/低=4/5 tick=279 复位=3
+  dbg24: 帧=279 帧长=576 拍 BCK 高/低=4/5 tick=279 复位=3
+  负面控制分歧帧 std16 offset=261 右对齐=261 声道互换=261 位翻转=285
+sim\tb_i2s_tx.v:356: $finish called at 5994817010 (1ps)
+=== tb_mcp3208_spi ===
+tb_mcp3208_spi PASS
+sim\tb_mcp3208_spi.v:292: $finish called at 5410190000 (1ps)
+=== tb_mcp3208_i2s_coexist ===
+tb_mcp3208_i2s_coexist PASS: 40 frames, 169 ticks, 1440 SCLK half periods
+sim\tb_mcp3208_i2s_coexist.v:143: $finish called at 3634668573 (1ps)
+=== tb_mcp3208_params ===
+prod: 19 rising edges, half period 54 clocks, CS to first edge 54 clocks (2000 ns), data=345
+clamped: 19 rising edges, half period 1 clock (SCLK 13.5 MHz), CS to first edge 1 clocks (37 ns), data=6a5
+SPI_HZ=0 instance elaborated and idle (guard keeps the divider defined)
+tb_mcp3208_params PASS
+sim\tb_mcp3208_params.v:174: $finish called at 78503041 (1ps)
+=== tb_pressure_bend ===
+PASS tb_pressure_bend: 640 pressure ticks and 4096 ADC codes match the reference, t90=5 control ticks
+sim\tb_pressure_bend.v:237: $finish called at 53426000 (1ps)
+=== tb_s6_audio ===
+PASS tb_s6_audio: ROM sync/select, 3584 osc vectors, 1024+256 blend points, 510 mixer vectors, 32 FIR samples
+sim\tb_s6_audio.v:334: $finish called at 116756000 (1ps)
+=== tb_top_s4s6 ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+FAIL bend adc=0: ratio=58386 expect=58400
+FAIL bend adc=0: bend_inc1=667386 expect=667546
+FAIL bend adc=4095: ratio=73562 expect=73530
+FAIL bend adc=4095: bend_inc1=840856 expect=840491
+FATAL: sim\tb_top_s4s6.v:122: tb_top_s4s6 failures=4
+       Time: 15428050267  Scope: tb_top_s4s6
+仿真失败：tb_top_s4s6
+=== tb_top_i2s ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+INFO tb_top_i2s: A4 period=108.57 samples over 67 crossings
+INFO tb_top_i2s: voice 0 note 69 inc=39370528 ideal=39370534 diff=6
+INFO tb_top_i2s: voice 1 note 66 inc=33106528 ideal=33106541 diff=13
+INFO tb_top_i2s: voice 2 note 63 inc=27839136 ideal=27839171 diff=35
+INFO tb_top_i2s: voice 3 note 60 inc=23409824 ideal=23409859 diff=35
+PASS tb_top_i2s: 8721 frames decoded, 8722 sample ticks, 24-bit slots match final_sample, A4 within 1 percent
+sim\tb_top_i2s.v:358: $finish called at 187041065770 (1ps)
+=== tb_s6_rom_prim ===
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+PASS tb_s6_rom_prim: pROM and behavioural wavetable ROM agree on 7682 comparisons
+sim\tb_s6_rom_prim.v:77: $finish called at 230496000 (1ps)
+=== tb_shared_engine ===
+rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_shared_engine: 16 cases, component sums bit-exact, global crossfade within 2 LSB and clip count on the master boundary
+sim\tb_shared_engine.v:199: $finish called at 14636000 (1ps)
+=== tb_pressure_gain ===
+METRIC pressure_gain adc_codes=4096 gain_floor=1024 gain_max=4096 slew=32/frame full_span_frames=96
+PASS tb_pressure_gain: 4797 frames, signed reference, calibration, slew, both bypasses and pre-saturation VCA
+sim\tb_pressure_gain.v:94: $finish called at 96070000 (1ps)
+=== tb_pressure_top ===
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+METRIC pressure_top decoded_frames=1446 checked_mix_frames=3664 rms_high_over_low=3.935558 step_t90_us=2571.242
+PASS tb_pressure_top: GPIO/ADC/VCA/I2S, independent pitch/envelope, demo bypass and release
+sim\tb_pressure_top.v:87: $finish called at 108770352430 (1ps)
+=== tb_timbre_controls ===
+PASS tb_timbre_controls: bounce, release-only short, long no-repeat, four presets, S2, UART priority, S3 retention, LED timeout
+sim\tb_timbre_controls.v:38: $finish called at 6654010000000 (1ps)
+=== tb_timbre_audio ===
+sim\tb_timbre_audio.v:9: error: Wrong number of ports. Expecting 18, got 16.
+sim\tb_timbre_audio.v:10: error: Wrong number of ports. Expecting 18, got 16.
+2 error(s) during elaboration.
+编译失败：tb_timbre_audio
+=== tb_timbre_uart ===
+PASS tb_timbre_uart: all 256 values, mixed case, CRLF once, 5 format/range checks, independent note/mode path
+sim\tb_timbre_uart.v:35: $finish called at 3160040000 (1ps)
+=== tb_timbre_top ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+METRIC top_timbre frames=1183 audible=1103 phase_checks=1047 full_sweep_ns=5294981 full_pipeline_cycles=114 shared_products=42
+PASS tb_timbre_top: real UART, four held voices, continuous phases, real I2S, long press and overlay
+sim\tb_timbre_top.v:72: $finish called at 29987875390 (1ps)
+=== tb_architecture_equivalence ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+METRIC architecture frames=2048 old_cycles=84 new_cycles=60 saved_cycles=24 useful_products=24 period=256 register_enables=49152
+PASS tb_architecture_equivalence: frame-bit-exact random phase/envelope/velocity, 60-cycle deadline, single completion
+sim\tb_architecture_equivalence.v:34: $finish called at 5242920000 (1ps)
+=== tb_shared_bend_equivalence ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+METRIC shared_bend frames=2048 old_cycles=84 new_cycles=76 saved_cycles=8 useful_products=32 period=256 register_enables=65536
+PASS tb_shared_bend_equivalence: frame-bit-exact random base increments/ratios/retrigger/envelopes, 76-cycle deadline, single completion
+sim\tb_shared_bend_equivalence.v:39: $finish called at 5242920000 (1ps)
+=== tb_bend_equivalence ===
+PASS tb_bend_equivalence: all 4096 codes, pressure/Q8 exact, nondefault-center full ratios/increments exact
+sim\tb_bend_equivalence.v:22: $finish called at 81960000 (1ps)
+=== tb_shared_master ===
+PASS tb_shared_master: 4096 ADC levels, all weights, random signed extrema, smoothing/gain/bypass/clipping match, two shared products
+sim\tb_shared_master.v:29: $finish called at 327720000 (1ps)
+=== tb_frame_velocity ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_frame_velocity: event offsets=76 checked_frames=152; current frame holds old velocity, next frame adopts new velocity
+sim\tb_frame_velocity.v:33: $finish called at 123120000 (1ps)
+=== tb_headroom ===
+METRIC headroom frames=7168 weights=256 peak=32640 clipped_frames=0 legacy_clipped_frames=2370
+PASS tb_headroom: signed extrema, all weights, coherent and random-phase four-voice frames, local/shared exact
+sim\tb_headroom.v:55: $finish called at 501800000 (1ps)
+=== tb_bend_precision ===
+METRIC bend_precision adc_codes=4096 max_abs_cents=0.032741193 worst_adc=960 segments=32
+PASS tb_bend_precision: analytic exponential, monotonic, endpoints, hold, random 32-bit phase products
+sim\tb_bend_precision.v:35: $finish called at 81950000 (1ps)
+=== tb_adc_reset_top ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_adc_reset_top: AUDIO_IF=1 mid-transaction phases plus idle reset, clean raw codes and channel restart, cases=4
+sim\tb_adc_reset_top.v:40: $finish called at 9760879960 (1ps)
+=== tb_control_sampling ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+METRIC control_sampling profile=1 fresh_hz_per_channel=2000 checked_pairs=226 conversions=452 single_spike_peak=0 step_phases=8 best_t90_us=2404.697 worst_t90_us=2842.196
+PASS tb_control_sampling: pin-level ADC, pair order/rate, no stale filter updates, one-conversion spike rejection and VCA response phase sweep
+sim\tb_control_sampling.v:59: $finish called at 118800110910 (1ps)
+=== tb_mute_slew ===
+PASS tb_mute_slew: frames=1056 local/shared, pressure on/off, exact slew, pressure during mute and rapid reversals; max ramp=128 frames
+sim\tb_mute_slew.v:47: $finish called at 73960000 (1ps)
+=== tb_voice_transition ===
+PASS tb_voice_transition: repeat, steal, latest pending event, cancel, release reuse and reset; bounded fade cases=4
+sim\tb_voice_transition.v:49: $finish called at 9430000 (1ps)
+=== tb_voice_transition_audio ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_voice_transition_audio: 16 phase/timbre cases, actual waveform chains, captured_frames=16384 total_frames=50456 restart_delay<=64
+sim\tb_voice_transition_audio.v:46: $finish called at 39860880000 (1ps)
+=== tb_voice_transition_top ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_voice_transition_top: UART four-note repeat, oldest steal, pending note-off cancellation, reuse and mute/restore; cases=4
+sim\tb_voice_transition_top.v:33: $finish called at 55249695800 (1ps)
+=== tb_note_ownership ===
+PASS tb_note_ownership: 2060 source events, both release orders, repeated on/off, clear and demo bypass
+sim\tb_note_ownership.v:25: $finish called at 41240000 (1ps)
+=== tb_note_ownership_top ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_note_ownership_top: real UART/GPIO overlap, both release orders, final release and panic/rearm; cases=5
+sim\tb_note_ownership_top.v:33: $finish called at 18916455480 (1ps)
+=== tb_bright_banks ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+PASS tb_bright_banks: 2560 interleaved addresses, CE hold and synchronous reset
+sim\tb_bright_banks.v:22: $finish called at 51236000 (1ps)
+=== tb_bandlimit_engine ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_bandlimit_engine: 64 independent-reference frames; 108 clocks, 40 products, local/shared exact
+sim\tb_bandlimit_engine.v:42: $finish called at 71080000 (1ps)
+=== tb_wide_master ===
+PASS tb_wide_master: 8192 frames, full signed input extrema, pressure/mute/timbre slew, local/shared exact and clip decisions
+sim\tb_wide_master.v:45: $finish called at 573480000 (1ps)
+=== tb_precision_audio ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_precision_audio: eight envelope/gain conditions; real shared engines and VCA; nonzero low bits=436
+sim\tb_precision_audio.v:43: $finish called at 4177960000 (1ps)
+=== tb_bandlimit_engine_wide ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+PASS tb_bandlimit_engine: 64 independent-reference frames; 108 clocks, 40 products, local/shared exact
+sim\tb_bandlimit_engine.v:42: $finish called at 71080000 (1ps)
+=== tb_bend_ratio_pipeline ===
+PASS tb_bend_ratio_pipeline: all 4096 codes dense and gapped, random resets/updates, outputs=10195; 3 registered stages
+sim\tb_bend_ratio_pipeline.v:34: $finish called at 184410000 (1ps)
+=== tb_split_audio_multiplier ===
+PASS tb_split_audio_multiplier: 32768 events each for widths24/33/35; signed extrema, low-limb sign boundaries, CE holds, resets
+sim\tb_split_audio_multiplier.v:35: $finish called at 327690000 (1ps)
+=== tb_voice_state_ram ===
+PASS tb_voice_state_ram: all512 addresses/all32bits, 8192 randomized cycles, CE holds, simultaneous separate-address access, two512-cycle reset sweeps; read checks=6166
+sim\tb_voice_state_ram.v:38: $finish called at 112750000 (1ps)
+=== tb_ram_wavetable_engine ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+PASS tb_ram_wavetable_engine: voices=8 lanes=1 frames=64 cycles/frame=216 period=256 products=2504 avoided_products=1592
+sim\tb_ram_wavetable_engine.v:79: $finish called at 1372555080 (1ps)
+=== tb_wide_master_pair ===
+PASS tb_wide_master_pair:8192 full32-bit input frames, ready stalls, atomic snapshots, pressure/mute/timbre slew, 2 requests/frame, clipped=3589
+sim\tb_wide_master_pair.v:43: $finish called at 573510000 (1ps)
+=== tb_ram_audio_datapath_8 ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+PASS tb_ram_audio_datapath: voices=8 master_frames=719 decoded=721 low_bits=699 shared_products=2 frame_cycles=222 period=256; slew/mute/stereo/24-bit exact
+sim\tb_ram_audio_datapath.v:59: $finish called at 15041953680 (1ps)
+=== tb_ram_audio_datapath_32 ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+PASS tb_ram_audio_datapath: voices=32 master_frames=719 decoded=719 low_bits=699 shared_products=2 frame_cycles=870 period=1024; slew/mute/stereo/24-bit exact
+sim\tb_ram_audio_datapath.v:59: $finish called at 15000658188 (1ps)
+=== tb_ram_audio_datapath_64 ===
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v:60:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:73:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:140:        : Padding 16 high bits of the port.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207: warning: Port 6 (DO) of pROM expects 32 bits, got 16.
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_bright_bank.v:207:        : Padding 16 high bits of the port.
+PASS tb_ram_audio_datapath: voices=64 master_frames=719 decoded=719 low_bits=701 shared_products=2 frame_cycles=870 period=1024; slew/mute/stereo/24-bit exact
+sim\tb_ram_audio_datapath.v:59: $finish called at 15000658188 (1ps)
+=== tb_i2s_tx_params[zero_clk] （预期失败）===
+参数负例 zero_clk 按预期被拒绝（退出码 1，原因匹配）
+=== tb_i2s_tx_params[zero_fs] （预期失败）===
+参数负例 zero_fs 按预期被拒绝（退出码 1，原因匹配）
+=== tb_i2s_tx_params[not_divisible] （预期失败）===
+参数负例 not_divisible 按预期被拒绝（退出码 1，原因匹配）
+=== tb_i2s_tx_params[frame_not_div64] （预期失败）===
+参数负例 frame_not_div64 按预期被拒绝（退出码 1，原因匹配）
+=== tb_i2s_tx_params[bck_too_fast] （预期失败）===
+参数负例 bck_too_fast 按预期被拒绝（退出码 1，原因匹配）
+=== tb_i2s_tx_params[data_bits_32] （预期失败）===
+参数负例 data_bits_32 按预期被拒绝（退出码 1，原因匹配）
+仿真门禁未通过，2 个测试台失败，禁止烧录。

@@ -4,8 +4,8 @@ import json
 import pymupdf
 
 ROOT=Path(__file__).resolve().parents[1]
-PDF=ROOT/'output/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf'
-EV=ROOT/'docs/evidence/FPGA-接线复核-20261018-v0.1'
+PDF=ROOT/'docs/exports/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf'
+EV=ROOT/'evidence/2026/10/FPGA-接线复核-20261018-v0.1'
 QA=ROOT/'tmp/wiring-20261018/pages'
 
 

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Module name="ddr3_smoke_top" T_Register="1926(0)" T_Alu="304(0)" T_Lut="2314(0)" T_Bsram="13(0)" T_Ssram="111(0)">
- <SubModule name="test" Register="614" Alu="193" Lut="928" Bsram="5" T_Register="630(614)" T_Alu="202(193)" T_Lut="950(928)" T_Bsram="5(5)">
-  <SubModule name="tx" Register="16" Alu="9" Lut="22" T_Register="16(16)" T_Alu="9(9)" T_Lut="22(22)"/>
- </SubModule>
- <SubModule name="pll"/>
- <SubModule name="u_ddr3" Register="1296" Alu="102" Lut="1364" Bsram="8" Ssram="111" T_Register="1296(1296)" T_Alu="102(102)" T_Lut="1364(1364)" T_Bsram="8(8)" T_Ssram="111(111)"/>
-</Module>

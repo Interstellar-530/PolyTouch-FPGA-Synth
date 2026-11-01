@@ -1,2 +1,0 @@
-PASS tb_s6_rom_prim: pROM and behavioural wavetable ROM agree on 7682 comparisons
-E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\sim\tb_s6_rom_prim.v:77: $finish called at 230496000 (1ps)

@@ -1,2 +1,0 @@
-﻿FATAL: sim\tb_velocity_bounds.v:134: vel 128 cap=0, expected saturation 66017
-       Time: 378940000  Scope: tb_velocity_bounds

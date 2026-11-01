@@ -1,2 +1,0 @@
-PASS tb_note_ownership_top: real UART/GPIO overlap, both release orders, final release and panic/rearm; cases=5
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_note_ownership_top.v:33: $finish called at 18916455480 (1ps)

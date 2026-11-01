@@ -1,2 +1,0 @@
-PASS tb_wide_master_pair:8192 full32-bit input frames, ready stalls, atomic snapshots, pressure/mute/timbre slew, 2 requests/frame, clipped=3589
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_wide_master_pair.v:43: $finish called at 573510000 (1ps)

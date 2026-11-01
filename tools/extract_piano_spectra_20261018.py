@@ -11,8 +11,8 @@ import numpy as np
 import soundfile as sf
 
 ROOT = Path(__file__).resolve().parents[1]
-AUDIO = ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio'
-EVIDENCE = ROOT / 'docs/evidence/FPGA-钢琴音色-20261018-v0.1'
+AUDIO = ROOT / 'source/rtl/audio'
+EVIDENCE = ROOT / 'evidence/2026/10/FPGA-钢琴音色-20261018-v0.1'
 SAMPLES = ROOT / 'tmp/salamander-samples'
 HARMONICS = 10
 NOTES = [

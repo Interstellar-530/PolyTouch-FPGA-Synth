@@ -1,0 +1,47 @@
+[
+  {
+    "document": "docs/references/handoff-20261008/planning/电子乐器项目规划.md",
+    "old": "docs/evidence/gowin-mcp-smoke.json",
+    "new": "../../../../evidence/2026/10/gowin-mcp-smoke.json"
+  },
+  {
+    "document": "docs/references/handoff-20261008/planning/电子乐器项目规划.md",
+    "old": "tools/gowin-mcp.config.toml",
+    "new": "../../../../tools/gowin-mcp.config.toml"
+  },
+  {
+    "document": "docs/references/handoff-20261008/planning/电子乐器项目规划.md",
+    "old": "FPGA-Instrument.code-workspace",
+    "new": "../../../../FPGA-Instrument.code-workspace"
+  },
+  {
+    "document": "docs/references/handoff-20261008/planning/电子乐器项目规划.md",
+    "old": "docs/references/Tang_Primer_20K_Dock_3714_Schematics.pdf",
+    "new": "../../boards/Tang_Primer_20K_Dock_3714/Tang_Primer_20K_Dock_3714_Schematics.pdf"
+  },
+  {
+    "document": "docs/references/handoff-20261008/planning/电子乐器项目规划.md",
+    "old": "docs/references/Tang_Primer_20K_Dock-3713_Schematics.pdf",
+    "new": "../../boards/Tang_Primer_20K_Dock_3714/Tang_Primer_20K_Dock-3713_Schematics.pdf"
+  },
+  {
+    "document": "docs/references/handoff-20261008/planning/电子乐器项目规划.md",
+    "old": "docs/references/Tang_Primer_20K_SOM-3961_Schematic.pdf",
+    "new": "../../boards/Tang_Primer_20K_Dock_3714/Tang_Primer_20K_SOM-3961_Schematic.pdf"
+  },
+  {
+    "document": "docs/planning/电子乐器项目规划.md",
+    "old": "docs/references/Tang_Primer_20K_Dock_3714_Schematics.pdf",
+    "new": "../references/boards/Tang_Primer_20K_Dock_3714/Tang_Primer_20K_Dock_3714_Schematics.pdf"
+  },
+  {
+    "document": "docs/planning/电子乐器项目规划.md",
+    "old": "docs/references/Tang_Primer_20K_Dock-3713_Schematics.pdf",
+    "new": "../references/boards/Tang_Primer_20K_Dock_3714/Tang_Primer_20K_Dock-3713_Schematics.pdf"
+  },
+  {
+    "document": "docs/planning/电子乐器项目规划.md",
+    "old": "docs/references/Tang_Primer_20K_SOM-3961_Schematic.pdf",
+    "new": "../references/boards/Tang_Primer_20K_Dock_3714/Tang_Primer_20K_SOM-3961_Schematic.pdf"
+  }
+]

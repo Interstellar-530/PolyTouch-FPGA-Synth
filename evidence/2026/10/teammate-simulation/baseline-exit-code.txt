@@ -1,0 +1,3 @@
+IverilogPath=D:\NanjingUniversity\FPGA\msys64\ucrt64\bin\iverilog.exe
+VvpPath=D:\NanjingUniversity\FPGA\msys64\ucrt64\bin\vvp.exe
+GateExit=0

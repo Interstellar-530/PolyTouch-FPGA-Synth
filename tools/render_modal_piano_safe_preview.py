@@ -11,7 +11,7 @@ import numpy as np
 import soundfile as sf
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'docs/evidence/FPGA-钢琴音色-20261018-v0.1'
+OUT = ROOT / 'evidence/2026/10/FPGA-钢琴音色-20261018-v0.1'
 FS = 48000
 
 

@@ -1,0 +1,3 @@
+METRIC bend_precision adc_codes=4096 max_abs_cents=0.032741193 worst_adc=960 segments=32
+PASS tb_bend_precision: analytic exponential, monotonic, endpoints, hold, random 32-bit phase products
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_bend_precision.v:35: $finish called at 81950000 (1ps)

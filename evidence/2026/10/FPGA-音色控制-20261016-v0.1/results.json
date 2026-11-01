@@ -1,0 +1,42 @@
+[
+  {
+    "test": "tb_timbre_controls",
+    "exit": 0,
+    "seconds": 1.062
+  },
+  {
+    "test": "tb_timbre_uart",
+    "exit": 0,
+    "seconds": 0.984
+  },
+  {
+    "test": "tb_mode_uart",
+    "exit": 0,
+    "seconds": 6.141
+  },
+  {
+    "test": "tb_poly",
+    "exit": 0,
+    "seconds": 69.828
+  },
+  {
+    "test": "tb_pressure_top",
+    "exit": 0,
+    "seconds": 55.141
+  },
+  {
+    "test": "tb_top_i2s",
+    "exit": 0,
+    "seconds": 51.797
+  },
+  {
+    "test": "tb_timbre_top",
+    "exit": 0,
+    "seconds": 7.344
+  },
+  {
+    "test": "tb_timbre_audio",
+    "exit": 0,
+    "seconds": 1.657
+  }
+]

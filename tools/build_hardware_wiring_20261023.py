@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MD = ROOT / 'docs/hardware/FPGA-现有硬件图解接线方案-20261023-v0.1.md'
 ASSETS = MD.parent / 'wiring-20261023-v0.1-assets'
-OUTPUT = ROOT / 'output/pdf/FPGA-现有硬件图解接线方案-20261023-v0.1.pdf'
+OUTPUT = ROOT / 'docs/exports/pdf/FPGA-现有硬件图解接线方案-20261023-v0.1.pdf'
 TMP = ROOT / 'tmp/hardware-wiring-20261023'
 
 
@@ -297,7 +297,7 @@ def qa():
     required=['PMOD3','PMOD2','PMOD0','L9','N6','D11','A11','B11','B12','C12','B13','T7','P6',
               'BCK','LCK','DIN','XMT','115200','46.875','3.000','2048','4095','IdleOnly']
     missing=[s for s in required if s not in compact]
-    cst=ROOT/'output/handoff_milestone2_20261008/source/constraints/primer20k_i2s_27m.cst'
+    cst=ROOT/'source/constraints/primer20k_i2s_27m.cst'
     text=cst.read_text(encoding='utf-8-sig')
     mapping={'kbd_uart_rx':'L9','kbd_uart_tx':'N8','adc_cs_n':'N6','adc_sck':'D11',
              'adc_mosi':'A11','adc_miso':'B11','i2s_bck':'B12','i2s_lrck':'C12','i2s_din':'B13','dac_xsmt':'P6'}

@@ -1,0 +1,325 @@
+﻿{
+    "Profile":  "debug8usb",
+    "Top":  "top_dbg8usb_build",
+    "Bitstream":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\gowin_top_dbg8usb\\runs\\20261020T225124340-ee429fd0\\instrument\\impl\\pnr\\instrument.fs",
+    "BitstreamLength":  7264154,
+    "BitstreamModifiedUtc":  639281047496785057,
+    "CompletedUtc":  "2026-10-20T14:52:30.4239636Z",
+    "Inputs":  [
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\build.ps1",
+                       "Length":  3468,
+                       "ModifiedUtc":  639281008292953246
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\build_profile.tcl",
+                       "Length":  1850,
+                       "ModifiedUtc":  639280851733992867
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\isolated\\top_dbg8usb_build.v",
+                       "Length":  1682,
+                       "ModifiedUtc":  639281006716204246
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\profile_helpers.ps1",
+                       "Length":  1505,
+                       "ModifiedUtc":  639281008293263243
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\profiles.tsv",
+                       "Length":  496,
+                       "ModifiedUtc":  639281006802478387
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\build\\sources.list",
+                       "Length":  1241,
+                       "ModifiedUtc":  639280851734283844
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\constraints\\primer20k.sdc",
+                       "Length":  445,
+                       "ModifiedUtc":  639280851734336321
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\constraints\\primer20k_dock3714_usb.cst",
+                       "Length":  4185,
+                       "ModifiedUtc":  639281006716404908
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\adsr.v",
+                       "Length":  3531,
+                       "ModifiedUtc":  639280851735011147
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\audio_frame_bridge.v",
+                       "Length":  1735,
+                       "ModifiedUtc":  639280851735011147
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\audio_pll_clock.v",
+                       "Length":  1497,
+                       "ModifiedUtc":  639280851735021160
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\bend_coefficients.vh",
+                       "Length":  2997,
+                       "ModifiedUtc":  639280851735021160
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\bend_ratio_pipeline.v",
+                       "Length":  1292,
+                       "ModifiedUtc":  639280851735031149
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ch9350_rx.v",
+                       "Length":  5976,
+                       "ModifiedUtc":  639280851735031149
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\clk_params.vh",
+                       "Length":  2990,
+                       "ModifiedUtc":  639280851735041141
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\dds_osc.v",
+                       "Length":  2690,
+                       "ModifiedUtc":  639280851735041141
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\epiano_bank_all.hex",
+                       "Length":  92160,
+                       "ModifiedUtc":  639280851735051136
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\event_fifo.v",
+                       "Length":  2032,
+                       "ModifiedUtc":  639280851735061144
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\global_crossfade.v",
+                       "Length":  15683,
+                       "ModifiedUtc":  639280851735061144
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_bright_bank.v",
+                       "Length":  17726,
+                       "ModifiedUtc":  639280851735061144
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_guitar_bank.v",
+                       "Length":  104540,
+                       "ModifiedUtc":  639280851735071137
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_piano_bank.v",
+                       "Length":  104536,
+                       "ModifiedUtc":  639281006306509192
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_wave_bright.v",
+                       "Length":  5180,
+                       "ModifiedUtc":  639280851735137167
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gowin_prom_wave_sine.v",
+                       "Length":  5176,
+                       "ModifiedUtc":  639280851735137167
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\gpio_keyboard.v",
+                       "Length":  8828,
+                       "ModifiedUtc":  639280851735193938
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\guitar_bank_all.hex",
+                       "Length":  92160,
+                       "ModifiedUtc":  639280851735203905
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\hid_keymap.v",
+                       "Length":  12230,
+                       "ModifiedUtc":  639281007068185715
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\host_kbd_input.v",
+                       "Length":  2262,
+                       "ModifiedUtc":  639280851735213901
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\i2s_tx.v",
+                       "Length":  9440,
+                       "ModifiedUtc":  639280851735213901
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\instrument_controls.v",
+                       "Length":  3935,
+                       "ModifiedUtc":  639280851735213901
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\kbd_uart_rx.v",
+                       "Length":  3146,
+                       "ModifiedUtc":  639281005940584089
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\mcp3208_spi.v",
+                       "Length":  5654,
+                       "ModifiedUtc":  639280851735223832
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\mixer_s6.v",
+                       "Length":  4439,
+                       "ModifiedUtc":  639280851735229187
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\note_ownership.v",
+                       "Length":  1311,
+                       "ModifiedUtc":  639280851735234237
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\note_phase_inc.v",
+                       "Length":  2301,
+                       "ModifiedUtc":  639280851735274345
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\poly_voice.v",
+                       "Length":  2829,
+                       "ModifiedUtc":  639280851735284339
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\poly_voice_s6.v",
+                       "Length":  3354,
+                       "ModifiedUtc":  639280851735329651
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\pressure_bend.v",
+                       "Length":  8520,
+                       "ModifiedUtc":  639280851735329651
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\pt8211_tx.v",
+                       "Length":  3505,
+                       "ModifiedUtc":  639280851735339611
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_audio_clocked.v",
+                       "Length":  1987,
+                       "ModifiedUtc":  639280851735339611
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_audio_compute.v",
+                       "Length":  3146,
+                       "ModifiedUtc":  639280851735349604
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_audio_datapath.v",
+                       "Length":  1801,
+                       "ModifiedUtc":  639280851735349604
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\ram_wavetable_engine.v",
+                       "Length":  9314,
+                       "ModifiedUtc":  639280851735349604
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\shared_wavetable_engine.v",
+                       "Length":  26873,
+                       "ModifiedUtc":  639281011183541139
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_expect.vh",
+                       "Length":  290,
+                       "ModifiedUtc":  639280851735359607
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_player.v",
+                       "Length":  10509,
+                       "ModifiedUtc":  639280851735359607
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\song_roms.vh",
+                       "Length":  3976,
+                       "ModifiedUtc":  639280851735369607
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\split_audio_multiplier.v",
+                       "Length":  1881,
+                       "ModifiedUtc":  639280851735369607
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\uart_ctrl.v",
+                       "Length":  15849,
+                       "ModifiedUtc":  639280851735369607
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_alloc.v",
+                       "Length":  5316,
+                       "ModifiedUtc":  639280851735379690
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_state_ram.v",
+                       "Length":  1784,
+                       "ModifiedUtc":  639280851735379690
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\voice_transition.v",
+                       "Length":  5080,
+                       "ModifiedUtc":  639280851735379690
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright.hex",
+                       "Length":  2560,
+                       "ModifiedUtc":  639280851735389592
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h1.hex",
+                       "Length":  2560,
+                       "ModifiedUtc":  639280851735393027
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h16.hex",
+                       "Length":  2560,
+                       "ModifiedUtc":  639280851735398170
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h2.hex",
+                       "Length":  2560,
+                       "ModifiedUtc":  639280851735403983
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h4.hex",
+                       "Length":  2560,
+                       "ModifiedUtc":  639280851735409056
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_bright_h8.hex",
+                       "Length":  2560,
+                       "ModifiedUtc":  639280851735409056
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wave_sine.hex",
+                       "Length":  3072,
+                       "ModifiedUtc":  639270625287400683
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wavetable_osc_dual_s6.v",
+                       "Length":  3745,
+                       "ModifiedUtc":  639280851735459214
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wavetable_rom_dual.v",
+                       "Length":  3257,
+                       "ModifiedUtc":  639280851735469467
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\audio\\wide_master.v",
+                       "Length":  4025,
+                       "ModifiedUtc":  639280851735469467
+                   },
+                   {
+                       "Path":  "D:\\NanjingUniversity\\FPGA\\PolyTouch-FPGA-Synth\\output\\handoff_milestone2_20261008\\source\\rtl\\top.v",
+                       "Length":  39157,
+                       "ModifiedUtc":  639281025919340358
+                   }
+               ]
+}

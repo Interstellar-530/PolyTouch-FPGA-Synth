@@ -1,0 +1,103 @@
+*** GOWIN Tcl Command Line Console  *** 
+Open project D:/NanjingUniversity/FPGA/PolyTouch-FPGA-Synth-integration/output/handoff_milestone2_20261008/source/build/gowin_top_integrated/instrument/instrument/instrument.gprj finished
+current device: GW2A-18C  GW2A-LV18PG256C8/I7
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\adsr.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\dds_osc.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\event_fifo.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\global_crossfade.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gpio_keyboard.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\mcp3208_spi.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\mixer_s6.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\note_phase_inc.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\poly_voice.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\poly_voice_s6.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pressure_bend.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pt8211_tx.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\shared_wavetable_engine.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\song_player.v'
+Analyzing included file 'rtl\audio\song_roms.vh'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\song_player.v":39)
+Back to file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\song_player.v'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\song_player.v":39)
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\uart_ctrl.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\voice_alloc.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\wavetable_osc_dual_s6.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\wavetable_rom_dual.v'
+Analyzing Verilog file 'D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\top.v'
+Compiling module 'top'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\top.v":13)
+Compiling module 'gpio_keyboard'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gpio_keyboard.v":23)
+Compiling module 'event_fifo'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\event_fifo.v":6)
+Extracting RAM for identifier 'mem'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\event_fifo.v":23)
+Compiling module 'song_player'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\song_player.v":16)
+Compiling module 'uart_ctrl'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\uart_ctrl.v":11)
+Compiling module 'voice_alloc'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\voice_alloc.v":7)
+Compiling module 'note_phase_inc'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\note_phase_inc.v":8)
+Compiling module 'mcp3208_spi'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\mcp3208_spi.v":19)
+Compiling module 'pressure_bend'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pressure_bend.v":15)
+WARN  (EX3791) : Expression size 16 truncated to fit in target size 11("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pressure_bend.v":125)
+WARN  (EX3791) : Expression size 25 truncated to fit in target size 17("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pressure_bend.v":136)
+WARN  (EX3791) : Expression size 33 truncated to fit in target size 32("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pressure_bend.v":147)
+WARN  (EX3791) : Expression size 33 truncated to fit in target size 32("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\top.v":419)
+WARN  (EX3791) : Expression size 33 truncated to fit in target size 32("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\top.v":420)
+WARN  (EX3791) : Expression size 33 truncated to fit in target size 32("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\top.v":421)
+Compiling module 'adsr'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\adsr.v":6)
+Compiling module 'shared_wavetable_engine'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\shared_wavetable_engine.v":15)
+Compiling module 'gowin_prom_wave_sine'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v":5)
+WARN  (EX3670) : Actual bit length 16 differs from formal bit length 32 for port 'DO'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_sine.v":61)
+Compiling module 'gowin_prom_wave_bright'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v":5)
+WARN  (EX3670) : Actual bit length 16 differs from formal bit length 32 for port 'DO'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\gowin_prom_wave_bright.v":61)
+WARN  (EX3791) : Expression size 27 truncated to fit in target size 18("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\shared_wavetable_engine.v":158)
+WARN  (EX3791) : Expression size 27 truncated to fit in target size 18("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\shared_wavetable_engine.v":170)
+Compiling module 'global_crossfade'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\global_crossfade.v":9)
+Compiling module 'pt8211_tx'("D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\rtl\audio\pt8211_tx.v":11)
+NOTE  (EX0101) : Current top module is "top"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\gwsynthesis\instrument.vg" completed
+[100%] Generate report file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\gwsynthesis\instrument_syn.rpt.html" completed
+GowinSynthesis finish
+Reading netlist file: "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\gwsynthesis\instrument.vg"
+Parsing netlist file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\gwsynthesis\instrument.vg" completed
+Processing netlist completed
+Reading constraint file: "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\constraints\primer20k_dock3714.cst"
+Physical Constraint parsed completed
+Running placement......
+[10%] Placement Phase 0 completed
+[20%] Placement Phase 1 completed
+[30%] Placement Phase 2 completed
+[50%] Placement Phase 3 completed
+Running routing......
+[60%] Routing Phase 0 completed
+[70%] Routing Phase 1 completed
+[80%] Routing Phase 2 completed
+[90%] Routing Phase 3 completed
+Running timing analysis......
+[95%] Timing analysis completed
+Placement and routing completed
+Bitstream generation in progress......
+Bitstream generation completed
+Running power analysis......
+[100%] Power analysis completed
+Generate file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\pnr\instrument.power.html" completed
+Generate file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\pnr\instrument.pin.html" completed
+Generate file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\pnr\instrument.rpt.html" completed
+Generate file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\pnr\instrument.rpt.txt" completed
+Generate file "D:\NanjingUniversity\FPGA\PolyTouch-FPGA-Synth-integration\output\handoff_milestone2_20261008\source\impl\pnr\instrument.tr.html" completed
+Thu Oct 15 18:55:17 2026
+

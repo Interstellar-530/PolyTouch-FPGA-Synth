@@ -14,10 +14,10 @@ def timing_summary(report):
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
-    root=Path(__file__).resolve().parents[1];source=root/'output/handoff_milestone2_20261008/source'
+    root=Path(__file__).resolve().parents[1];source=root/'source'
     parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('--baseline-ref');parser.add_argument('--analyze-only',action='store_true');args=parser.parse_args()
     work=root/'tmp/architecture-resource-20261016';work.mkdir(parents=True,exist_ok=True)
-    out=args.out or root/'docs/evidence/FPGA-架构优化-20261016-v0.1/resources';out.mkdir(parents=True,exist_ok=True)
+    out=args.out or root/'evidence/2026/10/FPGA-架构优化-20261016-v0.1/resources';out.mkdir(parents=True,exist_ok=True)
     if args.analyze_only:
         timings={name:timing_summary(out/(name+'-syn.rpt.html')) for name in ['baseline','optimized']}
         (out/'timing-summary.json').write_text(json.dumps(timings,indent=2),encoding='utf-8');print(json.dumps(timings,indent=2));return

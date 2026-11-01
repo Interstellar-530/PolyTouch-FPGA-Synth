@@ -1,0 +1,17 @@
+[
+  {
+    "test": "tb_timbre_controls",
+    "exit": 0,
+    "seconds": 1.031
+  },
+  {
+    "test": "tb_timbre_uart",
+    "exit": 0,
+    "seconds": 0.969
+  },
+  {
+    "test": "tb_timbre_top",
+    "exit": 0,
+    "seconds": 10.297
+  }
+]

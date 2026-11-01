@@ -1,0 +1,38 @@
+[
+  {
+    "weight": 0,
+    "samples": 512,
+    "rms": 11539.594454816886,
+    "peak": 16320.0,
+    "thd_percent": 0.0006936793868120116,
+    "power_centroid_harmonic": 1.0000000958423685,
+    "clipped_samples": 0
+  },
+  {
+    "weight": 64,
+    "samples": 512,
+    "rms": 10366.997781515782,
+    "peak": 14135.0,
+    "thd_percent": 12.234104310016548,
+    "power_centroid_harmonic": 1.0453328482596291,
+    "clipped_samples": 0
+  },
+  {
+    "weight": 160,
+    "samples": 512,
+    "rms": 8985.494736309738,
+    "peak": 11711.0,
+    "thd_percent": 37.395649498346934,
+    "power_centroid_harmonic": 1.3771562390914538,
+    "clipped_samples": 0
+  },
+  {
+    "weight": 255,
+    "samples": 512,
+    "rms": 8259.39844136855,
+    "peak": 16320.0,
+    "thd_percent": 76.44330258402096,
+    "power_centroid_harmonic": 2.1338432490715875,
+    "clipped_samples": 0
+  }
+]

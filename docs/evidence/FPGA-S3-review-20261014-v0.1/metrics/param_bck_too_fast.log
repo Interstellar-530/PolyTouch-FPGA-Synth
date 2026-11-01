@@ -1,4 +1,0 @@
-﻿S3_PARAM_INVALID: BCK 周期只有 1 个系统拍，至少需要 2 拍
-FATAL: rtl\audio\i2s_tx.v:94: S3_PARAM_INVALID: BCK_CYC must be at least 2
-       Time: 0  Scope: tb_i2s_tx_params.dut
-

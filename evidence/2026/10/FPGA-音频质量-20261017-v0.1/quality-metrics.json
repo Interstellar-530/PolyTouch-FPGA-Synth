@@ -1,0 +1,190 @@
+{
+  "rtl_simulations": 14,
+  "profile_checks": 13,
+  "checks": [
+    {
+      "group": "audio-quality",
+      "test": "tb_headroom",
+      "passed": true
+    },
+    {
+      "group": "audio-quality",
+      "test": "tb_bend_precision",
+      "passed": true
+    },
+    {
+      "group": "audio-quality",
+      "test": "tb_adc_reset_top-standard",
+      "passed": true
+    },
+    {
+      "group": "audio-quality",
+      "test": "tb_adc_reset_top-debug",
+      "passed": true
+    },
+    {
+      "group": "architecture-regression",
+      "test": "tb_architecture_equivalence",
+      "passed": true
+    },
+    {
+      "group": "architecture-regression",
+      "test": "tb_shared_bend_equivalence",
+      "passed": true
+    },
+    {
+      "group": "architecture-regression",
+      "test": "tb_bend_equivalence",
+      "passed": true
+    },
+    {
+      "group": "architecture-regression",
+      "test": "tb_shared_master",
+      "passed": true
+    },
+    {
+      "group": "pressure-regression",
+      "test": "tb_pressure_gain",
+      "passed": true
+    },
+    {
+      "group": "pressure-regression",
+      "test": "tb_pressure_bend",
+      "passed": true
+    },
+    {
+      "group": "pressure-regression",
+      "test": "tb_shared_engine",
+      "passed": true
+    },
+    {
+      "group": "top-regression",
+      "test": "tb_timbre_top",
+      "passed": true
+    },
+    {
+      "group": "top-regression",
+      "test": "tb_pressure_top",
+      "passed": true
+    },
+    {
+      "group": "top-regression",
+      "test": "tb_top_i2s",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "debug-gowin-setup",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "debug-rtl-elaboration",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "standard-gowin-setup",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "standard-rtl-elaboration",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "debug-wrapper-build",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "debug-program-selection",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "standard-wrapper-build",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "standard-program-selection",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "changed-source-rejected",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "failed-build-reported",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "legacy-fallback-rejected",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "explicit-historical-file",
+      "passed": true
+    },
+    {
+      "group": "build-regression",
+      "test": "failed-simulation-gate-rejected",
+      "passed": true
+    }
+  ],
+  "headroom": {
+    "frames": 7168,
+    "weights": 256,
+    "peak_abs": 32640,
+    "clipped_frames": 0,
+    "legacy_clipped_frames": 2370,
+    "attenuation_db": 6.020599913
+  },
+  "bend": {
+    "adc_codes": 4096,
+    "max_abs_cents": 0.032741193,
+    "worst_adc": 960,
+    "segments": 32
+  },
+  "scheduler": {
+    "frame_cycles": 81,
+    "products": 34,
+    "available_cycles": 256,
+    "spare_cycles": 175
+  },
+  "pressure": {
+    "rms_high_over_low": 3.880664,
+    "step_t90_us": 2901.97
+  },
+  "i2s": {
+    "decoded_frames": 8621,
+    "full_gate": false,
+    "hardware": false
+  },
+  "resources": [
+    {
+      "variant": "baseline",
+      "logic": 4460,
+      "registers": 1736,
+      "bsram": 2,
+      "mult18x18": 1,
+      "multalu36x18": 0,
+      "dsp_macro_equivalent": 0.5
+    },
+    {
+      "variant": "optimized",
+      "logic": 4408,
+      "registers": 1738,
+      "bsram": 2,
+      "mult18x18": 1,
+      "multalu36x18": 0,
+      "dsp_macro_equivalent": 0.5
+    }
+  ]
+}

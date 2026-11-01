@@ -1,2 +1,0 @@
-PASS tb_precision_audio: eight envelope/gain conditions; real shared engines and VCA; nonzero low bits=55582
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_precision_audio.v:43: $finish called at 170639400000 (1ps)

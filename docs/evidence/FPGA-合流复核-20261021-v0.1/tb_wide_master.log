@@ -1,2 +1,0 @@
-PASS tb_wide_master: 8192 frames, full signed input extrema, pressure/mute/timbre slew, local/shared exact and clip decisions
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_wide_master.v:45: $finish called at 573480000 (1ps)

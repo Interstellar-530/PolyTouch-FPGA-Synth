@@ -1,0 +1,3 @@
+Gate Custom: 1/105 positive benches; logs: E:\Working Space\FPGA\tmp\reorganization-20261101\gate-policy\metrics
+缺失测试台：sim\tb_tick_rate.v
+仿真门禁不完整，缺失 1 台，禁止烧录。

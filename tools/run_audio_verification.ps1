@@ -12,7 +12,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
-$sourceRoot = Join-Path $repoRoot 'output\handoff_milestone2_20261008\source'
+$sourceRoot = Join-Path $repoRoot 'source'
 $gate = Join-Path $sourceRoot 'sim\run_simulation.ps1'
 if (-not $Python) { $Python = Join-Path $repoRoot 'tools\.venv-audio-analysis\Scripts\python.exe' }
 foreach ($exe in @($Python, $Iverilog, $Vvp)) {

@@ -1,0 +1,12 @@
+[
+  {
+    "test": "tb_wide_master",
+    "exit": 0,
+    "seconds": 1.235
+  },
+  {
+    "test": "tb_precision_audio",
+    "exit": 0,
+    "seconds": 145.546
+  }
+]

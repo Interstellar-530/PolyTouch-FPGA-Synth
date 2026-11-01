@@ -1,2 +1,0 @@
-PASS tb_piano_morph: low env uses body, high env uses hammer, frames=8 differences=8
-E:\Working Space\FPGA\docs\evidence\FPGA-°æ±¾ºÏÁ÷-20261022-v0.1\before\ours\tb_piano_morph.v:63: $finish called at 14520000 (1ps)

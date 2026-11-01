@@ -2,7 +2,7 @@
 import pathlib,subprocess,json,os,argparse
 repo=pathlib.Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser()
-parser.add_argument('--source-root',type=pathlib.Path,default=repo/'output/handoff_milestone2_20261008/source')
+parser.add_argument('--source-root',type=pathlib.Path,default=repo/'source')
 src=parser.parse_args().source_root.resolve()
 work=repo/'tmp/candidate-fix-20261023/policy';work.mkdir(parents=True,exist_ok=True)
 observer=work/'observer.v'

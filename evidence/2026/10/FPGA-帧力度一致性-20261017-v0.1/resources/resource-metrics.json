@@ -1,0 +1,20 @@
+[
+  {
+    "variant": "baseline",
+    "logic": 4348,
+    "registers": 1744,
+    "bsram": 2,
+    "mult18x18": 1,
+    "multalu36x18": 0,
+    "dsp_macro_equivalent": 0.5
+  },
+  {
+    "variant": "optimized",
+    "logic": 4348,
+    "registers": 1772,
+    "bsram": 2,
+    "mult18x18": 1,
+    "multalu36x18": 0,
+    "dsp_macro_equivalent": 0.5
+  }
+]

@@ -1,0 +1,7 @@
+No tests selected; gate cannot pass.
+At E:\Working Space\FPGA\source\sim\run_simulation.ps1:366 char:31
++ ... ($suite.Count -eq 0) { throw 'No tests selected; gate cannot pass.' }
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (No tests selected; gate cannot pass.:String) [], RuntimeException
+    + FullyQualifiedErrorId : No tests selected; gate cannot pass.
+ 

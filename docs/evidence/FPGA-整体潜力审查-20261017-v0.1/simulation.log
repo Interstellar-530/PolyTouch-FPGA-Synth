@@ -1,2 +1,0 @@
-PASS tb_ceiling: 7 pitches, 8192 actual RTL frames per case, no unknown output
-E:\Working Space\FPGA\tmp\system-ceiling-20261017\tb_ceiling.v:35: $finish called at 45875480000 (1ps)

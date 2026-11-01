@@ -1,1 +1,0 @@
-full product 65536000000 -> phase 1000000 | 32 bit truncated product 1111490560 -> phase 16960

@@ -1,0 +1,1016 @@
+diff --git a/output/handoff_milestone2_20261008/AI_RESUME_PROMPT.txt b/output/handoff_milestone2_20261008/AI_RESUME_PROMPT.txt
+index b570ab9..27e9f11 100644
+--- a/output/handoff_milestone2_20261008/AI_RESUME_PROMPT.txt
++++ b/output/handoff_milestone2_20261008/AI_RESUME_PROMPT.txt
+@@ -12,9 +12,11 @@ Read, in order:
+ 
+ Do not redesign the project. The 2026-10-07 handoff was verified. The 27 MHz
+ clock was restored by reseating the core board. LED2 on N16 blinks in the
+-normal bitstream. The GAO core is integrated, but the standalone GAO analyzer
+-does not open in this environment; use the Gowin IDE built-in GAO and
+-source/rtl/gao_top.rao.
++normal bitstream. The GAO core is integrated. Run
++source/build/launch_gao.ps1 to open the standalone analyzer with the required
++arguments; the Gowin IDE built-in GAO remains a fallback.
+ 
+-Use SRAM Program operation 2, not Program and Verify. Preserve the pure-FPGA
+-audio path and do not use recorded PCM.
++Build the normal bitstream with source/build/build.ps1. Use -Gao for the
++separate GAO build. The wave_sine include path and direct IDE synthesis are
++fixed. Use SRAM Program operation 2, not Program and Verify. Preserve the
++pure-FPGA audio path and do not use recorded PCM.
+diff --git a/output/handoff_milestone2_20261008/CHANGELOG.md b/output/handoff_milestone2_20261008/CHANGELOG.md
+index 74a7c6a..caa449d 100644
+--- a/output/handoff_milestone2_20261008/CHANGELOG.md
++++ b/output/handoff_milestone2_20261008/CHANGELOG.md
+@@ -20,3 +20,19 @@
+   and Programmer manual.
+ - Updated global and project AGENTS.md, created the 2026-10-07 archive, and
+   cleaned project temporary files.
++
++## 2026-10-08 follow-up
++
++- Changed `dds_osc.v` to load `wave_sine.hex` through the synthesizer
++  include path and added that path to the generated Gowin project. Direct IDE
++  synthesis now finds the sine table and keeps `dds_osc`, `adsr`, and
++  `voice` in the design.
++- Split normal and GAO projects. `build.ps1` now builds the normal
++  `instrument.fs`; `build.ps1 -Gao` builds the GAO `ao_0.fs` without
++  replacing the normal build mode.
++- Added `source/build/launch_gao.ps1` with the required Gowin analyzer
++  arguments (`-gao`, `-family`, `-device`). The standalone analyzer no
++  longer exits immediately when launched through this wrapper.
++- Changed `program_sram.ps1` to default to `SRAM Program` operation 2.
++- Verified normal and GAO rebuilds with Gowin V1.9.11.03; the sine ROM still
++  maps to BSRAM (4/46 blocks).
+diff --git a/output/handoff_milestone2_20261008/CURRENT_STATUS.md b/output/handoff_milestone2_20261008/CURRENT_STATUS.md
+index 3486e7b..2f97592 100644
+--- a/output/handoff_milestone2_20261008/CURRENT_STATUS.md
++++ b/output/handoff_milestone2_20261008/CURRENT_STATUS.md
+@@ -16,6 +16,12 @@ Date: 2026-10-08
+ - `SRAM Program and Verify` operation 4 fails with `Verify Failed` and status
+   code `0x00006020`; use operation 2 instead.
+ - GAO core is integrated and `artifacts/ao_0.fs` is generated.
++- Follow-up build fix: the Gowin include path points at `source/rtl/audio`,
++  so direct IDE synthesis finds `wave_sine.hex` and does not sweep the voice
++  modules.
++- Normal and GAO builds are separated: `build.ps1` produces
++  `source/impl/pnr/instrument.fs`; `build.ps1 -Gao` produces
++  `source/impl/pnr/ao_0.fs`.
+ 
+ ## Implemented
+ 
+@@ -35,9 +41,8 @@ Date: 2026-10-08
+ - Audio has not been listened to on hardware because no headphone or powered
+   speaker was available.
+ - GAO waveform capture has not been completed yet.
+-- The standalone `gao_analyzer.exe` does not open in this environment; use the
+-  Gowin IDE built-in GAO.
+-- Gowin IDE direct synthesis can still miss `rtl/audio/wave_sine.hex`.
++- GAO waveform capture still requires the board and JTAG cable; build-time
++  integration is verified.
+ - No MPR121, MCP3208, FSR, UART, PCM5102A, or polyphonic mixer exists yet.
+ 
+ ## Current Technical Boundary
+@@ -49,6 +54,8 @@ Date: 2026-10-08
+ 
+ ## Immediate Next Action
+ 
+-Open the project in Gowin IDE, program `artifacts/ao_0.fs` with operation 2 if
+-needed, open `source/rtl/gao_top.rao`, and use the built-in GAO capture window
+-to verify `sample_tick`, `gate`, `voice_sample[15:0]`, and the PT8211 signals.
++Run `source/build/launch_gao.ps1` and program `source/impl/pnr/ao_0.fs` with
++operation 2 if needed. The wrapper supplies the required `-gao`, `-family`,
++and `-device` arguments instead of starting `gao_analyzer.exe` with no
++arguments. Then capture `sample_tick`, `gate`, `voice_sample[15:0]`, and
++the PT8211 signals. The Gowin IDE built-in GAO remains a fallback.
+diff --git a/output/handoff_milestone2_20261008/DESIGN_DECISIONS.md b/output/handoff_milestone2_20261008/DESIGN_DECISIONS.md
+index adc8886..658f138 100644
+--- a/output/handoff_milestone2_20261008/DESIGN_DECISIONS.md
++++ b/output/handoff_milestone2_20261008/DESIGN_DECISIONS.md
+@@ -32,8 +32,11 @@
+ 10. Use `SRAM Program` operation 2 for this board. Do not use `Program and
+     Verify`; the readback verification fails with status code `0x00006020`.
+ 
+-11. Use the Gowin IDE built-in GAO. The standalone `gao_analyzer.exe` exits
+-    immediately in this environment.
+-
+-12. The Tcl build is the canonical build path until the `wave_sine.hex`
+-    relative-path problem is fixed for Gowin IDE direct synthesis.
++11. Use `source/build/launch_gao.ps1` for the standalone GAO analyzer. It
++    supplies the required `-gao`, `-family`, and `-device` arguments. The
++    Gowin IDE built-in GAO remains the fallback.
++
++12. The generated Gowin project sets `-include_path` to `source/rtl/audio`,
++    so `dds_osc.v` loads `wave_sine.hex` in both Tcl and IDE-driven
++    synthesis. Normal and GAO builds use separate project directories to
++    preserve the normal `instrument.fs` build.
+diff --git a/output/handoff_milestone2_20261008/FILE_MANIFEST.json b/output/handoff_milestone2_20261008/FILE_MANIFEST.json
+index 3c6f493..bf696ed 100644
+--- a/output/handoff_milestone2_20261008/FILE_MANIFEST.json
++++ b/output/handoff_milestone2_20261008/FILE_MANIFEST.json
+@@ -1,14 +1,59 @@
+ {
+   "schema_version": 1,
+-  "generated_at": "2026-10-08T20:55:38",
++  "generated_at": "2026-10-08T21:43:10+08:00",
+   "root": ".",
+-  "file_count": 66,
+-  "total_bytes": 31646499.0,
++  "file_count": 67,
++  "total_bytes": 31655293.0,
+   "files": [
+     {
+       "path": "AI_RESUME_PROMPT.txt",
+-      "size_bytes": 714,
+-      "sha256": "a15565f9ecc5c05f46a2b4b2bc69faa97b6b7b4c0b1e355196818694178f2eab"
++      "size_bytes": 906,
++      "sha256": "1d9a1eed5e82cc38710ca9975af48eb567eb10d6481af090aa81745be56c3a71"
++    },
++    {
++      "path": "CHANGELOG.md",
++      "size_bytes": 1933,
++      "sha256": "2559e155b6f2a82470d3809f68049bd5b0854494863abe59fc3c03202773d3e2"
++    },
++    {
++      "path": "COMPETITION_REQUIREMENTS.md",
++      "size_bytes": 1489,
++      "sha256": "82b838a32f1aeb1aa61656282cf069a475a00ccaccfa92c896103625f04bbbf1"
++    },
++    {
++      "path": "CURRENT_STATUS.md",
++      "size_bytes": 2690,
++      "sha256": "f7cacb3a70e35ed6602dcec67f9a1bbb2c6099aaedcbffcd211167c52c9c642a"
++    },
++    {
++      "path": "DESIGN_DECISIONS.md",
++      "size_bytes": 1953,
++      "sha256": "58c3a2e7640ba511cfa49542882f8d2c92bf43ccb5dd3ec57230c1858ae38d57"
++    },
++    {
++      "path": "HARDWARE_NOTES.md",
++      "size_bytes": 2103,
++      "sha256": "89fede031b9a06c3bb0f5662b49b08bd0fbc4a23f3e06f5faa8aa5f08980b6ee"
++    },
++    {
++      "path": "NEXT_TASKS.json",
++      "size_bytes": 2290,
++      "sha256": "ac702083b1f54aa029948fddd3df678dec581ad22ca38718457f7d9a7ae0c191"
++    },
++    {
++      "path": "PROJECT_MANIFEST.json",
++      "size_bytes": 2331,
++      "sha256": "48d9ad1ea88b98636ff5defbff610687145302697db0f2b901e0511ba0bf7989"
++    },
++    {
++      "path": "README_FOR_HUMAN.md",
++      "size_bytes": 2706,
++      "sha256": "e29213600e4eed7401cd9e3736952dc5594f70bf4b15787a59fe3a05d32d284d"
++    },
++    {
++      "path": "START_HERE_FOR_AI.md",
++      "size_bytes": 5070,
++      "sha256": "d6803f67dfa425c3b2509a626c2cea831b46fb6b63d67dba2395c2388b6a47c3"
+     },
+     {
+       "path": "artifacts/ao_0.fs",
+@@ -20,16 +65,6 @@
+       "size_bytes": 983,
+       "sha256": "8d502f3e582aa3f7fce9230b1b247da923ef954f93681d69e698d19b2a24ef69"
+     },
+-    {
+-      "path": "artifacts/instrument_syn.rpt.html",
+-      "size_bytes": 25650,
+-      "sha256": "e61d2246690922b8ae1fe6b74adb5c7471f744d92e059a7453481327b501296c"
+-    },
+-    {
+-      "path": "artifacts/instrument_tr_content.html",
+-      "size_bytes": 249433,
+-      "sha256": "8098a57d2f81c3ac953e3579e6ea232b46bc36f4e567d746075f0b2a3296a9d1"
+-    },
+     {
+       "path": "artifacts/instrument.fs",
+       "size_bytes": 7264154,
+@@ -61,49 +96,19 @@
+       "sha256": "b5617a697f0ed58953337d9ba0da67ec8d39684eaf266e3baed124542cb82e8b"
+     },
+     {
+-      "path": "artifacts/milestone2_build.json",
+-      "size_bytes": 966,
+-      "sha256": "ec1f335001425a77bd08766c26a8e1981a1e97d233d37bf89d83225e4779a7df"
+-    },
+-    {
+-      "path": "CHANGELOG.md",
+-      "size_bytes": 1071,
+-      "sha256": "33209ecc4c65e6ffbcdee33ec84d15610c2066253879fe974a63021087e6dc92"
+-    },
+-    {
+-      "path": "COMPETITION_REQUIREMENTS.md",
+-      "size_bytes": 1489,
+-      "sha256": "82b838a32f1aeb1aa61656282cf069a475a00ccaccfa92c896103625f04bbbf1"
+-    },
+-    {
+-      "path": "CURRENT_STATUS.md",
+-      "size_bytes": 2262,
+-      "sha256": "13b306b9206abffe5d11d5f7bbee1b04f499c4b4c3c6b520932c862c42e723a0"
+-    },
+-    {
+-      "path": "DESIGN_DECISIONS.md",
+-      "size_bytes": 1702,
+-      "sha256": "eaf83eb34f0a025045462f4249d3fd5482e54930407a3bfa38fcb3fa5658bd19"
+-    },
+-    {
+-      "path": "HARDWARE_NOTES.md",
+-      "size_bytes": 1723,
+-      "sha256": "b1bff470c95f1e6e3d32e7036c2169dc8434648b7ed4e2f1079703f38dbf58c1"
+-    },
+-    {
+-      "path": "NEXT_TASKS.json",
+-      "size_bytes": 2135,
+-      "sha256": "a045bec59cc067eb502f567e78cdf236f7dc5f4373db68ad9485f00af4c61a32"
++      "path": "artifacts/instrument_syn.rpt.html",
++      "size_bytes": 25650,
++      "sha256": "e61d2246690922b8ae1fe6b74adb5c7471f744d92e059a7453481327b501296c"
+     },
+     {
+-      "path": "PROJECT_MANIFEST.json",
+-      "size_bytes": 2180,
+-      "sha256": "3b314b1aa559c42ce986da5b1789b490ad6cf5be558eca2e91bd1156b2730393"
++      "path": "artifacts/instrument_tr_content.html",
++      "size_bytes": 249433,
++      "sha256": "8098a57d2f81c3ac953e3579e6ea232b46bc36f4e567d746075f0b2a3296a9d1"
+     },
+     {
+-      "path": "README_FOR_HUMAN.md",
+-      "size_bytes": 2414,
+-      "sha256": "39a0a593ba5516c7c29be44017191de2516a776a2c573ddd9ba79530a5e065bd"
++      "path": "artifacts/milestone2_build.json",
++      "size_bytes": 998,
++      "sha256": "1f258d167ad7aa94a598d749f0452961b77a1d005613afa4f44c2110f377348e"
+     },
+     {
+       "path": "reference/board_docs/GAO用户指南.md",
+@@ -117,8 +122,8 @@
+     },
+     {
+       "path": "reference/board_docs/README.md",
+-      "size_bytes": 1561,
+-      "sha256": "7b07d56f28eb0a8974b6bfd360360791348f43fa01974a0864514d875c47028a"
++      "size_bytes": 1598,
++      "sha256": "a8ffb441650d37b830c8f3e7edaa50e41616e69d44585b29537e826cdd6e0df7"
+     },
+     {
+       "path": "reference/board_docs/Sipeed_Tang_Primer_20K_Datasheet_V1.0.pdf",
+@@ -126,29 +131,24 @@
+       "sha256": "7ec2ada4c37cce6ec9601e96812ccd1c86ebd0ecef73b676e0e6bc61db0a8da7"
+     },
+     {
+-      "path": "reference/board_docs/Tang_Primer_20K_规格书_V1.0.pdf",
+-      "size_bytes": 936754,
+-      "sha256": "99d344d7cd85f8a27d52c693d53e4c4284ae69538df17fc2f623a7363af19df5"
++      "path": "reference/board_docs/Tang_Primer_20K_Dock-3713_Schematics.pdf",
++      "size_bytes": 2474939,
++      "sha256": "17c2d75551e59294937f362d6c7a04a7a752ead754465a4be8ddabbd1f7cf2ae"
+     },
+     {
+       "path": "reference/board_docs/Tang_Primer_20K_Dock_3714_Schematics.pdf",
+       "size_bytes": 2480479,
+       "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
+     },
+-    {
+-      "path": "reference/board_docs/Tang_Primer_20K_Dock-3713_Schematics.pdf",
+-      "size_bytes": 2474939,
+-      "sha256": "17c2d75551e59294937f362d6c7a04a7a752ead754465a4be8ddabbd1f7cf2ae"
+-    },
+     {
+       "path": "reference/board_docs/Tang_Primer_20K_SOM-3961_Schematic.pdf",
+       "size_bytes": 972793,
+       "sha256": "b5110caa0508d1d80513ca28978b0836e9b2aec92fc889f850a5a43ec03e6ce8"
+     },
+     {
+-      "path": "reference/competition/高云半导体.pdf",
+-      "size_bytes": 1447261,
+-      "sha256": "09415c6e2b4922d564317dcd7c28720ce1e1363e6ddbe17d4c5eb9710cc0165d"
++      "path": "reference/board_docs/Tang_Primer_20K_规格书_V1.0.pdf",
++      "size_bytes": 936754,
++      "sha256": "99d344d7cd85f8a27d52c693d53e4c4284ae69538df17fc2f623a7363af19df5"
+     },
+     {
+       "path": "reference/competition/FPGA创新设计赛道通知.pdf",
+@@ -160,10 +160,15 @@
+       "size_bytes": 12008,
+       "sha256": "0278bc576d62d1eace7e3d4eff9c9037bff304dbf80d64d77ebbf71d6e8c3b92"
+     },
++    {
++      "path": "reference/competition/高云半导体.pdf",
++      "size_bytes": 1447261,
++      "sha256": "09415c6e2b4922d564317dcd7c28720ce1e1363e6ddbe17d4c5eb9710cc0165d"
++    },
+     {
+       "path": "reference/logs/FPGA_DEBUG_LOG_20261008.md",
+-      "size_bytes": 6184,
+-      "sha256": "d06145d9e37ed378e16876e2eca9511cfbe146681a05c634eda181752fc44442"
++      "size_bytes": 6255,
++      "sha256": "a543eb8e6b97a61e081b45e2180ecbe2804bf77c3a05c810bfc83cfccd636a82"
+     },
+     {
+       "path": "reference/logs/FPGA_DEBUG_LOG_20261008.pdf",
+@@ -172,114 +177,124 @@
+     },
+     {
+       "path": "reference/minimum_design/00_总览与最小实现边界.md",
+-      "size_bytes": 5844,
+-      "sha256": "1cf0c3dcb3f04252c2a4d1fbbce079954d1390e08ba1d24efec8b7e20c77842d"
++      "size_bytes": 5922,
++      "sha256": "5dea9bcafb9fc3c16a5833a5834b6f1b88f7d8a509fcdccb0af3c2db172bd4d4"
+     },
+     {
+       "path": "reference/minimum_design/01_时钟配置.md",
+-      "size_bytes": 4977,
+-      "sha256": "6e4f02c7605df0ab1b925069acc184f45a0fb8116ab29c0c52bb5d70ac5e9841"
++      "size_bytes": 5037,
++      "sha256": "425a284fc94ed0eee497ecca9b39d570177010a0ed90c249b02741992b93e79a"
+     },
+     {
+       "path": "reference/minimum_design/02_信号生成与处理.md",
+-      "size_bytes": 4986,
+-      "sha256": "507945f07d43f7099b4a8e709199d531f7ff6a09138c00a92076965bb1460c3b"
++      "size_bytes": 5023,
++      "sha256": "8e492782f4346492e371d7bac2fdfda01129de3ca12dae567bb99eb31f272b87"
+     },
+     {
+       "path": "reference/minimum_design/03_模块间信息传递.md",
+-      "size_bytes": 4464,
+-      "sha256": "7fe06019ec8fa7755c089c039ecf9347d96332c5786537f0ceca36d96a499db5"
++      "size_bytes": 4497,
++      "sha256": "020f559e5011c8bd2f629a6141f1d409946bb9d451442d8318fdf2b475928711"
+     },
+     {
+       "path": "reference/minimum_design/04_硬件控制信号.md",
+-      "size_bytes": 6513,
+-      "sha256": "3afbdff01e599580e7d458d835fb1334c8c50ea9fba32772e5147f05a29b299d"
++      "size_bytes": 6579,
++      "sha256": "104524a2c4aa2e507b2c633f34f7be18a4494ddd35b7856eba7f9445e4de37a8"
+     },
+     {
+       "path": "reference/minimum_design/05_第二轮复查与补充.md",
+-      "size_bytes": 4883,
+-      "sha256": "dc5d76055418424bf3473c72cf03362db25e7fd7fdd56bd531fb58dd665ade0a"
++      "size_bytes": 4926,
++      "sha256": "3ee268c427f9c224e506216af78a2e88255ff0e5136ba77f837a3b278701fef5"
+     },
+     {
+       "path": "reference/minimum_design/06_硬件调试说明书.md",
+-      "size_bytes": 8963,
+-      "sha256": "ccd4d5e06cdbbc85f7656c85e7477959a48208ebd80f9cbc07f262ea77d9a785"
++      "size_bytes": 9061,
++      "sha256": "f0d5c2d352edc47f49927b87e0ef95eb2a339714066ade35e0e9f25d367a01db"
+     },
+     {
+       "path": "reference/minimum_design/07_PDF_MD_工具链与技能更新.md",
+-      "size_bytes": 5506,
+-      "sha256": "ae14a27dab650817be7eb599f3bbaeaaa091aea7fe9597161f631cb2c032e590"
++      "size_bytes": 5591,
++      "sha256": "b3835ae0ffac22b80635acee5716e83aba2e32a50614e9fdfde93fbba5d4372f"
+     },
+     {
+       "path": "reference/minimum_design/AGENT_HANDOFF_PROMPT.md",
+-      "size_bytes": 9574,
+-      "sha256": "d066b8fb345bc3facb2700c199c280ca180beea1c0e00543a5b7a84626d5eb44"
+-    },
+-    {
+-      "path": "reference/minimum_design/milestone_01_first_voice.md",
+-      "size_bytes": 1624,
+-      "sha256": "11151f657a0edfed8ffe7120d38001bc9449b39dfdfa4ca055e5813481726a90"
++      "size_bytes": 9635,
++      "sha256": "71fba34650b0f4d0222d3a3c334677ee2c76f850f0132d7f84f638a13998f07d"
+     },
+     {
+       "path": "reference/minimum_design/README.md",
+-      "size_bytes": 1485,
+-      "sha256": "fc617ed776d4485f3c88f370aef7af0fbdc6ee6a5f1ceb88838ad398fd75871f"
++      "size_bytes": 1502,
++      "sha256": "3854dfa7acd20ba32a64d40b4162d75872a43eca576d4bd5b4dd2465615e1dc7"
+     },
+     {
+-      "path": "reference/planning/电子乐器项目规划.md",
+-      "size_bytes": 27655,
+-      "sha256": "732c72fa7a326245901a00e8e390a59c3d4d78012c7dde1f1a2f39b611270ad0"
++      "path": "reference/minimum_design/milestone_01_first_voice.md",
++      "size_bytes": 1675,
++      "sha256": "c9e5e0d95d1cc98b84f414a01093bde4f4f7cc76f145112f5084492a1b7378de"
+     },
+     {
+-      "path": "reference/schematics/Tang_Primer_20K_Dock_3714_Schematics.pdf",
+-      "size_bytes": 2480479,
+-      "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
++      "path": "reference/planning/电子乐器项目规划.md",
++      "size_bytes": 27989,
++      "sha256": "d6523c92aaa0d80dbe0a71402a00d53ff9475edcbbed950ef7fc112bf574f63d"
+     },
+     {
+       "path": "reference/schematics/Tang_Primer_20K_Dock-3713_Schematics.pdf",
+       "size_bytes": 2474939,
+       "sha256": "17c2d75551e59294937f362d6c7a04a7a752ead754465a4be8ddabbd1f7cf2ae"
+     },
++    {
++      "path": "reference/schematics/Tang_Primer_20K_Dock_3714_Schematics.pdf",
++      "size_bytes": 2480479,
++      "sha256": "284aed9a243dcbe4cf5e6dbb2366faa17936a62c922f378cbda347c285925188"
++    },
+     {
+       "path": "reference/schematics/Tang_Primer_20K_SOM-3961_Schematic.pdf",
+       "size_bytes": 972793,
+       "sha256": "b5110caa0508d1d80513ca28978b0836e9b2aec92fc889f850a5a43ec03e6ce8"
+     },
+     {
+-      "path": "source/build/build_instrument.tcl",
+-      "size_bytes": 1102,
+-      "sha256": "e7702e6c86982d4866aee6cb1bcd5215528e0a8dba1da538f078e51dbf3bf239"
++      "path": "source/build/README.md",
++      "size_bytes": 1975,
++      "sha256": "b31e44428c645e93fc05003f4c9c0b291516cd758bafb7ebb49dad0e1edec8b0"
+     },
+     {
+       "path": "source/build/build.ps1",
+-      "size_bytes": 1217,
+-      "sha256": "c05e939a93431214f9736ecbdb25b2db8f3a1eb013c2b2a6564c9b6abb9bbb8f"
++      "size_bytes": 1426,
++      "sha256": "a42bca5e16c66f71d186a07f9e07cdc16bf804a6d7e790d88d79193c6092a64b"
+     },
+     {
+-      "path": "source/build/program_sram.ps1",
+-      "size_bytes": 2042,
+-      "sha256": "01d8b0e0df5103e4243103fa7abebea0ca355cd4d30ae7917a28b9277d9fb4c3"
++      "path": "source/build/build_instrument.tcl",
++      "size_bytes": 2227,
++      "sha256": "ef0b82082947b8d0f50af1a678543a44f85336d230588a261da35432e0cf384a"
+     },
+     {
+-      "path": "source/build/README.md",
+-      "size_bytes": 877,
+-      "sha256": "a361621b19eb02d39b8ea6befe7419e4136eae4ca14c831d741c15d559b6d50f"
++      "path": "source/build/launch_gao.ps1",
++      "size_bytes": 2086,
++      "sha256": "e70434da3c24b17e700821be8c035a6b2e4e2cb69a80d5e37ba6f807eb51f8c3"
++    },
++    {
++      "path": "source/build/program_sram.ps1",
++      "size_bytes": 2044,
++      "sha256": "08b00da162e2bc12a29c6ea7a1fd3430f9912c3631d9d72769eb47e266e8c579"
+     },
+     {
+       "path": "source/build/scan_jtag.ps1",
+       "size_bytes": 1032,
+       "sha256": "2b0dda9f9471776f3cb023e984c496d514d56563b134422fbb7ad1cf0e63bb1a"
+     },
+-    {
+-      "path": "source/constraints/primer20k_dock3714.cst",
+-      "size_bytes": 385,
+-      "sha256": "4fdcb8d8ba9947cbbe5661392bcf4d5e628a87c08187ee4cd51686f6fe0d169d"
+-    },
+     {
+       "path": "source/constraints/primer20k.sdc",
+       "size_bytes": 65,
+       "sha256": "41957da2af4aff0bc0ab6b832af376d64eb0c5966d713ca003fb959bd624ee8b"
+     },
++    {
++      "path": "source/constraints/primer20k_dock3714.cst",
++      "size_bytes": 403,
++      "sha256": "4d9bbe3942869123807041d53a8e401abb81ae221ba321c858bff32e0a3032d5"
++    },
++    {
++      "path": "source/rtl/README.md",
++      "size_bytes": 569,
++      "sha256": "8eae1c9f8ffa82437159d174a923f13b697eff96e31da7c5157d70c52a0367fd"
++    },
+     {
+       "path": "source/rtl/audio/adsr.v",
+       "size_bytes": 2363,
+@@ -287,13 +302,13 @@
+     },
+     {
+       "path": "source/rtl/audio/dds_osc.v",
+-      "size_bytes": 788,
+-      "sha256": "dcf0f53f6df4e61df0cf46f52fab93508fa0366eb8eee55d172a19ac79366eb6"
++      "size_bytes": 778,
++      "sha256": "2c74baace7df9d7be3f3d26d8ebab27e5eb790108cf0fe578ab0927b979258c5"
+     },
+     {
+       "path": "source/rtl/audio/pt8211_tx.v",
+-      "size_bytes": 2315,
+-      "sha256": "f2a950947437f3234afcd62dfdcb29df20e9340b76a8bb017e48d187bc7f7c9e"
++      "size_bytes": 2379,
++      "sha256": "2a174aaa5da04e56c44d9277bdd52be1cc3c1db70d929989ad3e154f6f3d7601"
+     },
+     {
+       "path": "source/rtl/audio/voice.v",
+@@ -307,13 +322,8 @@
+     },
+     {
+       "path": "source/rtl/gao_top.rao",
+-      "size_bytes": 4934,
+-      "sha256": "4df379dd8227dba50cb50ead251d3e64773edcf866a110c590ed96c4a54ea1e6"
+-    },
+-    {
+-      "path": "source/rtl/README.md",
+-      "size_bytes": 389,
+-      "sha256": "bd313e6f65b5014827de33d6793b365b01251222ca0f10ede53b03f22fe35ed7"
++      "size_bytes": 5013,
++      "sha256": "781c8943a29772e8de6c5f7fc1e76db15d9bd2654528f4073cef7c5f5638fb65"
+     },
+     {
+       "path": "source/rtl/top.v",
+@@ -327,13 +337,8 @@
+     },
+     {
+       "path": "source/tools/collect_build_evidence.py",
+-      "size_bytes": 2997,
+-      "sha256": "ec8ab9a5433864042bbfc97e53ee0e56df2bd82794c6a6b413c5669d4c4d108a"
+-    },
+-    {
+-      "path": "START_HERE_FOR_AI.md",
+-      "size_bytes": 5033,
+-      "sha256": "6464e909de1af121c6fc1dbc1db8c4d72f920d3169abe73145f7c4a6ff383a4a"
++      "size_bytes": 3089,
++      "sha256": "39e45c3cc60770114faca886640b794c9a5ff4914897b80b50a3ad76adfc51c1"
+     }
+   ]
+ }
+diff --git a/output/handoff_milestone2_20261008/HARDWARE_NOTES.md b/output/handoff_milestone2_20261008/HARDWARE_NOTES.md
+index 2ddaed2..bf3020d 100644
+--- a/output/handoff_milestone2_20261008/HARDWARE_NOTES.md
++++ b/output/handoff_milestone2_20261008/HARDWARE_NOTES.md
+@@ -39,6 +39,14 @@ the 27 MHz four-LED diagnostic blinked normally.
+ - On-board LPA4809MSF headphone amplifier.
+ - 3.5 mm headphone jack.
+ 
++## Resolved Build Issues
++
++- The Gowin project now carries an include path for `source/rtl/audio`, so
++  direct IDE synthesis can open the one-cycle `wave_sine.hex` table.
++- Normal builds and GAO builds use separate Gowin projects. Use `build.ps1` for
++  the normal bitstream and `build.ps1 -Gao` for the GAO bitstream.
++- `launch_gao.ps1` supplies the analyzer's required arguments.
++
+ ## Still Unresolved
+ 
+ - Whether Dock 3714 PMOD exposes a free 3.3 V GCLK pin for 12.288 MHz.
+@@ -46,7 +54,6 @@ the 27 MHz four-LED diagnostic blinked normally.
+ - PCM5102A module FMT/FLT/DEMP/XSMT jumper configuration.
+ - Dock switch/power-mode behavior and exact Key/SW mapping.
+ - Whether the team has confirmed Primer 20K eligibility with the organizer.
+-- Gowin IDE direct synthesis path for `rtl/audio/wave_sine.hex`.
+ 
+ ## Do Not Do
+ 
+diff --git a/output/handoff_milestone2_20261008/NEXT_TASKS.json b/output/handoff_milestone2_20261008/NEXT_TASKS.json
+index 9337fef..5ecd3b7 100644
+--- a/output/handoff_milestone2_20261008/NEXT_TASKS.json
++++ b/output/handoff_milestone2_20261008/NEXT_TASKS.json
+@@ -1,12 +1,12 @@
+ {
+   "schema_version": 1,
+-  "current_blocker": "GAO capture window setup and Gowin IDE wavetable path.",
++  "current_blocker": "GAO hardware capture; wavetable path and launcher fixes are verified.",
+   "tasks": [
+     {
+       "id": "M2-01",
+       "priority": 1,
+       "title": "Capture GAO waveform",
+-      "command": "Open the project in Gowin IDE, program artifacts/ao_0.fs with operation 2, double-click source/rtl/gao_top.rao, and use the built-in GAO capture window.",
++      "command": "Program source/impl/pnr/ao_0.fs with operation 2, then run source/build/launch_gao.ps1. The Gowin IDE built-in GAO remains a fallback.",
+       "acceptance": [
+         "Local jtagserver connects successfully",
+         "Cable is Gowin USB Cable(FT2CH)",
+@@ -29,9 +29,11 @@
+       "id": "M2-03",
+       "priority": 2,
+       "title": "Fix Gowin IDE wavetable path",
+-      "acceptance": [
+-        "Gowin IDE direct synthesis no longer reports Cannot open rtl/audio/wave_sine.hex",
+-        "The sine ROM is still mapped to BSRAM"
++      "status": "done",
++      "evidence": [
++        "Direct IDE synthesis no longer reports Cannot open rtl/audio/wave_sine.hex",
++        "dds_osc, adsr, and voice remain in the synthesized design",
++        "The sine ROM maps to BSRAM (4/46 blocks)"
+       ]
+     },
+     {
+diff --git a/output/handoff_milestone2_20261008/PROJECT_MANIFEST.json b/output/handoff_milestone2_20261008/PROJECT_MANIFEST.json
+index 8726032..6ce5712 100644
+--- a/output/handoff_milestone2_20261008/PROJECT_MANIFEST.json
++++ b/output/handoff_milestone2_20261008/PROJECT_MANIFEST.json
+@@ -17,7 +17,9 @@
+   "entry_points": {
+     "top_rtl": "source/rtl/top.v",
+     "build_script": "source/build/build.ps1",
++    "build_gao": "source/build/build.ps1 -Gao",
+     "build_tcl": "source/build/build_instrument.tcl",
++    "gao_launcher": "source/build/launch_gao.ps1",
+     "scan_jtag": "source/build/scan_jtag.ps1",
+     "program_sram": "source/build/program_sram.ps1",
+     "evidence_collector": "source/tools/collect_build_evidence.py",
+@@ -32,11 +34,11 @@
+     "board": "Sipeed Tang Primer 20K + Dock 3714"
+   },
+   "current_status": {
+-    "build": "passed",
++    "build": "passed; normal and GAO projects separated",
+     "programming": "passed with SRAM Program operation 2",
+     "program_and_verify": "failed on this board, status 0x00006020",
+     "audio": "not verified by listening",
+-    "gao": "core integrated, capture pending",
++    "gao": "core integrated; launcher fixed, capture pending",
+     "touch": "not implemented",
+     "polyphony": 1
+   },
+@@ -49,8 +51,7 @@
+     "Use SRAM Program operation 2; do not use Program and Verify."
+   ],
+   "known_issues": [
+-    "Gowin IDE direct synthesis may not find rtl/audio/wave_sine.hex.",
+-    "The standalone gao_analyzer.exe exits immediately in this environment.",
++    "Standalone GAO requires -gao, -family, and -device; use source/build/launch_gao.ps1.",
+     "Dock 3714 free 3.3 V GCLK pin is not yet confirmed.",
+     "MPR121 and MCP3208 modules have not been integrated.",
+     "Audio has not been verified with a headphone or powered speaker."
+diff --git a/output/handoff_milestone2_20261008/README_FOR_HUMAN.md b/output/handoff_milestone2_20261008/README_FOR_HUMAN.md
+index a8dbaa4..2423ebd 100644
+--- a/output/handoff_milestone2_20261008/README_FOR_HUMAN.md
++++ b/output/handoff_milestone2_20261008/README_FOR_HUMAN.md
+@@ -33,8 +33,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
+ ```
+ 
+ 如果脚本没有自动找到 Gowin，可以传入 `-GwSh`，或者设置环境变量
+-`GOWIN_GW_SH`。当前推荐使用 Tcl 构建，因为 Gowin IDE 直接综合仍可能找不到
+-`wave_sine.hex`。
++`GOWIN_GW_SH`。默认生成普通码流 `source/impl/pnr/instrument.fs`；加上
++`-Gao` 会使用独立工程生成 GAO 码流 `source/impl/pnr/ao_0.fs`。
++普通和 GAO 工程已分离，直接 IDE 综合的波表 include path 也已修复。
+ 
+ ## 烧录
+ 
+@@ -49,7 +50,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scan_jtag.ps1
+ ```powershell
+ & 'E:\Gowin\Gowin_V1.9.11.03_Education_x64\Programmer\bin\programmer_cli.exe' `
+   --device GW2A-18C --operation_index 2 `
+-  --fsFile '..\..\artifacts\instrument.fs'
++  --fsFile '..\impl\pnr\instrument.fs'
+ ```
+ 
+ `SRAM Program and Verify` 在这块板子上会报 `Verify Failed`，状态码
+@@ -63,9 +64,19 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scan_jtag.ps1
+ 
+ ## GAO 观察
+ 
+-独立 `gao_analyzer.exe` 在当前环境里无法稳定打开，请使用 Gowin IDE 内置
+-GAO。打开 `source/build/gowin_single_voice/instrument/instrument/instrument.gprj`
+-后，在 Design 窗口双击 `source/rtl/gao_top.rao`，连接 Local jtagserver，
+-Cable 选 `Gowin USB Cable(FT2CH)`，Device chain 选 Gowin Device、Series
+-`GW2A`、Device `GW2A-18C`。`ao_0.fs` 已写入 SRAM 时，取消 `Enable
+-Programmer`，或者把操作选成 `SRAM Program`。
++`gao_analyzer.exe` 需要 `-gao`、`-family`、`-device` 参数。直接在
++`source/build` 下运行下面命令，脚本会补齐参数并打开 GAO 捕获界面：
++
++```powershell
++.\launch_gao.ps1
++```
++
++如果板卡还未加载 GAO 码流，用操作 2 烧录 `source/impl/pnr/ao_0.fs`：
++
++```powershell
++.\program_sram.ps1 -FsFile '..\impl\pnr\ao_0.fs'
++```
++
++然后连接 Local jtagserver，Cable 选 `Gowin USB Cable(FT2CH)`，Device chain
++选 Gowin Device、Series `GW2A`、Device `GW2A-18C`。Gowin IDE 内置 GAO
++仍然可以作为备用方案。
+diff --git a/output/handoff_milestone2_20261008/START_HERE_FOR_AI.md b/output/handoff_milestone2_20261008/START_HERE_FOR_AI.md
+index 8d55062..5a61331 100644
+--- a/output/handoff_milestone2_20261008/START_HERE_FOR_AI.md
++++ b/output/handoff_milestone2_20261008/START_HERE_FOR_AI.md
+@@ -52,20 +52,19 @@ Do not power-cycle the board after SRAM programming.
+ 
+ The immediate task is to observe the internal audio engine without headphones:
+ 
+-1. Open the project in Gowin IDE.
+-2. Program `artifacts/ao_0.fs` with operation 2 if the SRAM is not already
+-   running the GAO bitstream.
+-3. In the Design window, double-click `source/rtl/gao_top.rao`.
+-4. Open the Gowin IDE built-in GAO capture window.
+-5. Connect to Local jtagserver, select `Gowin USB Cable(FT2CH)`, set the
++1. Program `source/impl/pnr/ao_0.fs` with operation 2 if the SRAM is not
++   already running the GAO bitstream.
++2. Run `source/build/launch_gao.ps1`; it supplies the required `-gao`,
++   `-family`, and `-device` arguments to `gao_analyzer.exe`.
++3. Connect to Local jtagserver, select `Gowin USB Cable(FT2CH)`, set the
+    device chain to Gowin Device, Series `GW2A`, Device `GW2A-18C`, and check
+    Enable. Disable the integrated programmer because the bitstream is already
+    in SRAM, or select `SRAM Program` if reprogramming.
+-6. Trigger on `sample_tick` rising edge and inspect `gate`,
++4. Trigger on `sample_tick` rising edge and inspect `gate`,
+    `voice_sample[15:0]`, `hp_bck`, `hp_ws`, `hp_din`, and `pa_en`.
+ 
+-The standalone `gao_analyzer.exe` exits immediately in this environment. Use
+-the GAO tool inside Gowin IDE; do not keep retrying the standalone executable.
++The standalone analyzer works when launched with those required arguments.
++The Gowin IDE built-in GAO remains the fallback.
+ 
+ ## Hard Rules
+ 
+@@ -90,20 +89,20 @@ the GAO tool inside Gowin IDE; do not keep retrying the standalone executable.
+ - Debug sample rate: 27 MHz / 18 / 32 = 46.875 kHz.
+ - PT8211 BCK: about 1.5 MHz.
+ - Formal 48 kHz path requires an external 12.288 MHz clock and PCM5102A.
+-- The `wave_sine.hex` relative path works in the Tcl build because the Tcl
+-  changes to the source root before `run all`. Gowin IDE direct synthesis may
+-  still report `Cannot open file 'rtl\audio\wave_sine.hex'`; fix this with a
+-  Gowin ROM IP or a project-local memory file before relying on IDE builds.
++- The generated Gowin project sets `-include_path` to `source/rtl/audio`.
++  `dds_osc.v` loads `wave_sine.hex` from that path, so both the Tcl build and
++  direct IDE synthesis keep the DDS/ADSR/voice logic instead of sweeping it.
++- `build.ps1` builds the normal `instrument.fs`; `build.ps1 -Gao` uses a
++  separate project and builds the GAO `ao_0.fs`.
+ 
+ ## Expansion Order
+ 
+ 1. Capture and verify the audio engine with GAO.
+-2. Fix the wavetable path so Gowin IDE direct synthesis is warning-free.
+-3. Add UART status output and an audio-activity LED.
+-4. Add MPR121 I2C and 12-key touch events.
+-5. Parameterize the voice module and expand to 4 voices.
+-6. Add MCP3208/FSR pressure and a second waveform.
+-7. Replace the PT8211 debug output with PCM5102A standard I2S after confirming
++2. Add UART status output and an audio-activity LED.
++3. Add MPR121 I2C and 12-key touch events.
++4. Parameterize the voice module and expand to 4 voices.
++5. Add MCP3208/FSR pressure and a second waveform.
++6. Replace the PT8211 debug output with PCM5102A standard I2S after confirming
+    a free 3.3 V GCLK pin on Dock 3714.
+ 
+ Do not start with 32 voices, reverb, Bluetooth, or a display.
+diff --git a/output/handoff_milestone2_20261008/source/build/README.md b/output/handoff_milestone2_20261008/source/build/README.md
+index f4dab01..2bcb19b 100644
+--- a/output/handoff_milestone2_20261008/source/build/README.md
++++ b/output/handoff_milestone2_20261008/source/build/README.md
+@@ -2,10 +2,12 @@
+ 
+ Scripts auto-detect Gowin installed under a top-level `Gowin*` directory on
+ `C:`, `D:`, or `E:`. If auto-detection fails, pass the executable path or set
+-`GOWIN_GW_SH` / `GOWIN_PROGRAMMER`.
++`GOWIN_GW_SH` / `GOWIN_PROGRAMMER` / `GOWIN_GAO_ANALYZER`.
+ 
+ ## Build
+ 
++Normal single-voice build:
++
+ ```powershell
+ powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\build.ps1'
+ ```
+@@ -18,6 +20,22 @@ Output:
+ ..\impl\pnr\instrument_tr_content.html
+ ```
+ 
++GAO debug build (separate Gowin project):
++
++```powershell
++powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\build.ps1' -Gao
++```
++
++Output:
++
++```text
++..\impl\pnr\ao_0.fs
++```
++
++Both generated projects set `-include_path` to `..\rtl\audio`, so
++`$readmemh("wave_sine.hex", ...)` works in Tcl and in direct Gowin IDE
++synthesis.
++
+ ## Scan JTAG
+ 
+ ```powershell
+@@ -26,8 +44,10 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\scan_jtag.ps1'
+ 
+ ## Program SRAM
+ 
+-Operation 4 means SRAM Program and Verify. SRAM configuration is lost on power
+-cycle, which is useful for the first listening test.
++Operation 2 means SRAM Program and is the required default on this board.
++Operation 4 (SRAM Program and Verify) fails readback verification with status
++code 0x00006020. SRAM configuration is lost on power cycle, which is useful
++for the first listening test.
+ 
+ ```powershell
+ powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\program_sram.ps1'
+@@ -37,4 +57,17 @@ To use a non-default cable:
+ 
+ ```powershell
+ .\program_sram.ps1 -Cable 'Gowin USB CableFT2CH'
+-```
+\ No newline at end of file
++```
++## Launch GAO
++
++The standalone analyzer needs its required `-family` and `-device` arguments.
++Use the wrapper so it opens with the project GAO configuration:
++
++```powershell
++powershell.exe -NoProfile -ExecutionPolicy Bypass -File '.\launch_gao.ps1'
++```
++
++If the board is already running the GAO bitstream, the analyzer can connect
++without reprogramming. Pass `-FsFile '..\impl\pnr\ao_0.fs'` only when the script
++should offer that bitstream for programming. The built-in Gowin IDE GAO flow
++remains available as a fallback.
+diff --git a/output/handoff_milestone2_20261008/source/build/build.ps1 b/output/handoff_milestone2_20261008/source/build/build.ps1
+index 205f1df..d959d56 100644
+--- a/output/handoff_milestone2_20261008/source/build/build.ps1
++++ b/output/handoff_milestone2_20261008/source/build/build.ps1
+@@ -1,5 +1,6 @@
+ param(
+-    [string]$GwSh = ''
++    [string]$GwSh = '',
++    [switch]$Gao
+ )
+ 
+ $ErrorActionPreference = 'Stop'
+@@ -32,5 +33,7 @@ if (-not (Test-Path -LiteralPath $tcl -PathType Leaf)) {
+ 
+ Write-Output "Project root: $ProjectRoot"
+ Write-Output "Gowin shell : $GwSh"
++Write-Output "Build mode  : $(if ($Gao) { 'GAO debug' } else { 'normal' })"
++if ($Gao) { $env:FPGA_BUILD_GAO = '1' } else { Remove-Item Env:FPGA_BUILD_GAO -ErrorAction SilentlyContinue }
+ & $GwSh $tcl
+-exit $LASTEXITCODE
+\ No newline at end of file
++exit $LASTEXITCODE
+diff --git a/output/handoff_milestone2_20261008/source/build/build_instrument.tcl b/output/handoff_milestone2_20261008/source/build/build_instrument.tcl
+index e243de4..a34ab3a 100644
+--- a/output/handoff_milestone2_20261008/source/build/build_instrument.tcl
++++ b/output/handoff_milestone2_20261008/source/build/build_instrument.tcl
+@@ -2,10 +2,26 @@
+ # Run with Gowin gw_sh.exe; this script never programs hardware.
+ set script_dir [file dirname [file normalize [info script]]]
+ set root [file normalize [file join $script_dir ..]]
+-set build_dir [file join $root build gowin_single_voice]
++set build_gao 0
++if {[info exists ::env(FPGA_BUILD_GAO)]} {
++    set build_gao $::env(FPGA_BUILD_GAO)
++}
++if {$build_gao eq "1"} {
++    set build_dir [file join $root build gowin_single_voice_gao]
++} else {
++    set build_dir [file join $root build gowin_single_voice]
++}
+ set project_dir [file join $build_dir instrument]
+-file mkdir $project_dir
+ set gprj_file [file join $project_dir instrument instrument.gprj]
++set wave_dir [file join $root rtl audio]
++set wave_hex [file join $wave_dir wave_sine.hex]
++set gao_config [file join $root rtl gao_top.rao]
++
++if {![file exists $wave_hex]} {
++    error "Wavetable initialization file not found: $wave_hex"
++}
++
++file mkdir $project_dir
+ 
+ if {![file exists $gprj_file]} {
+     create_project -name instrument -dir $project_dir -pn GW2A-LV18PG256C8/I7 -device_version C
+@@ -20,7 +36,25 @@ if {![file exists $gprj_file]} {
+     open_project $gprj_file -pn GW2A-LV18PG256C8/I7 -device_version C
+ }
+ 
++# Gowin resolves $readmemh relative to this include path during both Tcl and
++# IDE-driven synthesis. The same directory contains the one-cycle sine table.
+ set_option -top_module top
+ set_option -output_base_name instrument
++set_option -include_path $wave_dir
++
++# Keep normal and GAO builds in separate projects so the normal bitstream
++# remains reproducible. GAO is opt-in through build.ps1 -Gao.
++if {$build_gao eq "1"} {
++    if {![file exists $gao_config]} {
++        error "GAO configuration not found: $gao_config"
++    }
++    set fh [open $gprj_file r]
++    set gprj_text [read $fh]
++    close $fh
++    if {[string first "gao_top.rao" $gprj_text] < 0} {
++        add_file $gao_config
++    }
++}
++
+ cd $root
+ run all
+diff --git a/output/handoff_milestone2_20261008/source/build/launch_gao.ps1 b/output/handoff_milestone2_20261008/source/build/launch_gao.ps1
+new file mode 100644
+index 0000000..b07e4f0
+--- /dev/null
++++ b/output/handoff_milestone2_20261008/source/build/launch_gao.ps1
+@@ -0,0 +1,58 @@
++param(
++    [string]$GaoFile = '',
++    [string]$FsFile = '',
++    [string]$Family = 'GW2A',
++    [string]$Device = 'GW2A-18C',
++    [string]$Analyzer = ''
++)
++
++$ErrorActionPreference = 'Stop'
++$projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
++
++if (-not $GaoFile) {
++    $GaoFile = Join-Path $projectRoot 'rtl\gao_top.rao'
++}
++if (-not (Test-Path -LiteralPath $GaoFile -PathType Leaf)) {
++    throw "GAO configuration not found: $GaoFile"
++}
++$gao = (Resolve-Path -LiteralPath $GaoFile).Path
++
++if ($FsFile) {
++    if (-not (Test-Path -LiteralPath $FsFile -PathType Leaf)) {
++        throw "Bitstream not found: $FsFile"
++    }
++    $FsFile = (Resolve-Path -LiteralPath $FsFile).Path
++}
++
++if (-not $Analyzer) { $Analyzer = $env:GOWIN_GAO_ANALYZER }
++if (-not $Analyzer) {
++    $candidates = @()
++    foreach ($drive in @('C:\', 'D:\', 'E:\')) {
++        $gowinDirs = Get-ChildItem -LiteralPath $drive -ErrorAction SilentlyContinue |
++            Where-Object { $_.PSIsContainer -and ($_.Name -match 'Gowin') }
++        foreach ($dir in $gowinDirs) {
++            $candidates += Get-ChildItem -LiteralPath $dir.FullName -Recurse -Filter 'gao_analyzer.exe' -ErrorAction SilentlyContinue |
++                Where-Object { -not $_.PSIsContainer }
++        }
++    }
++    $match = $candidates | Select-Object -First 1
++    if ($match) { $Analyzer = $match.FullName }
++}
++
++if (-not $Analyzer -or -not (Test-Path -LiteralPath $Analyzer -PathType Leaf)) {
++    throw "gao_analyzer.exe not found. Pass -Analyzer or set GOWIN_GAO_ANALYZER."
++}
++
++$analyzerArgs = @('-gao', "`"$gao`"", '-family', $Family, '-device', $Device)
++if ($FsFile) {
++    $analyzerArgs += @('-fs', "`"$FsFile`"")
++}
++
++Write-Output "GAO analyzer : $Analyzer"
++Write-Output "GAO config   : $gao"
++Write-Output "Family/device: $Family / $Device"
++if ($FsFile) { Write-Output "Bitstream    : $FsFile" }
++
++$process = Start-Process -FilePath $Analyzer -ArgumentList $analyzerArgs `
++    -WorkingDirectory (Split-Path -Parent $Analyzer) -PassThru
++Write-Output "GAO process  : $($process.Id)"
+diff --git a/output/handoff_milestone2_20261008/source/build/program_sram.ps1 b/output/handoff_milestone2_20261008/source/build/program_sram.ps1
+index 5bb06fa..8b270c7 100644
+--- a/output/handoff_milestone2_20261008/source/build/program_sram.ps1
++++ b/output/handoff_milestone2_20261008/source/build/program_sram.ps1
+@@ -1,7 +1,7 @@
+ param(
+     [string]$FsFile = '',
+     [string]$Device = 'GW2A-18C',
+-    [int]$Operation = 4,
++    [int]$Operation = 2,
+     [string]$Programmer = '',
+     [string]$Cable = ''
+ )
+@@ -55,4 +55,4 @@ Write-Output "Device     : $Device"
+ Write-Output "Operation  : $Operation"
+ Write-Output "Bitstream  : $fs"
+ & $Programmer @programArgs
+-exit $LASTEXITCODE
+\ No newline at end of file
++exit $LASTEXITCODE
+diff --git a/output/handoff_milestone2_20261008/source/rtl/README.md b/output/handoff_milestone2_20261008/source/rtl/README.md
+index c0b1c12..de04d4c 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/README.md
++++ b/output/handoff_milestone2_20261008/source/rtl/README.md
+@@ -9,3 +9,6 @@ Current milestone: `top.v`
+ 
+ The first build is intentionally limited to one DDS voice with a repeating ADSR
+ gate. It does not yet contain touch, ADC, PCM5102A, or multi-voice mixing logic.
++The build adds `rtl/audio` as the synthesizer include path. `dds_osc.v` therefore
++loads `wave_sine.hex` with `$readmemh("wave_sine.hex", ...)` in both
++Gowin IDE and Tcl builds.
+diff --git a/output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v b/output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v
+index dbc43d3..2b953b7 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v
++++ b/output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v
+@@ -13,7 +13,7 @@ module dds_osc (
+     wire [8:0] wave_addr = phase[31:23];
+ 
+     initial begin
+-        $readmemh("rtl/audio/wave_sine.hex", wave_rom);
++        $readmemh("wave_sine.hex", wave_rom);
+     end
+ 
+     always @(posedge clk) begin

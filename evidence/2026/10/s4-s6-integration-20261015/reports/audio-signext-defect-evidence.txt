@@ -1,0 +1,32 @@
+整合顶层音频复核：19 位累加器符号丢失缺陷的前后证据（2026-10-15）
+================================================================
+
+缺陷：shared_wavetable_engine.v 用 {13'd0, scaled_s} 把 16 位有符号样值拼进 19 位
+累加器。拼接结果是无符号的，$signed() 也无法还原符号，于是 -20840 变成 +44744。
+
+【缺陷态（修复前）共享引擎顶层】
+逐拍探针：state=ST_ACC 时 sine_acc=44696 = -20840 的无符号回绕。
+tb_audio_capture 抓取后的独立分析（tools/analyze_audio_capture.py）：
+  a4_steady : 直流 +16311，RMS 11293，谱峰 440/1320/2200/3080 Hz（方波状谐波）
+  chord4    : 直流 +32013，RMS 3097，四个基频 875.6 / 928.9 / 895.4 / 870.2 LSB
+  S1 验收判据（chord4 各held 基频幅度 >= 1000 LSB）-> FAIL: Missing held fundamental 60 in chord4
+注：门禁 tb_shared_engine 当时 15 用例全绿，因为它的参考模型写成
+    ref_sine_sum = {13'd0, voice_out(...)} + ... ，与引擎犯了同一个错误，
+    两个错误互相抵消，测试因此对缺陷不敏感。
+
+【A/B 对照：逐声部顶层（HEAD b146bbc 的 top.v，poly_voice_s6 x4 + mixer_s6）】
+  a4_steady : 直流 +1，   RMS 5670.4，基频 7958.9 LSB，峰值 7730
+  chord4    : 直流 -45，  RMS 11251，四个基频 7966.3 / 7944.4 / 7975.1 / 7968.7 LSB
+  S1 验收 -> PASS
+  => 缺陷是共享引擎引入的，不是产品通路原有的。
+
+【修复后】shared_wavetable_engine.v 显式符号扩展 scaled_s_ext / scaled_b_ext；
+tb_shared_engine.v 参考侧同步加 ext19()；变异验证：修复后引擎 PASS，
+                把引擎换回 HEAD 版本则 FAIL（sine_sum=102472 vs ref=-28600）。
+  共享引擎顶层 a4_steady : 直流 ~0，RMS 5670.4，基频 7958.9 LSB，峰值 7731
+  共享引擎顶层 chord4    : 四个基频 7966.4 / 7944.6 / 7974.7 / 7968.1 LSB，峰值 30372
+  S1 验收 -> PASS（440.000000 Hz，误差 2.9e-7 Hz，58880 帧，残差 688 LSB）
+  => 与逐声部顶层逐值一致（差 <= 1 LSB）。
+
+复现：tools/analyze_audio_capture.py --capture tmp/audio_capture/audio_capture.csv
+      --manifest tmp/audio_capture/capture_manifest.csv --output-dir <dir>

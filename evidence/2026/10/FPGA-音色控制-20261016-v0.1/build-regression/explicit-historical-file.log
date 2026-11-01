@@ -1,0 +1,6 @@
+=== 仿真门禁 ===
+WARNING: Explicit -FsFile selected; confirm its audio profile and physical wiring.
+Programmer : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792151036892397300\mock-programmer.ps1
+Device     : GW2A-18C
+Operation  : 2
+Bitstream  : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792151036892397300\fixture\source\impl\pnr\instrument.fs

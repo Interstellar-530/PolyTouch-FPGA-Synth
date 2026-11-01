@@ -1,0 +1,4 @@
+﻿TIMEOUT_TRACE policy=0 held=0 pedal=1 clear=1 deferred=1 gate=1
+PASS FSR_IDLE_TIMEOUT policy=0: actual watchdog, real top/CDC/32 voices, stable pedal and deliberate release
+sim\tb_fsr_idle_timeout.v:69: $finish called at 4074513342 (1ps)
+

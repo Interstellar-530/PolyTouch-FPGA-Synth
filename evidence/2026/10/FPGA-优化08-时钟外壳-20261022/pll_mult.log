@@ -1,0 +1,5 @@
+﻿METRIC mult4 period_ns=20.344375 fmax=49.154MHz ratio_edges=1024
+METRIC mult6 period_ns=13.564000 fmax=73.725MHz ratio_edges=1536
+METRIC mult8 period_ns=10.172000 fmax=98.309MHz ratio_edges=2048
+PASS tb_audio_pll_mult: 4x/6x/8x ratios, periods and domain reset release
+sim\tb_audio_pll_mult.v:53: $finish called at 270147822 (1ps)

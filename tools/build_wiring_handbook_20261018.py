@@ -14,9 +14,9 @@ import pypandoc
 ROOT = Path(__file__).resolve().parents[1]
 DOC = ROOT / 'docs/hardware/FPGA-逐根接线手册-20261018-v0.1.md'
 CHECKLIST = DOC.with_name('FPGA-逐根接线核对单-20261018-v0.1.md')
-PDF = ROOT / 'output/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf'
-EVIDENCE = ROOT / 'docs/evidence/FPGA-接线复核-20261018-v0.1'
-SOURCE = ROOT / 'output/handoff_milestone2_20261008/source'
+PDF = ROOT / 'docs/exports/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf'
+EVIDENCE = ROOT / 'evidence/2026/10/FPGA-接线复核-20261018-v0.1'
+SOURCE = ROOT / 'source'
 
 # Connector-to-ball map read from the rendered Dock3714 PDF pages 1/4/9.
 HEADERS = {

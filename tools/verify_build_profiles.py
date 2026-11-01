@@ -15,9 +15,9 @@ def main():
     parser.add_argument('--setup-only',action='store_true',help='only real project setup and RTL elaboration for both profiles')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    source = root/'output/handoff_milestone2_20261008/source'
+    source = root/'source'
     work = root/'tmp/build-profiles-verification-20261016'/str(time.time_ns())
-    out = args.out or root/'docs/evidence/FPGA-构建入口-20261016-v0.1'
+    out = args.out or root/'evidence/2026/10/FPGA-构建入口-20261016-v0.1'
     work.mkdir(parents=True, exist_ok=True)
     out.mkdir(parents=True, exist_ok=True)
     rows = []

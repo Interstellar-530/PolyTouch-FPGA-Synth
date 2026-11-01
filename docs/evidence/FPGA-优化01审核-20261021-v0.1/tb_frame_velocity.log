@@ -1,2 +1,0 @@
-PASS tb_frame_velocity: event offsets=76 checked_frames=152; current frame holds old velocity, next frame adopts new velocity
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_frame_velocity.v:34: $finish called at 141360000 (1ps)

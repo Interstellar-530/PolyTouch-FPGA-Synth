@@ -1,0 +1,23 @@
+[
+  {
+    "variant": "optimized",
+    "exit": 0,
+    "reports": [
+      "E:\\Working Space\\FPGA\\tmp\\timbre-resource-20261016\\optimized\\1792150908414190700\\instrument\\impl\\gwsynthesis\\instrument_syn.rpt.html"
+    ]
+  },
+  {
+    "variant": "single_wide",
+    "exit": 0,
+    "reports": [
+      "E:\\Working Space\\FPGA\\tmp\\timbre-resource-20261016\\single_wide\\1792150923704111500\\instrument\\impl\\gwsynthesis\\instrument_syn.rpt.html"
+    ]
+  },
+  {
+    "variant": "two_multiply",
+    "exit": 0,
+    "reports": [
+      "E:\\Working Space\\FPGA\\tmp\\timbre-resource-20261016\\two_multiply\\1792150938570644000\\instrument\\impl\\gwsynthesis\\instrument_syn.rpt.html"
+    ]
+  }
+]

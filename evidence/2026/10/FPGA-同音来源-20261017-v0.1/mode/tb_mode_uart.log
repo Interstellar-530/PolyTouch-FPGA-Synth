@@ -1,0 +1,2 @@
+PASS tb_mode_uart: manual priority, demo restart, panic, invalid commands
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_mode_uart.v:102: $finish called at 8745801459 (1ps)

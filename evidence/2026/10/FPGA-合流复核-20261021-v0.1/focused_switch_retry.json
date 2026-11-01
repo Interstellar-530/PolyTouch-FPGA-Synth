@@ -1,0 +1,16 @@
+{
+  "checks": [
+    {
+      "check": "tb_top_switch_smoke-compile",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_top_switch_smoke",
+      "exit": 0,
+      "passed": true,
+      "scope": "all original assertions; each 1500-frame wait reduced to 16; no long audio claim"
+    }
+  ],
+  "passed": true
+}

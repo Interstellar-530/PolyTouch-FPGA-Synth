@@ -46,11 +46,11 @@ async def main(build=False):
         bitstream = ROOT / "tmp/gowin_smoke/impl/pnr/mcp_smoke.fs"
         report["build_bitstream_exists"] = bitstream.is_file()
         report["passed"] = report["passed"] and bitstream.is_file() and "ERROR" not in report["checks"]["build"]["output"]
-    out = ROOT / "docs/evidence/gowin-mcp-smoke.json"
+    out = ROOT / "evidence/2026/10/gowin-mcp-smoke.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if not report["passed"]:
-        raise SystemExit("Gowin MCP smoke check failed; inspect docs/evidence/gowin-mcp-smoke.json")
+        raise SystemExit("Gowin MCP smoke check failed; inspect evidence/2026/10/gowin-mcp-smoke.json")
 
 
 if __name__ == "__main__":

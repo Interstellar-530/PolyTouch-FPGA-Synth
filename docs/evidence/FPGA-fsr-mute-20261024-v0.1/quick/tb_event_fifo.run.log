@@ -1,3 +1,0 @@
-PASS tb_event_fifo: full, simultaneous read/write, order and clear
-sim\tb_event_fifo.v:42: $finish called at 370000 (1ps)
-

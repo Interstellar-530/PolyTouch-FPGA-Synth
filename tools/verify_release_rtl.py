@@ -11,7 +11,7 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "output/handoff_milestone2_20261008/source/"
+SOURCE = "source/"
 TOKEN = re.compile(
     r"(?:\d+)?'[sS]?[bBoOdDhH][0-9a-fA-F_xXzZ?]+|"
     r"'(?:0|1|x|z)|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|"

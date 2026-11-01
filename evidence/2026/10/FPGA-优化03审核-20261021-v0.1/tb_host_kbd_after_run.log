@@ -1,0 +1,2 @@
+PASS tb_host_kbd: press/release, dedup, chord, transpose-held, Esc, F1, resync, rollover
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_host_kbd.v:217: $finish called at 63565078575 (1ps)

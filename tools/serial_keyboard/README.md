@@ -27,7 +27,7 @@ powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\tools\serial_keyb
 
 板载 S1 短按松开切伴奏，长按切下一档音色，持续按住不连发。长按计时从 20 ms 消抖成立后开始，门限为 600 ms。切换后一秒内，两颗速度 LED 暂时显示音色编号 00/01/10/11，然后恢复速度。S2 保持速度功能；S3 保留所选音色。现有 USB 线和板载按键即可操作，无新增硬件。
 
-离屏布局复现可用 Windows PowerShell 5.1 执行 render_preview.ps1 -OutputPath '<完整PNG路径>'，不会连接串口。音色自检和资源报告见 docs/evidence/FPGA-音色控制-20261016-v0.1。
+离屏布局复现可用 Windows PowerShell 5.1 执行 render_preview.ps1 -OutputPath '<完整PNG路径>'，不会连接串口。音色自检和资源报告见 evidence/2026/10/FPGA-音色控制-20261016-v0.1。
 
 
 **音量**：**↑/↓** 每步 5%，发送 `V0`–`V100`；100 为原始电平，50 约 −12 dB，0 静音。状态栏显示当前百分比。

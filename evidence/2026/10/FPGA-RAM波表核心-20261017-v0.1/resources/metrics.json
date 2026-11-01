@@ -1,0 +1,80 @@
+[
+  {
+    "variant": "voices8",
+    "logic": 972,
+    "registers": 525,
+    "bsram": 5,
+    "mult18x18": 2,
+    "multalu36x18": 0,
+    "multaddalu18x18": 0,
+    "mult36x36": 0,
+    "alu54d": 0,
+    "dsp_macro_equivalent": 1.0,
+    "voices": 8,
+    "lanes": 1,
+    "cycles": 216,
+    "period": 256,
+    "scope": "oscillator compute prototype; no event/ADSR/I2S/PLL integration",
+    "timing": {
+      "scope": "pre-route synthesis estimate; default 10 ns constraint; not routed timing",
+      "slack_ns": -1.317,
+      "arrival_ns": 11.642,
+      "required_ns": 10.325,
+      "start": "lane[0].u_core/u_multiplier/u_low",
+      "end": "lane[0].u_core/mul_a_14_s1",
+      "logic_levels": 13
+    }
+  },
+  {
+    "variant": "voices32",
+    "logic": 969,
+    "registers": 527,
+    "bsram": 5,
+    "mult18x18": 2,
+    "multalu36x18": 0,
+    "multaddalu18x18": 0,
+    "mult36x36": 0,
+    "alu54d": 0,
+    "dsp_macro_equivalent": 1.0,
+    "voices": 32,
+    "lanes": 1,
+    "cycles": 864,
+    "period": 1024,
+    "scope": "oscillator compute prototype; no event/ADSR/I2S/PLL integration",
+    "timing": {
+      "scope": "pre-route synthesis estimate; default 10 ns constraint; not routed timing",
+      "slack_ns": -1.246,
+      "arrival_ns": 11.571,
+      "required_ns": 10.325,
+      "start": "lane[0].u_core/u_multiplier/u_high",
+      "end": "lane[0].u_core/mul_a_32_s1",
+      "logic_levels": 13
+    }
+  },
+  {
+    "variant": "voices64",
+    "logic": 1994,
+    "registers": 1053,
+    "bsram": 10,
+    "mult18x18": 4,
+    "multalu36x18": 0,
+    "multaddalu18x18": 0,
+    "mult36x36": 0,
+    "alu54d": 0,
+    "dsp_macro_equivalent": 2.0,
+    "voices": 64,
+    "lanes": 2,
+    "cycles": 864,
+    "period": 1024,
+    "scope": "oscillator compute prototype; no event/ADSR/I2S/PLL integration",
+    "timing": {
+      "scope": "pre-route synthesis estimate; default 10 ns constraint; not routed timing",
+      "slack_ns": -1.3,
+      "arrival_ns": 11.625,
+      "required_ns": 10.325,
+      "start": "lane[0].u_core/u_multiplier/u_low",
+      "end": "lane[0].u_core/mul_a_22_s1",
+      "logic_levels": 13
+    }
+  }
+]

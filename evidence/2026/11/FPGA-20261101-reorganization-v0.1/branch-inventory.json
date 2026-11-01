@@ -1,0 +1,89 @@
+[
+  {
+    "ref": "origin/codex/guitar-preview-ddr3-20261020",
+    "commit": "881a11cc1e2024e297c343e2345173613e0339f5",
+    "timestamp": "2026-10-22T22:50:45+08:00",
+    "unique_commits": [
+      "da76aa34ddabc51505dde5b116bce9c4c6ff7afe",
+      "881a11cc1e2024e297c343e2345173613e0339f5"
+    ]
+  },
+  {
+    "ref": "origin/codex/hdmi-dashboard-20261025",
+    "commit": "a234c70c9a809f3d12cd00fc9cfb6b304224df33",
+    "timestamp": "2026-10-27T23:08:10+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/codex/optimization07-watchdog-20261022",
+    "commit": "8e77ddebd23a8586a29acc5eaf006b943d49bdbf",
+    "timestamp": "2026-10-22T12:01:21+08:00",
+    "unique_commits": [
+      "4536e0779c20a20023ec65749e5baa85d5a305d3",
+      "8e77ddebd23a8586a29acc5eaf006b943d49bdbf"
+    ]
+  },
+  {
+    "ref": "origin/codex/s2-gpio-keyboard",
+    "commit": "dd43257888d99236bed5951eba33aee1f2874ba0",
+    "timestamp": "2026-10-14T16:57:46+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/codex/s3-i2s-tx",
+    "commit": "17aff2da4a0b9d912bb24dccea8e4b98efe3fb09",
+    "timestamp": "2026-10-14T20:45:00+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/codex/s4-s6-integration",
+    "commit": "40ef0128dadffdcbae221b79e7ee1bac11cf9ef0",
+    "timestamp": "2026-10-16T00:29:54+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/codex/s4-s6-pressure",
+    "commit": "6751f6dc65c5a301af3aab8187ec3d4aaeb7d219",
+    "timestamp": "2026-10-21T20:20:36+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/codex/s4-s6-review",
+    "commit": "36ea1e4a72bd9d9c18a5f04e790b3564a3456616",
+    "timestamp": "2026-10-15T19:36:13+08:00",
+    "unique_commits": [
+      "3a31eb288ae400830a18fdcde96350ac03c1bb07",
+      "908f9f54ce49677356ea0ec4ee087e23e62c73ba",
+      "725bf58fa6387e2aadbecb71b19ea5a62ecebdeb",
+      "8370546b466eb9f2549c3827b6fa557b923aa849",
+      "46db7bd94770135fde82d8215c6ef7549f8a7c81",
+      "36ea1e4a72bd9d9c18a5f04e790b3564a3456616"
+    ]
+  },
+  {
+    "ref": "origin/codex/v2-gate-fix-20261021",
+    "commit": "f7052fbe951e56d9839e179d14682c28ce714b05",
+    "timestamp": "2026-10-21T20:31:29+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/codex/v2.1.1-integration-20261022",
+    "commit": "efd76ea14bab93521604819756410898eb0bc8af",
+    "timestamp": "2026-10-30T17:35:39+08:00",
+    "unique_commits": []
+  },
+  {
+    "ref": "origin/fix/m2-build-issues",
+    "commit": "3a31eb288ae400830a18fdcde96350ac03c1bb07",
+    "timestamp": "2026-10-08T21:45:29+08:00",
+    "unique_commits": [
+      "3a31eb288ae400830a18fdcde96350ac03c1bb07"
+    ]
+  },
+  {
+    "ref": "origin/main",
+    "commit": "6751f6dc65c5a301af3aab8187ec3d4aaeb7d219",
+    "timestamp": "2026-10-21T20:20:36+08:00",
+    "unique_commits": []
+  }
+]

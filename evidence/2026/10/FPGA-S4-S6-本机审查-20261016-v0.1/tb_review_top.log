@@ -1,0 +1,6 @@
+METRIC key_edge_to_first_internal_nonzero_us=1048.541
+FINDING pressure_raw=0 versus 4095: compared=512 different_audio_frames=0 nonzero_frames=512 filtered=0/4094
+METRIC ADC transaction_spacing_cycles=6144 per_channel_hz=1000 control_hz=2000
+FINDING soft_reset bend_raw=4095 pressure_raw=0 adc_sel=1
+PASS tb_review_top: missing FSR audio route reproduced; ADC polling and reset observations captured
+E:\Working Space\FPGA\docs\evidence\FPGA-S4-S6-±¾»úÉó²é-20261016-v0.1\tb_review_top.v:49: $finish called at 39499859190 (1ps)

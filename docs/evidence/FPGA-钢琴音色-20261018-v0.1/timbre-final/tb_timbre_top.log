@@ -1,3 +1,0 @@
-METRIC top_timbre frames=1261 audible=1181 phase_checks=1124 full_sweep_ns=5294981 full_pipeline_cycles=114 shared_products=42
-PASS tb_timbre_top: real UART, four held voices, continuous phases, real I2S, long press and overlay
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_timbre_top.v:83: $finish called at 31604977370 (1ps)

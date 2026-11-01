@@ -1,0 +1,2 @@
+PASS tb_piano_envelope: onset latches mode, held note decays, release returns idle
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_piano_envelope.v:77: $finish called at 2350000 (1ps)

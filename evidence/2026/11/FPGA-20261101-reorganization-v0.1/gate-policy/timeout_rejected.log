@@ -1,0 +1,5 @@
+Gate Custom: 1/105 positive benches; logs: E:\Working Space\FPGA\tmp\reorganization-20261101\gate-policy\metrics
+=== tb_tick_rate ===
+
+tb_tick_rate: pass=False, seconds=1.50
+仿真门禁未通过，1 个测试台失败，禁止烧录。

@@ -25,7 +25,7 @@
 
 当前 `ram32_top.v` 仍把单个 `clk` 同时提供给计算与 I2S，内部固定为 49.152MHz。它尚未接入上述 PLL 外壳。旧 `ram_audio_clocked.v` 使用通用 `ram_audio_compute`，也不能直接当作双音色 32 路最终顶层。后续应组合已经验证过的模块，而不是恢复旧探针里的声部规模和旧音色实现。
 
-本节数值来自已有[发布前集成补审](../reviews/FPGA-发布前集成补审-20261021-v0.1.md)、[当前原型时序报告](../evidence/FPGA-发布前补审-20261021-v0.1/build_reports/ram32_tr_content.html)和[旧 PLL 探针摘要](../evidence/FPGA-PLL时钟-20261017-v0.1/pnr/timing-summary.json)。本次只核对记录与代码，没有重复综合。
+本节数值来自已有[发布前集成补审](../reviews/FPGA-发布前集成补审-20261021-v0.1.md)、[当前原型时序报告](../../evidence/2026/10/FPGA-发布前补审-20261021-v0.1/build_reports/ram32_tr_content.html)和[旧 PLL 探针摘要](../../evidence/2026/10/FPGA-PLL时钟-20261017-v0.1/pnr/timing-summary.json)。本次只核对记录与代码，没有重复综合。
 
 ## 3. 倍频档位和实际收益
 

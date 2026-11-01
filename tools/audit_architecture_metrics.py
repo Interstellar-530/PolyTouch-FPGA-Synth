@@ -4,8 +4,8 @@ import json,math
 import numpy as np
 
 def main():
-    root=Path(__file__).resolve().parents[1];source=root/'output/handoff_milestone2_20261008/source'
-    out=root/'docs/evidence/FPGA-架构优化-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
+    root=Path(__file__).resolve().parents[1];source=root/'source'
+    out=root/'evidence/2026/10/FPGA-架构优化-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
     waves=[]
     for name in ['wave_sine.hex','wave_bright.hex']:
         values=np.array([int(x,16) for x in (source/'rtl/audio'/name).read_text().split()],dtype=np.int64)

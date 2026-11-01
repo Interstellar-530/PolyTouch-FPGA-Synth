@@ -6,10 +6,10 @@ import numpy as np
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
     root=Path(__file__).resolve().parents[1]
-    source=root/'output/handoff_milestone2_20261008/source'
+    source=root/'source'
     work=root/'tmp/timbre-verification-20261016';work.mkdir(parents=True,exist_ok=True)
     parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('tests',nargs='*');args=parser.parse_args()
-    out=args.out or root/'docs/evidence/FPGA-音色控制-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
+    out=args.out or root/'evidence/2026/10/FPGA-音色控制-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
     tests=['tb_timbre_controls','tb_timbre_audio','tb_timbre_uart','tb_timbre_top','tb_mode_uart','tb_poly','tb_pressure_top','tb_top_i2s']
     # Arguments optionally narrow the run for repairs, preserving other rows.
     only=args.tests

@@ -1,2 +1,0 @@
-PASS tb_split_audio_multiplier: 32768 events each for widths24/33/35; signed extrema, low-limb sign boundaries, CE holds, resets
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_split_audio_multiplier.v:32: $finish called at 327690000 (1ps)

@@ -1,0 +1,51 @@
+{
+  "phase": "after",
+  "checks": [
+    {
+      "check": "scheduler_compile",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "scheduler_case1",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "scheduler_case2",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "scheduler_case3",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "scheduler_case4",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "complete_compile",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "complete_run",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "full_gate": false,
+  "hardware_programmed": false,
+  "scheduler_sha256": "67994ee961fdfda360285b4e09ac4732474b3119fc966fbbd7f5863e23b9481d"
+}

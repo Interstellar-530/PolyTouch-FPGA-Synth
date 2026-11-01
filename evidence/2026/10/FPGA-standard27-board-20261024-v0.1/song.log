@@ -1,0 +1,15 @@
+Gate Custom: 2/82 positive benches; logs: E:\Working Space\FPGA\docs\evidence\FPGA-standard27-board-20261024-v0.1\song
+=== tb_song_timing ===
+expecting pass = 320 units x 97 samples x 1 = 31040 ticks, 256 note events
+pass 1 complete at tick 117, delta 117, note ons 0
+pass 2 complete at tick 31157, delta 31040, note ons 256
+PASS tb_song_timing: pass = 31040 ticks, 256 note events
+sim\tb_song_timing.v:113: $finish called at 311575000 (1ps)
+
+tb_song_timing: pass=True, seconds=0.25
+=== tb_song_backpressure ===
+PASS tb_song_backpressure: event held and burst drained
+sim\tb_song_backpressure.v:29: $finish called at 445000 (1ps)
+
+tb_song_backpressure: pass=True, seconds=0.16
+PASS Custom: 2 checks, 0.95s. Full regression=False. Evidence: E:\Working Space\FPGA\docs\evidence\FPGA-standard27-board-20261024-v0.1\song

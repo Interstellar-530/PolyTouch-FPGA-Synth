@@ -5,7 +5,7 @@
 # installation. Logs every line to tools/serial_console/serial_log.txt.
 #
 # Quick buttons match the v0.4 firmware protocol in
-# output/handoff_milestone2_20261008/source/rtl/audio/uart_pitch.v:
+# source/rtl/audio/uart_pitch.v:
 #   F440 -> set pitch to 440 Hz,  M0 -> digital mute,  M1 -> unmute
 
 Add-Type -AssemblyName System.Windows.Forms

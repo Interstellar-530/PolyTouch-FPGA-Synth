@@ -13,7 +13,7 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    source = root / 'output/handoff_milestone2_20261008/source'
+    source = root / 'source'
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
     rows = []

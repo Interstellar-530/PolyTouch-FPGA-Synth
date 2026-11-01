@@ -74,8 +74,8 @@ def validate(path: Path, samples: list[int], digest: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sine", type=Path, default=Path("output/handoff_milestone2_20261008/source/rtl/audio/wave_sine.hex"))
-    parser.add_argument("--bright", type=Path, default=Path("output/handoff_milestone2_20261008/source/rtl/audio/wave_bright.hex"))
+    parser.add_argument("--sine", type=Path, default=Path("source/rtl/audio/wave_sine.hex"))
+    parser.add_argument("--bright", type=Path, default=Path("source/rtl/audio/wave_bright.hex"))
     parser.add_argument("--harmonics", type=int, default=16)
     args = parser.parse_args()
 

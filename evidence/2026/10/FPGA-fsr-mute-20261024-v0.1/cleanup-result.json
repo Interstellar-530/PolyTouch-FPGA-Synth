@@ -1,0 +1,12 @@
+{
+  "removed": [
+    "E:\\Working Space\\FPGA\\tmp\\fsr-mute-20261024-tests",
+    "E:\\Working Space\\FPGA\\tmp\\fsr-mute-20261024-capture",
+    "E:\\Working Space\\FPGA\\tmp\\gate-Quick-20261024-153116-427",
+    "E:\\Working Space\\FPGA\\archive\\FPGA-20261024-v0.4\\source\\tools\\__pycache__",
+    "E:\\Working Space\\FPGA\\archive\\FPGA-20261024-v0.4\\source\\tools\\offline_opt\\a\\__pycache__"
+  ],
+  "count": 5,
+  "utc": "2026-10-24T07:35:25.5201248Z",
+  "preserved": "Successful production build, original tool caches and external runtimes"
+}

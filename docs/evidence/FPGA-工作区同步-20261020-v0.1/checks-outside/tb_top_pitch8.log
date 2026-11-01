@@ -1,3 +1,0 @@
-INFO tb_top_pitch8: A4 sine period=106.43 (expect 106.53), crossings=24, inc=40315424
-PASS tb_top_pitch8
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_top_pitch8.v:86: $finish called at 56517487935 (1ps)

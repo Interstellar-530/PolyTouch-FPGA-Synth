@@ -1,0 +1,2 @@
+PASS tb_timbre_uart: all 256 values, mixed case, CRLF once, 5 format/range checks, independent note/mode path
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_timbre_uart.v:35: $finish called at 3160040000 (1ps)

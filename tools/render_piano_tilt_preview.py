@@ -7,7 +7,7 @@ import soundfile as sf
 from render_piano_test_audio import FS, load_tables, render_note
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'docs/evidence/FPGA-钢琴音色-20261018-v0.1'
+OUT = ROOT / 'evidence/2026/10/FPGA-钢琴音色-20261018-v0.1'
 TARGETS = {
     'original': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     'natural':  [0, -9, -15, -20, -25, -30, -35, -40, -45, -50],

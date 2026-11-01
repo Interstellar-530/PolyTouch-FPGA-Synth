@@ -3,7 +3,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-AUDIO = ROOT / "output/handoff_milestone2_20261008/source/rtl/audio"
+AUDIO = ROOT / "source/rtl/audio"
 FILES = ["wave_bright_h16.hex", "wave_bright_h8.hex", "wave_bright_h4.hex",
          "wave_bright_h2.hex", "wave_bright_h1.hex", "wave_bright.hex"]
 DEPTH = 512

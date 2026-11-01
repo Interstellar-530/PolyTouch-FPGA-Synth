@@ -1,3 +1,0 @@
-PASS tb_adsr: attack/decay/sustain note-off, release and retrigger
-sim\tb_adsr.v:93: $finish called at 516000 (1ps)
-

@@ -1,0 +1,159 @@
+﻿{
+    "inputs":  [
+                   {
+                       "sha256":  "925F31E58AC94C5C7E4C8D91D2E5E1266FDF63CB752A52D84334B4C898F5B914",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/adsr.v"
+                   },
+                   {
+                       "sha256":  "C60ABB48D44D8BC530C328789405BF24FD6579DCF598A4820E8DB4F02C33AF7F",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/dds_osc.v"
+                   },
+                   {
+                       "sha256":  "51C2FBF11416B6C78175B2665E07E7EBA8BE346E8C790470BEB1EA26E27E9EA6",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/event_fifo.v"
+                   },
+                   {
+                       "sha256":  "1CBCF735676764ED8A09F4555B7AF4F74DF48750A5483DC7AAB8D8A2503A21D9",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/gpio_keyboard.v"
+                   },
+                   {
+                       "sha256":  "EC7EF60F9567625D66001E8B29A34B6FBDEFBC9B50F3E16B8970069AC219F925",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/mixer.v"
+                   },
+                   {
+                       "sha256":  "A9B6B74F86C2B15DED375DEBA7641B0E9897B95900534252D8C7451939DC5372",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/note_phase_inc.v"
+                   },
+                   {
+                       "sha256":  "56F6EF6B63A0873F8F4C8CA2779D0075DCA6B00B9AC5E23056E66DC8D9E47898",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/poly_voice.v"
+                   },
+                   {
+                       "sha256":  "890B901343CFEEFE50B9AF9BC1BAE4D55A67C938DBB4A1D369A908C8FBFFFBC3",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/pt8211_tx.v"
+                   },
+                   {
+                       "sha256":  "5CB63B34641CAC30682C891D1884EAC34C0007BEC750685A779C26707BFC1B4C",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/song_expect.vh"
+                   },
+                   {
+                       "sha256":  "81A2BC7DA113FC34D873E50137D4A5F60BA85CF9356F4426119B631415FDD5AC",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/song_player.v"
+                   },
+                   {
+                       "sha256":  "FADA8874AA9D8539821FB6EB2FBD1C73DCBAC50ACD96F3145C0942D50D96669A",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/song_roms.vh"
+                   },
+                   {
+                       "sha256":  "517F1AB47C379071B799E96ABB89C830F742CAC379F68213C740D54303BA779C",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/uart_ctrl.v"
+                   },
+                   {
+                       "sha256":  "1F73085C2238BED4AB98B85D2A90C04C1D0AA787E87A0606B34D263AE7A60C17",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/voice_alloc.v"
+                   },
+                   {
+                       "sha256":  "E38C68EECBC0F8CF7A09B3B988EB6AD9418F4A2A075031476EB6136E8D45CA08",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/audio/wave_sine.hex"
+                   },
+                   {
+                       "sha256":  "4DF379DD8227DBA50CB50EAD251D3E64773EDCF866A110C590ED96C4A54EA1E6",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/gao_top.rao"
+                   },
+                   {
+                       "sha256":  "6A462EDB445746465EA08FB3E21FDDEBA450F0B2C1AB82260E101FF7664CB992",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/README.md"
+                   },
+                   {
+                       "sha256":  "7A341861899BC08FF125E4CDD9717FCFA35A4713409E89ADFEF9CBAC091A37D1",
+                       "path":  "output/handoff_milestone2_20261008/source/rtl/top.v"
+                   },
+                   {
+                       "sha256":  "3D86FFA3E1AB57BF5EBA27482D05550F3B280D42D33DF4C5E0EB58CE13FDBC1B",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/run_simulation.ps1"
+                   },
+                   {
+                       "sha256":  "575D9ED0B6A1432D114F65372F3CB60BE8B3D3A803B1B0300D1150A9F12B5C48",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_adsr.v"
+                   },
+                   {
+                       "sha256":  "BB8627308B6EF60B5A46F7A52DA03CEFC5F66B28566326441D53BF0E4AC8BF78",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_audio_capture.v"
+                   },
+                   {
+                       "sha256":  "B81DDB15302954AA3FFBFFB63FDB96CF69934A5DFC363442FF71F11D8E03D845",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_event_fifo.v"
+                   },
+                   {
+                       "sha256":  "F5E331F408DA50EF0F31FD2311B13F564C5B7A08135C2CC761F4AB9ADAFFE336",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_gpio_keyboard.v"
+                   },
+                   {
+                       "sha256":  "87EA758C5B3117FC0318DE201986FF9834D793C22B4ADDE338F1D956C5732515",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_gpio_top.v"
+                   },
+                   {
+                       "sha256":  "2A9CF4A3B367F4D8A6187B37F5DBBCADC2E4702271F6250E7D210B20339D3D27",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_mode_uart.v"
+                   },
+                   {
+                       "sha256":  "2864B16EF0A11CD72EC89F238F6892B78ACC3928A57DAE1615ABBD1964A95023",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_poly.v"
+                   },
+                   {
+                       "sha256":  "C95E1C183B7CA761CCC544DC227C2BDDF2C5D8CB079B13C737EE00FB57DF25D5",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_pt8211_tx.v"
+                   },
+                   {
+                       "sha256":  "9E84CABC6CA0FC2EDE724FA0FF55A5AF9F4DE640AE7F25C588C60D3A57246AB4",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_song_backpressure.v"
+                   },
+                   {
+                       "sha256":  "AABF0C6DD72D2774FA57B67CBE5E83647349E8FC1B3A18B2117B8F353EF1E1CB",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_song_timing.v"
+                   },
+                   {
+                       "sha256":  "AFE5EB80E99D0393CBBAE1B1942863488ED9A9E846F9435BE36EFEAE8E729D3E",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_tick_rate.v"
+                   },
+                   {
+                       "sha256":  "404AFDB0CE4E0A1B62197E06E857CC258338AE39741555A36C7EDF825A0AA6B0",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_voice_order.v"
+                   },
+                   {
+                       "sha256":  "F7DFA114AC0E3CDDED856E9FED005E891D8C628B6A649416A077E3A11EEC2E66",
+                       "path":  "output/handoff_milestone2_20261008/source/sim/tb_voice_retrigger.v"
+                   },
+                   {
+                       "sha256":  "FF18ECA97AC4F5CEBA3560D5BD942E8EA91C6F421BE3FB8B93CBA3CA665E7178",
+                       "path":  "tools/analyze_audio_capture.py"
+                   },
+                   {
+                       "sha256":  "291C6E66FF6F6DEB59955B20E93541776C88C4D8B76F3561F269D81B8E825908",
+                       "path":  "tools/run_audio_verification.ps1"
+                   }
+               ],
+    "clock_hz":  27000000,
+    "working_tree":  [
+                         " M output/handoff_milestone2_20261008/source/build/build_instrument.tcl",
+                         " M output/handoff_milestone2_20261008/source/rtl/audio/gpio_keyboard.v",
+                         " M output/handoff_milestone2_20261008/source/rtl/top.v",
+                         " M output/handoff_milestone2_20261008/source/sim/tb_gpio_keyboard.v",
+                         " M output/handoff_milestone2_20261008/source/sim/tb_gpio_top.v",
+                         "?? docs/evidence/FPGA-S2-复核Gowin构建-20261014.log",
+                         "?? docs/evidence/FPGA-S2-复核中断门禁-20261014.log",
+                         "?? docs/evidence/FPGA-S2-复核暂停-20261014-v0.1.md",
+                         "?? docs/planning/FPGA淘宝采购链接-20261012-v0.1.html",
+                         "?? docs/planning/FPGA淘宝采购链接-20261012-v0.1.md",
+                         "?? tools/make_purchase_links.py"
+                     ],
+    "tools":  {
+                  "iverilog":  "C:\\iverilog\\bin\\iverilog.exe",
+                  "powershell":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                  "vvp":  "C:\\iverilog\\bin\\vvp.exe",
+                  "python":  "E:\\Working Space\\FPGA\\tools\\.venv-audio-analysis\\Scripts\\python.exe"
+              },
+    "sample_rate_hz":  46875,
+    "hardware_programmed":  false,
+    "source_commit":  "8d0fa2fb52b59a13faff015c557c7b9058c2fd5f"
+}

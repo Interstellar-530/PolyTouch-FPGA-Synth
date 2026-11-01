@@ -1,0 +1,16 @@
+{
+  "archive": "E:\\Working Space\\FPGA\\archive\\FPGA-20261021-v0.7",
+  "cleanup_targets": [
+    "E:\\Working Space\\FPGA\\tmp\\bank-review-20261021-v01\\cases.txt",
+    "E:\\Working Space\\FPGA\\tmp\\bank-review-20261021-v01\\old_gowin_prom_guitar_bank.v",
+    "E:\\Working Space\\FPGA\\tmp\\bank-review-20261021-v01\\old_gowin_prom_piano_bank.v",
+    "E:\\Working Space\\FPGA\\tmp\\bank-review-20261021-v01\\old_shared_wavetable_engine.v",
+    "E:\\Working Space\\FPGA\\tmp\\bank-review-20261021-v01\\rtl_pairs.csv",
+    "E:\\Working Space\\FPGA\\tmp\\bank-review-20261021-v01\\tb_bank_audio_ab.vvp"
+  ],
+  "cleanup_completed": true,
+  "production_rtl_or_rom_changed": false,
+  "hearing_test": false,
+  "additional_synthesis": false,
+  "hardware_programmed": false
+}

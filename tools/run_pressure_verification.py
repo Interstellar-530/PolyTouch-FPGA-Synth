@@ -13,8 +13,8 @@ def main():
     parser.add_argument('--out',type=Path)
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
-    source=(args.source or root/'output/handoff_milestone2_20261008/source').resolve()
-    out=(args.out or root/'docs/evidence/FPGA-FSR音量-20261016-v0.1').resolve()
+    source=(args.source or root/'source').resolve()
+    out=(args.out or root/'evidence/2026/10/FPGA-FSR音量-20261016-v0.1').resolve()
     build=root/'tmp/pressure-verification-20261016';build.mkdir(parents=True,exist_ok=True)
     out.mkdir(parents=True,exist_ok=True)
     tests=['tb_pressure_gain','tb_pressure_top','tb_pressure_bend','tb_shared_engine','tb_top_i2s']

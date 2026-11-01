@@ -1,0 +1,5 @@
+=== 仿真门禁 ===
+Programmer : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792238095872396600\mock-programmer.ps1
+Device     : GW2A-18C
+Operation  : 2
+Bitstream  : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792238095872396600\fixture\source\build\gowin_top_integrated\runs\20261017T195459530-da64f7ca\instrument\impl\pnr\instrument.fs

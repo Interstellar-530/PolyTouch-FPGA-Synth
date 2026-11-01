@@ -47,7 +47,7 @@ def main():
               'excluded_runtime_directories': sorted(SKIP), 'copies': rows}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    production = [row for row in rows if row['path'].startswith('output/handoff_milestone2_20261008/source/')
+    production = [row for row in rows if row['path'].startswith('source/')
                   or row['path'].startswith('tools/')]
     print(json.dumps({'scanned_files': visited, 'matched_copies': len(rows),
                       'canonical_candidates': production}, ensure_ascii=False, indent=2))

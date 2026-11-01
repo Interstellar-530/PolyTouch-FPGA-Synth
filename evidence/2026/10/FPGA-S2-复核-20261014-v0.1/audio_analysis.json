@@ -1,0 +1,161 @@
+{
+  "result": "PASS",
+  "sample_rate_hz": 46875,
+  "captured_frames": 58880,
+  "format": "stereo signed 16-bit little-endian PCM, PT8211 right-aligned pin decode",
+  "pitch": {
+    "estimate_hz": 439.99997466189666,
+    "expected_hz": 440.0,
+    "absolute_error_hz": 2.533810334170994e-05,
+    "samples": 32768,
+    "duration_s": 0.6990506666666667,
+    "fft_bin_spacing_hz": 1.430511474609375,
+    "coarse_fft_peak_hz": 440.5975341796875,
+    "method": "Hann FFT dominant 80-2000 Hz peak, then continuous sine/cosine/DC least-squares residual minimization over original samples",
+    "fit_residual_rms_lsb": 0.3427839359077713
+  },
+  "stages": {
+    "initial_silence": {
+      "samples": 512,
+      "peak_lsb": 0,
+      "rms_lsb": 0.0,
+      "expected_notes": []
+    },
+    "a4_steady": {
+      "samples": 32768,
+      "peak_lsb": 8945,
+      "rms_lsb": 6325.161987387122,
+      "expected_notes": [
+        69
+      ]
+    },
+    "release_a4": {
+      "samples": 4096,
+      "peak_lsb": 8701,
+      "rms_lsb": 1765.7954581019615,
+      "expected_notes": []
+    },
+    "chord4": {
+      "samples": 4096,
+      "peak_lsb": 32767,
+      "rms_lsb": 12528.463559554537,
+      "expected_notes": [
+        60,
+        63,
+        66,
+        69
+      ],
+      "fundamental_amplitude_lsb": {
+        "60": 8943.207159829242,
+        "63": 8940.687174044142,
+        "66": 8937.415675346921,
+        "69": 8933.404707749296
+      },
+      "fit_residual_rms_lsb": 96.61722640669655
+    },
+    "after_off60": {
+      "samples": 4096,
+      "peak_lsb": 26730,
+      "rms_lsb": 10901.700636397287,
+      "expected_notes": [
+        63,
+        66,
+        69
+      ],
+      "fundamental_amplitude_lsb": {
+        "60": 0.007778808309866857,
+        "63": 8951.803751721485,
+        "66": 8948.537085969228,
+        "69": 8943.985488225502
+      },
+      "fit_residual_rms_lsb": 0.4178948418992039,
+      "released_ratio_to_chord4": {
+        "60": 8.69800751659585e-07
+      }
+    },
+    "after_off63": {
+      "samples": 4096,
+      "peak_lsb": 17891,
+      "rms_lsb": 9048.057124057896,
+      "expected_notes": [
+        66,
+        69
+      ],
+      "fundamental_amplitude_lsb": {
+        "60": 0.01615330251907306,
+        "63": 0.008592381490719852,
+        "66": 8948.571165156241,
+        "69": 8944.027065097915
+      },
+      "fit_residual_rms_lsb": 0.37204548540940074,
+      "released_ratio_to_chord4": {
+        "60": 1.806209140679403e-06,
+        "63": 9.610426272003497e-07
+      }
+    },
+    "after_off66": {
+      "samples": 4096,
+      "peak_lsb": 8945,
+      "rms_lsb": 6327.916262259479,
+      "expected_notes": [
+        69
+      ],
+      "fundamental_amplitude_lsb": {
+        "60": 0.022451176449239555,
+        "63": 0.011651239119304506,
+        "66": 0.014359868393684475,
+        "69": 8943.99734066833
+      },
+      "fit_residual_rms_lsb": 0.34640025522508466,
+      "released_ratio_to_chord4": {
+        "60": 2.51041668251686e-06,
+        "63": 1.303170426668032e-06,
+        "66": 1.6067137207565398e-06
+      }
+    },
+    "all_released": {
+      "samples": 512,
+      "peak_lsb": 0,
+      "rms_lsb": 0.0,
+      "expected_notes": []
+    },
+    "muted_active": {
+      "samples": 512,
+      "peak_lsb": 0,
+      "rms_lsb": 0.0,
+      "expected_notes": [
+        60,
+        63,
+        66,
+        69
+      ]
+    },
+    "unmuted_active": {
+      "samples": 4096,
+      "peak_lsb": 32767,
+      "rms_lsb": 12918.959200350178,
+      "expected_notes": [
+        60,
+        63,
+        66,
+        69
+      ],
+      "fundamental_amplitude_lsb": {
+        "60": 8943.824421735993,
+        "63": 8941.106249648088,
+        "66": 8938.172501911768,
+        "69": 8933.771931570032
+      },
+      "fit_residual_rms_lsb": 96.66679652887647
+    }
+  },
+  "scope": "RTL digital output only; no analog noise, voltage, headphone latency or oscillator accuracy measurement",
+  "git_commit": "8d0fa2fb52b59a13faff015c557c7b9058c2fd5f",
+  "capture_sha256": "f1e4f26fce4c2a0efeb36e2b418f117861434451807ba49ceb6f89fc2da8af61",
+  "manifest_sha256": "32834cb19116b48a29b1965b6ba5b8911a421740e4be96c93282b0e1f1a2b61d",
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.8"
+  }
+}

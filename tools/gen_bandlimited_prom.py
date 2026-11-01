@@ -4,7 +4,7 @@ import json
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-AUDIO = ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio'
+AUDIO = ROOT / 'source/rtl/audio'
 
 
 def main():

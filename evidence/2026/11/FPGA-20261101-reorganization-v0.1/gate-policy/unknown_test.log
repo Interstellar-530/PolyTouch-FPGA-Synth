@@ -1,0 +1,7 @@
+Unknown test(s): not_a_real_test
+At E:\Working Space\FPGA\source\sim\run_simulation.ps1:363 char:33
++ ... .Count -gt 0) { throw ('Unknown test(s): ' + ($unknown -join ', ')) }
++                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Unknown test(s): not_a_real_test:String) [], RuntimeException
+    + FullyQualifiedErrorId : Unknown test(s): not_a_real_test
+ 

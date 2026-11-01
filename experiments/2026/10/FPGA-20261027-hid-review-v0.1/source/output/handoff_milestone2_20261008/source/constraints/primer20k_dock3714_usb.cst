@@ -1,0 +1,109 @@
+// [USB + FSR] Same board pins as debug8, but L9/N8 are the CH9350L UART.
+// The 12 GPIO keys are intentionally not constrained in this profile.
+// Tang Primer 20K + Dock 3714 pins.
+//
+// The audio pins use DRIVE=4 instead of the default 8 mA. The PT8211 sits
+// close to the headphone amplifier and the three DAC lines are the only fast
+// switching nets next to it, so a weaker, slower edge reduces how much of the
+// 1.5 MHz BCK couples into the analogue path.
+
+IO_LOC "clk_27m" H11;
+IO_PORT "clk_27m" IO_TYPE=LVCMOS33;
+
+IO_LOC "hp_bck" N15;
+IO_PORT "hp_bck" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "hp_ws" P16;
+IO_PORT "hp_ws" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "hp_din" P15;
+IO_PORT "hp_din" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "pa_en" R16;
+IO_PORT "pa_en" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led" N16;
+IO_PORT "led" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// Orange_LED3 on N14: lit while chord set B is selected, so the S1 key can be
+// checked by eye without listening to the audio.
+IO_LOC "led_chord" N14;
+IO_PORT "led_chord" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// Orange_LED4 on L14 and Orange_LED5 on L16 show the tempo preset in binary,
+// so pressing S2 gives visible feedback without listening to the audio.
+IO_LOC "led_t0" L14;
+IO_PORT "led_t0" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led_t1" L16;
+IO_PORT "led_t1" IO_TYPE=LVCMOS33 DRIVE=4;
+
+
+// S3 / D7 is used as the synchronous design reset. T10 (S0) looks like the
+// natural choice because the board names its net FPGA_~RST, but the
+// GW2A-18PG256 package reserves T10 for the configuration SSPI function and
+// the placer refuses to use it as a user IO.
+IO_LOC "key_rst" D7;
+IO_PORT "key_rst" IO_TYPE=LVCMOS15;
+
+// S1 and S2 user keys, pulled to +1V5 on the Dock.
+IO_LOC "key_s1" T3;
+IO_PORT "key_s1" IO_TYPE=LVCMOS15;
+
+IO_LOC "key_s2" T2;
+IO_PORT "key_s2" IO_TYPE=LVCMOS15;
+
+// BL702 USB-UART bridge, taken straight from the Dock 3714 schematic page 1:
+//
+//   M11_IOR27B_FPGA_TXO  ->  BL702_UART1_RX
+//   T13_IOR8B_FPGA_RXO   <-  BL702_UART1_TX
+//
+// Both are Bank 2 pins. The Dock notes that bank 2 is locked to 3.3 V because
+// it also carries the JTAG signals, so LVCMOS33 is correct.
+//
+// Do not confuse these with N6 / N7: those two are RGB_LCD_R4 and RGB_LCD_R3
+// on the LCD connector, not the debug bridge.
+IO_LOC "uart_tx" M11;
+IO_PORT "uart_tx" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "uart_rx" T13;
+IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
+
+// [S2-AI 新增] 12 路 GPIO 琴键。低有效、外部 10 kΩ 上拉到 3.3 V，按下接地。
+// 引脚取自 docs/hardware/FPGA-pinplan-20261013-v0.1.csv，与硬件接线文档第 4.1 节一致。
+// Bank 3 固定 3.3 V；Bank 1/7 按核心板默认 R5/R9 配置为 3.3 V，因此统一 LVCMOS33。
+// 这些约束尚未做 PnR 复核；上板前需先确认板卡 Bank 电压并跑一遍 Gowin 综合/布局，
+// 若报引脚冲突或 Bank 电压不符，先删除本段再回退到不接 GPIO 的版本。
+
+
+
+
+
+// [S4/S5/S6 集成] MCP3208 SPI 与折叠观测输出。引脚取自
+// docs/hardware/FPGA-pinplan-20261013-v0.1.csv（Bank 3/7，均按 3.3 V 规划），
+// 但仍属草稿：上板前需按到货验收流程核对接线与 Bank 电压。
+IO_LOC "adc_cs_n" N6;
+IO_PORT "adc_cs_n" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_sck" D11;
+IO_PORT "adc_sck" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_mosi" A11;
+IO_PORT "adc_mosi" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "adc_miso" B11;
+IO_PORT "adc_miso" IO_TYPE=LVCMOS33;
+
+// 折叠观测（削波计数 + 压力/弯音状态）暂时借用 I2S/XSMT 组的草稿引脚，
+// 待标准 I2S 接入顶层时再重新分配。
+IO_LOC "clip_fold[0]" B12;
+IO_PORT "clip_fold[0]" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "clip_fold[1]" C12;
+IO_PORT "clip_fold[1]" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "clip_fold[2]" B13;
+IO_PORT "clip_fold[2]" IO_TYPE=LVCMOS33 DRIVE=4;
+IO_LOC "clip_fold[3]" P6;
+IO_PORT "clip_fold[3]" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// CH9350L upper-computer state-2 UART: L9 <- keyboard TXD, N8 -> keyboard RXD.
+IO_LOC "kbd_uart_rx" L9;
+IO_PORT "kbd_uart_rx" IO_TYPE=LVCMOS33;
+IO_LOC "kbd_uart_tx" N8;
+IO_PORT "kbd_uart_tx" IO_TYPE=LVCMOS33 DRIVE=4;

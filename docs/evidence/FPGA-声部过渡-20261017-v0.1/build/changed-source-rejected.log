@@ -1,9 +1,0 @@
-=== 仿真门禁 ===
-Build inputs differ from the successful standard build; rebuild first.
-At E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792238095872396600\fixture\source\build\program_sram
-.ps1:44 char:9
-+         throw "Build inputs differ from the successful $Profile build ...
-+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : OperationStopped: (Build inputs di... rebuild first.:String) [], RuntimeException
-    + FullyQualifiedErrorId : Build inputs differ from the successful standard build; rebuild first.
- 

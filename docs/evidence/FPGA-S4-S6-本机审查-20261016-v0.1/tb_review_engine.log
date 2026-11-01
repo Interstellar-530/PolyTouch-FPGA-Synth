@@ -1,3 +1,0 @@
-METRIC engine cases=2048 voices=4 cycles_min=84 cycles_max=84 frame_budget=256
-PASS tb_review_engine: random phases, signed sums, full envelope and MIDI velocities
-E:\Working Space\FPGA\docs\evidence\FPGA-S4-S6-±¾»úÉó²é-20261016-v0.1\tb_review_engine.v:64: $finish called at 5263400000 (1ps)

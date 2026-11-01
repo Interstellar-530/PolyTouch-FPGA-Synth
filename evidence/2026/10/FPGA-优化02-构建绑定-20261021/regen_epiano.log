@@ -1,0 +1,2 @@
+﻿source AKWF_epiano_0001.wav sr 44100 samples 600 peak 32767
+{"tables": 36, "bsram": 18, "zones": [{"zone": 0, "midi_lo": 0, "midi_hi": 47, "fmax_hz": 123.5, "harmonics": 170}, {"zone": 1, "midi_lo": 48, "midi_hi": 59, "fmax_hz": 246.9, "harmonics": 85}, {"zone": 2, "midi_lo": 60, "midi_hi": 66, "fmax_hz": 370.0, "harmonics": 57}, {"zone": 3, "midi_lo": 67, "midi_hi": 75, "fmax_hz": 622.3, "harmonics": 33}, {"zone": 4, "midi_lo": 76, "midi_hi": 83, "fmax_hz": 987.8, "harmonics": 21}, {"zone": 5, "midi_lo": 84, "midi_hi": 95, "fmax_hz": 1975.5, "harmonics": 10}]}

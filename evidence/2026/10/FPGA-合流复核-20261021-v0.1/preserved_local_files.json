@@ -1,0 +1,10 @@
+{
+  "docs/evidence/FPGA-板载联调-20261018-v0.1/board_only.fs": "f43e2b32a36853256026f024ed5b49dd8ba47d5fee0e29fa188ba8085d84e9a8",
+  "docs/evidence/FPGA-钢琴音色-20261018-v0.1/board-72zones/board_only.fs": "053a2e23ea10c5ae70381f190ac4f28a9ab15713ed3cfc4b5c5aa4dc3c19167a",
+  "docs/evidence/FPGA-钢琴音色-20261018-v0.1/board-final/board_only.fs": "f798bd09dcda3bb1530adfd6668047449c74b12e605ef479551d869a97ba5a5a",
+  "docs/evidence/FPGA-钢琴音色-20261018-v0.1/board/board_only.fs": "000e59f027143b8850f20f0a2e00b35c68723a0ab26bf5cc2436eac87fe62907",
+  "output/pdf/FPGA-完整接线方案-20261016-v0.1.pdf": "97a5c6813840db959f0c99d3fbc819dbadd0885154a925a08ef3e78bc8d6692b",
+  "output/pdf/FPGA-硬件方案与代工讨论-20261018-v0.4.pdf": "8abfae3de8579412629de02bfa2a65ede7711b1b69f3a5ebc17cf88cc12a2953",
+  "output/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf": "201713c6eab423dbd7044f47c096d3564f99fd2b25030603546b69758c969e88",
+  "output/reports/github_push_activity_20261020.md": "e8169fd6e5e461f59b1bc1ce7a347f939d82de34adc7d85ffb4a0f120a70897c"
+}

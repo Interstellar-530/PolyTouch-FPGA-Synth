@@ -4,8 +4,8 @@ import argparse,json,subprocess,sys
 
 def main():
  sys.stdout.reconfigure(encoding='utf-8',errors='replace')
- root=Path(__file__).resolve().parents[1];src=root/'output/handoff_milestone2_20261008/source'
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'docs/evidence/FPGA-宽乘法通路-20261017-v0.1/model');p.add_argument('--state',action='store_true');p.add_argument('--master',action='store_true');args=p.parse_args()
+ root=Path(__file__).resolve().parents[1];src=root/'source'
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'evidence/2026/10/FPGA-宽乘法通路-20261017-v0.1/model');p.add_argument('--state',action='store_true');p.add_argument('--master',action='store_true');args=p.parse_args()
  out=args.out;out.mkdir(parents=True,exist_ok=True);work=root/'tmp/wide-datapath-20261017';work.mkdir(parents=True,exist_ok=True);results=[]
  module='voice_state_ram' if args.state else 'split_audio_multiplier'
  bench='tb_wide_master_pair' if args.master else 'tb_'+module

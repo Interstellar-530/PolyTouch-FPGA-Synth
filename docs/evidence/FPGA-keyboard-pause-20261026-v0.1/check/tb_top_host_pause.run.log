@@ -1,3 +1,0 @@
-PASS tb_top_host_pause: F8 pause/resume, dedup, frozen position, I2S continuous, silence/audio recovery, F7 and manual compatibility
-sim\tb_top_host_pause.v:80: $finish called at 19842534411 (1ps)
-

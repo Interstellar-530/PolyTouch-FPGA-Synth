@@ -1,3 +1,0 @@
-VCD info: dumpfile sim/tb_mcp3208_spi.vcd opened for output.
-tb_mcp3208_spi PASS
-sim/tb_mcp3208_spi.v:292: $finish called at 5410190000 (1ps)

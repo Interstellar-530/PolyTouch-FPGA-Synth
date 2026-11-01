@@ -1,5 +1,0 @@
-Project root: E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792152898084958900\fixture\source
-Gowin shell : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792152898084958900\mock-gw.ps1
-Profile     : debug (top_dbg_build)
-Bitstream   : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792152898084958900\fixture\source\build\gowin_top_integrated\runs\20261016T201500279-14078dae\instrument\impl\pnr\instrument.fs
-Receipt     : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792152898084958900\fixture\source\build\receipts\debug.json

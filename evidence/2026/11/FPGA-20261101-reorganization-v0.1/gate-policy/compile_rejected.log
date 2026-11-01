@@ -1,0 +1,7 @@
+Gate Custom: 1/105 positive benches; logs: E:\Working Space\FPGA\tmp\reorganization-20261101\gate-policy\metrics
+=== tb_tick_rate ===
+sim\tb_tick_rate.v:1: syntax error
+sim\tb_tick_rate.v:1: error: Invalid module instantiation
+
+tb_tick_rate: pass=False, seconds=0.12
+仿真门禁未通过，1 个测试台失败，禁止烧录。

@@ -8,8 +8,8 @@ from pathlib import Path
 import argparse,hashlib,json,re,subprocess,sys,time
 
 ROOT=Path(__file__).resolve().parents[1]
-SRC=ROOT/'output/handoff_milestone2_20261008/source'
-EV=ROOT/'docs/evidence/FPGA-板载联调-20261018-v0.1'
+SRC=ROOT/'source'
+EV=ROOT/'evidence/2026/10/FPGA-板载联调-20261018-v0.1'
 WORK=ROOT/'tmp/board-only-20261018'
 GW=Path('E:/Gowin/Gowin_V1.9.11.03_Education_x64/IDE/bin/gw_sh.exe')
 

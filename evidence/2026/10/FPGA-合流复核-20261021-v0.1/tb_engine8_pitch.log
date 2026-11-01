@@ -1,0 +1,4 @@
+INFO engine8 sine period=106.50 samples (expect 106.53), crossings=19
+INFO engine8 bright period=53.59 samples (harmonics may shorten this), crossings=38
+PASS tb_engine8_pitch: voice0 sine pitch correct, 8-voice engine frame ok
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_engine8_pitch.v:101: $finish called at 4202160000 (1ps)

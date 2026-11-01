@@ -1,0 +1,50 @@
+{
+  "phase": "after",
+  "checks": [
+    {
+      "check": "tb_hid_repeat_review_compile",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_hid_repeat_review_run",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_top_host_ctrl_compile",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_top_host_ctrl_run",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_host_kbd_compile",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "check": "tb_host_kbd_run",
+      "exit": 0,
+      "expected_exit": 0,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "inputs_sha256": {
+    "rtl/audio/hid_keymap.v": "ea64b777241d6d0c29b0a54d3e13bb6cd6d6c491c8bdd5df06624218e57d621f",
+    "rtl/audio/host_kbd_input.v": "ea4703f7044904f321efca70b5f29917dcef2ea16143db5abc498d37d10658a9",
+    "rtl/top.v": "df88738f2f974322879dc8410df87d2b7d69c970789766a0954bb1c25095f880",
+    "sim/tb_top_host_ctrl.v": "54a7d5a2ab0f769158437e2ecae03c004f20b0cbc978b49560bc70be8d7b57a1"
+  },
+  "full_gate": false,
+  "hardware_programmed": false
+}

@@ -1,2 +1,0 @@
-FATAL: E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_frame_velocity.v:21: mid-frame velocity tearing: event_offset=0 reference=2707/23624 actual=2278/20207
-       Time: 806000  Scope: tb_frame_velocity.compare_frame

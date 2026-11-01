@@ -1,4 +1,0 @@
-﻿METRIC compute_period_ns=20.3444
-METRIC frames=120 frame_id=119 active=32
-PASS tb_ram32_clocked: mult=4 12.288MHz ref, PLL compute, stereo bridge, I2S, events, 32 voices
-sim\tb_ram32_clocked.v:82: $finish called at 3557567390 (1ps)

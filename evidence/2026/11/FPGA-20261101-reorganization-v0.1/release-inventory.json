@@ -1,0 +1,119 @@
+[
+  {
+    "tag": "v0.4-20261010",
+    "commit": "39a07325045b65c8e0635a2cedf6f147d88883e2",
+    "timestamp": "2026-10-10T11:34:43+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.1",
+    "source_files": 18,
+    "files": 22
+  },
+  {
+    "tag": "v0.5-20261010",
+    "commit": "b9676299f0cbb917d81d57698f3b12b8e733e2d8",
+    "timestamp": "2026-10-10T17:01:02+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.2",
+    "source_files": 31,
+    "files": 35
+  },
+  {
+    "tag": "v0.5.1-20261010",
+    "commit": "1c4843b6d08a90138568333dcb9ef5798aba9feb",
+    "timestamp": "2026-10-10T17:09:44+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.3",
+    "source_files": 31,
+    "files": 35
+  },
+  {
+    "tag": "v0.5.2-20261010",
+    "commit": "95148192062d7554edfbdf8a0b003588a7a2ae55",
+    "timestamp": "2026-10-10T17:19:31+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.4",
+    "source_files": 31,
+    "files": 35
+  },
+  {
+    "tag": "v0.5.3-20261010",
+    "commit": "80b3c23b134575484a2d475c2c5cf01b43b90427",
+    "timestamp": "2026-10-10T17:27:15+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.5",
+    "source_files": 29,
+    "files": 33
+  },
+  {
+    "tag": "v0.5.4-20261010",
+    "commit": "f8b9cec137e2f3f5262a9be00ac9d5244f858a16",
+    "timestamp": "2026-10-10T17:37:41+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.6",
+    "source_files": 31,
+    "files": 35
+  },
+  {
+    "tag": "v0.5.5-20261010",
+    "commit": "b9a52e44c48c8e1445c25ec928798f5c8adce21e",
+    "timestamp": "2026-10-10T17:56:13+08:00",
+    "date": "20261010",
+    "directory": "releases/2026/10/FPGA-20261010-v0.7",
+    "source_files": 33,
+    "files": 37
+  },
+  {
+    "tag": "v1.0.0",
+    "commit": "df66250ad5a449a310779da158bea11bbf0d8916",
+    "timestamp": "2026-10-13T22:24:11+08:00",
+    "date": "20261013",
+    "directory": "releases/2026/10/FPGA-20261013-v0.1",
+    "source_files": 39,
+    "files": 44
+  },
+  {
+    "tag": "v1.01",
+    "commit": "b559237c37d8b7f6871c1402fd8865709297ef49",
+    "timestamp": "2026-10-14T10:23:50+08:00",
+    "date": "20261014",
+    "directory": "releases/2026/10/FPGA-20261014-v0.1",
+    "source_files": 40,
+    "files": 44
+  },
+  {
+    "tag": "v2.0.0",
+    "commit": "2d3db6c1700e6628341965af5bdee70d8134c526",
+    "timestamp": "2026-10-21T10:01:39+08:00",
+    "date": "20261021",
+    "directory": "releases/2026/10/FPGA-20261021-v0.1",
+    "source_files": 386,
+    "files": 390
+  },
+  {
+    "tag": "v2.1.0",
+    "commit": "6751f6dc65c5a301af3aab8187ec3d4aaeb7d219",
+    "timestamp": "2026-10-21T20:20:36+08:00",
+    "date": "20261021",
+    "directory": "releases/2026/10/FPGA-20261021-v0.2",
+    "source_files": 371,
+    "files": 380
+  },
+  {
+    "tag": "v1.0-final-20261029",
+    "commit": "e8450a5b4db3095fec2a6ee0a5cb739e4ce0c43a",
+    "timestamp": "2026-10-29T20:21:10+08:00",
+    "date": "20261029",
+    "directory": "releases/2026/10/FPGA-20261029-v0.1",
+    "source_files": 458,
+    "files": 462
+  },
+  {
+    "tag": "final-20261030",
+    "commit": "efd76ea14bab93521604819756410898eb0bc8af",
+    "timestamp": "2026-10-30T17:35:39+08:00",
+    "date": "20261030",
+    "directory": "releases/2026/10/FPGA-20261030-v0.1",
+    "source_files": 462,
+    "files": 747
+  }
+]

@@ -1,0 +1,40 @@
+Gate Custom: 7/105 positive benches; logs: E:\Working Space\FPGA\evidence\2026\11\FPGA-20261101-reorganization-v0.1\targeted
+=== tb_pressure_bend ===
+PASS tb_pressure_bend: 640 pressure ticks and 4096 ADC codes match the reference, t90=5 control ticks
+sim\tb_pressure_bend.v:237: $finish called at 53426000 (1ps)
+
+tb_pressure_bend: pass=True, seconds=0.18
+=== tb_fsr_mute ===
+PASS tb_fsr_mute: 1031 threshold/hysteresis checks, update, bypass and reset
+sim\tb_fsr_mute.v:32: $finish called at 20720000 (1ps)
+
+tb_fsr_mute: pass=True, seconds=0.11
+=== tb_fsr_idle_timeout ===
+TIMEOUT_TRACE policy=1 held=0 pedal=1 clear=0 deferred=1 gate=1
+PASS FSR_IDLE_TIMEOUT policy=1: actual watchdog, real top/CDC/32 voices, stable pedal and deliberate release
+sim\tb_fsr_idle_timeout.v:69: $finish called at 4259999646 (1ps)
+
+tb_fsr_idle_timeout: pass=True, seconds=20.14
+=== tb_fsr_idle_strict ===
+TIMEOUT_TRACE policy=0 held=0 pedal=1 clear=1 deferred=1 gate=1
+PASS FSR_IDLE_TIMEOUT policy=0: actual watchdog, real top/CDC/32 voices, stable pedal and deliberate release
+sim\tb_fsr_idle_timeout.v:69: $finish called at 4074513342 (1ps)
+
+tb_fsr_idle_strict: pass=True, seconds=19.61
+=== tb_sustain_pedal ===
+PASS tb_sustain_pedal: hold, release, repeat note, held-key exception, backpressure, panic
+sim\tb_sustain_pedal.v:42: $finish called at 4600000 (1ps)
+
+tb_sustain_pedal: pass=True, seconds=0.10
+=== tb_fsr_sustain ===
+FSR_RELEASE_UPDATES=7 nominal_ms=7/2 (median + detector, excludes ADC/DAC)
+PASS tb_fsr_sustain: exact thresholds/counts, interrupted qualification, update gating, reset/disable, 12 filtered dropouts, single real release
+sim\tb_fsr_sustain.v:86: $finish called at 76670000 (1ps)
+
+tb_fsr_sustain: pass=True, seconds=0.14
+=== tb_fsr_pedal_latency ===
+PASS tb_fsr_pedal_latency: 24 press/release cases, thresholds 512/256, 2 ms glitches, max_press_ms=1.499998 max_release_ms=3.499998
+sim\tb_fsr_pedal_latency.v:54: $finish called at 816003501000 (1ps)
+
+tb_fsr_pedal_latency: pass=True, seconds=0.88
+PASS Custom: 7 checks, 42.24s. Full regression=False. Evidence: E:\Working Space\FPGA\evidence\2026\11\FPGA-20261101-reorganization-v0.1\targeted

@@ -3,7 +3,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "output" / "handoff_milestone2_20261008" / "source" / "rtl" / "video" / "dashboard_font_prom.v"
+OUT = ROOT / "source" / "rtl" / "video" / "dashboard_font_prom.v"
 
 GLYPHS = {
     " ": ["00000"] * 7,

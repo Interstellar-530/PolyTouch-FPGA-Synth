@@ -1,4 +1,0 @@
-INFO velocity model hit: E=66537 amp(127)=66017 amp(128)=66017
-INFO note72 C=181: amp(127)=46676 saturates at 128/182/255
-PASS tb_velocity_bounds: 0..127 formula-exact, 128..255 saturate, bypass identical
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_velocity_bounds.v:179: $finish called at 384860000 (1ps)

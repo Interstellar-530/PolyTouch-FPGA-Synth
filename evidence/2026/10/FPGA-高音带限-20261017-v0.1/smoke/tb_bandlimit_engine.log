@@ -1,0 +1,4 @@
+WARNING: E:\Working Space\FPGA\output\handoff_milestone2_202610 $fopen's file name argument contains non-printable characters.
+                                                                "docs\evidence\FPGA-\377\377\377\377\377\377\377\377-20261017-v0.1\smoke\audio.csv"
+PASS tb_bandlimit_engine: 64 independent-reference frames; 108 clocks, 40 products, local/shared exact
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_bandlimit_engine.v:42: $finish called at 71080000 (1ps)

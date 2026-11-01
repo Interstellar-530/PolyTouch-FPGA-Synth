@@ -1,8 +1,0 @@
-{
-  "exit_code": 0,
-  "operation": 2,
-  "profile": "standard27",
-  "bitstream": "E:\\Working Space\\FPGA\\output\\handoff_milestone2_20261008\\source\\build\\gowin_top_i2s_std27\\runs\\20261024T144415483-3772fc44\\instrument\\impl\\pnr\\instrument.fs",
-  "sha256": "8f70f54bb4cb95b68aeb41ca8180283ebaa33b21b282d88165867af2239723af",
-  "utc": "2026-10-24T06:48:47.8980838Z"
-}

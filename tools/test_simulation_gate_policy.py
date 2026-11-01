@@ -1,9 +1,9 @@
 """Exercise gate selection, failures and programmer interception without hardware."""
 import pathlib, shutil, subprocess, json, os
 repo=pathlib.Path(__file__).resolve().parents[1]
-work=repo/'tmp/gate-policy-20261023'
-base=repo/'output/handoff_milestone2_20261008/source'
-fixture=work/'fixture/output/handoff_milestone2_20261008/source'
+work=repo/'tmp/reorganization-20261101/gate-policy'
+base=repo/'source'
+fixture=work/'fixture/source'
 evidence=work/'evidence'; evidence.mkdir(parents=True,exist_ok=True)
 for name in ['sim/run_simulation.ps1','sim/gate_process.ps1','rtl/audio/pt8211_tx.v','build/program_sram.ps1','build/profile_helpers.ps1']:
  p=fixture/name;p.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(base/name,p)

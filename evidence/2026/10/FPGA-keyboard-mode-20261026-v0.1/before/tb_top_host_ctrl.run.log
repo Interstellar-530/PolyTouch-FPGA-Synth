@@ -1,0 +1,3 @@
+FATAL: sim\tb_top_host_ctrl.v:151: F7 did not enter manual mode
+       Time: 4122533109  Scope: tb_top_host_ctrl
+

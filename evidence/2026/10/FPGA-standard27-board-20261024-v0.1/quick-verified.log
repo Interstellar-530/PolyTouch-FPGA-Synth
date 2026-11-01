@@ -1,0 +1,102 @@
+Gate Quick: 12/82 positive benches; logs: E:\Working Space\FPGA\docs\evidence\FPGA-standard27-board-20261024-v0.1\quick-verified
+=== tb_tick_rate ===
+PASS tb_tick_rate: 186 periods, all 576 clocks (46875.0 Hz)
+sim\tb_tick_rate.v:67: $finish called at 4001000000 (1ps)
+
+tb_tick_rate: pass=True, seconds=0.37
+=== tb_adsr ===
+PASS tb_adsr: attack/decay/sustain note-off, release and retrigger
+sim\tb_adsr.v:93: $finish called at 516000 (1ps)
+
+tb_adsr: pass=True, seconds=0.17
+=== tb_event_fifo ===
+PASS tb_event_fifo: full, simultaneous read/write, order and clear
+sim\tb_event_fifo.v:42: $finish called at 370000 (1ps)
+
+tb_event_fifo: pass=True, seconds=0.16
+=== tb_i2s_tx ===
+自检：接收模型对人工构造的 I2S 位串解码正确（4 帧，含零、最小负数与左右不同值）
+PASS S3_RX_RESET: BCK 停止期间复位丢弃旧配对
+S3_RESET_INJECT: tb_i2s_tx.c_std16 round=1 frame_cycle=32
+S3_RESET_INJECT: tb_i2s_tx.c_std24 round=1 frame_cycle=32
+S3_RESET_RECOVERED: tb_i2s_tx.c_std24 round=1 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_std16 round=1 L=7fff R=aaaa
+S3_RESET_INJECT: tb_i2s_tx.c_std16 round=2 frame_cycle=160
+S3_RESET_INJECT: tb_i2s_tx.c_std24 round=2 frame_cycle=160
+S3_RESET_INJECT: tb_i2s_tx.c_dbg16 round=1 frame_cycle=72
+S3_RESET_INJECT: tb_i2s_tx.c_dbg24 round=1 frame_cycle=72
+S3_RESET_RECOVERED: tb_i2s_tx.c_std24 round=2 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_std16 round=2 L=7fff R=aaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg24 round=1 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg16 round=1 L=7fff R=aaaa
+S3_RESET_INJECT: tb_i2s_tx.c_std16 round=3 frame_cycle=248
+S3_RESET_INJECT: tb_i2s_tx.c_std24 round=3 frame_cycle=248
+S3_RESET_INJECT: tb_i2s_tx.c_dbg24 round=2 frame_cycle=360
+S3_RESET_INJECT: tb_i2s_tx.c_dbg16 round=2 frame_cycle=360
+S3_RESET_RECOVERED: tb_i2s_tx.c_std24 round=3 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_std16 round=3 L=7fff R=aaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg16 round=2 L=7fff R=aaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg24 round=2 L=7fffff R=aaaaaa
+S3_RESET_INJECT: tb_i2s_tx.c_dbg16 round=3 frame_cycle=558
+S3_RESET_INJECT: tb_i2s_tx.c_dbg24 round=3 frame_cycle=558
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg24 round=3 L=7fffff R=aaaaaa
+S3_RESET_RECOVERED: tb_i2s_tx.c_dbg16 round=3 L=7fff R=aaaa
+PASS tb_i2s_tx: 四组合 I2S 时序、一位延迟、逐位解码、抗撕裂、复位恢复、负面控制
+  std16: 帧=285 帧长=256 拍 BCK 高/低=2/2 tick=285 复位=3
+  std24: 帧=285 帧长=256 拍 BCK 高/低=2/2 tick=285 复位=3
+  dbg16: 帧=279 帧长=576 拍 BCK 高/低=4/5 tick=279 复位=3
+  dbg24: 帧=279 帧长=576 拍 BCK 高/低=4/5 tick=279 复位=3
+  负面控制分歧帧 std16 offset=261 右对齐=261 声道互换=261 位翻转=285
+sim\tb_i2s_tx.v:356: $finish called at 5994817010 (1ps)
+
+tb_i2s_tx: pass=True, seconds=2.71
+=== tb_mcp3208_spi ===
+tb_mcp3208_spi PASS
+sim\tb_mcp3208_spi.v:292: $finish called at 5410190000 (1ps)
+
+tb_mcp3208_spi: pass=True, seconds=0.71
+=== tb_pressure_bend ===
+PASS tb_pressure_bend: 640 pressure ticks and 4096 ADC codes match the reference, t90=5 control ticks
+sim\tb_pressure_bend.v:237: $finish called at 53426000 (1ps)
+
+tb_pressure_bend: pass=True, seconds=0.22
+=== tb_velocity_bounds ===
+INFO velocity model hit: E=66537 amp(127)=66017 amp(128)=66017
+INFO note72 C=181: amp(127)=46676 saturates at 128/182/255
+PASS tb_velocity_bounds: 0..127 formula-exact, 128..255 saturate, bypass identical
+sim\tb_velocity_bounds.v:179: $finish called at 384860000 (1ps)
+
+tb_velocity_bounds: pass=True, seconds=0.62
+=== tb_pressure_gain ===
+METRIC pressure_gain adc_codes=4096 gain_floor=1024 gain_max=4096 slew=32/frame full_span_frames=96
+PASS tb_pressure_gain: 4797 frames, signed reference, calibration, slew, both bypasses and pre-saturation VCA
+sim\tb_pressure_gain.v:94: $finish called at 96070000 (1ps)
+
+tb_pressure_gain: pass=True, seconds=1.13
+=== tb_wide_master_pair ===
+PASS tb_wide_master_pair:8192 full32-bit input frames, ready stalls, atomic snapshots, pressure/mute/timbre slew, 2 requests/frame, clipped=3589
+sim\tb_wide_master_pair.v:43: $finish called at 764630000 (1ps)
+
+tb_wide_master_pair: pass=True, seconds=0.71
+=== tb_host_kbd ===
+PASS tb_host_kbd: press/release, dedup, chord, transpose-held, Esc, F1, resync, rollover
+sim\tb_host_kbd.v:217: $finish called at 63565078575 (1ps)
+
+tb_host_kbd: pass=True, seconds=6.22
+=== tb_host_kbd_timeout ===
+PASS tb_host_kbd_timeout: idle-only long hold (100 ms), strict compatibility, heartbeat sustain, detach recovery
+sim\tb_host_kbd_timeout.v:227: $finish called at 172271500000 (1ps)
+
+tb_host_kbd_timeout: pass=True, seconds=1.17
+=== tb_top_host_ctrl ===
+PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear, 0x86 detach recovery
+sim\tb_top_host_ctrl.v:281: $finish called at 61534840605 (1ps)
+
+tb_top_host_ctrl: pass=True, seconds=57.53
+=== tb_i2s_tx_params[zero_clk] （预期失败）===
+=== tb_i2s_tx_params[zero_fs] （预期失败）===
+=== tb_i2s_tx_params[not_divisible] （预期失败）===
+=== tb_i2s_tx_params[frame_not_div64] （预期失败）===
+=== tb_i2s_tx_params[bck_too_fast] （预期失败）===
+=== tb_i2s_tx_params[data_bits_32] （预期失败）===
+PASS Quick: 18 checks, 73.05s. Full regression=False. Evidence: E:\Working Space\FPGA\docs\evidence\FPGA-standard27-board-20261024-v0.1\quick-verified

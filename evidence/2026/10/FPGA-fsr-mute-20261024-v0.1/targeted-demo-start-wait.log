@@ -1,0 +1,7 @@
+Gate Custom: 4/83 positive benches; logs: E:\Working Space\FPGA\docs\evidence\FPGA-fsr-mute-20261024-v0.1\targeted
+=== tb_pressure_top ===
+FATAL: sim\tb_pressure_top.v:52: Audio did not resume: peak=0 nonzero=0
+       Time: 18726396281  Scope: tb_pressure_top.audio_check
+
+tb_pressure_top: pass=False, seconds=18.94
+仿真门禁未通过，1 个测试台失败，禁止烧录。

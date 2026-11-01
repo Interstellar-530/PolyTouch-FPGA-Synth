@@ -1,0 +1,2 @@
+PASS tb_ram_audio_datapath: voices=32 master_frames=719 decoded=719 low_bits=699 shared_products=2 frame_cycles=870 period=1024; slew/mute/stereo/24-bit exact
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_ram_audio_datapath.v:59: $finish called at 15000658188 (1ps)

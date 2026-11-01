@@ -1,3 +1,0 @@
-METRIC pressure_top decoded_frames=1462 checked_mix_frames=3680 rms_high_over_low=3.880664 step_t90_us=2901.970
-PASS tb_pressure_top: GPIO/ADC/VCA/I2S, independent pitch/envelope, demo bypass and release
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_pressure_top.v:87: $finish called at 109103684910 (1ps)

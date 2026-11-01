@@ -3,14 +3,14 @@
 在仓库根目录运行原 RTL 仿真门禁：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'output/handoff_milestone2_20261008/source/sim/run_simulation.ps1'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'source/sim/run_simulation.ps1'
 ```
 
 当前基线的额外 ADSR 回归预期返回非零，并显示松键 2000 个采样节拍后 `env=45875`、`idle=0`。`iverilog` 和 `vvp` 由本机 Icarus Verilog 提供；路径按实际安装位置调整。
 
 ```powershell
 New-Item -ItemType Directory -Path 'tmp/adsr_review' -Force | Out-Null
-& 'C:/iverilog/bin/iverilog.exe' -g2012 -s tb_adsr_release_audit -o 'tmp/adsr_review/adsr.vvp' 'output/handoff_milestone2_20261008/source/rtl/audio/adsr.v' 'docs/reviews/FPGA-20261012-v0.1/tb_adsr_release_audit.v'
+& 'C:/iverilog/bin/iverilog.exe' -g2012 -s tb_adsr_release_audit -o 'tmp/adsr_review/adsr.vvp' 'source/rtl/audio/adsr.v' 'docs/reviews/FPGA-20261012-v0.1/tb_adsr_release_audit.v'
 & 'C:/iverilog/bin/vvp.exe' 'tmp/adsr_review/adsr.vvp'
 ```
 

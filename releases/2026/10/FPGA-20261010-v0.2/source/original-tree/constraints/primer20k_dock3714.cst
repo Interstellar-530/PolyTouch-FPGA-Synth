@@ -1,0 +1,63 @@
+// Tang Primer 20K + Dock 3714 pins.
+//
+// The audio pins use DRIVE=4 instead of the default 8 mA. The PT8211 sits
+// close to the headphone amplifier and the three DAC lines are the only fast
+// switching nets next to it, so a weaker, slower edge reduces how much of the
+// 1.5 MHz BCK couples into the analogue path.
+
+IO_LOC "clk_27m" H11;
+IO_PORT "clk_27m" IO_TYPE=LVCMOS33;
+
+IO_LOC "hp_bck" N15;
+IO_PORT "hp_bck" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "hp_ws" P16;
+IO_PORT "hp_ws" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "hp_din" P15;
+IO_PORT "hp_din" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "pa_en" R16;
+IO_PORT "pa_en" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "led" N16;
+IO_PORT "led" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// Orange_LED3 on N14: lit while chord set B is selected, so the S1 key can be
+// checked by eye without listening to the audio.
+IO_LOC "led_chord" N14;
+IO_PORT "led_chord" IO_TYPE=LVCMOS33 DRIVE=4;
+
+// S3 / D7 is used as the synchronous design reset. T10 (S0) looks like the
+// natural choice because the board names its net FPGA_~RST, but the
+// GW2A-18PG256 package reserves T10 for the configuration SSPI function and
+// the placer refuses to use it as a user IO.
+IO_LOC "key_rst" D7;
+IO_PORT "key_rst" IO_TYPE=LVCMOS15;
+
+// S1 and S2 user keys, pulled to +1V5 on the Dock.
+IO_LOC "key_s1" T3;
+IO_PORT "key_s1" IO_TYPE=LVCMOS15;
+
+IO_LOC "key_s2" T2;
+IO_PORT "key_s2" IO_TYPE=LVCMOS15;
+
+// BL702 USB-UART bridge, taken straight from the Dock 3714 schematic page 1:
+//
+//   M11_IOR27B_FPGA_TXO  ->  BL702_UART1_RX
+//   T13_IOR8B_FPGA_RXO   <-  BL702_UART1_TX
+//
+// Both are Bank 2 pins. The Dock notes that bank 2 is locked to 3.3 V because
+// it also carries the JTAG signals, so LVCMOS33 is correct.
+//
+// Do not confuse these with N6 / N7: those two are RGB_LCD_R4 and RGB_LCD_R3
+// on the LCD connector, not the debug bridge.
+IO_LOC "uart_tx" M11;
+IO_PORT "uart_tx" IO_TYPE=LVCMOS33 DRIVE=4;
+
+IO_LOC "uart_rx" T13;
+IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
+
+
+
+

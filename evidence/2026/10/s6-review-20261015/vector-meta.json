@@ -1,0 +1,60 @@
+{
+  "blend_vectors": 768,
+  "depth": 512,
+  "fir_dc_gain": 1.0,
+  "fir_group_delay_samples": 2,
+  "fir_response_db_46875": {
+    "1000": -0.078,
+    "10000": -8.468,
+    "15000": -21.678,
+    "20000": -51.312,
+    "5000": -1.988
+  },
+  "fir_response_db_48000": {
+    "1000": -0.074,
+    "10000": -8.043,
+    "15000": -20.421,
+    "20000": -46.96,
+    "5000": -1.895
+  },
+  "fir_shift": 4,
+  "fir_taps": [
+    1,
+    4,
+    6,
+    4,
+    1
+  ],
+  "fir_vectors": 32,
+  "mixer_vectors": 510,
+  "osc_blend_vectors": 256,
+  "osc_vectors": 3584,
+  "rom_blend_vectors": 1024,
+  "vector_sha256": {
+    "blend_a.hex": "f67d45443851b8ddb994626cd812bf9c32f9343eb498c7ad3c840e407374035a",
+    "blend_b.hex": "9435370da82ab7be9f737ead42dc31d7f1ac2f232d66eb3efca05d2d9a964956",
+    "blend_expected.hex": "eafbaf6b64053b4972e5b76ed0e83dd766f15d55e992ebf60437f7b29dbbff73",
+    "blend_weight.hex": "54762269fa59d0bb1bc3e6652a4994fa12d7c81fa153375df4ff1a37f272de5c",
+    "fir_expected.hex": "f2aba4706a5613ee5840cf8a40bb587d71db05714726478c718eaf09354b2195",
+    "fir_input.hex": "72a1474705c8e53164aefc43c668c6014b3f11c1cf4ba93e4b9af543c8c4d5f6",
+    "mix_count.hex": "b7492b7df499975e145490188a816f519a7847f2cd557b56ad224e7684d8d731",
+    "mix_expected.hex": "d818b044a6ec871ca863d3a4a09852f9d4acaee62be1fab7439a7efbc3613e10",
+    "mix_fir.hex": "955bf481c58056336ff4a7424e5a3ef73b796cbe7fb203e3b69169929080f97b",
+    "mix_firclip.hex": "662158b5b70d603bd4dbd3e14cafa2ce6da69b26c4ae393ef62234e1f3ae6bb4",
+    "mix_rawclip.hex": "f534a6b78fe0470ae611cff66062a401b024159692e7a0287cccee1962c18c70",
+    "mix_shift.hex": "ac41b914a64dcbab762d0c12b3628b23e5e043b9a4cdfdbb76317eae0dcebc8f",
+    "mix_v0.hex": "fa8389a7be94e3809c66574f2af2ac76cd9b5a8251968268b8d14c4f9c7aab10",
+    "mix_v1.hex": "d356001960a92170ef7288fd398b313d94f14509c219b26636b8b34952fcb2f1",
+    "mix_v2.hex": "66abceab2ae653f7f33ef74ab2cace304a3f0589b3a5319a517c09f77351da32",
+    "mix_v3.hex": "5375776d9c57a13bec112ac10d7ac65cfa815806497b3e695fb589708234400a",
+    "osc_blend_expected.hex": "3ffba8830be10deabe767bd4c032067e9c4d47c7146a481c818eb844d630291a",
+    "osc_blend_phase.hex": "75a8bd313df8d4d958bc80fc6f013ffa8d12a04db7fa8d593c4dc3d3123ebb26",
+    "osc_blend_weight.hex": "3baa06fe60aeafa4921e08efa3f1d21b49cf899209ee2810a766a80a1fface9a",
+    "osc_bright_expected.hex": "3e1bd3a215ac62763c632c52ea7528391b7fd23b8597d185a6fb93d51d1ee1b5",
+    "osc_phase.hex": "46a3001a37222d61e80b17297aa34f728cad380dbff516aa0a316d882a5e4493",
+    "osc_sine_expected.hex": "60355c9868f521e629682446de4942a3d9e45263631bab894bf3e89c01b83595",
+    "rom_blend_addr.hex": "d022e1705517b793bb83a3e65628712bc3300d1837eab22e20883a993365dd24",
+    "rom_blend_expected.hex": "6f47c1f374602aa6695d30f780eecd6a7970ef2d7fd312672d9399e71b27b6ef",
+    "rom_blend_weight.hex": "98371960f2b1594e79d66abc65d171792f6c24501383462385c74c6fe4fe140d"
+  }
+}

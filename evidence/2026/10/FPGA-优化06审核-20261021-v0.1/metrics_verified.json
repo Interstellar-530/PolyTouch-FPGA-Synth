@@ -1,0 +1,78 @@
+{
+  "logic": 4635,
+  "registers": 2252,
+  "bsram": 5,
+  "dsp_units": 1,
+  "mult18x18": 2,
+  "fmax": [
+    [
+      "NO.",
+      "Clock Name",
+      "Constraint",
+      "Actual Fmax",
+      "Logic Level",
+      "Entity"
+    ],
+    [
+      "1",
+      "clk",
+      "49.152(MHz)",
+      "51.922(MHz)",
+      "16",
+      "TOP"
+    ]
+  ],
+  "tns": [
+    [
+      "Clock Name",
+      "Analysis Type",
+      "Endpoints TNS",
+      "Number of Endpoints"
+    ],
+    [
+      "clk",
+      "Setup",
+      "0.000",
+      "0"
+    ],
+    [
+      "clk",
+      "Hold",
+      "0.000",
+      "0"
+    ]
+  ],
+  "worst_setup": [
+    "1",
+    "1.085",
+    "u_sched/env_ptr_4_s1/Q",
+    "u_sched/dirty_10_s1/CE",
+    "clk:[R]",
+    "clk:[R]",
+    "20.345",
+    "0.000",
+    "19.225"
+  ],
+  "worst_hold": [
+    "1",
+    "0.425",
+    "u_sched/age_age_RAMREG_29_G[0]_s1/Q",
+    "u_sched/age_age_RAMREG_29_G[0]_s1/D",
+    "clk:[R]",
+    "clk:[R]",
+    "0.000",
+    "0.000",
+    "0.436"
+  ],
+  "prototype_inputs_verified": 18,
+  "bitstream_matches": true,
+  "production_inputs_verified": 192,
+  "production_fifth_item_unchanged": true,
+  "actual_last_activity_cycle": 992,
+  "frame_clocks": 1024,
+  "remaining_clocks": 32,
+  "clock_source_included": false,
+  "pin_constraints_included": false,
+  "production_piano_guitar_included": false,
+  "hardware_programmed": false
+}

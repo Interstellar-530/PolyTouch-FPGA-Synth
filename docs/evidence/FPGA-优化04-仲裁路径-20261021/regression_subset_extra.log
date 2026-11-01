@@ -1,6 +1,0 @@
-﻿PASS tb_top_i2s :: PASS tb_top_i2s: 8721 frames decoded, 8722 sample ticks, 24-bit slots match final_sample, A4 within 1 percent
-PASS tb_timbre_top :: PASS tb_timbre_top: real UART, four held voices, continuous phases, real I2S, long press and overlay
-PASS tb_host_kbd :: PASS tb_host_kbd: press/release, dedup, chord, transpose-held, Esc, F1, resync, rollover
-PASS tb_timbre_uart :: PASS tb_timbre_uart: all 256 values, mixed case, CRLF once, 5 format/range checks, independent note/mode path
-COMPILE-FAIL tb_top_song
-SUMMARY benches=5 failed=1 [tb_top_song]

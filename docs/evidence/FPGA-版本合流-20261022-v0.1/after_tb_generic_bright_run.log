@@ -1,2 +1,0 @@
-PASS tb_generic_bright: generic=191404 piano=204992, 120 clocks/44 products, no mux mismatch
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_generic_bright.v:108: $finish called at 2540000 (1ps)

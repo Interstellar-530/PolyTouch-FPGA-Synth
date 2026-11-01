@@ -1,0 +1,22 @@
+Name            : mingw-w64-ucrt-x86_64-iverilog
+Version         : 1~13.0-2
+Description     : Icarus Verilog, is a Verilog simulation and synthesis tool (mingw-w64)
+Architecture    : any
+URL             : https://github.com/steveicarus/iverilog
+Licenses        : spdx:GPL-2.0-or-later
+Groups          : mingw-w64-ucrt-x86_64-eda
+Provides        : None
+Depends On      : mingw-w64-ucrt-x86_64-bzip2  mingw-w64-ucrt-x86_64-readline  mingw-w64-ucrt-x86_64-zlib
+Optional Deps   : None
+Required By     : None
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 6.23 MiB
+Packager        : CI (msys2/msys2-autobuild/ce84121b/23987616169)
+Build Date      : Sun Apr  5 05:18:15 2026
+Install Date    : Tue Oct 13 22:54:19 2026
+Install Reason  : Explicitly installed
+Install Script  : No
+Validated By    : SHA-256 Sum  Signature
+

@@ -16,7 +16,7 @@ PDF 阅读默认先转 Markdown，再阅读；PDF 输出默认先写 Markdown，
 
 任何 Verilog 改动，在烧录之前必须先通过 RTL 仿真。这条规则不接受"改动很小""只调参数""时间紧"之类的例外。
 
-仿真门禁由 `output/handoff_milestone2_20261008/source/sim/run_simulation.ps1` 执行，按2026-10-23用户要求，默认Quick运行当前生产链短门禁；-Suite Full保留全部历史回归，Host/Ram32或-Tests用于开发定向验证。所选测试任一失败就返回非零，不允许空清单或缺失测试通过。烧录脚本 `source/build/program_sram.ps1` 默认先跑Quick，可用-SimulationSuite Full选择完整回归，未通过时直接拒绝烧录；`-SkipSimulation` 只在仿真器本身不可用的极端情况下使用，且必须在调试日志里写明原因。工具链是 Icarus Verilog（`C:\iverilog`），仅用于开发期仿真，不参与硬件运行。
+仿真门禁由 `source/sim/run_simulation.ps1` 执行，按2026-10-23用户要求，默认Quick运行当前生产链短门禁；-Suite Full保留全部历史回归，Host/Ram32或-Tests用于开发定向验证。所选测试任一失败就返回非零，不允许空清单或缺失测试通过。烧录脚本 `source/build/program_sram.ps1` 默认先跑Quick，可用-SimulationSuite Full选择完整回归，未通过时直接拒绝烧录；`-SkipSimulation` 只在仿真器本身不可用的极端情况下使用，且必须在调试日志里写明原因。工具链是 Icarus Verilog（`C:\iverilog`），仅用于开发期仿真，不参与硬件运行。
 
 新增或修改功能时同步补测试台，并让测试台自检：断言不成立时用 `$fatal` 结束，使退出码非零，而不是只打印一行提示。历史教训是本项目曾把宽 576 个时钟的使能电平当成单周期脉冲使用，导致旋律飞速跑圈，读代码时完全看不出问题，只有逐周期仿真才暴露出来。
 
@@ -24,4 +24,4 @@ PDF 阅读默认先转 Markdown，再阅读；PDF 输出默认先写 Markdown，
 
 ## 参考文件
 
-项目主规划是 `电子乐器项目规划.md`，最低实现分册在 `docs/minimum_design`，原理图在 `docs/references`，MCP 证据在 `docs/evidence`，最终 PDF 在 `output/pdf`，历史压缩包在 `output`。
+项目主规划是 `docs/planning/电子乐器项目规划.md`，最低实现分册在 `docs/design/minimum_design`，原理图在 `docs/references`，证据按日期位于 `evidence/年/月`，最终 PDF 在 `docs/exports/pdf`。当前工程在 `source/`，历史版本入口是 `docs/history/VERSIONS.md`，日期交付包在 `releases/年/月/FPGA-日期-v0.N`，本机完整过程备份在 `archive/`。

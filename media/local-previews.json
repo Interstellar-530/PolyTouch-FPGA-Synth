@@ -1,0 +1,202 @@
+[
+  {
+    "path": "media/previews/undated/kuanggu_32voice.wav",
+    "sha256": "096c826937e6ccb8cdf86e95aa400d3dbb41bdf3fcd16ddf94e918541d4ba21d",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_bridge.wav",
+    "sha256": "a5d7a43032a06a644af476054b2542bdca82e256af33cbc12b37fa31d119614b",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_bridge_climax_66s.wav",
+    "sha256": "b8858ae5641da6300da226f38839c5ff67d42ad9d62a15d2bd87e0272b0a2c7b",
+    "bytes": 6336078
+  },
+  {
+    "path": "media/previews/undated/kuanggu_bridge_ref.wav",
+    "sha256": "60b3df30b286166b7fb6b315e15ee5276e4f660d085d911b8d1be834c8f22d6d",
+    "bytes": 3552078
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge.wav",
+    "sha256": "1b1bd967352cfaa1e8659dfa6b868e3bf572d6f6e2e29becd7b228e3e0dccded",
+    "bytes": 2304044
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v10.wav",
+    "sha256": "df5a603001d86214f769a38d4759f576cd0e6b1a769f68ed65d4bb1ebdec3694",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v11.wav",
+    "sha256": "4ff7e2180d282138357f023b8c07d1497ef759d7bf254833b14a88d48dff8c9d",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v12.wav",
+    "sha256": "a5d7a43032a06a644af476054b2542bdca82e256af33cbc12b37fa31d119614b",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v2.wav",
+    "sha256": "2699fdaca18626f17b647f61add30486239b4538d539c4c6e1bac26b88cbbf6f",
+    "bytes": 2304044
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v3.wav",
+    "sha256": "f97f4d95eea787c2121557ed0e246f9c15733fd5fcf7cdad03d2376ef82710aa",
+    "bytes": 2764842
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v4.wav",
+    "sha256": "27db824fc37c8bf04574a830f26383530f08c8ad7ba459cb73e6f93aa7011838",
+    "bytes": 2764842
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v5.wav",
+    "sha256": "27db824fc37c8bf04574a830f26383530f08c8ad7ba459cb73e6f93aa7011838",
+    "bytes": 2764842
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v6.wav",
+    "sha256": "69334413103af1f8798894b63f7d5df3286ea2f577bff5c298e0d3ecda6fd49d",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v7.wav",
+    "sha256": "3ebf1b66e90125be2859117fde6b579860dde629bd62685ad2c27b5b00f754c4",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v8.wav",
+    "sha256": "5df387a797c86d15078ae6f339a0737d5e9f566b5eca4b1846f1f9d018a95134",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_jianpu_bridge_v9.wav",
+    "sha256": "054467a545be9ebf26d493b4930af8c9080bf3b692e4f232dfd98c5dbcdd025a",
+    "bytes": 2995244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_mock32.wav",
+    "sha256": "02b8a97b0927de6e812e67eed6bcd0a1ad4f29e54dd8dff31851db965f9a1011",
+    "bytes": 6451244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_mock32_v2.wav",
+    "sha256": "64917cc8b6d57309be0699e3279fbeb0f10c5e7afcd2b97e82d2e14ed2619193",
+    "bytes": 6451244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_mock32_v3.wav",
+    "sha256": "9fed75eae96974ee6806f350d32a2cbf3f66ea0e44f2a71dadc599f299a5f16f",
+    "bytes": 6451244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_mock32_v4.wav",
+    "sha256": "258b0306879fad00880cd3867de8a1e1ed28eaca4ebcdad2846c4ab570a03a4b",
+    "bytes": 6451244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_mock32_v5.wav",
+    "sha256": "c295f0e1a2e5d475c02c3dc22dd93cdfe2fee6a234f9dfdd7eed04c3289a32c9",
+    "bytes": 6451244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_mock32_v6.wav",
+    "sha256": "dec780be1065699631dbe8306e01c9b953b677877b12113b08d8a70e64810d7f",
+    "bytes": 6451244
+  },
+  {
+    "path": "media/previews/undated/kuanggu_score_bridge_107.png",
+    "sha256": "3be03badb6e29618bc6e5e8d7ceedf2185d77b4c96718c056ea671fec0adeefa",
+    "bytes": 611778
+  },
+  {
+    "path": "media/previews/undated/kuanggu_score_bridge_107_zoom.png",
+    "sha256": "734294d843b4165f1cb90529dcd9bd621601067fd95a30af2adeb4c7d1b59086",
+    "bytes": 596289
+  },
+  {
+    "path": "media/previews/undated/kuanggu_score_p1.png",
+    "sha256": "90a2ab00c186214c0fb940f173a07ca4d07298eefabab782b5093b5a093de42a",
+    "bytes": 660387
+  },
+  {
+    "path": "media/previews/undated/kuanggu_score_phrase.wav",
+    "sha256": "436c04bbfbd12206a2499b5b17ab5e4c5eab906c76cb3d4aba4efb6c76eeea2c",
+    "bytes": 1152044
+  },
+  {
+    "path": "media/previews/undated/vocal_ref_126-136.wav",
+    "sha256": "c15bcdfd58a9a9d022ce92a674758c9a579f5724e9cb549d05a2abdaef251a67",
+    "bytes": 1764044
+  },
+  {
+    "path": "media/previews/undated/wanye_32voice.wav",
+    "sha256": "385400521f6a97bb57cd29c375a1f9d87cf75f07e96e97d4b0a525f4f321ee8d",
+    "bytes": 5688932
+  },
+  {
+    "path": "media/previews/undated/wanye_arrange8.wav",
+    "sha256": "be570f65974ed3accb6f6577c375303d5fa3291906d04f99397e1633a3b1ae0c",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_arrange_mock.wav",
+    "sha256": "e336d00218ae93bd1ca3ef2d14c96b6c49935e62f74246ceb3415398273b7660",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA.wav",
+    "sha256": "1788b2423d5e5d97a73d45bf3a450b848e56c1b46f9b24515315ba31ecb8262a",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v2.wav",
+    "sha256": "845540d928acb2a4731998582a3b7d06cdc051e0fec6bb7e57484925a1bb5e9c",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v3.wav",
+    "sha256": "f0a3f7a7d77ed3a32c9b5e728750e26401347c8cc38092b92ca13f0d8d11c5e4",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v4.wav",
+    "sha256": "88a8baadcf55ed481fd150b610a6937c30a74ca0e388a15f2a0eb5e7a8d7a94a",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v5.wav",
+    "sha256": "9694f867b3e8aafb6f0725238c86bd2b3f1433dca24516dc5783e51ed10f9de2",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v6.wav",
+    "sha256": "9087a3daa793887cd58f84344161c8666fa7f1709331c816e9a0b8158f9d598c",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v7.wav",
+    "sha256": "93a4e160c52c61014ced5376f88d319cdf4ed5f4399e64aa8f7e1b9b9516fabf",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordA_v8.wav",
+    "sha256": "1788b2423d5e5d97a73d45bf3a450b848e56c1b46f9b24515315ba31ecb8262a",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/wanye_chordB.wav",
+    "sha256": "f89258da3cd279ebb68e1a6bad5553e38ef5a28c6d079da1363dad368a2eb74e",
+    "bytes": 5555884
+  },
+  {
+    "path": "media/previews/undated/host_eight_i2s.csv",
+    "sha256": "7b84ccccb33a4b36b52b95b6d2af76df18cf0bfa5d7aa7f8d13b22192ae3008a",
+    "bytes": 3946
+  }
+]

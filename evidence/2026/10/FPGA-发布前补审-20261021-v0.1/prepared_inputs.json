@@ -1,0 +1,12 @@
+{
+  "rtl/prototypes/voice_sched32.v": "739010e251579484176d79088d76ed7625efedeba62a57a1abcddedd0a15a05e",
+  "rtl/prototypes/ram32_top.v": "016b34db015a81707b8c61b9a9aa049125efde100ab16844a719ece467ee9ac6",
+  "rtl/prototypes/instrument_rom_banks.v": "7730f02dd81fb704959a8ce1cc4df9042b664d37010e056ab59e3eb27ea69aeb",
+  "rtl/audio/ram_wavetable_engine.v": "8b506daee46e72e5678464e4fe9126a6267c5dafb001e649d79930d77e334ab8",
+  "rtl/audio/ram_audio_compute.v": "8cc36f0bbc827f4b60a6479fb55d340a59ea4edbc5588bb810c88e03e19915a1",
+  "rtl/audio/ram_audio_datapath.v": "e3bd26c5e4194adb966cdf056a69034d975dae7c0d03d179b01593320e8ba5f2",
+  "build/ram32_proto.tcl": "cdcff82d1499ca5c09014f39f7e4a4824ae209fcd1982d0cfa490ec8faaf475b",
+  "sim/tb_ram32_complete.v": "aa4a699ed2cc8300d6a515d0c22ecabce0e83dcc4fb83acaca3713174f329b09",
+  "sim/tb_voice_sched32_review.v": "9edbcce531c952d13d7b8a010932a748055567960b7bf189aecbee507515b154",
+  "sim/run_simulation.ps1": "50fb55ea6d1b70c91abb1554a225f66765759d0985077e92f040def6c4f9dae2"
+}

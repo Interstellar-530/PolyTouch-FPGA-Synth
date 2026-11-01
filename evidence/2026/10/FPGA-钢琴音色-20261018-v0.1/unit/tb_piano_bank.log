@@ -1,0 +1,2 @@
+PASS tb_piano_bank: 512 addresses match the dedicated piano table
+sim\tb_piano_bank.v:38: $finish called at 5156000 (1ps)

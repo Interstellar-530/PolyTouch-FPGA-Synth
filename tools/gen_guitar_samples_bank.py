@@ -13,7 +13,7 @@ import numpy as np
 import soundfile as sf
 
 REPO = Path(__file__).resolve().parents[1]
-DEFAULT_AUDIO = REPO / 'output/handoff_milestone2_20261008/source/rtl/audio'
+DEFAULT_AUDIO = REPO / 'source/rtl/audio'
 DEFAULT_SAMPLES = REPO / 'tmp/karoryfer/black-and-green-guitars-main/Samples'
 FS = 46875
 
@@ -27,7 +27,7 @@ parser.add_argument('--out-dir', type=Path,
                     help='generated output directory (default: <repo-root>/output/.../rtl/audio)')
 args = parser.parse_args()
 ROOT = args.repo_root.resolve()
-AUDIO = (args.out_dir or ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio').resolve()
+AUDIO = (args.out_dir or ROOT / 'source/rtl/audio').resolve()
 SAMPLES = (args.samples or ROOT / 'tmp/karoryfer/black-and-green-guitars-main/Samples').resolve()
 if not SAMPLES.is_dir():
     raise SystemExit(f'sample directory not found: {SAMPLES} (pass --samples or --repo-root)')

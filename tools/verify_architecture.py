@@ -4,10 +4,10 @@ import argparse,json,subprocess,sys,time
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
-    root=Path(__file__).resolve().parents[1];source=root/'output/handoff_milestone2_20261008/source'
+    root=Path(__file__).resolve().parents[1];source=root/'source'
     parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('tests',nargs='*');args=parser.parse_args()
     work=root/'tmp/architecture-verification-20261016';work.mkdir(parents=True,exist_ok=True)
-    out=args.out or root/'docs/evidence/FPGA-架构优化-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
+    out=args.out or root/'evidence/2026/10/FPGA-架构优化-20261016-v0.1';out.mkdir(parents=True,exist_ok=True)
     results=[]
     for name in args.tests or ['tb_architecture_equivalence','tb_shared_bend_equivalence','tb_bend_equivalence','tb_shared_master','tb_frame_velocity']:
         started=time.monotonic();exe=work/(name+'.vvp')

@@ -31,4 +31,4 @@ CSV列为`frame,left,right,stage,gate_mask,idle_mask,note0,note1,note2,note3,fin
 
 离线库固定为NumPy 2.3.5（BSD-3-Clause）、Matplotlib 3.10.8（其项目许可证）。完整传递依赖由pip安装，运行环境版本另记入证据。FFT与线性最小二乘使用[NumPy rfft](https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html)和[lstsq](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html)。参考了[nishadsuresh/fpga-verilog-synth](https://github.com/nishadsuresh/fpga-verilog-synth)的RTL捕获→PCM/WAV→FFT组织思路；该项目为MIT，只借鉴验证流程，没有复制源码或引入其单声部顶层。
 
-这些检查覆盖四声部数字音频路径的行为，不测量模拟底噪、DAC/耳放电气指标、实物晶振偏差或整机触键到声音延迟。S1 初次交付未修改生产 RTL；S2 的 GPIO、顶层和引脚变化另见 [S2 复核记录](../../docs/evidence/FPGA-S2-复核-20261014-v0.1.md)，其资源以对应 PnR 报告为准。已烧录生产位流的状态与当前工作分支分开记录。
+这些检查覆盖四声部数字音频路径的行为，不测量模拟底噪、DAC/耳放电气指标、实物晶振偏差或整机触键到声音延迟。S1 初次交付未修改生产 RTL；S2 的 GPIO、顶层和引脚变化另见 [S2 复核记录](../../evidence/2026/10/FPGA-S2-复核-20261014-v0.1.md)，其资源以对应 PnR 报告为准。已烧录生产位流的状态与当前工作分支分开记录。

@@ -1,2 +1,0 @@
-PASS tb_s6_audio: dual ROM sync/select/interpolation, mixer saturation, FIR and clip counter
-sim/tb_s6_audio.v:151: $finish called at 206000 (1ps)

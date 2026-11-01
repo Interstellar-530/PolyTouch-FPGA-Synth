@@ -1,2 +1,0 @@
-PASS tb_timbre_controls: bounce, release-only short, long no-repeat, four presets, S2, UART priority, S3 retention, LED timeout
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_timbre_controls.v:38: $finish called at 6654010000000 (1ps)

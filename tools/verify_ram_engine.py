@@ -4,7 +4,7 @@ import argparse,subprocess,json,random,csv,sys
 import numpy as np
 from verify_bandlimit import load,config,interp
 
-ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'output/handoff_milestone2_20261008/source'
+ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'source'
 def vectors(path,voices,frames=512,spectrum=False):
  rng=random.Random(20261017+voices);phase=[0]*voices;incs=[0]*voices;env=[0]*voices;vel=[0]*voices;rt=[False]*voices
  sine=load('wave_sine.hex');banks=[load(f'wave_bright_h{h}.hex') for h in [16,8,4,2,1]];rows=[]
@@ -28,7 +28,7 @@ def vectors(path,voices,frames=512,spectrum=False):
 
 def main():
  sys.stdout.reconfigure(encoding='utf-8',errors='replace')
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=ROOT/'docs/evidence/FPGA-RAM波表核心-20261017-v0.1');p.add_argument('--voices',type=int,default=8,choices=[8,32,64]);p.add_argument('--smoke',action='store_true');p.add_argument('--vendor',action='store_true');p.add_argument('--spectrum',action='store_true');p.add_argument('--generate-smoke',action='store_true');args=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=ROOT/'evidence/2026/10/FPGA-RAM波表核心-20261017-v0.1');p.add_argument('--voices',type=int,default=8,choices=[8,32,64]);p.add_argument('--smoke',action='store_true');p.add_argument('--vendor',action='store_true');p.add_argument('--spectrum',action='store_true');p.add_argument('--generate-smoke',action='store_true');args=p.parse_args()
  if args.generate_smoke:vectors(SRC/'sim/vectors/ram_engine_smoke.txt',8,64);return
  out=args.out;out.mkdir(parents=True,exist_ok=True);work=ROOT/'tmp/ram-engine-20261017';work.mkdir(parents=True,exist_ok=True)
  label=f'{args.voices}-'+('vendor' if args.vendor else 'portable');vec=work/(label+'.txt');vectors(vec,args.voices,64 if args.smoke else 512,args.spectrum)

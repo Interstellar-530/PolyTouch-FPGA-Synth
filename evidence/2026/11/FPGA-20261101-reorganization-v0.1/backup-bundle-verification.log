@@ -1,0 +1,47 @@
+The bundle contains these 43 refs:
+6944f73c93bc2f68c80f1eef265f0b6557151585 refs/codex/turn-diffs/captures/1793500718378/688c66a8-b8f3-4042-a8a0-39ccbaf111a9/base
+6944f73c93bc2f68c80f1eef265f0b6557151585 refs/codex/turn-diffs/checkpoints/48d1f9af74b407ccd227b2437b2dad3b/2628a7d6eb1caba9f8f90fb6994628d1/1793416062637/8dd4d668-4710-4765-bdc4-1aa61e859ce0
+38d5550790bf8f39bbd17865953c51f69511e0ae refs/codex/turn-diffs/checkpoints/8b8b6513ed757c4fffab69fe16c669dc/926bb12df65b2f0fc07067b9a96a8877/1793349957890/9ab44ef1-6887-4766-9c1c-6d12cf27e88c
+5654d23db871d344172e897a195afdd1edf52332 refs/codex/turn-diffs/checkpoints/a70581cc495060eae5e06be4f4551535/a2f1fc98c163ed57d5f344ab99002fa8/1793012393453/1ad924be-5eb5-4548-8737-c308a43a6164
+bf24de9dd8a482d3f84ef7407bf5179bdeb7e58f refs/codex/turn-diffs/checkpoints/b7cdccb94e4992678305e950366518b5/e8d8f1640ca24ac5647aca72d66ba396/1793276560204/71d2c2db-e112-4c38-98aa-f08cb6117987
+bf24de9dd8a482d3f84ef7407bf5179bdeb7e58f refs/codex/turn-diffs/checkpoints/ba9c20c3dcf3cd16124f60aaccd3cb1a/1babec79621304b083173daa064e2e5f/1793343681165/86508365-4752-4929-935d-7a23b67c71bf
+abcc820b1a0f597217fdc5d3dd66bdc66c69d869 refs/codex/turn-diffs/checkpoints/e761ed66ff54a6319135cecd87a50558/db94849873dfb0903f50bf7a9f3e9b88/1793352459511/66ecece0-a4c0-48e9-b1e7-fc2c2566f99e
+5237a23f5da4a8cfe6e7a5c21072222f2761cb2f refs/codex/turn-diffs/checkpoints/ed60194d4734ebc95fa3d1f29aa930e2/c17ab46ba31edd99852b8ce74532694e/1793020421239/cde14599-ea10-49f5-adf4-e5accd90db8a
+b9d1ecc0cd2a9636775345976111e7a516699988 refs/heads/codex/daily-keyboard-latency-20261026
+dd43257888d99236bed5951eba33aee1f2874ba0 refs/heads/codex/s2-gpio-keyboard
+17aff2da4a0b9d912bb24dccea8e4b98efe3fb09 refs/heads/codex/s3-i2s-tx
+6751f6dc65c5a301af3aab8187ec3d4aaeb7d219 refs/heads/codex/s4-s6-pressure
+efd76ea14bab93521604819756410898eb0bc8af refs/heads/codex/v2.1.1-integration-20261022
+b559237c37d8b7f6871c1402fd8865709297ef49 refs/heads/main
+6751f6dc65c5a301af3aab8187ec3d4aaeb7d219 refs/remotes/origin/HEAD
+881a11cc1e2024e297c343e2345173613e0339f5 refs/remotes/origin/codex/guitar-preview-ddr3-20261020
+a234c70c9a809f3d12cd00fc9cfb6b304224df33 refs/remotes/origin/codex/hdmi-dashboard-20261025
+8e77ddebd23a8586a29acc5eaf006b943d49bdbf refs/remotes/origin/codex/optimization07-watchdog-20261022
+dd43257888d99236bed5951eba33aee1f2874ba0 refs/remotes/origin/codex/s2-gpio-keyboard
+17aff2da4a0b9d912bb24dccea8e4b98efe3fb09 refs/remotes/origin/codex/s3-i2s-tx
+40ef0128dadffdcbae221b79e7ee1bac11cf9ef0 refs/remotes/origin/codex/s4-s6-integration
+6751f6dc65c5a301af3aab8187ec3d4aaeb7d219 refs/remotes/origin/codex/s4-s6-pressure
+36ea1e4a72bd9d9c18a5f04e790b3564a3456616 refs/remotes/origin/codex/s4-s6-review
+f7052fbe951e56d9839e179d14682c28ce714b05 refs/remotes/origin/codex/v2-gate-fix-20261021
+efd76ea14bab93521604819756410898eb0bc8af refs/remotes/origin/codex/v2.1.1-integration-20261022
+3a31eb288ae400830a18fdcde96350ac03c1bb07 refs/remotes/origin/fix/m2-build-issues
+6751f6dc65c5a301af3aab8187ec3d4aaeb7d219 refs/remotes/origin/main
+14bd10a2b97b455deab1c7cda1a8e723b0ed2701 refs/stash
+ab5ac113e19a18ac24c3f088a9bbeae23dee2364 refs/tags/final-20261030
+60348dd4d6557f1b951968a03d4d074d08b7e2ad refs/tags/v0.4-20261010
+76390b12e5912489fc210135612f41526ecb282c refs/tags/v0.5-20261010
+60499f27b8f8d314512cb8d34bec97a8ea503cea refs/tags/v0.5.1-20261010
+db7b4608237dc4b52f22c22d41fb73abc453ce03 refs/tags/v0.5.2-20261010
+fac3994b8c0ba4b9357b4989f1857d293d397de9 refs/tags/v0.5.3-20261010
+48d6e0163bd05ce34d0f0ee62ddb34f80cd3847f refs/tags/v0.5.4-20261010
+edd2ccc001f9f4d4fac89be707298391fc8aad6e refs/tags/v0.5.5-20261010
+31b50c9a70fd77e5f6ae1d8a4818e9db090e0c88 refs/tags/v1.0-final-20261029
+f4883818a34854a7889d8501a650661c8c97ce96 refs/tags/v1.0.0
+46e07d37d46ab9abf0ff11b681d7eb71e7b65516 refs/tags/v1.01
+ab7167953c20ee54a1144edfa459e969faf266b0 refs/tags/v2.0.0
+637b23e1dc0f13f0281b5265cb3943d0b57f5d94 refs/tags/v2.1.0
+efd76ea14bab93521604819756410898eb0bc8af HEAD
+057d78cb909e18eebe831c387f30cf656709503e worktrees/FPGA/HEAD
+The bundle records a complete history.
+The bundle uses this hash algorithm: sha1
+archive/FPGA-20261101-v0.1/before-history.bundle is okay

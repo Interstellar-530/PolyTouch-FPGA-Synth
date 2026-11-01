@@ -6,8 +6,8 @@ from measure_architecture import timing_summary
 
 def main():
  sys.stdout.reconfigure(encoding='utf-8',errors='replace')
- root=Path(__file__).resolve().parents[1];src=root/'output/handoff_milestone2_20261008/source'
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'docs/evidence/FPGA-RAM波表核心-20261017-v0.1/resources');p.add_argument('--audio',action='store_true');args=p.parse_args()
+ root=Path(__file__).resolve().parents[1];src=root/'source'
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=root/'evidence/2026/10/FPGA-RAM波表核心-20261017-v0.1/resources');p.add_argument('--audio',action='store_true');args=p.parse_args()
  out=args.out;out.mkdir(parents=True,exist_ok=True);work=root/'tmp/ram-engine-resource-20261017';work.mkdir(parents=True,exist_ok=True);results=[]
  for total in [8,32,64]:
   lanes=2 if total==64 else 1;count=total//lanes;period=256 if count==8 else 1024;name=f'voices{total}'

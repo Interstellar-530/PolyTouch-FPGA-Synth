@@ -9,7 +9,7 @@ from pathlib import Path
 import argparse
 
 REPO = Path(__file__).resolve().parent.parent
-DEFAULT_AUDIO = REPO / "output/handoff_milestone2_20261008/source/rtl/audio"
+DEFAULT_AUDIO = REPO / "source/rtl/audio"
 TABLES = 12
 DEPTH = 512
 GROUPS = TABLES // 2
@@ -23,7 +23,7 @@ parser.add_argument('--out-dir', type=Path,
                     help='output directory (default: <repo-root>/output/.../rtl/audio)')
 args = parser.parse_args()
 ROOT = args.repo_root.resolve()
-AUDIO = (args.out_dir or ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio').resolve()
+AUDIO = (args.out_dir or ROOT / 'source/rtl/audio').resolve()
 HEX = (args.hex or AUDIO / 'epiano_bank_all.hex').resolve()
 OUT = AUDIO / 'gowin_prom_piano_bank.v'
 

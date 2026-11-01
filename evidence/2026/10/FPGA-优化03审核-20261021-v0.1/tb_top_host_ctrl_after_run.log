@@ -1,0 +1,2 @@
+PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_top_host_ctrl.v:264: $finish called at 54422729769 (1ps)

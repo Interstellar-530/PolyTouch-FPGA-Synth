@@ -1,0 +1,2 @@
+PASS tb_note_ownership: 2060 source events, both release orders, repeated on/off, clear and demo bypass
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_note_ownership.v:25: $finish called at 41240000 (1ps)

@@ -1,0 +1,10 @@
+Gate Custom: 4/83 positive benches; logs: E:\Working Space\FPGA\docs\evidence\FPGA-fsr-mute-20261024-v0.1\targeted
+=== tb_pressure_top ===
+rtl\top.v:263: error: Unknown module type: host_kbd_input
+1 error(s) during elaboration.
+*** These modules were missing:
+        host_kbd_input referenced 1 times.
+***
+
+tb_pressure_top: pass=False, seconds=0.17
+仿真门禁未通过，1 个测试台失败，禁止烧录。

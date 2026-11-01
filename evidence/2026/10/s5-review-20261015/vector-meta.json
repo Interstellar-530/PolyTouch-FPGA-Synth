@@ -1,0 +1,63 @@
+{
+  "adc_center": 2048,
+  "adc_max": 4095,
+  "bend_q8_max": 512,
+  "bend_vectors": 4096,
+  "phase_base": 1000000,
+  "pressure_clamp_events": 0,
+  "pressure_filtered_max": 4094,
+  "pressure_filtered_min": 0,
+  "pressure_step_t90_ticks": 5,
+  "pressure_vectors": 640,
+  "ratio_deviations": [
+    {
+      "deviation_cents": 0.417,
+      "exact_q16": 58385.938,
+      "ratio_q16": 58400,
+      "rounded_q16": 58386,
+      "semitone": -2
+    },
+    {
+      "deviation_cents": 0.007,
+      "exact_q16": 61857.747,
+      "ratio_q16": 61858,
+      "rounded_q16": 61858,
+      "semitone": -1
+    },
+    {
+      "deviation_cents": 0.0,
+      "exact_q16": 65536.0,
+      "ratio_q16": 65536,
+      "rounded_q16": 65536,
+      "semitone": 0
+    },
+    {
+      "deviation_cents": -0.772,
+      "exact_q16": 69432.973,
+      "ratio_q16": 69402,
+      "rounded_q16": 69433,
+      "semitone": 1
+    },
+    {
+      "deviation_cents": -0.746,
+      "exact_q16": 73561.673,
+      "ratio_q16": 73530,
+      "rounded_q16": 73562,
+      "semitone": 2
+    }
+  ],
+  "ratio_q16": [
+    58400,
+    61858,
+    65536,
+    69402,
+    73530
+  ],
+  "vector_sha256": {
+    "bend_phase_expected.hex": "1a02acd8e88b61644e1a93090c2cecb042ff289e5952486f1acc869dc17c7748",
+    "bend_q8_expected.hex": "87706e33e0c1f64bae0bc9b9b6fee781c8c4f8cecfd2a6d2b85e7afcecca1008",
+    "bend_ratio_expected.hex": "90e99f424c3d325cf20e85e9c40008ae5c01099c9cbc6114e8cba951a5634845",
+    "pressure_expected.hex": "d7a64d75a2e3f92bf6eb927bc2433b8a62cd02314da3f79d6fd530b441549602",
+    "pressure_inputs.hex": "27cd1bb8ef3e9956c76baa0ae06394822bf299e4070c5fc2f2b529d52487f6a9"
+  }
+}

@@ -1,2 +1,0 @@
-PASS tb_top_switch: I0/I1 runtime switch, voices cleared, tables re-selected
-E:\Working Space\FPGA\tmp\github-integration-20261021-v01\focused\tb_top_switch_smoke.v:106: $finish called at 6041657079 (1ps)

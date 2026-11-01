@@ -1,2 +1,0 @@
-FATAL: E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_piano_morph.v:57: low envelope never selected C4 loud body bank 42
-       Time: 14520000  Scope: tb_piano_morph

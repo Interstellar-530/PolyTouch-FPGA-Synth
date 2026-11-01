@@ -1,0 +1,2 @@
+PASS tb_guitar_bank: 36 Karoryfer guitar tables x 512 addresses
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_guitar_bank.v:45: $finish called at 184356000 (1ps)

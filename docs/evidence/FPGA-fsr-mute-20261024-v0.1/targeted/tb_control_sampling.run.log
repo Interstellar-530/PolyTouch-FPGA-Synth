@@ -1,4 +1,0 @@
-METRIC control_sampling profile=1 fresh_hz_per_channel=2000 checked_pairs=210 conversions=420 single_spike_peak=0 step_phases=8 best_t90_us=1093.666 worst_t90_us=1531.164
-PASS tb_control_sampling: pin-level ADC, pair order/rate, no stale filter updates, one-conversion spike rejection and FSR mute response phase sweep
-sim\tb_control_sampling.v:59: $finish called at 110489097030 (1ps)
-

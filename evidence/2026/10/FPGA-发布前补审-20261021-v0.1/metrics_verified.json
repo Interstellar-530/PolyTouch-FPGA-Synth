@@ -1,0 +1,78 @@
+{
+  "logic": 5262,
+  "registers": 2341,
+  "bsram": 26,
+  "dsp_units": 1,
+  "mult18x18": 2,
+  "fmax": [
+    [
+      "NO.",
+      "Clock Name",
+      "Constraint",
+      "Actual Fmax",
+      "Logic Level",
+      "Entity"
+    ],
+    [
+      "1",
+      "clk",
+      "49.152(MHz)",
+      "49.302(MHz)",
+      "13",
+      "TOP"
+    ]
+  ],
+  "tns": [
+    [
+      "Clock Name",
+      "Analysis Type",
+      "Endpoints TNS",
+      "Number of Endpoints"
+    ],
+    [
+      "clk",
+      "Setup",
+      "0.000",
+      "0"
+    ],
+    [
+      "clk",
+      "Hold",
+      "0.000",
+      "0"
+    ]
+  ],
+  "worst_setup": [
+    "1",
+    "0.062",
+    "u_sched/env_ptr_1_s1/Q",
+    "u_sched/dirty_2_s0/D",
+    "clk:[R]",
+    "clk:[R]",
+    "20.345",
+    "0.000",
+    "20.248"
+  ],
+  "worst_hold": [
+    "1",
+    "0.216",
+    "u_dp/u_compute/lane[0].u_core/rom_bank_0_s1/Q",
+    "u_dp/u_compute/lane[0].u_core/u_banks/u_piano/gp5/AD[13]",
+    "clk:[R]",
+    "clk:[R]",
+    "0.000",
+    "0.000",
+    "0.334"
+  ],
+  "prototype_inputs_verified": 21,
+  "bitstream_matches": true,
+  "production_inputs_verified": 192,
+  "production_fifth_item_unchanged": true,
+  "actual_last_activity_cycle": 992,
+  "frame_clocks": 1024,
+  "remaining_clocks": 32,
+  "clock_source_included": false,
+  "pin_constraints_included": false,
+  "production_piano_guitar_included": true,
+  "hardware_programmed": false
+}

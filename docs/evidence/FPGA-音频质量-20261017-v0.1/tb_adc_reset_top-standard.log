@@ -1,2 +1,0 @@
-PASS tb_adc_reset_top: AUDIO_IF=1 mid-transaction phases plus idle reset, clean raw codes and channel restart, cases=4
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_adc_reset_top.v:38: $finish called at 12103810160 (1ps)

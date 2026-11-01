@@ -1,0 +1,3 @@
+METRIC architecture frames=2048 old_cycles=84 new_cycles=60 saved_cycles=24 useful_products=24 period=256 register_enables=49152
+PASS tb_architecture_equivalence: frame-bit-exact random phase/envelope/velocity, 60-cycle deadline, single completion
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_architecture_equivalence.v:34: $finish called at 5242920000 (1ps)

@@ -1,2 +1,0 @@
-PASS tb_pressure_bend: 640 pressure ticks and 4096 ADC codes match the reference, t90=5 control ticks
-sim/tb_pressure_bend.v:237: $finish called at 53426000 (1ps)

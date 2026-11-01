@@ -1,9 +1,0 @@
-{
-  "removed_paths": [
-    "E:\\Working Space\\FPGA\\output\\handoff_milestone2_20261008\\source\\tmp\\ch9350-review-20261026",
-    "E:\\Working Space\\FPGA\\output\\handoff_milestone2_20261008\\source\\docs\\evidence\\FPGA-ch9350-code-review-20261026-v0.1",
-    "E:\\Working Space\\FPGA\\tmp\\ch9350-review-20261026"
-  ],
-  "evidence_retained": "docs/evidence/FPGA-ch9350-code-review-20261026-v0.1",
-  "runtime_dependencies_removed": false
-}

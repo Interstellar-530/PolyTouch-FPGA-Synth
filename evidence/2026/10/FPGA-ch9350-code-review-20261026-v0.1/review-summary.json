@@ -1,0 +1,17 @@
+{
+  "review_scope": "CH9350L state2 one-way keyboard",
+  "host_checks": 3,
+  "quick_checks": 19,
+  "host_included_in_quick": true,
+  "song_checks": 2,
+  "hardware_tested": false,
+  "rtl_changed_by_this_review": false,
+  "full_regression_run": false,
+  "new_firmware_built": false,
+  "flashed_user_code": "0x000063DC",
+  "current_vs_flash_changed_production_inputs": [
+    "rtl/audio/song_expect.vh",
+    "rtl/audio/song_player.v",
+    "rtl/audio/song_roms.vh"
+  ]
+}

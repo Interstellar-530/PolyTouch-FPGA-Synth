@@ -1,0 +1,192 @@
+{
+  "git_head": "ff2c7d67a864a193f17e7e251932588d84749f2f",
+  "checked_signal_count": 21,
+  "debug_checked_signal_count": 16,
+  "all_passed": true,
+  "rows": [
+    {
+      "port": "gpio_key_n[0]",
+      "connector": "J5-5",
+      "ball": "L9",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[1]",
+      "connector": "J5-6",
+      "ball": "N8",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[2]",
+      "connector": "J14-5",
+      "ball": "P9",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[3]",
+      "connector": "J5-8",
+      "ball": "N7",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[4]",
+      "connector": "J6-8",
+      "ball": "A14",
+      "bank": "7",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[5]",
+      "connector": "J6-9",
+      "ball": "B14",
+      "bank": "7",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[6]",
+      "connector": "J6-10",
+      "ball": "A15",
+      "bank": "7",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[7]",
+      "connector": "J6-11",
+      "ball": "D14",
+      "bank": "1",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[8]",
+      "connector": "J6-12",
+      "ball": "E15",
+      "bank": "1",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[9]",
+      "connector": "J14-7",
+      "ball": "T8",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[10]",
+      "connector": "J14-8",
+      "ball": "P8",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "gpio_key_n[11]",
+      "connector": "J14-9",
+      "ball": "R8",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "adc_cs_n",
+      "connector": "J5-9",
+      "ball": "N6",
+      "bank": "3",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "adc_sck",
+      "connector": "J5-10",
+      "ball": "D11",
+      "bank": "7",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "adc_mosi",
+      "connector": "J5-11",
+      "ball": "A11",
+      "bank": "7",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "adc_miso",
+      "connector": "J5-12",
+      "ball": "B11",
+      "bank": "7",
+      "direction": "input",
+      "passed": true
+    },
+    {
+      "port": "i2s_bck",
+      "connector": "J6-5",
+      "ball": "B12",
+      "bank": "7",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "i2s_lrck",
+      "connector": "J6-6",
+      "ball": "C12",
+      "bank": "7",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "i2s_din",
+      "connector": "J6-7",
+      "ball": "B13",
+      "bank": "7",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "dac_xsmt",
+      "connector": "J14-12",
+      "ball": "P6",
+      "bank": "3",
+      "direction": "output",
+      "passed": true
+    },
+    {
+      "port": "clk_12m288",
+      "connector": "J14-10",
+      "ball": "T7",
+      "bank": "3",
+      "direction": "input",
+      "passed": true
+    }
+  ],
+  "header_source": "Visual review of Dock3714 PDF pages 1/4/9; image evidence retained",
+  "physical_measurements_performed": false,
+  "rtl_modified": false,
+  "hardware_programmed": false,
+  "pending": [
+    "oscillator H.ELE 4F voltage/pinout and adapter PCB",
+    "CJMCU power path and solder bridges",
+    "P15W analog input and speaker supply/load"
+  ],
+  "hashes": {
+    "docs\\hardware\\FPGA-逐根接线手册-20261018-v0.1.md": "c2ec01b4bd908d6ded4fad6c9752524af412074eeb10355208ffcd6b0fd44ab2",
+    "docs\\hardware\\FPGA-逐根接线核对单-20261018-v0.1.md": "7cb08047c80faa71fa1b337747c65dc3b04ae4c6959633ca936906a539a7993f",
+    "docs\\hardware\\FPGA-pinplan-20261013-v0.1.csv": "00442e406d186c68a818a99743d392b0a92e7675e44532a146712fb3e1df3a7b",
+    "output\\handoff_milestone2_20261008\\source\\constraints\\primer20k_i2s.cst": "e304b7e165a079727529aa994a9aa7a5927aaaa9486ac31da7d4043e209dd02c",
+    "output\\handoff_milestone2_20261008\\source\\build\\isolated\\top_std_build.v": "a6e94a4fc6eaa0a1d7b52904f774c3644d2013cdb0abb5951a60fb4e7eaf1cab"
+  }
+}

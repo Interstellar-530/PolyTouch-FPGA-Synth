@@ -1,4 +1,0 @@
-﻿自检：接收模型对人工构造的 I2S 位串解码正确（4 帧，含零、最小负数与左右不同值）
-FATAL: E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_i2s_tx.v:219: S3_RX_RESET_STALE: BCK 停止期间复位后发布了旧左右配对
-       Time: 7371000  Scope: tb_i2s_tx.model_selftest
-

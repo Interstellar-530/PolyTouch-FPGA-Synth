@@ -1,0 +1,3 @@
+METRIC PLL_audio fast_frames=606 commits=606 decoded=606 worst_CDC_ns=244.289 worst_tick_to_commit_ns=17985.980
+PASS tb_ram_audio_pll_probe: vendor PLL/RAM/ROM/DSP,64 configured voices, reference-clock I2S,24-bit exact, mute/relock/reset
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_ram_audio_pll_probe.v:69: $finish called at 13073168030 (1ps)

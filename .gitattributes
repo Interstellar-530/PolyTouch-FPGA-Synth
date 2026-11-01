@@ -17,3 +17,8 @@ releases/v2.1.0/MANIFEST.md text eol=lf
 
 # Keep the daily release's original source/evidence bytes bound to its SHA256.
 releases/FPGA-20261030-v0.1/** -text
+
+# Chronological archives and raw evidence preserve their recorded SHA256 bytes.
+releases/2026/** -text
+evidence/** -text
+experiments/** -text

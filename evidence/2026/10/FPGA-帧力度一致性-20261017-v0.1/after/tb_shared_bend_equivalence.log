@@ -1,0 +1,3 @@
+METRIC shared_bend frames=2048 old_cycles=84 new_cycles=76 saved_cycles=8 useful_products=32 period=256 register_enables=65536
+PASS tb_shared_bend_equivalence: frame-bit-exact random base increments/ratios/retrigger/envelopes, 76-cycle deadline, single completion
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_shared_bend_equivalence.v:39: $finish called at 5242920000 (1ps)

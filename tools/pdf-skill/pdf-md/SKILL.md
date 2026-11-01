@@ -57,4 +57,4 @@ If the MCP tools are not visible in the current session, use the CLI commands ab
 - Conversion script: `E:\Working Space\FPGA\tools\docconvert_mcp\convert.py`
 - MCP server: `E:\Working Space\FPGA\tools\docconvert_mcp\server.py`
 - Tesseract language data: `E:\Working Space\FPGA\tools\tessdata`
-- MCP smoke evidence: `E:\Working Space\FPGA\docs\evidence\docconvert-mcp-smoke.json`
+- MCP smoke evidence: `E:\Working Space\FPGA\evidence\2026\10\docconvert-mcp-smoke.json`

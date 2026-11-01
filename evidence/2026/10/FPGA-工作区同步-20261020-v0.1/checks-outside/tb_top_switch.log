@@ -1,0 +1,2 @@
+PASS tb_top_switch: I0/I1 runtime switch, voices cleared, tables re-selected
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_top_switch.v:106: $finish called at 101020126455 (1ps)

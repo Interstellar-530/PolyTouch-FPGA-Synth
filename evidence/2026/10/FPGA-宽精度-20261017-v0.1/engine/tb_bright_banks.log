@@ -1,0 +1,2 @@
+PASS tb_bright_banks: 2560 interleaved addresses, CE hold and synchronous reset
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_bright_banks.v:22: $finish called at 51236000 (1ps)

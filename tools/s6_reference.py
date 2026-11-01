@@ -22,8 +22,8 @@ MAX_POS = 32767
 MIN_NEG = -32768
 FIR_TAPS = (1, 4, 6, 4, 1)
 FIR_SHIFT = 4
-SINE_DEFAULT = Path("output/handoff_milestone2_20261008/source/rtl/audio/wave_sine.hex")
-BRIGHT_DEFAULT = Path("output/handoff_milestone2_20261008/source/rtl/audio/wave_bright.hex")
+SINE_DEFAULT = Path("source/rtl/audio/wave_sine.hex")
+BRIGHT_DEFAULT = Path("source/rtl/audio/wave_bright.hex")
 
 # Vector sizes, mirrored by the testbench arrays.
 OSC_ADDRS = 512

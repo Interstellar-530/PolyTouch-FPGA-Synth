@@ -1,0 +1,394 @@
+{
+  "source": "AKWF_epiano_0001.wav",
+  "license": "CC0",
+  "generator": "tools/offline_opt/a/gen_bandlimit.py",
+  "tables": 12,
+  "depth": 512,
+  "bsram_blocks": 6,
+  "bank_index": "group*6 + stage",
+  "band_limit": {
+    "rule": "H = min(255, floor(margin*Fs/f_max))",
+    "margin": 0.45,
+    "fs_hz": 48000.0,
+    "play_range_midi": [
+      36,
+      96
+    ],
+    "bend_max_ratio": 1.122467,
+    "note": "f_max includes the exact worst-case bend ratio; DC removed; each group scaled to its quietest member's RMS"
+  },
+  "banks": [
+    {
+      "bank": 0,
+      "kind": "epiano",
+      "group": 0,
+      "table_index": 0,
+      "note_hi": 77,
+      "f_max_hz": 783.99,
+      "h_limit": 27,
+      "before": {
+        "rms_dbfs": -5.83,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.01,
+        "significant_harmonics": 12,
+        "highest_harmonic": 21,
+        "max_adjacent_step_lsb": 1073
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.009765625,
+      "group_rms_target_dbfs": -6.184,
+      "gain_db": -0.354,
+      "after": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.355,
+        "dc_lsb": 0.045,
+        "significant_harmonics": 12,
+        "highest_harmonic": 21,
+        "max_adjacent_step_lsb": 1031
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -86.99
+    },
+    {
+      "bank": 1,
+      "kind": "epiano",
+      "group": 0,
+      "table_index": 1,
+      "note_hi": 77,
+      "f_max_hz": 783.99,
+      "h_limit": 27,
+      "before": {
+        "rms_dbfs": -5.889,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.0,
+        "significant_harmonics": 12,
+        "highest_harmonic": 31,
+        "max_adjacent_step_lsb": 1091
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0,
+      "group_rms_target_dbfs": -6.184,
+      "gain_db": -0.296,
+      "after": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.296,
+        "dc_lsb": 0.01,
+        "significant_harmonics": 12,
+        "highest_harmonic": 21,
+        "max_adjacent_step_lsb": 1055
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -83.71
+    },
+    {
+      "bank": 2,
+      "kind": "epiano",
+      "group": 0,
+      "table_index": 2,
+      "note_hi": 77,
+      "f_max_hz": 783.99,
+      "h_limit": 27,
+      "before": {
+        "rms_dbfs": -5.952,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 12,
+        "highest_harmonic": 36,
+        "max_adjacent_step_lsb": 1109
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.184,
+      "gain_db": -0.232,
+      "after": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.232,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 12,
+        "highest_harmonic": 23,
+        "max_adjacent_step_lsb": 1082
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -80.13
+    },
+    {
+      "bank": 3,
+      "kind": "epiano",
+      "group": 0,
+      "table_index": 3,
+      "note_hi": 77,
+      "f_max_hz": 783.99,
+      "h_limit": 27,
+      "before": {
+        "rms_dbfs": -6.022,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.002,
+        "significant_harmonics": 12,
+        "highest_harmonic": 49,
+        "max_adjacent_step_lsb": 1131
+      },
+      "before_alias_db": -82.04,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.184,
+      "gain_db": -0.162,
+      "after": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.163,
+        "dc_lsb": -0.01,
+        "significant_harmonics": 12,
+        "highest_harmonic": 25,
+        "max_adjacent_step_lsb": 1110
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -75.72
+    },
+    {
+      "bank": 4,
+      "kind": "epiano",
+      "group": 0,
+      "table_index": 4,
+      "note_hi": 77,
+      "f_max_hz": 783.99,
+      "h_limit": 27,
+      "before": {
+        "rms_dbfs": -6.098,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.006,
+        "significant_harmonics": 12,
+        "highest_harmonic": 115,
+        "max_adjacent_step_lsb": 1156
+      },
+      "before_alias_db": -73.37,
+      "dc_dc_removed_lsb": 0.005859375,
+      "group_rms_target_dbfs": -6.184,
+      "gain_db": -0.087,
+      "after": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.088,
+        "dc_lsb": 0.021,
+        "significant_harmonics": 12,
+        "highest_harmonic": 27,
+        "max_adjacent_step_lsb": 1142
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -70.36
+    },
+    {
+      "bank": 5,
+      "kind": "epiano",
+      "group": 0,
+      "table_index": 5,
+      "note_hi": 77,
+      "f_max_hz": 783.99,
+      "h_limit": 27,
+      "before": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.004,
+        "significant_harmonics": 13,
+        "highest_harmonic": 131,
+        "max_adjacent_step_lsb": 1188
+      },
+      "before_alias_db": -63.81,
+      "dc_dc_removed_lsb": 0.00390625,
+      "group_rms_target_dbfs": -6.184,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -6.184,
+        "peak_dbfs": -0.007,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 13,
+        "highest_harmonic": 27,
+        "max_adjacent_step_lsb": 1176
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -63.13
+    },
+    {
+      "bank": 6,
+      "kind": "epiano",
+      "group": 1,
+      "table_index": 6,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -5.838,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.008,
+        "significant_harmonics": 10,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 1070
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.0078125,
+      "group_rms_target_dbfs": -6.189,
+      "gain_db": -0.35,
+      "after": {
+        "rms_dbfs": -6.189,
+        "peak_dbfs": -0.351,
+        "dc_lsb": -0.34,
+        "significant_harmonics": 9,
+        "highest_harmonic": 75,
+        "max_adjacent_step_lsb": 1015
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -44.91
+    },
+    {
+      "bank": 7,
+      "kind": "epiano",
+      "group": 1,
+      "table_index": 7,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -5.897,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.004,
+        "significant_harmonics": 10,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 1087
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.00390625,
+      "group_rms_target_dbfs": -6.189,
+      "gain_db": -0.291,
+      "after": {
+        "rms_dbfs": -6.189,
+        "peak_dbfs": -0.291,
+        "dc_lsb": -0.355,
+        "significant_harmonics": 9,
+        "highest_harmonic": 82,
+        "max_adjacent_step_lsb": 1036
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -43.64
+    },
+    {
+      "bank": 8,
+      "kind": "epiano",
+      "group": 1,
+      "table_index": 8,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -5.963,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.02,
+        "significant_harmonics": 10,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 1105
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.01953125,
+      "group_rms_target_dbfs": -6.189,
+      "gain_db": -0.226,
+      "after": {
+        "rms_dbfs": -6.189,
+        "peak_dbfs": -0.226,
+        "dc_lsb": -0.33,
+        "significant_harmonics": 9,
+        "highest_harmonic": 77,
+        "max_adjacent_step_lsb": 1059
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -42.36
+    },
+    {
+      "bank": 9,
+      "kind": "epiano",
+      "group": 1,
+      "table_index": 9,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -6.032,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.006,
+        "significant_harmonics": 10,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 1125
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.005859375,
+      "group_rms_target_dbfs": -6.189,
+      "gain_db": -0.156,
+      "after": {
+        "rms_dbfs": -6.189,
+        "peak_dbfs": -0.157,
+        "dc_lsb": -0.297,
+        "significant_harmonics": 9,
+        "highest_harmonic": 81,
+        "max_adjacent_step_lsb": 1085
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -41.07
+    },
+    {
+      "bank": 10,
+      "kind": "epiano",
+      "group": 1,
+      "table_index": 10,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -6.107,
+        "peak_dbfs": -0.0,
+        "dc_lsb": 0.002,
+        "significant_harmonics": 10,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 1146
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.189,
+      "gain_db": -0.081,
+      "after": {
+        "rms_dbfs": -6.189,
+        "peak_dbfs": -0.081,
+        "dc_lsb": -0.277,
+        "significant_harmonics": 9,
+        "highest_harmonic": 62,
+        "max_adjacent_step_lsb": 1111
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -39.76
+    },
+    {
+      "bank": 11,
+      "kind": "epiano",
+      "group": 1,
+      "table_index": 11,
+      "note_hi": 96,
+      "f_max_hz": 2349.33,
+      "h_limit": 9,
+      "before": {
+        "rms_dbfs": -6.188,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.002,
+        "significant_harmonics": 10,
+        "highest_harmonic": 10,
+        "max_adjacent_step_lsb": 1169
+      },
+      "before_alias_db": -199.0,
+      "dc_dc_removed_lsb": 0.001953125,
+      "group_rms_target_dbfs": -6.189,
+      "gain_db": 0.0,
+      "after": {
+        "rms_dbfs": -6.189,
+        "peak_dbfs": -0.0,
+        "dc_lsb": -0.227,
+        "significant_harmonics": 9,
+        "highest_harmonic": 9,
+        "max_adjacent_step_lsb": 1141
+      },
+      "after_alias_db": -199.0,
+      "removed_rms_db": -38.45
+    }
+  ]
+}

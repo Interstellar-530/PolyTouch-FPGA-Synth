@@ -6,7 +6,7 @@ import json
 import shutil
 
 ROOT=Path(__file__).resolve().parents[1]
-EV=ROOT/'docs/evidence/FPGA-接线复核-20261018-v0.1'
+EV=ROOT/'evidence/2026/10/FPGA-接线复核-20261018-v0.1'
 DEST=ROOT/'archive/FPGA-20261018-v0.1'
 
 
@@ -34,7 +34,7 @@ def main():
              'tools/verify_wiring_handbook_20261018.py',
              'tools/archive_wiring_handbook_20261018.py',
              'docs/reviews/FPGA-阶段优化量化总结-20261017-v0.1.md']
-    prefix='output/handoff_milestone2_20261008/source/'
+    prefix='source/'
     sources += [prefix+name for name in ['constraints/primer20k_i2s.cst',
                 'constraints/primer20k_dock3714.cst','build/isolated/top_std_build.v',
                 'build/isolated/top_dbg_build.v','rtl/top.v','rtl/audio/gpio_keyboard.v',
@@ -44,7 +44,7 @@ def main():
         out=DEST/'source'/rel;out.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(ROOT/rel,out)
     out=DEST/'deliverables';out.mkdir()
-    shutil.copy2(ROOT/'output/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf',out)
+    shutil.copy2(ROOT/'docs/exports/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf',out)
     shutil.copy2(ROOT/sources[1],out)
     evidence_text='''# 接线复核证据
 

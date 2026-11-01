@@ -1,1 +1,0 @@
-Full simulation runs were interrupted at the user request to skip unnecessary long gates. The sandbox run encountered Icarus 0xC0000005. The outside-sandbox run was also stopped before completion. Neither partial log is a full-gate PASS. Focused checks are recorded separately.

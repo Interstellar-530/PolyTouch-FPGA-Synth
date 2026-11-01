@@ -1,5 +1,0 @@
-Gate Quick: 12/82 positive benches; logs: E:\Working Space\FPGA\docs\evidence\FPGA-standard27-board-20261024-v0.1\quick
-=== tb_tick_rate ===
-
-tb_tick_rate: pass=False, seconds=7.77
-仿真门禁未通过，1 个测试台失败，禁止烧录。

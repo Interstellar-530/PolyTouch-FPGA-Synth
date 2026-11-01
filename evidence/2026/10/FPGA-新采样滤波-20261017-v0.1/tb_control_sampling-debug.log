@@ -1,0 +1,3 @@
+METRIC control_sampling profile=0 fresh_hz_per_channel=2000 checked_pairs=226 conversions=452 single_spike_peak=0 step_phases=8 best_t90_us=2439.121 worst_t90_us=2868.633
+PASS tb_control_sampling: pin-level ADC, pair order/rate, no stale filter updates, one-conversion spike rejection and VCA response phase sweep
+E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_control_sampling.v:59: $finish called at 115926439935 (1ps)

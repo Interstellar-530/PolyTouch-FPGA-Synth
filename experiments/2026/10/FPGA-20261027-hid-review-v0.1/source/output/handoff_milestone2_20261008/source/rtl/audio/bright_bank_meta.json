@@ -1,0 +1,15 @@
+{
+  "stages": 6,
+  "depth": 512,
+  "bsram_blocks": 3,
+  "harmonics": 10,
+  "peaks": [
+    32767,
+    32767,
+    32767,
+    32767,
+    32767,
+    32767
+  ],
+  "source": "six continuous body-to-hammer piano spectra"
+}

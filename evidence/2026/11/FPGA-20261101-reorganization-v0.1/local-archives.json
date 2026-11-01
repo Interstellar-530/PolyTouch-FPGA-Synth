@@ -1,0 +1,663 @@
+[
+  {
+    "directory": "archive/FPGA-20261007-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.9",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261010-v0.10",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261012-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261012-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261012-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261012-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261012-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261012-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.7",
+    "manifest": false,
+    "checksums": false
+  },
+  {
+    "directory": "archive/FPGA-20261013-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261014-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261016-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261016-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261016-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261016-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261016-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261017-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261018-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261018-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261018-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261018-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261018-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.9",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.9-guitar",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.10",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.11",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.12",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v0.13",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261019-v1.0",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.3-key-loudness",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.4-timbre-volume",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.5-guitar-level",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.6-volume-fix",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261020-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261021-v0.9",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261022-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261022-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261022-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261022-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261023-v0.9",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261024-A-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261024-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261024-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261024-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261024-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.9",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.10",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261026-v0.11",
+    "manifest": false,
+    "checksums": false
+  },
+  {
+    "directory": "archive/FPGA-20261028-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261028-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261028-v0.3",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261028-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.3",
+    "manifest": true,
+    "checksums": false
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.5",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261029-v0.9",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.2",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.3",
+    "manifest": false,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.4",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.5",
+    "manifest": true,
+    "checksums": false
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.6",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.7",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261030-v0.8",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/FPGA-20261031-v0.1",
+    "manifest": true,
+    "checksums": true
+  },
+  {
+    "directory": "archive/PolyTouch-FPGA-Synth-20261027-v0.3",
+    "manifest": false,
+    "checksums": false,
+    "moved_to": "experiments/2026/10/FPGA-20261027-hid-review-v0.1"
+  }
+]

@@ -108,7 +108,7 @@ def emit_module(name: str, source: str, digest: str, words: list[int]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    root = Path(__file__).resolve().parent.parent / "output/handoff_milestone2_20261008/source"
+    root = Path(__file__).resolve().parent.parent / "source"
     parser.add_argument("--hex-dir", type=Path, default=root / "rtl/audio")
     parser.add_argument("--out-dir", type=Path, default=root / "rtl/audio")
     parser.add_argument("--json", type=Path, default=root / "rtl/audio/gowin_prom_meta.json")

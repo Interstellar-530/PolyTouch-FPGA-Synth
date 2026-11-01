@@ -1,0 +1,97 @@
+[
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/01-system.pdf",
+    "sha256": "18b98c25c0bf0d8be38d964b5ce01812eb240eb6454cbcf9ba240a1c4c92bd9c",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/02-dock-j5j6.pdf",
+    "sha256": "d7379a02bec6abb7a074e9a87f396907fb07c4430d149e4d72c957990c102342",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/03-dock-j14.pdf",
+    "sha256": "bb8b92fa2cdaf3bf04fc5e6dfe9ef040e2335620699f30b14c34e71f666c37b3",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/04-headers.pdf",
+    "sha256": "27f565ccc083f9caa6225e678e5a6696d3daf3219c4cad75f412fdbb42354a73",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/05-power.pdf",
+    "sha256": "220e985b79ec6edc69f5e0382144469f7ffcfa4e163500a03f30929a13bbc0d7",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/06-adc.pdf",
+    "sha256": "3825bf33eb39c96d3086fd63ca16b08fc75ac9794faf35fd2dccbc2be29d065a",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/07-sensors.pdf",
+    "sha256": "83e291cb1f26c824cda342e8c8a8e7a9c4ba38d3050fd11a04e6642334812210",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/08-dac.pdf",
+    "sha256": "2b33ff2b7cac386abe9762cd4e072f0f6c8e6efc5513c3171b84add595358f23",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/09-i2s.pdf",
+    "sha256": "e89e7c01faf664e285397836daffbfcfaf750ece878e14583efc22c7090bf4cd",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/10-keyboard.pdf",
+    "sha256": "47254945b1ba6fcba4610c4201ab292fcab6181f3722a5eb62277d7157a9b0a4",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/11-oscillator.pdf",
+    "sha256": "dd53a02456b17c1d83809e46685cb3d7fed8c20202df5eec2642da063abfd788",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/12-board-photo.pdf",
+    "sha256": "bcd70238af416bb5dc13fc6ff93624c111b0c466f4bcbc3a68c9d8565a94fcba",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/13-dac-photo.pdf",
+    "sha256": "c8d2bd223732c8a694100921fee8f2a211cf6c34a0b5ddf9a6028b5ed2e33f89",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/source-mcp-pins.pdf",
+    "sha256": "9fd08a29c390e504369550e44a45ccd14d53351079f4aba5bcec7ec82d042e71",
+    "index_matches": true
+  },
+  {
+    "path": "docs/hardware/wiring-20261023-v0.1-assets/source-pcm-pins.pdf",
+    "sha256": "afb574b3ad25274397ce269138eea682d50b300408e33acfb38138fde963635b",
+    "index_matches": true
+  },
+  {
+    "path": "output/pdf/FPGA-完整接线方案-20261016-v0.1.pdf",
+    "sha256": "97a5c6813840db959f0c99d3fbc819dbadd0885154a925a08ef3e78bc8d6692b",
+    "index_matches": true
+  },
+  {
+    "path": "output/pdf/FPGA-现有硬件图解接线方案-20261023-v0.1.pdf",
+    "sha256": "a35336bd1b1455c83f75d1e533345963e5a2dde17351c6b24093a3f5367412fd",
+    "index_matches": true
+  },
+  {
+    "path": "output/pdf/FPGA-硬件方案与代工讨论-20261018-v0.4.pdf",
+    "sha256": "8abfae3de8579412629de02bfa2a65ede7711b1b69f3a5ebc17cf88cc12a2953",
+    "index_matches": true
+  },
+  {
+    "path": "output/pdf/FPGA-逐根接线手册-20261018-v0.1.pdf",
+    "sha256": "201713c6eab423dbd7044f47c096d3564f99fd2b25030603546b69758c969e88",
+    "index_matches": true
+  }
+]

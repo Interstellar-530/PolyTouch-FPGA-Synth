@@ -1,0 +1,286 @@
+// 全局交叉混合：把两条分量和（19 位）按 (255-w, w) >> 8 混合一次，
+// 再做参数指定的固定衰减、16 位饱和与主增益边界削波统计。
+// 独立模块默认除以 2；整机默认除以 4，给四路满幅声部留出余量。
+// 混合使用整机一个 18x9 可变乘法，高位用移位修正；
+// 舍入只发生一次而不是每声部一次，偏差界见集成复核记录。
+//
+// 削波统计沿用 S6 的定义：主增益边界上，本帧（混合/固定衰减及可选压力增益后）的取值
+// 超出 16 位有符号范围时计一次，计数到全 1 饱和，clear_clip 同步清零。
+// 逐声部版由 mixer_s6 在该边界计数；共享引擎把这条边界移到了本模块。
+module global_crossfade #(
+    parameter integer CLIP_COUNTER_WIDTH = 32,
+    // Default disabled keeps existing standalone users bit-exact. The product
+    // standard-I2S profile enables this frame-rate global VCA before saturation.
+    parameter integer PRESSURE_GAIN_ENABLE = 0,
+    parameter integer PRESSURE_ADC_LOW = 128,
+    parameter integer PRESSURE_ADC_FULL = 3200,
+    parameter integer PRESSURE_MIN_GAIN_Q12 = 1024,
+    parameter integer PRESSURE_GAIN_STEP = 32,
+    parameter integer TIMBRE_SLEW_ENABLE = 0,
+    parameter [7:0] TIMBRE_RESET_WEIGHT = 64,
+    parameter integer SHARED_MULT_ENABLE = 0,
+    parameter integer MASTER_VOLUME_SHIFT = 1,
+    parameter integer GUITAR_BOOST_ENABLE = 0,
+    parameter integer MUTE_SLEW_ENABLE = 0,
+    parameter integer EXTRA_FRACTION_BITS = 0,
+    parameter integer REGISTER_MIX_INPUTS_ENABLE = 0,
+    // 8 声部生产档启用：0.75 FS 以上 4:1 软压缩，避免多声部叠加时硬削波。
+    // 默认关闭，旧 4 声部测试保持逐位不变。
+    parameter integer SOFT_LIMIT_ENABLE = 0
+) (
+    input  wire               clk,
+    input  wire               rst,
+    input  wire               update,       // 引擎 sums_valid：本拍结果是本帧的
+    input  wire               clear_clip,
+    input  wire [7:0]         mix_weight,
+    input  wire signed [18+EXTRA_FRACTION_BITS:0] sine_sum,
+    input  wire signed [18+EXTRA_FRACTION_BITS:0] bright_sum,
+    input  wire               guitar_boost,
+    output reg  signed [15:0] sample_out,
+    output reg  [CLIP_COUNTER_WIDTH-1:0] clip_count,
+    output reg                clip_event,
+    // Ignored at elaboration when PRESSURE_GAIN_ENABLE=0. No board ports or
+    // UART commands are added; pressure_level is the filtered CH0 ADC code.
+    input  wire               pressure_enable,
+    input  wire [11:0]        pressure_level,
+    output wire mult_request,
+    output wire signed [17:0] mult_operand_a,mult_operand_b,
+    input wire signed [35:0] mult_result,
+    input wire mute,
+    output reg signed [23:0] sample_out24,
+    output wire               result_valid_o
+);
+    reg [7:0] weight_state;
+    wire [7:0] weight_next = (mix_weight > weight_state) ? weight_state+8'd1 :
+                            (mix_weight < weight_state) ? weight_state-8'd1 : weight_state;
+    wire [7:0] active_weight = TIMBRE_SLEW_ENABLE ? weight_next : mix_weight;
+    always @(posedge clk) begin
+        if(rst) weight_state<=TIMBRE_RESET_WEIGHT;
+        else if(update) weight_state<=active_weight;
+    end
+    // Exact identity: A*(255-w)+B*w = (A<<8)-A+(B-A)*w.
+    // One variable multiply instead of two. The difference needs 20 signed
+    // bits, and its product 28; opposite full-scale inputs must not overflow.
+    localparam integer E=EXTRA_FRACTION_BITS;
+    localparam integer MIX_ROUND=E>0 ? (1 << (7+MASTER_VOLUME_SHIFT)) : 127;
+    reg signed [18+E:0] saved_sine,saved_bright;
+    reg [7:0] saved_weight;
+    wire signed [18+E:0] calc_sine=REGISTER_MIX_INPUTS_ENABLE?saved_sine:sine_sum;
+    wire signed [18+E:0] calc_bright=REGISTER_MIX_INPUTS_ENABLE?saved_bright:bright_sum;
+    wire [7:0] calc_weight=REGISTER_MIX_INPUTS_ENABLE?saved_weight:active_weight;
+    always @(posedge clk)begin
+        if(rst)begin saved_sine<=0;saved_bright<=0;saved_weight<=0;end
+        else if(REGISTER_MIX_INPUTS_ENABLE && update)begin
+            saved_sine<=sine_sum;saved_bright<=bright_sum;saved_weight<=active_weight;
+        end
+    end
+    wire signed [19+E:0] difference = $signed({calc_bright[18+E],calc_bright}) -
+                                   $signed({calc_sine[18+E],calc_sine});
+    // Recenter the low 18 bits as signed. The remaining coefficient is only
+    // -2..2, so its product is a mux/shift, leaving one true 18x9 multiply.
+    wire signed [17:0] difference_low = difference[17:0];
+    wire signed [2+E:0] difference_high = $signed({difference[19+E],difference[19+E:18]}) +
+                                         $signed({{(2+E){1'b0}},difference[17]});
+    wire signed [26:0] low_product = SHARED_MULT_ENABLE ? $signed(mult_result[26:0]) :
+                                         difference_low * $signed({1'b0,calc_weight});
+    wire signed [10+E:0] weight_wide = $signed({{(3+E){1'b0}},calc_weight});
+    reg signed [10+E:0] high_product;
+    integer high_bit;
+    always @* begin
+        high_product=0;
+        for(high_bit=0;high_bit<2+E;high_bit=high_bit+1)
+            if(difference_high[high_bit])high_product=high_product+(weight_wide <<< high_bit);
+        if(difference_high[2+E])high_product=high_product-(weight_wide <<< (2+E));
+    end
+    wire signed [27+E:0] high_shifted = $signed({{17{high_product[10+E]}},high_product}) <<< 18;
+    wire signed [27+E:0] delta_product = $signed({{(1+E){low_product[26]}},low_product}) + high_shifted;
+    wire signed [27+E:0] sine_wide = {{9{calc_sine[18+E]}},calc_sine};
+    wire signed [27+E:0] base_product = (sine_wide <<< 8) - sine_wide;
+    wire signed [28+E:0] numerator = $signed({base_product[27+E],base_product}) +
+                                  $signed({delta_product[27+E],delta_product}) + MIX_ROUND;
+    wire signed [26+E:0] blend = numerator >>> 8;
+    wire signed [27+E:0] scaled = blend >>> MASTER_VOLUME_SHIFT;
+    wire signed [27+E:0] after_pressure;
+    wire signed [35:0] local_pressure_product;
+    wire [12:0] gain_for_frame;
+    wire mute_silent;
+    reg  [12:0] shared_gain;
+    reg  shared_mute;
+    generate
+        if (PRESSURE_GAIN_ENABLE != 0 || MUTE_SLEW_ENABLE != 0) begin : g_pressure
+            localparam integer ADC_SPAN = (PRESSURE_ADC_FULL > PRESSURE_ADC_LOW) ?
+                                           PRESSURE_ADC_FULL - PRESSURE_ADC_LOW : 1;
+            localparam integer GAIN_SPAN = 4096 - PRESSURE_MIN_GAIN_Q12;
+            wire [11:0] pressure_delta = pressure_level - PRESSURE_ADC_LOW;
+            wire [12:0] mapped_gain;
+            // The default spans are both 3072: calibration needs only an adder,
+            // with no divider, lookup ROM or control-path multiplier.
+            if (ADC_SPAN == GAIN_SPAN) begin : g_unit_slope
+                assign mapped_gain = PRESSURE_MIN_GAIN_Q12 + pressure_delta;
+            end else begin : g_calibrated_slope
+                wire [31:0] gain_numerator = {20'd0, pressure_delta} * GAIN_SPAN;
+                assign mapped_gain = PRESSURE_MIN_GAIN_Q12 + gain_numerator / ADC_SPAN;
+            end
+            wire [12:0] calibrated_gain = (pressure_level <= PRESSURE_ADC_LOW) ?
+                                          PRESSURE_MIN_GAIN_Q12 :
+                                          (pressure_level >= PRESSURE_ADC_FULL) ?
+                                          13'd4096 : mapped_gain;
+            wire [12:0] unmuted_gain = (PRESSURE_GAIN_ENABLE && pressure_enable) ? calibrated_gain : 13'd4096;
+            // Muting uses the same frame-rate VCA and slew as pressure. No
+            // extra multiplier, post-saturation scaling or phase reset.
+            wire [12:0] target_gain = (MUTE_SLEW_ENABLE && mute) ? 13'd0 : unmuted_gain;
+            reg  [12:0] gain_q12;
+            reg  [12:0] gain_next;
+            assign gain_for_frame=gain_next;
+            // The shared scheduler emits this frame several clocks later. Use the
+            // frame-latched mute/gain state there so a later input change cannot
+            // retroactively turn an already-computed frame into zero.
+            assign mute_silent = MUTE_SLEW_ENABLE && (SHARED_MULT_ENABLE ?
+                (shared_mute && (shared_gain == 13'd0)) : (mute && (gain_next == 13'd0)));
+            always @* begin
+                gain_next = target_gain;
+                if ((target_gain > gain_q12) &&
+                    ((target_gain - gain_q12) > PRESSURE_GAIN_STEP))
+                    gain_next = gain_q12 + PRESSURE_GAIN_STEP;
+                else if ((gain_q12 > target_gain) &&
+                         ((gain_q12 - target_gain) > PRESSURE_GAIN_STEP))
+                    gain_next = gain_q12 - PRESSURE_GAIN_STEP;
+            end
+            always @(posedge clk) begin
+                if (rst)
+                    gain_q12 <= 13'd4096;
+                else if (update)
+                    gain_q12 <= gain_next;
+            end
+            // signed 19-bit component inputs and weights summing to 255 bound
+            // scaled to [-130560,130559], so signed 18 bits suffice. Q12 unity
+            // needs 13 unsigned bits / 14 signed bits: one 18x18-sized VCA.
+            wire signed [17:0] master_sample = scaled[17:0];
+            wire signed [2:0] master_high=($signed(scaled) >>> 18)+$signed({2'b0,scaled[17]});
+            wire signed [35:0] gain_shifted=$signed({23'd0,gain_next}) <<< 18;
+            wire signed [35:0] pressure_low_product=master_sample * $signed({1'b0,gain_next});
+            wire signed [35:0] pressure_product = pressure_low_product +
+                (master_high>0?gain_shifted:master_high<0?-gain_shifted:36'sd0);
+            assign local_pressure_product=pressure_product;
+            assign after_pressure = pressure_product >>> 12;
+`ifdef SIMULATION
+            initial begin
+                if ((PRESSURE_ADC_LOW < 0) || (PRESSURE_ADC_FULL > 4095) ||
+                    (PRESSURE_ADC_FULL <= PRESSURE_ADC_LOW) ||
+                    (PRESSURE_MIN_GAIN_Q12 < 0) || (PRESSURE_MIN_GAIN_Q12 > 4096) ||
+                    (PRESSURE_GAIN_STEP < 1) || (PRESSURE_GAIN_STEP > 4096))
+                    $fatal(1, "Invalid pressure calibration or slew parameters");
+            end
+`endif
+        end else begin : g_pressure_bypass
+            assign after_pressure = scaled;
+            assign gain_for_frame=13'd4096;
+            assign mute_silent=1'b0;
+            assign local_pressure_product=$signed(scaled) <<< 12;
+        end
+    endgenerate
+
+    // The gain acts on the wide sample, not on an already clipped 16-bit word.
+    // Statistics describe the actual post-pressure master boundary once/frame.
+    reg [2:0] shared_stage;
+    reg signed [28+E:0] shared_base;
+    reg signed [17:0] shared_a,shared_b;
+    reg signed [2:0] shared_master_high;
+    wire signed [28+E:0] shared_numerator=shared_base+$signed({{(2+E){mult_result[26]}},mult_result[26:0]});
+    wire signed [28+E:0] shared_scaled=shared_numerator >>> (8+MASTER_VOLUME_SHIFT);
+    wire signed [35:0] shared_gain_shifted=$signed({23'd0,shared_gain}) <<< 18;
+    wire signed [35:0] shared_corrected_product=mult_result+
+        (shared_master_high>0?shared_gain_shifted:shared_master_high<0?-shared_gain_shifted:36'sd0);
+    assign mult_request=SHARED_MULT_ENABLE && (shared_stage==1 || shared_stage==3);
+    assign mult_operand_a=shared_a;
+    assign mult_operand_b=shared_b;
+    always @(posedge clk) begin
+        if(rst)begin shared_stage<=0;shared_base<=0;shared_gain<=4096;shared_mute<=0;shared_a<=0;shared_b<=0;shared_master_high<=0;end
+        else if(SHARED_MULT_ENABLE)begin
+            case(shared_stage)
+                0:if(update)begin
+                    shared_gain<=gain_for_frame;
+                    shared_mute<=mute;
+                    if(REGISTER_MIX_INPUTS_ENABLE)shared_stage<=5;
+                    else begin
+                        shared_base<=$signed({base_product[27+E],base_product})+$signed({high_shifted[27+E],high_shifted})+MIX_ROUND;
+                        shared_a<=difference_low;shared_b<=$signed({10'd0,calc_weight});shared_stage<=1;
+                    end
+                end
+                5:begin
+                    shared_base<=$signed({base_product[27+E],base_product})+$signed({high_shifted[27+E],high_shifted})+MIX_ROUND;
+                    shared_a<=difference_low;shared_b<=$signed({10'd0,calc_weight});shared_stage<=1;
+                end
+                1:shared_stage<=2;
+                2:begin
+                    shared_a<=shared_scaled;
+                    shared_master_high<=($signed(shared_scaled) >>> 18)+$signed({2'b0,shared_scaled[17]});
+                    shared_b<=$signed({5'd0,shared_gain});shared_stage<=3;
+                end
+                3:shared_stage<=4;
+                4:shared_stage<=0;
+                default:shared_stage<=0;
+            endcase
+        end
+    end
+    wire result_valid=SHARED_MULT_ENABLE?(shared_stage==4):update;
+    assign result_valid_o=result_valid;
+    wire signed [27+E:0] output_value=SHARED_MULT_ENABLE?($signed(mult_result)>>>12):after_pressure;
+    wire signed [35:0] final_product=SHARED_MULT_ENABLE?shared_corrected_product:local_pressure_product;
+    // Internal samples carry E sub-LSB bits; retain VCA fractional bits until
+    // the 24-bit output quantizer rather than padding a 16-bit result.
+    wire signed [35:0] output_value24=(final_product+(36'sd1 << (3+E))) >>> (4+E);
+`ifdef SIMULATION
+    initial if(MASTER_VOLUME_SHIFT<1 || MASTER_VOLUME_SHIFT>4)
+        $fatal(1,"MASTER_VOLUME_SHIFT must be 1..4");
+    initial if(E<0 || E>2 || (E>0 && MASTER_VOLUME_SHIFT<2))
+        $fatal(1,"wide precision requires E=0..2 and at least divide-four headroom");
+    initial if(REGISTER_MIX_INPUTS_ENABLE && !SHARED_MULT_ENABLE)
+        $fatal(1,"registered mix inputs require the shared multiplier scheduler");
+`endif
+    // 软限幅：24 位满幅 8388608，0.75 FS = 6291456。超过拐点后按 4:1 压缩，
+    // 满幅输入压到约 6815744，仍保留 24 位量化余量，不会硬削成方波。
+    // 只用比较、加减和右移，不占乘法器；重建滤波仍由 PCM5102A 内部完成。
+    localparam signed [35:0] SOFT_KNEE = 36'sd6291456;
+    // 吉他 +3.5 dB（×1.5），在软限幅之前；钢琴直通。
+    wire               boost_en = GUITAR_BOOST_ENABLE && guitar_boost;
+    wire signed [35:0] boosted24 = boost_en ? (output_value24 + (output_value24 >>> 1)) : output_value24;
+    wire signed [35:0] lim_in = boosted24;
+    wire [35:0] lim_abs = lim_in[35] ? (~lim_in + 36'd1) : lim_in;
+    wire [35:0] lim_abs_lim = (lim_abs > SOFT_KNEE) ?
+        (SOFT_KNEE + ((lim_abs - SOFT_KNEE) >>> 2)) : lim_abs;
+    wire signed [35:0] lim_out = lim_in[35] ? -$signed(lim_abs_lim) : $signed(lim_abs_lim);
+    wire soft_clip = (lim_abs > SOFT_KNEE);
+    wire signed [35:0] output_limited = SOFT_LIMIT_ENABLE ? lim_out : output_value24;
+
+    wire raw_clip = E==0 ? ((output_value > 28'sd32767) || (output_value < -28'sd32768)) :
+                          ((output_limited > 36'sd8388607) || (output_limited < -36'sd8388608));
+    wire signed [23:0] sat24 = mute_silent ? 24'sd0 :
+        ((output_limited > 36'sd8388607)?24'sh7fffff:
+         (output_limited < -36'sd8388608)?24'sh800000:output_limited[23:0]);
+    wire signed [15:0] sat = mute_silent ? 16'sd0 :
+        (E>0 ? sat24[23:8] : (output_value > 28'sd32767) ? 16'sd32767 :
+         (output_value < -28'sd32768) ? -16'sd32768 : output_value[15:0]);
+
+    always @(posedge clk) begin
+        if (rst) begin
+            sample_out <= 16'sd0;
+            sample_out24<=0;
+            clip_count <= {CLIP_COUNTER_WIDTH{1'b0}};
+            clip_event <= 1'b0;
+        end else begin
+            clip_event <= 1'b0;
+            if (clear_clip)
+                clip_count <= {CLIP_COUNTER_WIDTH{1'b0}};
+            if (result_valid) begin
+                sample_out <= sat;
+                sample_out24 <= E>0?sat24:{sat,8'b0};
+                // 软限幅启用时统计“拐点触发”，否则统计传统硬削波。
+                clip_event <= SOFT_LIMIT_ENABLE ? soft_clip : raw_clip;
+                if ((SOFT_LIMIT_ENABLE ? soft_clip : raw_clip) && !clear_clip &&
+                    (clip_count != {CLIP_COUNTER_WIDTH{1'b1}}))
+                    clip_count <= clip_count + {{(CLIP_COUNTER_WIDTH-1){1'b0}}, 1'b1};
+            end
+        end
+    end
+endmodule

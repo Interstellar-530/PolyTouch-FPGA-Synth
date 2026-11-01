@@ -1,0 +1,29 @@
+Reading netlist file: "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\gwsynthesis\instrument.vg"
+Parsing netlist file "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\gwsynthesis\instrument.vg" completed
+Processing netlist completed
+Reading constraint file: "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\constraints\primer20k_i2s_27m.cst"
+Physical Constraint parsed completed
+Running placement......
+[10%] Placement Phase 0 completed
+[20%] Placement Phase 1 completed
+[30%] Placement Phase 2 completed
+[50%] Placement Phase 3 completed
+Running routing......
+[60%] Routing Phase 0 completed
+[70%] Routing Phase 1 completed
+[80%] Routing Phase 2 completed
+[90%] Routing Phase 3 completed
+Running timing analysis......
+[95%] Timing analysis completed
+Placement and routing completed
+Bitstream generation in progress......
+Bitstream generation completed
+Running power analysis......
+[100%] Power analysis completed
+Generate file "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\pnr\instrument.power.html" completed
+Generate file "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\pnr\instrument.pin.html" completed
+Generate file "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\pnr\instrument.rpt.html" completed
+Generate file "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\pnr\instrument.rpt.txt" completed
+Generate file "E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\build\gowin_top_i2s_std27\runs\20261024T144415483-3772fc44\instrument\impl\pnr\instrument.tr.html" completed
+Sat Oct 24 14:45:54 2026
+

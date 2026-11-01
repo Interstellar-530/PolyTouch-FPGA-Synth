@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "scope": "pre-route synthesis estimate; default 10 ns constraint; not routed timing",
+    "slack_ns": -9.633,
+    "arrival_ns": 19.958,
+    "required_ns": 10.325,
+    "start": "u_top/u_xf/weight_state_0_s0",
+    "end": "u_top/u_xf/shared_base_30_s0",
+    "logic_levels": 24
+  },
+  "optimized": {
+    "scope": "pre-route synthesis estimate; default 10 ns constraint; not routed timing",
+    "slack_ns": -8.97,
+    "arrival_ns": 19.295,
+    "required_ns": 10.325,
+    "start": "u_top/u_env1/fade_env_0_s0",
+    "end": "u_top/u_engine/inc_frame_54_s0",
+    "logic_levels": 24
+  }
+}

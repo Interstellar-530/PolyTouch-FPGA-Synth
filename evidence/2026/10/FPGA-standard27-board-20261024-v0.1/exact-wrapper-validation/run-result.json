@@ -1,0 +1,6 @@
+{
+  "ExitCode": 0,
+  "TimedOut": false,
+  "Seconds": 45.4397358,
+  "Output": "PASS standard27 exact wrapper: frames=2346 peak_full24=185472 peak_low24=39110, BCK=9clk LRCK=576clk, UART/FSR/bend/mute\r\nE:\\Working Space\\FPGA\\archive\\FPGA-20261024-v0.2\\validation\\tb_standard27_serial_audio.v:94: $finish called at 52476607097 (1ps)\r\n"
+}

@@ -1,2 +1,0 @@
-PASS tb_board_only: commands=13 decoded_frames=8225 neutral_bend_ticks=8087; UART, 4 voices, timbre, mute, release
-E:\Working Space\FPGA\docs\evidence\FPGA-°åÔØÁªµ÷-20261018-v0.1\source\tb_board_only.v:71: $finish called at 177941200425 (1ps)

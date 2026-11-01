@@ -1,7 +1,7 @@
 param([string]$Port='COM13')
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$ev=Join-Path $root 'docs/evidence/FPGA-板载联调-20261018-v0.1'
+$ev=Join-Path $root 'evidence/2026/10/FPGA-板载联调-20261018-v0.1'
 $serial=New-Object System.IO.Ports.SerialPort($Port,115200,[System.IO.Ports.Parity]::None,8,[System.IO.Ports.StopBits]::One)
 $serial.ReadTimeout=2500
 $serial.NewLine="`n"

@@ -1,0 +1,3 @@
+PASS tb_tick_rate: 186 periods, all 576 clocks (46875.0 Hz)
+sim\tb_tick_rate.v:67: $finish called at 4001000000 (1ps)
+

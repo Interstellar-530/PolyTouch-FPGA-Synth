@@ -16,7 +16,7 @@ parser.add_argument('--out-dir', type=Path,
                     help='generated output directory (default: <repo-root>/output/.../rtl/audio)')
 args = parser.parse_args()
 ROOT = args.repo_root.resolve()
-AUDIO = (args.out_dir or ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio').resolve()
+AUDIO = (args.out_dir or ROOT / 'source/rtl/audio').resolve()
 AUDIO.mkdir(parents=True, exist_ok=True)
 
 

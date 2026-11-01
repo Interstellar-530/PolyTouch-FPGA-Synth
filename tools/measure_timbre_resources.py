@@ -19,9 +19,9 @@ def resource_metrics(name, report):
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
     root=Path(__file__).resolve().parents[1]
-    source=root/'output/handoff_milestone2_20261008/source'
+    source=root/'source'
     work=root/'tmp/timbre-resource-20261016';work.mkdir(parents=True,exist_ok=True)
-    out=root/'docs/evidence/FPGA-音色控制-20261016-v0.1/resources';out.mkdir(parents=True,exist_ok=True)
+    out=root/'evidence/2026/10/FPGA-音色控制-20261016-v0.1/resources';out.mkdir(parents=True,exist_ok=True)
     original=(source/'rtl/audio/global_crossfade.v').read_text(encoding='utf-8-sig')
     a=original.index('    // Exact identity:');b=original.index('    wire signed [27:0] scaled',a)
     naive=original[:a]+'''    wire signed [26:0] ap = $signed(sine_sum) * $signed({19'd0,(8'hff-active_weight)});

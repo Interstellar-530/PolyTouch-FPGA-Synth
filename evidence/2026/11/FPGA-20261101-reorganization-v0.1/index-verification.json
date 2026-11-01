@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "staged_files": 7086,
+  "production_files_equal_original_git_blobs": 404,
+  "frozen_files_equal_worktree_bytes": 6213,
+  "errors": []
+}

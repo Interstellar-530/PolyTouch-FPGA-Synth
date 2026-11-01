@@ -1,0 +1,8 @@
+rtl/video/hdmi_720p_timing.v
+rtl/video/dashboard_text_mux.v
+rtl/video/dashboard_renderer.v
+rtl/video/dashboard_font_prom.v
+rtl/video/hdmi_clock.v
+rtl/video/hdmi_dashboard.v
+rtl/video/dvi_tx.v
+rtl/video/ui_visual_sync.v

@@ -49,3 +49,18 @@ output/handoff_milestone2_20261008/source/build/gowin_top_dbg8usb/
 
 # Generated HDMI Gowin implementation output; keep source/build inputs in Git.
 output/handoff_milestone2_20261008/source/build/gowin_top_hdmi/
+
+# Current source layout: generated implementation files remain local.
+/source/impl/
+/source/tmp/
+/source/build/gowin_*/
+/source/build/receipts/
+
+# Preserved local process previews are indexed, not uploaded in bulk.
+/media/previews/undated/
+
+# Existing unreviewed local bitstreams: preserved with provenance, not published.
+/evidence/2026/10/FPGA-板载联调-20261018-v0.1/board_only.fs
+/evidence/2026/10/FPGA-钢琴音色-20261018-v0.1/board-72zones/board_only.fs
+/evidence/2026/10/FPGA-钢琴音色-20261018-v0.1/board-final/board_only.fs
+/evidence/2026/10/FPGA-钢琴音色-20261018-v0.1/board/board_only.fs

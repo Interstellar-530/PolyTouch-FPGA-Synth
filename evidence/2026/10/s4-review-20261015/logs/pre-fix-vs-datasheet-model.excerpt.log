@@ -1,0 +1,58 @@
+# S4 pre-fix RTL vs DS21298E model: excerpt of the failing run
+# full command: iverilog -g2012 -I . -o sim/tb_mcp3208_spi.vvp sim/tb_mcp3208_spi.v sim/mcp3208_model.v <pre-fix mcp3208_spi.v> ; vvp sim/tb_mcp3208_spi.vvp
+# result: vvp exit 1, 14214 FAIL lines out of 14217 log lines
+
+---- first 40 lines ----
+VCD info: dumpfile sim/tb_mcp3208_spi.vcd opened for output.
+FAIL ch=0 value=0: frame used 18 SCLK edges / 18 device clocks, expected 19
+FAIL ch=1 value=0: frame used 18 SCLK edges / 18 device clocks, expected 19
+FAIL ch=0 value=1: data=0 adc_data=0 valid=1
+FAIL ch=0 value=1: frame used 18 SCLK edges / 18 device clocks, expected 19
+FAIL ch=1 value=1: data=0 adc_data=0 valid=1
+FAIL ch=1 value=1: frame used 18 SCLK edges / 18 device clocks, expected 19
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+FAIL audit: code committed before CS returned high: data=3ff held=000
+
+---- failure kinds (counts) ----
+  13650  FAIL audit: code committed before CS returned high: data=X held=Y
+    282  FAIL ch=N value=V: frame used N SCLK edges / N device clocks, expected 19
+    280  FAIL ch=N value=V: data=D adc_data=D valid=1
+      1  FAIL start-while-busy: data=400, expected 801 from the latched channel
+      1  FAIL start-while-busy: decoded channel 3, 18 SCLK edges
+
+---- last 4 lines ----
+FAIL ch=5 value=3800: data=1900 adc_data=1900 valid=1
+FAIL ch=5 value=3800: frame used 18 SCLK edges / 18 device clocks, expected 19
+FATAL: D:\NanjingUniversity\FPGA\tmp\s4-review\work\tb_mcp3208_spi.v:286: tb_mcp3208_spi failures=14214
+       Time: 5127190000  Scope: tb_mcp3208_spi

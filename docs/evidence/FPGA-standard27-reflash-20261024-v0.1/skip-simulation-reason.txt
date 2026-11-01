@@ -1,4 +1,0 @@
-User explicitly requested: skip the simulation gate for this reflash.
-No production RTL or build inputs changed; source fingerprint and bitstream SHA256 matched the successful standard27 receipt.
-Reusing previously simulated and programmed bitstream SHA256 8f70f54bb4cb95b68aeb41ca8180283ebaa33b21b282d88165867af2239723af.
-This operation does not constitute a new simulation pass.

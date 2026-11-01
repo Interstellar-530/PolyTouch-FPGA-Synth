@@ -1,0 +1,5 @@
+Project root: E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792204731037310600\fixture\source
+Gowin shell : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792204731037310600\mock-gw.ps1
+Profile     : standard (top_std_build)
+Bitstream   : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792204731037310600\fixture\source\build\gowin_top_i2s_std\runs\20261017T103857023-20f5a723\instrument\impl\pnr\instrument.fs
+Receipt     : E:\Working Space\FPGA\tmp\build-profiles-verification-20261016\1792204731037310600\fixture\source\build\receipts\standard.json

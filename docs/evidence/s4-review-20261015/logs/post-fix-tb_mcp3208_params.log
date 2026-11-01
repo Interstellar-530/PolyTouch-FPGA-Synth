@@ -1,5 +1,0 @@
-prod: 19 rising edges, half period 54 clocks, CS to first edge 54 clocks (2000 ns), data=345
-clamped: 19 rising edges, half period 1 clock (SCLK 13.5 MHz), CS to first edge 1 clocks (37 ns), data=6a5
-SPI_HZ=0 instance elaborated and idle (guard keeps the divider defined)
-tb_mcp3208_params PASS
-sim/tb_mcp3208_params.v:174: $finish called at 78503041 (1ps)

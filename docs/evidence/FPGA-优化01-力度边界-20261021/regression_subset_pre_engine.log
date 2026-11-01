@@ -1,5 +1,0 @@
-﻿RUN-FAIL tb_velocity_bounds_pre :: FATAL: sim\tb_velocity_bounds.v:134: vel 128 cap=0, expected saturation 66017
-RUN-FAIL tb_generic_bright_pre :: FATAL: sim\tb_generic_bright.v:82: generic frame deadline cycles=120 products=44 expect 108/40
-RUN-FAIL tb_piano_engine_pre :: FATAL: sim\tb_piano_engine.v:57: piano engine never selected C4 loud hammer bank 46
-RUN-FAIL tb_piano_morph_pre :: FATAL: sim\tb_piano_morph.v:57: low envelope never selected C4 loud body bank 42
-SUMMARY engine=pre benches=4 failed=4

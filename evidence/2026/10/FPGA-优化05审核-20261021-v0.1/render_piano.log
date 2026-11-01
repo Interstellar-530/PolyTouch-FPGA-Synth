@@ -1,0 +1,15 @@
+kind            : piano
+notes           : [60, 72, 76, 83, 84, 95]
+velocity        : 127   tone=4
+seconds/note    : 0.7
+before tables   : 36
+after tables    : 12
+diff RMS        :   -70.08 dB re before
+diff peak       :   -52.83 dB re before peak
+audibility      : not tested; relative dB is not a hearing threshold or dBFS
+model           : approximate table playback, integer interpolation, synthetic envelope
+stage samples   : 5859
+
+ab.wav   : before (0.7 s x 6 notes) -> silence -> after, same phrase
+diff.wav : (after - before) boosted +40 dB, same length as one phrase
+before.wav / after.wav : individual phrases

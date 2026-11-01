@@ -1,0 +1,5 @@
+debug-gowin-setup: exit=0, passed=True
+debug-rtl-elaboration: exit=0, passed=True
+standard-gowin-setup: exit=0, passed=True
+standard-rtl-elaboration: exit=0, passed=True
+PASS: 4 real setup/elaboration checks; no mock programming checks.

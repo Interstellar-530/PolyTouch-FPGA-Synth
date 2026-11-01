@@ -1,0 +1,144 @@
+﻿diff --git a/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v b/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v
+index 367ffc8..50de41b 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v
++++ b/output/handoff_milestone2_20261008/source/rtl/audio/hid_keymap.v
+@@ -5,7 +5,8 @@
+ // 键位与电脑端 tools/serial_keyboard/KeyboardCore.cs 完全一致：
+ //   Z S X D C V G B H N J M  -> base-12 .. base-1
+ //   Q 2 W 3 E R 5 T 6 Y 7 U  -> base+0  .. base+11
+-//   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；Esc -> 全松键；PageUp/PageDown -> 八度。
++//   A/F/K 为旧版兼容键；F1-F5 -> T250..T254；F6 -> 钢琴/吉他切换（同串口 I0/I1）；
++//   Up/Down -> 主音量 +/-5（同串口 V）；Esc -> 全松键；PageUp/PageDown -> 八度。
+ //
+ // 时序：报告每 ~87 us 才来一帧，而 27 MHz 有 2000+ 拍余量，所以键位差分用
+ // 12 拍状态机逐键处理，而不是一拍内做 6x6 查找。这样 event FIFO 的写使能只经过
+@@ -28,6 +29,10 @@ module hid_keymap (
+     output reg         panic,
+     output reg         timbre_valid,
+     output reg  [7:0]  timbre_value,
++    // F6 与串口 I0/I1 同义：切换钢琴/吉他；Up/Down 是主音量单步脉冲。
++    output reg         instr_toggle,
++    output reg         vol_up,
++    output reg         vol_down,
+     output reg  [6:0]  base_note,
+     output wire [3:0]  held_count,
+     output reg         overflow
+@@ -148,7 +153,7 @@ module hid_keymap (
+             for (i = 0; i < 6; i = i + 1)
+                 if (cur_key[i] == key) found = 1'b1;
+             if (!found) begin
+-                // 只有音符键才发 Note Off；控制键（PageUp/PageDown/Esc/F1-F5）
++                // 只有音符键才发 Note Off；控制键（PageUp/PageDown/Esc/F1-F6/方向键）
+                 // 的 prev_note 为 0，释放时不能产生 note=0 的假事件。
+                 if (prev_ok[idx]) begin
+                     push = 1'b1;
+@@ -179,6 +184,7 @@ module hid_keymap (
+         if (rst) begin
+             wptr <= 5'd0; rptr <= 5'd0; count <= 5'd0;
+             panic <= 1'b0; timbre_valid <= 1'b0; timbre_value <= 8'd0;
++            instr_toggle <= 1'b0; vol_up <= 1'b0; vol_down <= 1'b0;
+             base_note <= 7'd60; overflow <= 1'b0;
+             idx <= 3'd0; phase <= 1'b0; busy <= 1'b0; pending <= 1'b0;
+             for (m = 0; m < 6; m = m + 1) begin
+@@ -190,6 +196,9 @@ module hid_keymap (
+         end else begin
+             panic <= 1'b0;
+             timbre_valid <= 1'b0;
++            instr_toggle <= 1'b0;
++            vol_up <= 1'b0;
++            vol_down <= 1'b0;
+             c  = count;
+             wp = wptr;
+ 
+@@ -261,6 +270,9 @@ module hid_keymap (
+                         8'h3C: begin timbre_valid <= 1'b1; timbre_value <= 8'd252; end
+                         8'h3D: begin timbre_valid <= 1'b1; timbre_value <= 8'd253; end
+                         8'h3E: begin timbre_valid <= 1'b1; timbre_value <= 8'd254; end
++                        8'h3F: instr_toggle <= 1'b1;   // F6：钢琴/吉他切换
++                        8'h51: vol_down <= 1'b1;      // Down：主音量 -
++                        8'h52: vol_up <= 1'b1;        // Up：主音量 +
+                         8'h4B: base_note <= clamp_note({1'b0, base_note} + 8'd12);
+                         8'h4E: base_note <= clamp_note({1'b0, base_note} - 8'd12);
+                         default: ;
+diff --git a/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v b/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v
+index 913ee1a..d99b921 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v
++++ b/output/handoff_milestone2_20261008/source/rtl/audio/host_kbd_input.v
+@@ -17,6 +17,9 @@ module host_kbd_input #(
+     output wire        panic,
+     output wire        timbre_valid,
+     output wire [7:0]  timbre_value,
++    output wire        instr_toggle,
++    output wire        vol_up,
++    output wire        vol_down,
+     output wire [6:0]  base_note,
+     output wire [3:0]  held_count,
+     output wire        overflow,
+@@ -49,6 +52,7 @@ module host_kbd_input #(
+         .flush(flush), .link_timeout(link_timeout), .device_notify(device_notify),
+         .ev_valid(ev_valid), .ev_word(ev_word), .ev_ready(ev_ready),
+         .panic(panic), .timbre_valid(timbre_valid), .timbre_value(timbre_value),
++        .instr_toggle(instr_toggle), .vol_up(vol_up), .vol_down(vol_down),
+         .base_note(base_note), .held_count(held_count), .overflow(overflow)
+     );
+ 
+diff --git a/output/handoff_milestone2_20261008/source/rtl/top.v b/output/handoff_milestone2_20261008/source/rtl/top.v
+index b5b58bc..f2c9f11 100644
+--- a/output/handoff_milestone2_20261008/source/rtl/top.v
++++ b/output/handoff_milestone2_20261008/source/rtl/top.v
+@@ -120,8 +120,12 @@ module top #(
+     wire uart_timbre_valid;
+     wire [7:0] uart_timbre_value, timbre_target;
+     // HID 键盘的 F1-F5 与 UART 的 T250-T254 共用音色入口；同一拍 HID 优先。
++    // F6 与串口 I0/I1 同义（钢琴/吉他切换），Up/Down 单步调节主音量。
+     wire hid_timbre_valid;
+     wire [7:0] hid_timbre_value;
++    wire hid_instr_toggle;
++    wire hid_vol_up;
++    wire hid_vol_down;
+     wire       uart_instr_valid;
+     wire [1:0] uart_instr_id;
+     wire       uart_vol_valid;
+@@ -140,6 +144,10 @@ module top #(
+             if (uart_instr_valid && (uart_instr_id != instrument_id)) begin
+                 instrument_id <= uart_instr_id;
+                 instrument_change <= 1'b1;
++            end else if (hid_instr_toggle) begin
++                // F6 等价 I0/I1 切换；切换拍清事件与按键，避免持音中途换表。
++                instrument_id <= instrument_id ^ 2'd1;
++                instrument_change <= 1'b1;
+             end
+         end
+     end
+@@ -255,6 +263,7 @@ module top #(
+                 .ev_ready(hid_ev_ready),
+                 .panic(hid_panic), .timbre_valid(hid_timbre_valid),
+                 .timbre_value(hid_timbre_value),
++                .instr_toggle(hid_instr_toggle), .vol_up(hid_vol_up), .vol_down(hid_vol_down),
+                 .base_note(hid_base_note), .held_count(hid_held_count),
+                 .overflow(hid_overflow), .link_timeout(hid_link_timeout), .device_notify(hid_device_notify),
+                 .frame_valid()
+@@ -267,6 +276,9 @@ module top #(
+             assign hid_panic     = 1'b0;
+             assign hid_timbre_valid = 1'b0;
+             assign hid_timbre_value = 8'd0;
++            assign hid_instr_toggle = 1'b0;
++            assign hid_vol_up    = 1'b0;
++            assign hid_vol_down  = 1'b0;
+             assign hid_base_note = 7'd60;
+             assign hid_held_count = 4'd0;
+             assign hid_overflow  = 1'b0;
+@@ -815,7 +827,13 @@ module top #(
+             volume_target <= 7'd100;
+             volume <= 7'd100;
+         end else begin
++            // UART 的 V 命令设绝对值；HID 的 Up/Down 以 5 为步长单步调整并钳在 0..100。
++            // volume_gain 只定义到 100，越过上界会静音，因此必须先钳位再写 target。
+             if (uart_vol_valid) volume_target <= uart_vol_value;
++            else if (hid_vol_up)
++                volume_target <= (volume_target >= 7'd96) ? 7'd100 : volume_target + 7'd5;
++            else if (hid_vol_down)
++                volume_target <= (volume_target <= 7'd5) ? 7'd0 : volume_target - 7'd5;
+             if (sums_valid) begin
+                 if (volume < volume_target) volume <= volume + 7'd1;
+                 else if (volume > volume_target) volume <= volume - 7'd1;

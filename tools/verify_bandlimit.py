@@ -4,7 +4,7 @@ import argparse,csv,json,subprocess,random,sys
 import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1]
-SRC=ROOT/'output/handoff_milestone2_20261008/source'
+SRC=ROOT/'source'
 def load(name):
     a=[int(x,16) for x in (SRC/'rtl/audio'/name).read_text().split()]
     return [x-65536 if x>=32768 else x for x in a]
@@ -58,7 +58,7 @@ def vectors(path,smoke=False,extra=0):
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
-    p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=ROOT/'docs/evidence/FPGA-高音带限-20261017-v0.1');p.add_argument('--smoke',action='store_true');p.add_argument('--generate-smoke',action='store_true');p.add_argument('--extra',type=int,default=0);args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=ROOT/'evidence/2026/10/FPGA-高音带限-20261017-v0.1');p.add_argument('--smoke',action='store_true');p.add_argument('--generate-smoke',action='store_true');p.add_argument('--extra',type=int,default=0);args=p.parse_args()
     if args.generate_smoke:
         vectors(SRC/'sim/vectors/bandlimit_smoke.txt',True)
         vectors(SRC/'sim/vectors/bandlimit_wide_smoke.txt',True,2);return

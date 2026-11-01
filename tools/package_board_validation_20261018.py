@@ -3,8 +3,8 @@ from pathlib import Path
 import hashlib,json,re,shutil,zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
-EV=ROOT/'docs/evidence/FPGA-板载联调-20261018-v0.1'
-SRC=ROOT/'output/handoff_milestone2_20261008/source'
+EV=ROOT/'evidence/2026/10/FPGA-板载联调-20261018-v0.1'
+SRC=ROOT/'source'
 WORK=ROOT/'tmp/board-only-20261018'
 DEST=ROOT/'archive/FPGA-20261018-v0.2'
 
@@ -77,8 +77,8 @@ source/production-and-tests.zip 保留本次生产 RTL、完整门禁及测试�
 ```powershell
 & 'tools/.venv-docconvert/Scripts/python.exe' 'tools/board_only_validation_20261018.py' sim
 & 'tools/.venv-docconvert/Scripts/python.exe' 'tools/board_only_validation_20261018.py' build
-& './output/handoff_milestone2_20261008/source/sim/run_simulation.ps1' -AudioCaptureDir 'E:/Working Space/FPGA/tmp/board-only-20261018/final-capture' -MetricsDir 'E:/Working Space/FPGA/tmp/board-only-20261018/final-metrics' -BuildDir 'E:/Working Space/FPGA/tmp/board-only-20261018/final-sim-build'
-& 'tools/.venv-audio-analysis/Scripts/python.exe' 'tools/analyze_audio_capture.py' --capture 'tmp/board-only-20261018/final-capture/audio_capture.csv' --manifest 'tmp/board-only-20261018/final-capture/capture_manifest.csv' --output-dir 'docs/evidence/FPGA-板载联调-20261018-v0.1/digital-audio-analysis'
+& './source/sim/run_simulation.ps1' -AudioCaptureDir 'E:/Working Space/FPGA/tmp/board-only-20261018/final-capture' -MetricsDir 'E:/Working Space/FPGA/tmp/board-only-20261018/final-metrics' -BuildDir 'E:/Working Space/FPGA/tmp/board-only-20261018/final-sim-build'
+& 'tools/.venv-audio-analysis/Scripts/python.exe' 'tools/analyze_audio_capture.py' --capture 'tmp/board-only-20261018/final-capture/audio_capture.csv' --manifest 'tmp/board-only-20261018/final-capture/capture_manifest.csv' --output-dir 'evidence/2026/10/FPGA-板载联调-20261018-v0.1/digital-audio-analysis'
 ```
 
 完整门禁、专用自检和 SHA256 必须全部通过才可加载目标位流。这里只用于板载27MHz/PT8211/USB/耳机，外设排针空置；不验证外部 ADC、FSR、键盘、DAC。

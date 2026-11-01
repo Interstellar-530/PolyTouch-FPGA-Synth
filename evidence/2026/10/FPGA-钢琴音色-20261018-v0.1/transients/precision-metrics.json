@@ -1,0 +1,66 @@
+[
+  {
+    "case_id": 0,
+    "envelope": 65535,
+    "gain_q12": 4096,
+    "legacy_snr_db": 76.6623588756322,
+    "wide_snr_db": 92.38975144215827,
+    "improvement_db": 15.727392566526078
+  },
+  {
+    "case_id": 1,
+    "envelope": 65535,
+    "gain_q12": 1024,
+    "legacy_snr_db": 65.58160143676854,
+    "wide_snr_db": 92.38975144215827,
+    "improvement_db": 26.808150005389734
+  },
+  {
+    "case_id": 2,
+    "envelope": 4096,
+    "gain_q12": 4096,
+    "legacy_snr_db": 52.62919529709902,
+    "wide_snr_db": 71.17540917233123,
+    "improvement_db": 18.546213875232212
+  },
+  {
+    "case_id": 3,
+    "envelope": 4096,
+    "gain_q12": 1024,
+    "legacy_snr_db": 41.48693804631455,
+    "wide_snr_db": 71.17540917233123,
+    "improvement_db": 29.68847112601668
+  },
+  {
+    "case_id": 4,
+    "envelope": 256,
+    "gain_q12": 4096,
+    "legacy_snr_db": 28.56435270994379,
+    "wide_snr_db": 47.22552659207417,
+    "improvement_db": 18.661173882130377
+  },
+  {
+    "case_id": 5,
+    "envelope": 256,
+    "gain_q12": 1024,
+    "legacy_snr_db": 17.22031354187195,
+    "wide_snr_db": 47.225526592074175,
+    "improvement_db": 30.005213050202226
+  },
+  {
+    "case_id": 6,
+    "envelope": 16,
+    "gain_q12": 4096,
+    "legacy_snr_db": 5.072982487760212,
+    "wide_snr_db": 23.708880691645213,
+    "improvement_db": 18.635898203885
+  },
+  {
+    "case_id": 7,
+    "envelope": 16,
+    "gain_q12": 1024,
+    "legacy_snr_db": -6.366412326003754,
+    "wide_snr_db": 23.708880691645213,
+    "improvement_db": 30.075293017648967
+  }
+]

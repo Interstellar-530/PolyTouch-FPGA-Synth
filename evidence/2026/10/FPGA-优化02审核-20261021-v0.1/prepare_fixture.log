@@ -1,0 +1,8 @@
+ForEach-Object : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable 
+program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At E:\Working Space\FPGA\tmp\build-binding-review-20261021-v01\source\build\profile_helpers.ps1:30 char:36
++     $paths | Sort-Object -Unique | ForEach-Object {
++                                    ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [ForEach-Object], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,Microsoft.PowerShell.Commands.ForEachObjectCommand
+ 

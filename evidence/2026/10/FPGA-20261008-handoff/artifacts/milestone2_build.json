@@ -1,0 +1,69 @@
+{
+  "checked_at": "2026-10-10T12:05:00+08:00",
+  "milestone": "m2_rev4_uart_pitch_sync_reset_hf_smoothing",
+  "target": {
+    "part": "GW2A-LV18PG256C8/I7",
+    "device_version": "C"
+  },
+  "normal_bitstream": {
+    "path": "artifacts/instrument.fs",
+    "size_bytes": 7264154,
+    "sha256": "80089e293129be7f77c7ee32c630690f769eb4417e579392f83182b4b8e9357a",
+    "user_code": "0x000059D1"
+  },
+  "resources": {
+    "lut_alu_rom16": 1259,
+    "registers_total": 429,
+    "bsram": 1,
+    "mult18x18": 3,
+    "padd18": 1,
+    "dsp_fraction": 1.5
+  },
+  "timing": {
+    "constraint_mhz": 27.0,
+    "actual_fmax_mhz": 54.361,
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0
+  },
+  "uart_pitch": {
+    "baud": 115200,
+    "pins": "uart_tx=M11 (-> BL702_UART1_RX), uart_rx=T13 (<- BL702_UART1_TX), bank 2, 3.3 V",
+    "commands": [
+      "F<16..20000> sets pitch in Hz",
+      "M0 digital mute",
+      "M1 unmute"
+    ],
+    "reply": "OK\\r\\n or ERR\\r\\n",
+    "function": "freq_to_phase_inc(f) = f * 91626 for fs = 46875 Hz",
+    "note": "Both UART nets are shared with the RGB LCD connector."
+  },
+  "reset": {
+    "implemented": "key_rst on D7 (S3), two-flop synchroniser, rst = por | soft_rst",
+    "unused": [
+      "S0/T10 is a dedicated SSPI pin in GW2A-18PG256 and cannot be a user IO",
+      "S4/B10 is RECONFIG_N and reconfigures the device"
+    ]
+  },
+  "smoothing": "(1,4,6,4,1)/16 FIR, four cascaded two-tap averages",
+  "drive_strength": "DRIVE=4 on audio and UART outputs (was the 8 mA default)",
+  "history": [
+    {
+      "revision": "m2 rev3",
+      "sha256": "4095ed01d1b8c2d89aec808e06ebe846047089063cf7a67ff24a518d60aabed6",
+      "user_code": "0x000071A6"
+    },
+    {
+      "revision": "m2 rev2",
+      "sha256": "0612d3383736688423204cd2a04ad2350a110d9c7c7e3f483008a6ddb2faa399",
+      "user_code": "0x00009F8A"
+    },
+    {
+      "revision": "m2",
+      "sha256": "f2cb3a6d84eeab1cee3a43c4ecb44e0566b93e09c1b4476c774154ceb03ecafb",
+      "user_code": "0x00006AE4",
+      "issue": "0.25 s gate buzz and PT8211 WS one bit out of phase"
+    }
+  ],
+  "open_question": "Does the whistle survive M0 (digital mute)? That splits digital content from board-level noise.",
+  "passed": true
+}

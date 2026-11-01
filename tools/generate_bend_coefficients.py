@@ -37,10 +37,10 @@ def render():
 
 if __name__=='__main__':
     root=Path(__file__).resolve().parents[1]
-    path=root/'output/handoff_milestone2_20261008/source/rtl/audio/bend_coefficients.vh'
+    path=root/'source/rtl/audio/bend_coefficients.vh'
     path.write_text(render(),encoding='ascii')
     table=anchors()
     reference=[table[x//128]+((table[x//128+1]-table[x//128])*(x%128)+64)//128 for x in range(4096)]
-    (root/'output/handoff_milestone2_20261008/source/sim/vectors/bend_ratio_reference.hex').write_text(
+    (root/'source/sim/vectors/bend_ratio_reference.hex').write_text(
         ''.join(f'{x:05x}\n' for x in reference),encoding='ascii')
     print(path)

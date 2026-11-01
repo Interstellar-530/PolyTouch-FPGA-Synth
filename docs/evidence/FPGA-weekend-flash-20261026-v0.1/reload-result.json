@@ -1,9 +1,0 @@
-{
-  "time_utc": "2026-10-26T10:37:17.0572885Z",
-  "read_exit_code": 0,
-  "reload_from_flash_verified": true,
-  "expected_user_code": "0x000063DC",
-  "expected_status": "0x00006020",
-  "cold_power_cycle_tested": false,
-  "note": "Initial read 2 seconds after Reprogram was not ready; later read preserved separately"
-}

@@ -1,0 +1,52 @@
+[
+  {
+    "case_id": 0,
+    "note": 60,
+    "bin": 45,
+    "frequency": 263.671875,
+    "max_harmonic": 16,
+    "alias_before_dbc": -72.97570835941129,
+    "alias_after_dbc": -72.97570835941129,
+    "reduction_db": 0.0
+  },
+  {
+    "case_id": 1,
+    "note": 84,
+    "bin": 179,
+    "frequency": 1048.828125,
+    "max_harmonic": 16,
+    "alias_before_dbc": -72.97570835941146,
+    "alias_after_dbc": -76.29644731996476,
+    "reduction_db": 3.3207389605533013
+  },
+  {
+    "case_id": 2,
+    "note": 96,
+    "bin": 357,
+    "frequency": 2091.796875,
+    "max_harmonic": 8,
+    "alias_before_dbc": -12.46195671533431,
+    "alias_after_dbc": -83.35505446056798,
+    "reduction_db": 70.89309774523366
+  },
+  {
+    "case_id": 3,
+    "note": 108,
+    "bin": 714,
+    "frequency": 4183.59375,
+    "max_harmonic": 4,
+    "alias_before_dbc": -7.946595098413777,
+    "alias_after_dbc": -86.7376422805304,
+    "reduction_db": 78.79104718211663
+  },
+  {
+    "case_id": 4,
+    "note": 127,
+    "bin": 2141,
+    "frequency": 12544.921875,
+    "max_harmonic": 1,
+    "alias_before_dbc": -2.335710111531627,
+    "alias_after_dbc": -88.06862962592342,
+    "reduction_db": 85.7329195143918
+  }
+]

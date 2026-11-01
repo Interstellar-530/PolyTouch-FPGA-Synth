@@ -1,0 +1,31 @@
+{
+  "core_effect": "PASS",
+  "input_count": 222,
+  "input_set_matches_manifest": true,
+  "mismatched_inputs": [],
+  "bitstream_sha256_matches": true,
+  "tool_version": "V1.9.11.03 Education",
+  "tool_version_matches_report": true,
+  "inputs_digest": "3f4565c0bf6b95c18bfefd710d4e5ca074f094100e2206f545a5787a8d25c095",
+  "existing_input_checks_passed": 11,
+  "existing_build_entry_checks_passed": 16,
+  "existing_regeneration_results": {
+    "epiano": "39/39",
+    "guitar_samples": "39/39",
+    "guitar_legacy_outputs": 9
+  },
+  "extra_bitstream_probe": "not completed; setup could not load Get-FileHash; not counted as PASS",
+  "no_full_gate": true,
+  "no_new_synthesis": true,
+  "no_real_programming": true,
+  "reviewed_files_sha256": {
+    "output\\handoff_milestone2_20261008\\source\\build\\profile_helpers.ps1": "37065355572af4684b8a90e70f267f2e0d1f8c5c5472ae15be5cbc7a249950aa",
+    "output\\handoff_milestone2_20261008\\source\\build\\build.ps1": "42f6b6e1711feabc050e817ae8664a54e44bee26d88af80836571e024ee121a4",
+    "output\\handoff_milestone2_20261008\\source\\build\\program_sram.ps1": "26d278bcab79c3516fbaeb7783a454d53751505960b21e3a71bfe99f6835e837",
+    "output\\handoff_milestone2_20261008\\source\\build\\test_build_inputs.ps1": "9edd6d12fbad2e6d405a83fb77daee78f4590b185e665b243d30da6f3b24728d",
+    "tools\\gen_epiano_bank.py": "aa43f70a8e42812666e06b1705c0c201a875636f24e1ae4e8665e6ed0afc0b19",
+    "tools\\gen_guitar_bank.py": "09d8c3cb4bb27b9a0936f0740e7a367c567407db7fcc25d8d390f8a96b7db6cd",
+    "tools\\gen_guitar_samples_bank.py": "77d2ee03c7b287272309382e72a337e68d294f760dc8119c90b87c16899f8090",
+    "tools\\verify_build_profiles.py": "4c68650a06ce3a64926d6cf4a7ca785fff5a6c218534be51d01a2fdfb7de4723"
+  }
+}

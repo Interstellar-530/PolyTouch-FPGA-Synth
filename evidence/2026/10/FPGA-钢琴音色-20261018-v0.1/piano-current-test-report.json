@@ -1,0 +1,134 @@
+{
+  "model": "current DDS + piano ADSR + stage/bank interpolation + /4 gain",
+  "sample_rate_hz": 48000,
+  "duration_seconds": 18.15,
+  "global_normalization": 0.00013456312533943269,
+  "segments": [
+    {
+      "label": "F1 soft C4",
+      "note": 60,
+      "tone": 0,
+      "velocity": 100,
+      "start_sample": 9600,
+      "end_sample": 86400,
+      "peak": 3201.7651250584136,
+      "rms": 536.4401201443853,
+      "stage_span": [
+        42,
+        46
+      ]
+    },
+    {
+      "label": "F2 mellow C4",
+      "note": 60,
+      "tone": 1,
+      "velocity": 100,
+      "start_sample": 98400,
+      "end_sample": 175200,
+      "peak": 3201.7651250584136,
+      "rms": 514.9128504093638,
+      "stage_span": [
+        43,
+        46
+      ]
+    },
+    {
+      "label": "F3 medium C4",
+      "note": 60,
+      "tone": 2,
+      "velocity": 100,
+      "start_sample": 187200,
+      "end_sample": 264000,
+      "peak": 3201.7651250584136,
+      "rms": 502.53033534819497,
+      "stage_span": [
+        44,
+        46
+      ]
+    },
+    {
+      "label": "F4 bright C4",
+      "note": 60,
+      "tone": 3,
+      "velocity": 100,
+      "start_sample": 276000,
+      "end_sample": 352800,
+      "peak": 3201.7651250584136,
+      "rms": 497.0045762073845,
+      "stage_span": [
+        45,
+        46
+      ]
+    },
+    {
+      "label": "F5 hammer C4",
+      "note": 60,
+      "tone": 4,
+      "velocity": 100,
+      "start_sample": 364800,
+      "end_sample": 441600,
+      "peak": 3201.7651250584136,
+      "rms": 495.59720288708615,
+      "stage_span": [
+        46,
+        46
+      ]
+    },
+    {
+      "label": "C2 hammer",
+      "note": 36,
+      "tone": 4,
+      "velocity": 100,
+      "start_sample": 453600,
+      "end_sample": 547200,
+      "peak": 3180.7062580111033,
+      "rms": 462.4521862135044,
+      "stage_span": [
+        22,
+        22
+      ]
+    },
+    {
+      "label": "C4 hammer",
+      "note": 60,
+      "tone": 4,
+      "velocity": 100,
+      "start_sample": 559200,
+      "end_sample": 652800,
+      "peak": 3201.7651250584136,
+      "rms": 448.93317762696336,
+      "stage_span": [
+        46,
+        46
+      ]
+    },
+    {
+      "label": "C6 hammer",
+      "note": 84,
+      "tone": 4,
+      "velocity": 100,
+      "start_sample": 664800,
+      "end_sample": 758400,
+      "peak": 3208.5408645161547,
+      "rms": 560.3122171594459,
+      "stage_span": [
+        70,
+        70
+      ]
+    },
+    {
+      "label": "C major chord",
+      "notes": [
+        60,
+        64,
+        67,
+        72
+      ],
+      "start_sample": 770400,
+      "end_sample": 866400,
+      "peak": 6539.6816384891345,
+      "rms": 794.9016345125302
+    }
+  ],
+  "note": "This bypasses PT8211, LPA4809, USB power, headphones and analog noise."
+}

@@ -10,7 +10,7 @@ import shutil
 
 ROOT = next((parent for parent in Path(__file__).resolve().parents
              if (parent / 'AGENTS.md').is_file()
-             and (parent / 'output/handoff_milestone2_20261008').is_dir()),
+             and (parent / 'docs/history/handoff-20261008').is_dir()),
             Path(__file__).resolve().parents[1])
 
 
@@ -147,11 +147,11 @@ def main():
         paths = [
             'docs/planning/FPGA-键控响度混音-20261019-v0.1.md',
             'docs/planning/FPGA-键控响度混音-20261019-v0.2.md',
-            'output/handoff_milestone2_20261008/source/rtl/top.v',
-            'output/handoff_milestone2_20261008/source/rtl/audio/shared_wavetable_engine.v',
-            'output/handoff_milestone2_20261008/source/rtl/audio/global_crossfade.v',
-            'output/handoff_milestone2_20261008/source/rtl/audio/voice_transition.v',
-            'output/handoff_milestone2_20261008/source/build/gowin_top_dbg8/runs/20261019T160656857-b589c0e8/instrument/impl/pnr/instrument.rpt.txt',
+            'source/rtl/top.v',
+            'source/rtl/audio/shared_wavetable_engine.v',
+            'source/rtl/audio/global_crossfade.v',
+            'source/rtl/audio/voice_transition.v',
+            'source/build/gowin_top_dbg8/runs/20261019T160656857-b589c0e8/instrument/impl/pnr/instrument.rpt.txt',
             'tools/audit_key_loudness_20261020.py',
         ]
         for name in paths:

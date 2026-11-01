@@ -6,9 +6,9 @@ import numpy as np
 def main():
     sys.stdout.reconfigure(encoding='utf-8',errors='replace')
     parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('--analyze-only',action='store_true');parser.add_argument('tests',nargs='*');args=parser.parse_args()
-    root=Path(__file__).resolve().parents[1];source=root/'output/handoff_milestone2_20261008/source'
+    root=Path(__file__).resolve().parents[1];source=root/'source'
     work=root/'tmp/transients-20261017';work.mkdir(parents=True,exist_ok=True)
-    out=args.out or root/'docs/evidence/FPGA-静音过渡-20261017-v0.1';out.mkdir(parents=True,exist_ok=True)
+    out=args.out or root/'evidence/2026/10/FPGA-静音过渡-20261017-v0.1';out.mkdir(parents=True,exist_ok=True)
     results=json.loads((out/'results.json').read_text()) if args.analyze_only and (out/'results.json').exists() else []
     for name in args.tests or ['tb_mute_slew']:
         started=time.monotonic();exe=work/(name+'.vvp')

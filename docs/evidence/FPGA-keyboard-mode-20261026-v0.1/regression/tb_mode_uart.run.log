@@ -1,3 +1,0 @@
-PASS tb_mode_uart: manual priority, demo restart, panic, invalid commands
-sim\tb_mode_uart.v:102: $finish called at 8590649277 (1ps)
-

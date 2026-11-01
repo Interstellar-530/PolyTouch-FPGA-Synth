@@ -1,2 +1,0 @@
-PASS tb_bandlimit_engine: 64 independent-reference frames; 108 clocks, 40 products, local/shared exact
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_bandlimit_engine.v:42: $finish called at 71080000 (1ps)

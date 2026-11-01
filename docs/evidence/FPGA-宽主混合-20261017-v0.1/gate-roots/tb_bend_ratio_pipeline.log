@@ -1,2 +1,0 @@
-PASS tb_bend_ratio_pipeline: all 4096 codes dense and gapped, random resets/updates, outputs=10195; 3 registered stages
-E:\Working Space\FPGA\output\handoff_milestone2_20261008\source\sim\tb_bend_ratio_pipeline.v:34: $finish called at 184410000 (1ps)

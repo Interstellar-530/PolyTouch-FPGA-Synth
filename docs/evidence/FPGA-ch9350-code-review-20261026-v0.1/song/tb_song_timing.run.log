@@ -1,6 +1,0 @@
-expecting pass = 320 units x 97 samples x 1 = 31040 ticks, 256 note events
-pass 1 complete at tick 117, delta 117, note ons 0
-pass 2 complete at tick 31157, delta 31040, note ons 256
-PASS tb_song_timing: pass = 31040 ticks, 256 note events
-sim\tb_song_timing.v:113: $finish called at 311575000 (1ps)
-

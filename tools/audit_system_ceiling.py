@@ -58,9 +58,9 @@ def interpolate(wave,phase):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path);parser.add_argument('--reuse-capture',action='store_true');parser.add_argument('--control-only',action='store_true');args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
-    source=root/'output/handoff_milestone2_20261008/source'
+    source=root/'source'
     work=root/'tmp/system-ceiling-20261017';work.mkdir(parents=True,exist_ok=True)
-    out=args.out or root/'docs/evidence/FPGA-整体潜力审查-20261017-v0.1';out.mkdir(parents=True,exist_ok=True)
+    out=args.out or root/'evidence/2026/10/FPGA-整体潜力审查-20261017-v0.1';out.mkdir(parents=True,exist_ok=True)
     if args.control_only:
         probe=out/'control-probe';bench=probe/'tb_pressure_duplicate.v'
         local_bench=work/'tb_pressure_duplicate.v';local_bench.write_bytes(bench.read_bytes())

@@ -1,0 +1,112 @@
+[
+  {
+    "Path": "source/build/build.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/build/build_i2s_tx.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/build/profile_helpers.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/build/program_hdmi_flash.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/build/program_sram.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/build/scan_jtag.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/build/test_build_inputs.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/sim/gate_process.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/sim/opt_a/run_opt_a.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "source/sim/run_simulation.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/git_push_retry.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/load_board_only_20261018.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/putty/configure-session.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/putty/install.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/putty/send-command.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/run_audio_verification.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/serial_console/install_desktop_shortcut.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/serial_console/serial_console.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/serial_keyboard/keyboard.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/serial_keyboard/render_preview.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/test_board_timbre_20261018.ps1",
+    "Passed": true,
+    "Errors": []
+  },
+  {
+    "Path": "tools/verify_s3_review.ps1",
+    "Passed": true,
+    "Errors": []
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "capture_sha256": "f1e4f26fce4c2a0efeb36e2b418f117861434451807ba49ceb6f89fc2da8af61",
+  "input_hash_mismatches": 0,
+  "input_files": 33,
+  "capture_identical_to_s2_initial": true,
+  "tested_parent": "8d0fa2fb52b59a13faff015c557c7b9058c2fd5f",
+  "result": "PASS"
+}

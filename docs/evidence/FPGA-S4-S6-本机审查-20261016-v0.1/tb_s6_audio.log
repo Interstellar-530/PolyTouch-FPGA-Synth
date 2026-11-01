@@ -1,2 +1,0 @@
-PASS tb_s6_audio: ROM sync/select, 3584 osc vectors, 1024+256 blend points, 510 mixer vectors, 32 FIR samples
-E:\Working Space\FPGA\tmp\s4s6-review-20261016\snapshot\output\handoff_milestone2_20261008\source\sim\tb_s6_audio.v:334: $finish called at 116756000 (1ps)

@@ -11,7 +11,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
-$sourceRoot = Join-Path $repoRoot 'output\handoff_milestone2_20261008\source'
+$sourceRoot = Join-Path $repoRoot 'source'
 New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 $OutputDir = (Resolve-Path -LiteralPath $OutputDir).Path
 $allowedRoot = (Resolve-Path -LiteralPath (Join-Path $repoRoot 'tmp')).Path.TrimEnd('\') + '\'

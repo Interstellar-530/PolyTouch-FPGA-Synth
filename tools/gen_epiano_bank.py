@@ -17,7 +17,7 @@ import wave
 import numpy as np
 
 REPO = Path(__file__).resolve().parents[1]
-DEFAULT_AUDIO = REPO / 'output/handoff_milestone2_20261008/source/rtl/audio'
+DEFAULT_AUDIO = REPO / 'source/rtl/audio'
 DEFAULT_WAV = REPO / 'tmp/akwf/AKWF_epiano/AKWF_epiano_0001.wav'
 FS = 46875
 # MIDI edges for six keyboard zones; last note < 96.
@@ -34,7 +34,7 @@ parser.add_argument('--out-dir', type=Path,
                     help='generated output directory (default: <repo-root>/output/.../rtl/audio)')
 args = parser.parse_args()
 ROOT = args.repo_root.resolve()
-AUDIO = (args.out_dir or ROOT / 'output/handoff_milestone2_20261008/source/rtl/audio').resolve()
+AUDIO = (args.out_dir or ROOT / 'source/rtl/audio').resolve()
 SRC = (args.wav or ROOT / 'tmp/akwf/AKWF_epiano/AKWF_epiano_0001.wav').resolve()
 if not SRC.is_file():
     raise SystemExit(f'source wav not found: {SRC} (pass --wav or --repo-root)')

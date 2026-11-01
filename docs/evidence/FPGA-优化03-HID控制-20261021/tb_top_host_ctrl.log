@@ -1,2 +1,0 @@
-﻿PASS tb_top_host_ctrl: UART compat, first key, chord, F6 piano/guitar switch, Up/Down volume clamps, Esc clear
-sim\tb_top_host_ctrl.v:254: $finish called at 49339264269 (1ps)
